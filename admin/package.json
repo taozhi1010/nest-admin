@@ -1,8 +1,8 @@
 {
-  "name": "ruoyi",
+  "name": "nest-admin",
   "version": "3.8.7",
-  "description": "若依管理系统",
-  "author": "若依",
+  "description": "nestjs管理系统",
+  "author": "nest-admin",
   "license": "MIT",
   "scripts": {
     "dev": "vue-cli-service serve",
@@ -34,7 +34,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://gitee.com/y_project/RuoYi-Vue.git"
+    "url": "https://github.com/taozhi1010/nest-admin.git"
   },
   "dependencies": {
     "@riophae/vue-treeselect": "0.4.0",

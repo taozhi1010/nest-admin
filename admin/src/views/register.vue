@@ -1,27 +1,30 @@
 <template>
 	<div class="register">
 		<el-form ref="registerForm" :model="registerForm" :rules="registerRules" class="register-form">
-			<h3 class="title">若依后台管理系统</h3>
+			<h3 class="title">nest-admin后台管理系统</h3>
 			<el-form-item prop="username">
 				<el-input v-model="registerForm.username" type="text" auto-complete="off" placeholder="账号">
 					<svg-icon slot="prefix" icon-class="user" class="el-input__icon input-icon" />
 				</el-input>
 			</el-form-item>
 			<el-form-item prop="password">
-				<el-input v-model="registerForm.password" type="password" auto-complete="off" placeholder="密码"
-					@keyup.enter.native="handleRegister">
+				<el-input v-model="registerForm.password" type="password" auto-complete="off" placeholder="密码" @keyup.enter.native="handleRegister">
 					<svg-icon slot="prefix" icon-class="password" class="el-input__icon input-icon" />
 				</el-input>
 			</el-form-item>
 			<el-form-item prop="confirmPassword">
-				<el-input v-model="registerForm.confirmPassword" type="password" auto-complete="off" placeholder="确认密码"
-					@keyup.enter.native="handleRegister">
+				<el-input
+					v-model="registerForm.confirmPassword"
+					type="password"
+					auto-complete="off"
+					placeholder="确认密码"
+					@keyup.enter.native="handleRegister"
+				>
 					<svg-icon slot="prefix" icon-class="password" class="el-input__icon input-icon" />
 				</el-input>
 			</el-form-item>
 			<el-form-item prop="code" v-if="captchaEnabled">
-				<el-input v-model="registerForm.code" auto-complete="off" placeholder="验证码" style="width: 63%"
-					@keyup.enter.native="handleRegister">
+				<el-input v-model="registerForm.code" auto-complete="off" placeholder="验证码" style="width: 63%" @keyup.enter.native="handleRegister">
 					<svg-icon slot="prefix" icon-class="validCode" class="el-input__icon input-icon" />
 				</el-input>
 				<div class="register-code">
@@ -29,8 +32,7 @@
 				</div>
 			</el-form-item>
 			<el-form-item style="width: 100%">
-				<el-button :loading="loading" size="medium" type="primary" style="width: 100%"
-					@click.native.prevent="handleRegister">
+				<el-button :loading="loading" size="medium" type="primary" style="width: 100%" @click.native.prevent="handleRegister">
 					<span v-if="!loading">注 册</span>
 					<span v-else>注 册 中...</span>
 				</el-button>
@@ -114,7 +116,7 @@ export default {
 								.then(() => {
 									this.$router.push('/login');
 								})
-								.catch(() => { });
+								.catch(() => {});
 						})
 						.catch(() => {
 							this.loading = false;
