@@ -98,7 +98,7 @@ export default {
 			})
 				.then(() => {
 					this.$store.dispatch('LogOut').then(() => {
-						location.href = '/index';
+						location.href = '/nest-admin/index';
 					});
 				})
 				.catch(() => {});
