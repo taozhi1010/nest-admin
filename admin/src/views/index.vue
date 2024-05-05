@@ -14,7 +14,7 @@
 				</p>
 				<p>
 					<el-button type="primary" size="mini" icon="el-icon-cloudy" plain
-						@click="goTarget('https://github.com/taozhi1010/nest-admin')">访问Githup</el-button>
+						@click="goTarget('https://gitee.com/tao-zhi/nest-admin')">访问码云</el-button>
 					<el-button size="mini" icon="el-icon-s-home" plain
 						@click="goTarget('https://nest-admin.dooring.vip/prod-api/swagger-ui')">访问文档</el-button>
 				</p>
