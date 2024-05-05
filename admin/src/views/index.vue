@@ -4,19 +4,19 @@
 			<el-col :sm="24" :lg="12" style="padding-left: 20px">
 				<h2>nest-admin后台管理框架</h2>
 				<p>
-					一直想做一款后台管理系统，看了很多优秀的开源项目但是发现没有合适自己的。于是利用空闲休息时间开始自己写一套后台系统。如此有了nest-admin管理系统，她可以用于所有的Web应用程序，如网站管理后台，网站会员中心，CMS，CRM，OA等等，当然，您也可以对她进行深度定制，以做出更强系统。所有前端后台代码封装过后十分精简易上手，出错概率低。同时支持移动客户端访问。系统会陆续更新一些实用功能。
+					nest-admin管理系统基于Ruoyi框架使用nestjs实现，她可以用于所有的Web应用程序，如网站管理后台，网站会员中心，CMS，CRM，OA等等，当然，您也可以对她进行深度定制，以做出更强系统。所有前端后台代码封装过后十分精简易上手，出错概率低。系统会陆续更新一些实用功能。
 				</p>
 				<p>
 					<b>当前版本:</b> <span>v{{ version }}</span>
 				</p>
 				<p>
-					<el-tag type="danger">&yen;免费开源</el-tag>
+					<el-tag type="danger">免费开源</el-tag>
 				</p>
 				<p>
-					<el-button type="primary" size="mini" icon="el-icon-cloudy" plain @click="goTarget('https://gitee.com/y_project/RuoYi-Vue')"
-						>访问码云</el-button
-					>
-					<el-button size="mini" icon="el-icon-s-home" plain @click="goTarget('http://ruoyi.vip')">访问主页</el-button>
+					<el-button type="primary" size="mini" icon="el-icon-cloudy" plain
+						@click="goTarget('https://github.com/taozhi1010/nest-admin')">访问Githup</el-button>
+					<el-button size="mini" icon="el-icon-s-home" plain
+						@click="goTarget('https://nest-admin.dooring.vip/prod-api/swagger-ui')">访问文档</el-button>
 				</p>
 			</el-col>
 
@@ -30,12 +30,11 @@
 					<el-col :span="6">
 						<h4>后端技术</h4>
 						<ul>
-							<li>SpringBoot</li>
-							<li>Spring Security</li>
-							<li>JWT</li>
-							<li>MyBatis</li>
-							<li>Druid</li>
-							<li>Fastjson</li>
+							<li>node</li>
+							<li>nestjs</li>
+							<li>typeorm</li>
+							<li>redis</li>
+							<li>mysql</li>
 							<li>...</li>
 						</ul>
 					</el-col>
@@ -62,19 +61,28 @@
 						<span>联系信息</span>
 					</div>
 					<div class="body">
-						<p><i class="el-icon-s-promotion"></i> 官网：<el-link href="http://www.ruoyi.vip" target="_blank">http://www.ruoyi.vip</el-link></p>
-						<p></p>
-						<p><i class="el-icon-chat-dot-round"></i> 微信：<a href="javascript:;">/ *nest-admin</a></p>
-						<p><i class="el-icon-money"></i> 支付宝：<a href="javascript:;" class="支付宝信息">/ *nest-admin</a></p>
+						<p><i class="el-icon-s-promotion"></i> 官网：<el-link href="https://nest-admin.dooring.vip/"
+								target="_blank">https://nest-admin.dooring.vip/</el-link></p>
+						<p><i class="el-icon-chat-dot-round"></i> 微信：<a href="javascript:;">taozhi10100</a></p>
 					</div>
 				</el-card>
 			</el-col>
 			<el-col :xs="24" :sm="24" :md="12" :lg="8">
 				<el-card class="update-log">
 					<div slot="header" class="clearfix">
-						<span>更新日志</span>
+						<span>更多优质产品</span>
 					</div>
-					<el-collapse accordion></el-collapse>
+					<div class="body">
+						<p>
+							<el-link href="https://h5dooring.online" target="_blank">H5-Dooring</el-link>
+						</p>
+						<p>
+							<el-link href="https://v6.dooring.vip/" target="_blank">V6-Dooring</el-link>
+						</p>
+						<p>
+							<el-link href="https://board.dooring.vip/" target="_blank">创意白板</el-link>
+						</p>
+					</div>
 				</el-card>
 			</el-col>
 			<!-- <el-col :xs="24" :sm="24" :md="12" :lg="8">
@@ -117,12 +125,14 @@ export default {
 		font-size: 17.5px;
 		border-left: 5px solid #eee;
 	}
+
 	hr {
 		margin-top: 20px;
 		margin-bottom: 20px;
 		border: 0;
 		border-top: 1px solid #eee;
 	}
+
 	.col-item {
 		margin-bottom: 20px;
 	}
@@ -132,7 +142,11 @@ export default {
 		margin: 0;
 	}
 
-	font-family: 'open sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	font-family: 'open sans',
+	'Helvetica Neue',
+	Helvetica,
+	Arial,
+	sans-serif;
 	font-size: 13px;
 	color: #676a6c;
 	overflow-x: hidden;
@@ -168,6 +182,10 @@ export default {
 			margin-inline-start: 0;
 			margin-inline-end: 0;
 			padding-inline-start: 40px;
+
+			li {
+				line-height: 24px;
+			}
 		}
 	}
 }

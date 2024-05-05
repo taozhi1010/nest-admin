@@ -8,12 +8,14 @@
 				</el-input>
 			</el-form-item>
 			<el-form-item prop="password">
-				<el-input v-model="loginForm.password" type="password" auto-complete="off" placeholder="密码" @keyup.enter.native="handleLogin">
+				<el-input v-model="loginForm.password" type="password" auto-complete="off" placeholder="密码"
+					@keyup.enter.native="handleLogin">
 					<svg-icon slot="prefix" icon-class="password" class="el-input__icon input-icon" />
 				</el-input>
 			</el-form-item>
 			<el-form-item prop="code" v-if="captchaEnabled">
-				<el-input v-model="loginForm.code" auto-complete="off" placeholder="验证码" style="width: 63%" @keyup.enter.native="handleLogin">
+				<el-input v-model="loginForm.code" auto-complete="off" placeholder="验证码" style="width: 63%"
+					@keyup.enter.native="handleLogin">
 					<svg-icon slot="prefix" icon-class="validCode" class="el-input__icon input-icon" />
 				</el-input>
 				<div class="login-code">
@@ -22,7 +24,8 @@
 			</el-form-item>
 			<el-checkbox v-model="loginForm.rememberMe" style="margin: 0px 0px 25px 0px">记住密码</el-checkbox>
 			<el-form-item style="width: 100%">
-				<el-button :loading="loading" size="medium" type="primary" style="width: 100%" @click.native.prevent="handleLogin">
+				<el-button :loading="loading" size="medium" type="primary" style="width: 100%"
+					@click.native.prevent="handleLogin">
 					<span v-if="!loading">登 录</span>
 					<span v-else>登 录 中...</span>
 				</el-button>
@@ -116,7 +119,7 @@ export default {
 					this.$store
 						.dispatch('Login', this.loginForm)
 						.then(() => {
-							this.$router.push({ path: this.redirect || '/' }).catch(() => {});
+							this.$router.push({ path: this.redirect || '/' }).catch(() => { });
 						})
 						.catch(() => {
 							this.loading = false;
@@ -137,9 +140,10 @@ export default {
 	justify-content: center;
 	align-items: center;
 	height: 100%;
-	background-image: url('../assets/images/login-background.jpg');
+	background-image: url('../assets/images/login-background.svg');
 	background-size: cover;
 }
+
 .title {
 	margin: 0px auto 30px auto;
 	text-align: center;
@@ -149,34 +153,42 @@ export default {
 .login-form {
 	border-radius: 6px;
 	background: #ffffff;
+	box-shadow: 0 0 10px #dcdfe6;
 	width: 400px;
 	padding: 25px 25px 5px 25px;
+
 	.el-input {
 		height: 38px;
+
 		input {
 			height: 38px;
 		}
 	}
+
 	.input-icon {
 		height: 39px;
 		width: 14px;
 		margin-left: 2px;
 	}
 }
+
 .login-tip {
 	font-size: 13px;
 	text-align: center;
 	color: #bfbfbf;
 }
+
 .login-code {
 	width: 33%;
 	height: 38px;
 	float: right;
+
 	img {
 		cursor: pointer;
 		vertical-align: middle;
 	}
 }
+
 .el-login-footer {
 	height: 40px;
 	line-height: 40px;
@@ -189,6 +201,7 @@ export default {
 	font-size: 12px;
 	letter-spacing: 1px;
 }
+
 .login-code-img {
 	height: 38px;
 }

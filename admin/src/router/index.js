@@ -177,7 +177,6 @@ Router.prototype.replace = function push(location) {
 };
 
 export default new Router({
-	base: '/nest-admin',
 	mode: 'history', // 去掉url中的#
 	scrollBehavior: () => ({ y: 0 }),
 	routes: constantRoutes,
