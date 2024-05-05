@@ -9,7 +9,7 @@ export default {
 	name: 'RuoYiDoc',
 	data() {
 		return {
-			url: 'http://doc.ruoyi.vip/ruoyi-vue',
+			url: 'https://nest-admin.dooring.vip/prod-api/swagger-ui',
 		};
 	},
 	methods: {

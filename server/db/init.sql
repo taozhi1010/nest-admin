@@ -188,7 +188,7 @@ values (
 insert into
     sys_menu
 values (
-        '4', 'nest-admin官网', '0', '4', 'http://ruoyi.vip', null, '', 0, 0, 'M', '0', '0', '', 'guide', 'admin', sysdate(), '', null, 'nest-admin官网地址', '0'
+        '4', 'nest-admin官网', '0', '4', 'https://nest-admin.dooring.vip', null, '', 0, 0, 'M', '0', '0', '', 'guide', 'admin', sysdate(), '', null, 'nest-admin官网地址', '0'
     );
 -- 二级菜单
 insert into
