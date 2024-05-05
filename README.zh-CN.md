@@ -1,10 +1,10 @@
 Language : [🇺🇸](./README.md)  | 🇨🇳
 
 <p align="center">
-  <a href="https://nestjs.org">
+  <a href="https://nestjs.com">
     <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="./image.png">
-      <img src="./image.png" height="128">
+      <source media="(prefers-color-scheme: dark)" srcset="https://nestjs.com/logo-small-gradient.76616405.svg">
+      <img src="https://nestjs.com/logo-small-gradient.76616405.svg" height="128">
     </picture>
     <h1 align="center">Nest-Admin</h1>
   </a>
