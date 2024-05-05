@@ -21,7 +21,7 @@ An out-of-box UI solution for enterprise applications as a React boilerplate.
 </div>
 
 - Preview: https://nest-admin.dooring.vip/
-- Source Code: https://github.com/taozhi1010/nest-admin
+- Domestic Mirror: https://gitee.com/tao-zhi/nest-admin
 
 ## 1.0 is out! 🎉🎉🎉
 

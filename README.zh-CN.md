@@ -21,7 +21,7 @@ Language : [🇺🇸](./README.md)  | 🇨🇳
 </div>
 
 - 预览: https://nest-admin.dooring.vip/
-- 源码: https://github.com/taozhi1010/nest-admin
+- 国内镜像: https://gitee.com/tao-zhi/nest-admin
 
 ## 1.0 版本! 🎉🎉🎉
 
