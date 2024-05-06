@@ -1,6 +1,7 @@
 <template>
 	<div class="navbar">
-		<hamburger id="hamburger-container" :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
+		<hamburger id="hamburger-container" :is-active="sidebar.opened" class="hamburger-container"
+			@toggleClick="toggleSideBar" />
 
 		<breadcrumb id="breadcrumb-container" class="breadcrumb-container" v-if="!topNav" />
 		<top-nav id="topmenu-container" class="topmenu-container" v-if="topNav" />
@@ -98,10 +99,10 @@ export default {
 			})
 				.then(() => {
 					this.$store.dispatch('LogOut').then(() => {
-						location.href = '/nest-admin/index';
+						location.href = '/index';
 					});
 				})
-				.catch(() => {});
+				.catch(() => { });
 		},
 	},
 };
