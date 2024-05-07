@@ -1,4 +1,4 @@
-import { Repository, In, FindManyOptions } from 'typeorm';
+import { Repository, In, FindManyOptions, Not } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
@@ -6,7 +6,7 @@ import { RedisService } from 'src/module/redis/redis.service';
 
 import { ListToTree, GetNowDate, GenerateUUID, Uniq } from 'src/common/utils/index';
 import { CacheEnum, DelFlagEnum, StatusEnum, DataScopeEnum } from 'src/common/enum/index';
-import { LOGIN_TOKEN_EXPIRESIN } from 'src/common/constant/index';
+import { LOGIN_TOKEN_EXPIRESIN, SYS_USER_TYPE } from 'src/common/constant/index';
 import { ResultData } from 'src/common/utils/result';
 import { CreateUserDto, UpdateUserDto, ListUserDto, ChangeStatusDto, ResetPwdDto } from './dto/index';
 import { RegisterDto, LoginDto, ClientInfoDto } from '../../main/dto/index';
@@ -44,8 +44,7 @@ export class UserService {
    */
   async create(createUserDto: CreateUserDto) {
     const loginDate = GetNowDate();
-    const res = await this.userRepo.save({ ...createUserDto, loginDate });
-
+    const res = await this.userRepo.save({ ...createUserDto, loginDate, userType: SYS_USER_TYPE.CUSTOM });
     const postEntity = this.sysUserWithPostEntityRep.createQueryBuilder('postEntity');
     const postValues = createUserDto.postIds.map((id) => {
       return {
@@ -478,13 +477,13 @@ export class UserService {
    * @returns
    */
   async remove(ids: number[]) {
+    // 忽略系统角色的删除
     const data = await this.userRepo.update(
-      { userId: In(ids) },
+      { userId: In(ids), userType: Not(SYS_USER_TYPE.SYS) },
       {
         delFlag: '1',
       },
     );
-
     return ResultData.ok(data);
   }
 
@@ -574,6 +573,16 @@ export class UserService {
    * @returns
    */
   async changeStatus(changeStatusDto: ChangeStatusDto) {
+    const userData = await this.userRepo.findOne({
+      where: {
+        userId: changeStatusDto.userId,
+      },
+      select: ['userType'],
+    });
+    if (userData.userType === SYS_USER_TYPE.SYS) {
+      return ResultData.fail(500, '系统角色不可停用');
+    }
+
     const res = await this.userRepo.update(
       { userId: changeStatusDto.userId },
       {
