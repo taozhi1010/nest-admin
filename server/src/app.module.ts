@@ -45,7 +45,7 @@ import { UploadModule } from './module/upload/upload.module';
           entities: [`${__dirname}/**/*.entity{.ts,.js}`],
           autoLoadEntities: true,
           keepConnectionAlive: true,
-          timezone: 'Asia/Beijing',
+          timezone: '+08:00',
           ...config.get('db.mysql'),
           // cache: {
           //   type: 'ioredis',
