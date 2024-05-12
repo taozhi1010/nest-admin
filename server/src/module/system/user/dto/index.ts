@@ -115,8 +115,6 @@ export class ListUserDto extends PagingDto {
 
   @ApiProperty({ required: false })
   @IsOptional()
-  @ApiProperty({ required: false })
-  @IsOptional()
   @IsString()
   @Length(0, 30)
   userName?: string;
@@ -146,4 +144,22 @@ export class ResetPwdDto {
   @IsString()
   @Length(5, 20)
   password: string;
+}
+
+export class AllocatedListDto extends PagingDto {
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  @Length(0, 30)
+  userName?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  phonenumber?: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  roleId?: number;
 }

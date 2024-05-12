@@ -10,7 +10,6 @@ import { SysRoleWithMenuEntity } from './entities/role-width-menu.entity';
 import { SysRoleWithDeptEntity } from './entities/role-width-dept.entity';
 import { SysDeptEntity } from '../dept/entities/dept.entity';
 import { MenuService } from '../menu/menu.service';
-
 import { CreateRoleDto, UpdateRoleDto, ListRoleDto, ChangeStatusDto } from './dto/index';
 
 @Injectable()
@@ -49,6 +48,10 @@ export class RoleService {
 
     if (query.roleKey) {
       entity.andWhere(`entity.roleKey LIKE "%${query.roleKey}%"`);
+    }
+
+    if (query.roleId) {
+      entity.andWhere('entity.roleId = :roleId', { roleId: query.roleId });
     }
 
     if (query.status) {

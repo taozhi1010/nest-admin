@@ -8,8 +8,9 @@ import { ListToTree, GetNowDate, GenerateUUID, Uniq } from 'src/common/utils/ind
 import { CacheEnum, DelFlagEnum, StatusEnum, DataScopeEnum } from 'src/common/enum/index';
 import { LOGIN_TOKEN_EXPIRESIN, SYS_USER_TYPE } from 'src/common/constant/index';
 import { ResultData } from 'src/common/utils/result';
-import { CreateUserDto, UpdateUserDto, ListUserDto, ChangeStatusDto, ResetPwdDto } from './dto/index';
+import { CreateUserDto, UpdateUserDto, ListUserDto, ChangeStatusDto, ResetPwdDto, AllocatedListDto } from './dto/index';
 import { RegisterDto, LoginDto, ClientInfoDto } from '../../main/dto/index';
+import { AuthUserCancelDto, AuthUserCancelAllDto, AuthUserSelectAllDto } from '../role/dto/index';
 
 import { UserEntity } from './entities/sys-user.entity';
 import { SysUserWithPostEntity } from './entities/user-width-post.entity';
@@ -599,5 +600,127 @@ export class UserService {
   async deptTree() {
     const tree = await this.deptService.deptTree();
     return ResultData.ok(tree);
+  }
+
+  /**
+   * 获取角色已分配用户
+   * @param query
+   * @returns
+   */
+  async allocatedList(query: AllocatedListDto) {
+    const roleWidthRoleList = await this.sysUserWithRoleEntityRep.find({
+      where: {
+        roleId: query.roleId,
+      },
+      select: ['userId'],
+    });
+    if (roleWidthRoleList.length === 0) {
+      return ResultData.ok({
+        list: [],
+        total: 0,
+      });
+    }
+    const userIds = roleWidthRoleList.map((item) => item.userId);
+    const entity = this.userRepo.createQueryBuilder('user');
+    entity.where('user.delFlag = :delFlag', { delFlag: '0' });
+    entity.andWhere('user.status = :status', { status: '0' });
+    entity.andWhere('user.userId IN (:...userIds)', { userIds: userIds });
+    if (query.userName) {
+      entity.andWhere(`user.userName LIKE "%${query.userName}%"`);
+    }
+
+    if (query.phonenumber) {
+      entity.andWhere(`user.phonenumber LIKE "%${query.phonenumber}%"`);
+    }
+    entity.skip(query.pageSize * (query.pageNum - 1)).take(query.pageSize);
+    //联查部门详情
+    entity.leftJoinAndMapOne('user.dept', SysDeptEntity, 'dept', 'dept.deptId = user.deptId');
+    const [list, total] = await entity.getManyAndCount();
+    return ResultData.ok({
+      list,
+      total,
+    });
+  }
+
+  /**
+   * 获取角色未分配用户
+   * @param query
+   * @returns
+   */
+  async unallocatedList(query: AllocatedListDto) {
+    const roleWidthRoleList = await this.sysUserWithRoleEntityRep.find({
+      where: {
+        roleId: query.roleId,
+      },
+      select: ['userId'],
+    });
+
+    const userIds = roleWidthRoleList.map((item) => item.userId);
+    const entity = this.userRepo.createQueryBuilder('user');
+    entity.where('user.delFlag = :delFlag', { delFlag: '0' });
+    entity.andWhere('user.status = :status', { status: '0' });
+    entity.andWhere({
+      userId: Not(In(userIds)),
+    });
+    if (query.userName) {
+      entity.andWhere(`user.userName LIKE "%${query.userName}%"`);
+    }
+
+    if (query.phonenumber) {
+      entity.andWhere(`user.phonenumber LIKE "%${query.phonenumber}%"`);
+    }
+    entity.skip(query.pageSize * (query.pageNum - 1)).take(query.pageSize);
+    //联查部门详情
+    entity.leftJoinAndMapOne('user.dept', SysDeptEntity, 'dept', 'dept.deptId = user.deptId');
+    const [list, total] = await entity.getManyAndCount();
+    return ResultData.ok({
+      list,
+      total,
+    });
+  }
+
+  /**
+   * 用户解绑角色
+   * @param data
+   * @returns
+   */
+  async authUserCancel(data: AuthUserCancelDto) {
+    await this.sysUserWithRoleEntityRep.delete({
+      userId: data.userId,
+      roleId: data.roleId,
+    });
+    return ResultData.ok();
+  }
+
+  /**
+   * 用户批量解绑角色
+   * @param data
+   * @returns
+   */
+  async authUserCancelAll(data: AuthUserCancelAllDto) {
+    const userIds = data.userIds.split(',');
+    await this.sysUserWithRoleEntityRep.delete({
+      userId: In(userIds),
+      roleId: +data.roleId,
+    });
+    return ResultData.ok();
+  }
+
+  /**
+   * 用户批量绑定角色
+   * @param data
+   * @returns
+   */
+  async authUserSelectAll(data: AuthUserSelectAllDto) {
+    const userIds = data.userIds.split(',');
+    const entitys = userIds.map((userId) => {
+      const sysDeptEntityEntity = new SysUserWithRoleEntity();
+      return Object.assign(sysDeptEntityEntity, {
+        userId: userId,
+        roleId: +data.roleId,
+      });
+    });
+    await this.sysUserWithRoleEntityRep.save(entitys);
+    return ResultData.ok();
   }
 }
