@@ -1,4 +1,4 @@
-Language : 🇺🇸 | [🇨🇳](./README.zh-CN.md) 
+Language : 🇺🇸 | [🇨🇳](./README.zh-CN.md)
 
 <p align="center">
   <a href="https://nestjs.com">
@@ -13,8 +13,6 @@ Language : 🇺🇸 | [🇨🇳](./README.zh-CN.md)
 <div align="center">
 
 An out-of-box UI solution for enterprise applications as a React boilerplate.
-
-
 
 ![](./image.png)
 
@@ -63,6 +61,7 @@ $ cd nest-admin && yarn
 ```
 
 run：
+
 ```shell
 # yarn start:dev
 $ yarn start:dev
@@ -73,8 +72,8 @@ $ yarn start:dev
 Modern browsers.
 
 | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt="Edge" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Edge | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Firefox | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Chrome | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_48x48.png" alt="Safari" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Safari | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/opera/opera_48x48.png" alt="Opera" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Opera |
-| --- | --- | --- | --- | --- |
-| Edge | last 2 versions | last 2 versions | last 2 versions | last 2 versions |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Edge                                                                                                                                                                                                  | last 2 versions                                                                                                                                                                                                   | last 2 versions                                                                                                                                                                                               | last 2 versions                                                                                                                                                                                               | last 2 versions                                                                                                                                                                                           |
 
 ## More Production
 
@@ -85,7 +84,7 @@ Modern browsers.
 | [dooring-electron-lowcode](https://github.com/MrXujiang/dooring-electron-lowcode) | 基于 electron 的 H5-Dooring 编辑器桌面端.                                               |
 | [DooringX](https://github.com/H5-Dooring/dooringx)                                | 快速高效搭建可视化拖拽平台.                                                             |
 | [Mitu](https://github.com/H5-Dooring/mitu-editor)                                 | 一款轻量级且可扩展的图片/图形编辑器解决方案.                                            |
-| [xijs](https://github.com/MrXujiang/xijs) | 一个开箱即用的面向业务的javascript工具库 |
+| [xijs](https://github.com/MrXujiang/xijs)                                         | 一个开箱即用的面向业务的 javascript 工具库                                              |
 
 ## Contributing
 
@@ -98,3 +97,7 @@ Any type of contribution is welcome, here are some examples of how you may contr
 ## Concat
 
 wechat: `taozhi1010`
+
+|                         WeChat communication group                         |
+| :------------------------------------------------------------------------: |
+| <img src="https://fast.dooring.cn/static/nest-admin-wechat.jpg" width=170> |
