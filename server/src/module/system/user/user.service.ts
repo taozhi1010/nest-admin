@@ -464,6 +464,7 @@ export class UserService {
     await this.userRepo.update(
       {
         userId: +body.userId,
+        userType: Not(SYS_USER_TYPE.SYS),
       },
       {
         password: body.password,
