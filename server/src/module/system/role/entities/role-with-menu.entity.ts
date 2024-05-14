@@ -1,5 +1,4 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
-import { ApiProperty } from '@nestjs/swagger';
+import { Entity, PrimaryColumn } from 'typeorm';
 
 //角色和菜单关联表  角色1-N菜单
 @Entity('sys_role_menu', {

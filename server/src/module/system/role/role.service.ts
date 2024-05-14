@@ -6,8 +6,8 @@ import { ListToTree } from 'src/common/utils/index';
 import { DataScopeEnum } from 'src/common/enum/index';
 
 import { SysRoleEntity } from './entities/role.entity';
-import { SysRoleWithMenuEntity } from './entities/role-width-menu.entity';
-import { SysRoleWithDeptEntity } from './entities/role-width-dept.entity';
+import { SysRoleWithMenuEntity } from './entities/role-with-menu.entity';
+import { SysRoleWithDeptEntity } from './entities/role-with-dept.entity';
 import { SysDeptEntity } from '../dept/entities/dept.entity';
 import { MenuService } from '../menu/menu.service';
 import { CreateRoleDto, UpdateRoleDto, ListRoleDto, ChangeStatusDto } from './dto/index';

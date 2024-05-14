@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, FindManyOptions } from 'typeorm';
 import { ResultData } from 'src/common/utils/result';
 import { SysMenuEntity } from './entities/menu.entity';
-import { SysRoleWithMenuEntity } from '../role/entities/role-width-menu.entity';
+import { SysRoleWithMenuEntity } from '../role/entities/role-with-menu.entity';
 import { CreateMenuDto, UpdateMenuDto } from './dto/index';
 import { ListToTree } from 'src/common/utils/index';
 
