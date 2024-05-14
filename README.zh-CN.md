@@ -78,10 +78,13 @@ db:
 ```shell
 # 默认使用 pnpm 包管理器
 $ cd nest-admin && node ./scripts/installAll.js
-
-$ node ./scripts/startAll.js
 ```
 
+run:
+
+```shell
+$ node ./scripts/startAll.js
+```
 ## 浏览器支持
 
 现代浏览器.

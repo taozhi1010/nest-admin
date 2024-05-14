@@ -78,15 +78,12 @@ Install dependencies:
 ```shell
 # Please use pnpm as default package manager
 $ cd nest-admin && node ./scripts/installAll.js
-
-$ node ./scripts/startAll.js
 ```
 
-run：
+run:
 
 ```shell
-# yarn start:dev
-$ yarn start:dev
+$ node ./scripts/startAll.js
 ```
 
 ## Browsers support
