@@ -30,8 +30,8 @@ db:
   mysql:
     host: 'localhost'
     username: 'root'
-    password: ''
-    database: ''
+    password: '123456'
+    database: 'nest_test'
     port: 3306
     charset: 'utf8mb4'
     logger: 'file'
@@ -52,7 +52,7 @@ redis:
 
 # jwt 配置
 jwt:
-  secretkey: ''
+  secretkey: '1231'
   expiresin: '1h'
   refreshExpiresIn: '2h'
 # 权限 白名单配置

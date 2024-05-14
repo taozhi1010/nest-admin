@@ -54,10 +54,32 @@ Nest-Admin 1.0.0
 $ git clone git@github.com:taozhi1010/nest-admin.git
 ```
 
+Before install：
+
+> Configure the 'jwt, db' information in the file 'server/dev.yml'
+
+```.env
+jwt:
+  secretkey: '' # set secret Key here
+  expiresin: '1h'
+  refreshExpiresIn: '2h'
+
+db:
+  mysql:
+    host: 'localhost'
+    # set db information
+    username: 'root'
+    password: ''
+    database: ''
+```
+
 Install dependencies:
 
 ```shell
-$ cd nest-admin && yarn
+# Please use pnpm as default package manager
+$ cd nest-admin && node ./scripts/installAll.js
+
+$ node ./scripts/startAll.js
 ```
 
 run：

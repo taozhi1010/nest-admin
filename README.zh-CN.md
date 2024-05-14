@@ -54,10 +54,32 @@ Nest-Admin 1.0.0
 $ git clone git@github.com:taozhi1010/nest-admin.git
 ```
 
+安装准备：
+
+> 在文件 `server/dev.yml` 配置 `jwt, db` 信息
+
+```.env
+jwt:
+  secretkey: '' # 设置密钥
+  expiresin: '1h'
+  refreshExpiresIn: '2h'
+
+db:
+  mysql:
+    host: 'localhost'
+    # 设置数据库信息
+    username: 'root'
+    password: ''
+    database: ''
+```
+
 安装依赖:
 
 ```shell
-$ cd nest-admin && yarn
+# 默认使用 pnpm 包管理器
+$ cd nest-admin && node ./scripts/installAll.js
+
+$ node ./scripts/startAll.js
 ```
 
 ## 浏览器支持
