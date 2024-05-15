@@ -190,11 +190,7 @@ export class UserService {
       },
     });
 
-    const roleIds = await this.getRoleIds({
-      where: {
-        userId: id,
-      },
-    });
+    const roleIds = await this.getRoleIds([id]);
     const allRoles = await this.roleService.findRoles({
       where: {
         delFlag: '0',
@@ -301,8 +297,7 @@ export class UserService {
 
     const uuid = GenerateUUID();
     const token = this.createToken({ uuid: uuid, userId: userData.userId });
-    // await this.getUserPermissions(userData.userId);
-    const permissions = ['*:*:*'];
+    const permissions = await this.getUserPermissions(userData.userId);
     const deptData = await this.sysDeptEntityRep.findOne({
       where: {
         deptId: userData.deptId,
@@ -312,21 +307,22 @@ export class UserService {
 
     userData['deptName'] = deptData.deptName || '';
     const loginTime = GetNowDate();
-
-    const cacheData = {
+    const roles = userData.roles.map((item) => item.roleKey);
+    const metaData = {
       browser: clientInfo.browser,
       ipaddr: clientInfo.ipaddr,
       loginLocation: clientInfo.loginLocation,
       loginTime: loginTime,
       os: clientInfo.os,
       permissions: permissions,
+      roles: roles,
       token: uuid,
       user: userData,
       userId: userData.userId,
       username: userData.userName,
       deptId: userData.deptId,
     };
-    await this.redisService.storeSet(`${CacheEnum.LOGIN_TOKEN_KEY}${uuid}`, cacheData, LOGIN_TOKEN_EXPIRESIN);
+    await this.redisService.storeSet(`${CacheEnum.LOGIN_TOKEN_KEY}${uuid}`, metaData, LOGIN_TOKEN_EXPIRESIN);
     return ResultData.ok(
       {
         token,
@@ -334,15 +330,21 @@ export class UserService {
       '登录成功',
     );
   }
+
   /**
    * 获取角色Id列表
    * @param userId
    * @returns
    */
-  async getRoleIds(where: FindManyOptions<SysUserWithRoleEntity>) {
-    const roleList = await this.sysUserWithRoleEntityRep.find(where);
+  async getRoleIds(userIds: Array<number>) {
+    const roleList = await this.sysUserWithRoleEntityRep.find({
+      where: {
+        userId: In(userIds),
+      },
+      select: ['roleId'],
+    });
     const roleIds = roleList.map((item) => item.roleId);
-    return roleIds;
+    return Uniq(roleIds);
   }
 
   /**
@@ -351,11 +353,11 @@ export class UserService {
    * @returns
    */
   async getUserPermissions(userId: number) {
-    const roleIds = await this.getRoleIds({
-      where: {
-        userId: userId,
-      },
-    });
+    // 超级管理员
+    if (Number(userId) === 1) {
+      return ['*:*:*'];
+    }
+    const roleIds = await this.getRoleIds([userId]);
     const list = await this.roleService.getPermissionsByRoleIds(roleIds);
     const permissions = Uniq(list.map((item) => item.perms)).filter((item) => item.trim());
     return permissions;
@@ -364,7 +366,7 @@ export class UserService {
   /**
    * 获取用户信息
    */
-  async getUserinfo(userId: number) {
+  async getUserinfo(userId: number): Promise<{ dept: SysDeptEntity; roles: Array<any>; posts: Array<SysPostEntity> } & UserEntity> {
     const entity = this.userRepo.createQueryBuilder('user');
     entity.where({
       userId: userId,
@@ -372,12 +374,7 @@ export class UserService {
     });
     //联查部门详情
     entity.leftJoinAndMapOne('user.dept', SysDeptEntity, 'dept', 'dept.deptId = user.deptId');
-    const roleIds = await this.getRoleIds({
-      where: {
-        userId: userId,
-      },
-      select: ['roleId'],
-    });
+    const roleIds = await this.getRoleIds([userId]);
 
     const roles = await this.roleService.findRoles({
       where: {
@@ -402,7 +399,7 @@ export class UserService {
       },
     });
 
-    const data = await entity.getOne();
+    const data: any = await entity.getOne();
     data['roles'] = roles;
     data['posts'] = posts;
     return data;
@@ -516,11 +513,7 @@ export class UserService {
     });
     user['dept'] = dept;
 
-    const roleIds = await this.getRoleIds({
-      where: {
-        userId: id,
-      },
-    });
+    const roleIds = await this.getRoleIds([id]);
     //TODO flag用来给前端表格标记选中状态，后续优化
     user['roles'] = allRoles.filter((item) => {
       if (roleIds.includes(item.roleId)) {

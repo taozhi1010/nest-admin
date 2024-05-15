@@ -189,7 +189,7 @@ export class RoleService {
     return await this.sysRoleEntityRep.find(where);
   }
   /**
-   * 获取用户权限列表
+   * 根据角色获取用户权限列表
    */
   async getPermissionsByRoleIds(roleIds: number[]) {
     const list = await this.sysRoleWithMenuEntityRep.find({
@@ -200,7 +200,7 @@ export class RoleService {
     });
     const menuIds = list.map((item) => item.menuId);
     const permission = await this.menuService.findMany({
-      where: { delFlag: '0', menuId: In(menuIds) },
+      where: { delFlag: '0', status: '0', menuId: In(menuIds) },
     });
     return permission;
   }
