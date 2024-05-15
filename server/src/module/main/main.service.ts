@@ -1,19 +1,19 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ResultData } from 'src/common/utils/result';
 import { SUCCESS_CODE } from 'src/common/utils/result';
 import { UserService } from '../system/user/user.service';
 import { LoginlogService } from '../monitor/loginlog/loginlog.service';
 import { AxiosService } from 'src/module/axios/axios.service';
+import { ListToTree } from 'src/common/utils/index';
 import { RegisterDto, LoginDto, ClientInfoDto } from './dto/index';
+import { MenuService } from '../system/menu/menu.service';
 @Injectable()
 export class MainService {
   constructor(
-    @Inject(UserService)
     private readonly userService: UserService,
-    @Inject(LoginlogService)
     private readonly loginlogService: LoginlogService,
-    @Inject(AxiosService)
     private readonly axiosService: AxiosService,
+    private readonly menuService: MenuService,
   ) {}
 
   /**
@@ -69,4 +69,12 @@ export class MainService {
    * 登陆记录
    */
   loginRecord() {}
+
+  /**
+   * 获取路由菜单
+   */
+  async getRouters(userId: number) {
+    const menus = await this.menuService.getMenuListByUserId(userId);
+    return ResultData.ok(menus);
+  }
 }

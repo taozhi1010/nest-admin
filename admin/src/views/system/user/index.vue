@@ -389,7 +389,7 @@ export default {
 			this.loading = true;
 			listUser(this.addDateRange(this.queryParams, this.dateRange)).then((response) => {
 				this.userList = response.data.list;
-				this.total = response.total;
+				this.total = response.data.total;
 				this.loading = false;
 			});
 		},
