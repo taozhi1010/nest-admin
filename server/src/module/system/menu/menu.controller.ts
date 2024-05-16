@@ -1,7 +1,7 @@
-import { Controller, Get, Post, Body, Put, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Query, Put, Param, Delete } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBody, ApiConsumes, ApiQuery, ApiBearerAuth } from '@nestjs/swagger';
 import { MenuService } from './menu.service';
-import { CreateMenuDto, UpdateMenuDto } from './dto/index';
+import { CreateMenuDto, UpdateMenuDto, ListDeptDto } from './dto/index';
 @ApiTags('菜单管理')
 @Controller('system/menu')
 export class MenuController {
@@ -23,8 +23,8 @@ export class MenuController {
     summary: '菜单管理-列表',
   })
   @Get('/list')
-  findAll() {
-    return this.menuService.findAll();
+  findAll(@Query() query: ListDeptDto) {
+    return this.menuService.findAll(query);
   }
 
   @ApiOperation({
