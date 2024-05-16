@@ -36,7 +36,7 @@ export class ConfigController {
   })
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.configService.findOne(+id);
+    return this.configService.findOne(id);
   }
 
   @ApiOperation({
@@ -60,7 +60,7 @@ export class ConfigController {
   })
   @Delete(':id')
   remove(@Param('id') ids: string) {
-    const configIds = ids.split(',').map((id) => +id);
+    const configIds = ids.split(',').map((id) => id);
     return this.configService.remove(configIds);
   }
 }

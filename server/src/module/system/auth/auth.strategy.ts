@@ -27,7 +27,7 @@ export class AuthStrategy extends PassportStrategy(Strategy) {
    * 当用户不存在时，说明令牌有误，可能是被伪造了，此时需抛出 UnauthorizedException 未授权异常。
    * 当用户存在时，会将 user 对象添加到 req 中，在之后的 req 对象中，可以使用 req.user 获取当前登录用户。
    */
-  async validate(payload: { uuid: string; userId: number; iat: Date }) {
+  async validate(payload: { uuid: string; userId: string; iat: Date }) {
     const user = await this.redisService.storeGet(`${CacheEnum.LOGIN_TOKEN_KEY}${payload.uuid}`);
     // 如果用用户信息，代表 token 没有过期，没有则 token 已失效
     if (!user) throw new UnauthorizedException('登录已过期，请重新登录');

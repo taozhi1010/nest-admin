@@ -42,7 +42,7 @@ export class DeptService {
     return ResultData.ok(data);
   }
 
-  async findOne(id: number) {
+  async findOne(id: string) {
     const data = await this.sysDeptEntityRep.findOne({
       where: {
         deptId: id,
@@ -138,7 +138,7 @@ export class DeptService {
     return ResultData.ok();
   }
 
-  async remove(id: number) {
+  async remove(id: string) {
     const data = await this.sysDeptEntityRep.update(
       { deptId: id },
       {

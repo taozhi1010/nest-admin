@@ -66,7 +66,7 @@
 		<el-dialog :title="title" :visible.sync="open" width="600px" append-to-body>
 			<el-form ref="form" :model="form" :rules="rules" label-width="80px">
 				<el-row>
-					<el-col :span="24" v-if="form.parentId !== 0">
+					<el-col :span="24" v-if="form.parentId != 0">
 						<el-form-item label="上级部门" prop="parentId">
 							<treeselect v-model="form.parentId" :options="deptOptions" :normalizer="normalizer" placeholder="选择上级部门" />
 						</el-form-item>

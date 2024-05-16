@@ -46,8 +46,8 @@ export class CreateConfigDto {
 }
 
 export class UpdateConfigDto extends CreateConfigDto {
-  @IsNumber()
-  configId: number;
+  @IsString()
+  configId: string;
 }
 
 export class ListConfigDto extends PagingDto {

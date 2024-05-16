@@ -6,10 +6,10 @@ import { BaseEntity } from 'src/common/entities/base';
 })
 export class UserEntity extends BaseEntity {
   @PrimaryGeneratedColumn({ type: 'bigint', name: 'user_id', comment: '用户ID' })
-  public userId: number;
+  public userId: string;
 
-  @Column({ type: 'int', name: 'dept_id', default: null, comment: '部门ID' })
-  public deptId: number;
+  @Column({ type: 'bigint', name: 'dept_id', default: null, comment: '部门ID' })
+  public deptId: string;
 
   @Column({ type: 'varchar', name: 'user_name', length: 30, nullable: false, comment: '用户账号' })
   public userName: string;
@@ -25,7 +25,7 @@ export class UserEntity extends BaseEntity {
   public email: string;
 
   @Column({ type: 'varchar', name: 'phonenumber', default: '', length: 11, comment: '手机号码' })
-  public phonenumber: string; 
+  public phonenumber: string;
 
   //0男 1女 2未知
   @Column({ type: 'char', name: 'sex', default: '0', length: 1, comment: '性别' })
@@ -35,7 +35,7 @@ export class UserEntity extends BaseEntity {
   public avatar: string;
 
   @Exclude({ toPlainOnly: true }) // 输出屏蔽密码
-  @Column({ type: 'varchar', length: 200, nullable: false, comment: '用户登录密码' })
+  @Column({ type: 'varchar', length: 200, nullable: false, default: '', comment: '用户登录密码' })
   public password: string;
 
   @Column({ type: 'varchar', name: 'login_ip', length: 128, default: '', comment: '最后登录IP' })

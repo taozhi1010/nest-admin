@@ -5,9 +5,9 @@ import { Entity, PrimaryColumn } from 'typeorm';
   comment: '用户和角色关联表',
 })
 export class SysUserWithRoleEntity {
-  @PrimaryColumn({ type: 'int', name: 'user_id', comment: '用户ID' })
-  public userId: number;
+  @PrimaryColumn({ type: 'bigint', name: 'user_id', comment: '用户ID' })
+  public userId: string;
 
-  @PrimaryColumn({ type: 'int', name: 'role_id', comment: '角色ID' })
-  public roleId: number;
+  @PrimaryColumn({ type: 'bigint', name: 'role_id', comment: '角色ID' })
+  public roleId: string;
 }

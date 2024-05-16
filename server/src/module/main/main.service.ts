@@ -73,7 +73,7 @@ export class MainService {
   /**
    * 获取路由菜单
    */
-  async getRouters(userId: number) {
+  async getRouters(userId: string) {
     const menus = await this.menuService.getMenuListByUserId(userId);
     return ResultData.ok(menus);
   }

@@ -99,6 +99,6 @@ export class MainController {
   @Get('/getRouters')
   getRouters(@Request() req) {
     const userId: string = req.user.user.userId;
-    return this.mainService.getRouters(+userId);
+    return this.mainService.getRouters(userId);
   }
 }

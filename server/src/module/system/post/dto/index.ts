@@ -40,7 +40,7 @@ export class UpdatePostDto extends CreatePostDto {
     required: true,
   })
   @IsNumberString()
-  postId: number;
+  postId: string;
 }
 
 export class ListPostDto extends PagingDto {

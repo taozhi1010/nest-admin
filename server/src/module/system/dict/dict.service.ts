@@ -21,7 +21,7 @@ export class DictService {
     return ResultData.ok();
   }
 
-  async deleteType(ids: number[]) {
+  async deleteType(ids: string[]) {
     await this.sysDictTypeEntityRep.update({ dictId: In(ids) }, { delFlag: '1' });
     return ResultData.ok();
   }
@@ -60,7 +60,7 @@ export class DictService {
     });
   }
 
-  async findOneType(id: number) {
+  async findOneType(id: string) {
     const data = await this.sysDictTypeEntityRep.findOne({
       where: {
         dictId: id,
@@ -85,7 +85,7 @@ export class DictService {
     return ResultData.ok();
   }
 
-  async deleteDictData(id: number) {
+  async deleteDictData(id: string) {
     await this.sysDictDataEntityRep.update({ dictCode: id }, { delFlag: '1' });
     return ResultData.ok();
   }
@@ -155,7 +155,7 @@ export class DictService {
     return ResultData.ok(data);
   }
 
-  async findOneDictData(dictCode: number) {
+  async findOneDictData(dictCode: string) {
     const data = await this.sysDictDataEntityRep.findOne({
       where: {
         dictCode: dictCode,
