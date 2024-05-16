@@ -42,10 +42,10 @@ export class PostService {
     });
   }
 
-  async findOne(id: number) {
+  async findOne(postId: string) {
     const res = await this.sysPostEntityRep.findOne({
       where: {
-        postId: id,
+        postId: postId,
         delFlag: '0',
       },
     });
@@ -57,9 +57,9 @@ export class PostService {
     return ResultData.ok(res);
   }
 
-  async remove(ids: number[]) {
+  async remove(postIds: string[]) {
     const data = await this.sysPostEntityRep.update(
-      { postId: In(ids) },
+      { postId: In(postIds) },
       {
         delFlag: '1',
       },

@@ -48,7 +48,7 @@ export class ConfigService {
     });
   }
 
-  async findOne(id: number) {
+  async findOne(id: string) {
     const data = await this.sysConfigEntityRep.findOne({
       where: {
         configId: id,
@@ -92,9 +92,9 @@ export class ConfigService {
     return ResultData.ok();
   }
 
-  async remove(ids: number[]) {
+  async remove(configIds: string[]) {
     const data = await this.sysConfigEntityRep.update(
-      { configId: In(ids) },
+      { configId: In(configIds) },
       {
         delFlag: '1',
       },

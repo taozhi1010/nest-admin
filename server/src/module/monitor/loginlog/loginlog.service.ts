@@ -64,7 +64,7 @@ export class LoginlogService {
    * 删除日志
    * @returns
    */
-  async remove(ids: number[]) {
+  async remove(ids: string[]) {
     const data = await this.monitorLoginlogEntityRep.update(
       { infoId: In(ids) },
       {

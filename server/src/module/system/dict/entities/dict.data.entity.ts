@@ -8,8 +8,8 @@ import { BaseEntity } from 'src/common/entities/base';
 })
 export class SysDictDataEntity extends BaseEntity {
   @ApiProperty({ type: String, description: '字典主键' })
-  @PrimaryGeneratedColumn({ name: 'dict_code', comment: '字典主键' })
-  public dictCode: number;
+  @PrimaryGeneratedColumn({ type: 'bigint', name: 'dict_code', comment: '字典主键' })
+  public dictCode: string;
 
   @Column({ type: 'int', name: 'dict_sort', default: 0, comment: '字典排序' })
   public dictSort: number;

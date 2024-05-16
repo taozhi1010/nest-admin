@@ -40,7 +40,7 @@ export class MenuController {
   })
   @Get('/roleMenuTreeselect/:id')
   roleMenuTreeselect(@Param('id') id: string) {
-    return this.menuService.roleMenuTreeselect(+id);
+    return this.menuService.roleMenuTreeselect(id);
   }
 
   @ApiOperation({
@@ -48,7 +48,7 @@ export class MenuController {
   })
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.menuService.findOne(+id);
+    return this.menuService.findOne(id);
   }
 
   @ApiOperation({
@@ -68,6 +68,6 @@ export class MenuController {
   })
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.menuService.remove(+id);
+    return this.menuService.remove(id);
   }
 }

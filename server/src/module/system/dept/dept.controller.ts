@@ -34,7 +34,7 @@ export class DeptController {
   })
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.deptService.findOne(+id);
+    return this.deptService.findOne(id);
   }
 
   @ApiOperation({
@@ -62,6 +62,6 @@ export class DeptController {
   })
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.deptService.remove(+id);
+    return this.deptService.remove(id);
   }
 }

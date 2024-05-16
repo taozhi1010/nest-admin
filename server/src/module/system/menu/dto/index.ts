@@ -26,8 +26,8 @@ export class CreateMenuDto {
 
   @ApiProperty({ required: true })
   @IsOptional()
-  @IsNumber()
-  parentId: number;
+  @IsString()
+  parentId: string;
 
   @ApiProperty({ required: true })
   @IsString()
@@ -87,6 +87,6 @@ export class UpdateMenuDto extends CreateMenuDto {
   @ApiProperty({
     required: false,
   })
-  @IsNumber()
-  menuId: number;
+  @IsString()
+  menuId: string;
 }

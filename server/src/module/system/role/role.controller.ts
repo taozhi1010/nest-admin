@@ -42,7 +42,7 @@ export class RoleController {
   })
   @Get('/deptTree/:id')
   deptTree(@Param('id') id: string) {
-    return this.roleService.deptTree(+id);
+    return this.roleService.deptTree(id);
   }
 
   @ApiOperation({
@@ -50,7 +50,7 @@ export class RoleController {
   })
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.roleService.findOne(+id);
+    return this.roleService.findOne(id);
   }
 
   @ApiOperation({
@@ -91,7 +91,7 @@ export class RoleController {
 
   @Delete(':id')
   remove(@Param('id') ids: string) {
-    const menuIds = ids.split(',').map((id) => +id);
+    const menuIds = ids.split(',').map((id) => id);
     return this.roleService.remove(menuIds);
   }
 

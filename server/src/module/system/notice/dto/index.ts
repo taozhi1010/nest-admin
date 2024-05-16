@@ -38,8 +38,8 @@ export class CreateNoticeDto {
 }
 
 export class UpdateNoticeDto extends CreateNoticeDto {
-  @IsNumber()
-  noticeId: number;
+  @IsString()
+  noticeId: string;
 }
 
 export class ListNoticeDto extends PagingDto {

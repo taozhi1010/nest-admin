@@ -32,7 +32,7 @@ export class LoginlogController {
   })
   @Delete(':id')
   remove(@Param('id') ids: string) {
-    const infoIds = ids.split(',').map((id) => +id);
+    const infoIds = ids.split(',').map((id) => id);
     return this.loginlogService.remove(infoIds);
   }
 }

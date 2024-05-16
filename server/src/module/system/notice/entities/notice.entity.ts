@@ -5,8 +5,8 @@ import { BaseEntity } from 'src/common/entities/base';
   comment: '通知公告表',
 })
 export class SysNoticeEntity extends BaseEntity {
-  @PrimaryGeneratedColumn({ type: 'int', name: 'notice_id', comment: '公告ID' })
-  public noticeId: number;
+  @PrimaryGeneratedColumn({ type: 'bigint', name: 'notice_id', comment: '公告ID' })
+  public noticeId: string;
 
   @Column({ type: 'varchar', name: 'notice_title', length: 50, default: '', comment: '公告标题' })
   public noticeTitle: string;

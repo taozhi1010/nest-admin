@@ -50,7 +50,7 @@ export class UserService {
     const postValues = createUserDto.postIds.map((id) => {
       return {
         userId: res.userId,
-        postId: +id,
+        postId: id,
       };
     });
     postEntity.insert().values(postValues).execute();
@@ -59,7 +59,7 @@ export class UserService {
     const roleValues = createUserDto.roleIds.map((id) => {
       return {
         userId: res.userId,
-        roleId: +id,
+        roleId: id,
       };
     });
     roleEntity.insert().values(roleValues).execute();
@@ -162,7 +162,7 @@ export class UserService {
     });
   }
 
-  async findOne(id: number) {
+  async findOne(id: string) {
     const data = await this.userRepo.findOne({
       where: {
         delFlag: '0',
@@ -232,7 +232,7 @@ export class UserService {
       const postValues = updateUserDto.postIds.map((id) => {
         return {
           userId: updateUserDto.userId,
-          postId: +id,
+          postId: id,
         };
       });
       postEntity.insert().values(postValues).execute();
@@ -255,7 +255,7 @@ export class UserService {
       const roleValues = updateUserDto.roleIds.map((id) => {
         return {
           userId: updateUserDto.userId,
-          roleId: +id,
+          roleId: id,
         };
       });
       roleEntity.insert().values(roleValues).execute();
@@ -336,7 +336,7 @@ export class UserService {
    * @param userId
    * @returns
    */
-  async getRoleIds(userIds: Array<number>) {
+  async getRoleIds(userIds: Array<string>) {
     const roleList = await this.sysUserWithRoleEntityRep.find({
       where: {
         userId: In(userIds),
@@ -352,9 +352,9 @@ export class UserService {
    * @param userId
    * @returns
    */
-  async getUserPermissions(userId: number) {
+  async getUserPermissions(userId: string) {
     // 超级管理员
-    if (Number(userId) === 1) {
+    if (userId === '1') {
       return ['*:*:*'];
     }
     const roleIds = await this.getRoleIds([userId]);
@@ -366,7 +366,7 @@ export class UserService {
   /**
    * 获取用户信息
    */
-  async getUserinfo(userId: number): Promise<{ dept: SysDeptEntity; roles: Array<any>; posts: Array<SysPostEntity> } & UserEntity> {
+  async getUserinfo(userId: string): Promise<{ dept: SysDeptEntity; roles: Array<any>; posts: Array<SysPostEntity> } & UserEntity> {
     const entity = this.userRepo.createQueryBuilder('user');
     entity.where({
       userId: userId,
@@ -431,7 +431,7 @@ export class UserService {
    * @param payload 数据声明
    * @return 令牌
    */
-  createToken(payload: { uuid: string; userId: number }): string {
+  createToken(payload: { uuid: string; userId: string }): string {
     const accessToken = this.jwtService.sign(payload);
     return accessToken;
   }
@@ -460,7 +460,7 @@ export class UserService {
   async resetPwd(body: ResetPwdDto) {
     await this.userRepo.update(
       {
-        userId: +body.userId,
+        userId: body.userId,
         userType: Not(SYS_USER_TYPE.SYS),
       },
       {
@@ -475,7 +475,7 @@ export class UserService {
    * @param ids
    * @returns
    */
-  async remove(ids: number[]) {
+  async remove(ids: string[]) {
     // 忽略系统角色的删除
     const data = await this.userRepo.update(
       { userId: In(ids), userType: Not(SYS_USER_TYPE.SYS) },
@@ -491,7 +491,7 @@ export class UserService {
    * @param id
    * @returns
    */
-  async authRole(id: number) {
+  async authRole(id: string) {
     const allRoles = await this.roleService.findRoles({
       where: {
         delFlag: '0',
@@ -554,7 +554,7 @@ export class UserService {
       const roleValues = roleIds.map((id) => {
         return {
           userId: query.userId,
-          roleId: +id,
+          roleId: id,
         };
       });
       roleEntity.insert().values(roleValues).execute();
@@ -695,7 +695,7 @@ export class UserService {
     const userIds = data.userIds.split(',');
     await this.sysUserWithRoleEntityRep.delete({
       userId: In(userIds),
-      roleId: +data.roleId,
+      roleId: data.roleId,
     });
     return ResultData.ok();
   }
