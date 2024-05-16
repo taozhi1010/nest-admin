@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, SelectQueryBuilder } from 'typeorm';
+import { Like, Repository, SelectQueryBuilder } from 'typeorm';
 import { ResultData } from 'src/common/utils/result';
 import { SysDeptEntity } from './entities/dept.entity';
-import { CreateDeptDto, UpdateDeptDto } from './dto/index';
+import { CreateDeptDto, UpdateDeptDto, ListDeptDto } from './dto/index';
 import { ListToTree } from 'src/common/utils/index';
 import { DataScopeEnum } from 'src/common/enum/index';
 
@@ -33,13 +33,18 @@ export class DeptService {
     return ResultData.ok();
   }
 
-  async findAll() {
-    const data = await this.sysDeptEntityRep.find({
-      where: {
-        delFlag: '0',
-      },
-    });
-    return ResultData.ok(data);
+  async findAll(query: ListDeptDto) {
+    const entity = this.sysDeptEntityRep.createQueryBuilder('entity');
+    entity.where('entity.delFlag = :delFlag', { delFlag: '0' });
+
+    if (query.deptName) {
+      entity.andWhere(`entity.deptName LIKE "%${query.deptName}%"`);
+    }
+    if (query.status) {
+      entity.where('entity.status = :status', { status: query.status });
+    }
+    const list = await entity.getMany();
+    return ResultData.ok(list);
   }
 
   async findOne(id: string) {
@@ -120,7 +125,7 @@ export class DeptService {
   }
 
   async update(updateDeptDto: UpdateDeptDto) {
-    if (updateDeptDto.parentId) {
+    if (updateDeptDto.parentId && updateDeptDto.parentId !== '0') {
       const parent = await this.sysDeptEntityRep.findOne({
         where: {
           deptId: updateDeptDto.parentId,

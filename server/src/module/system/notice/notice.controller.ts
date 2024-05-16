@@ -36,7 +36,7 @@ export class NoticeController {
   })
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.noticeService.findOne(id);
+    return this.noticeService.findOne(+id);
   }
 
   @ApiOperation({
@@ -52,7 +52,7 @@ export class NoticeController {
   })
   @Delete(':id')
   remove(@Param('id') ids: string) {
-    const noticeIds = ids.split(',').map((id) => id);
+    const noticeIds = ids.split(',').map((id) => +id);
     return this.noticeService.remove(noticeIds);
   }
 }

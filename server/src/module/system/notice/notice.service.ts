@@ -45,7 +45,7 @@ export class NoticeService {
     });
   }
 
-  async findOne(noticeId: string) {
+  async findOne(noticeId: number) {
     const data = await this.sysNoticeEntityRep.findOne({
       where: {
         noticeId: noticeId,
@@ -64,7 +64,7 @@ export class NoticeService {
     return ResultData.ok();
   }
 
-  async remove(noticeIds: string[]) {
+  async remove(noticeIds: number[]) {
     const data = await this.sysNoticeEntityRep.update(
       { noticeId: In(noticeIds) },
       {

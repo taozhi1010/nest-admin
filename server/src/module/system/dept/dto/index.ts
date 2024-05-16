@@ -1,4 +1,4 @@
-import { IsString, IsJSON, IsEnum, IsPhoneNumber, Min, Length, IsOptional, IsBoolean, IsNumber } from 'class-validator';
+import { IsString, IsJSON, IsEnum, IsPhoneNumber, Min, Length, IsOptional, IsBoolean, IsNumber, IsEmail } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export enum StatusEnum {
@@ -39,8 +39,15 @@ export class CreateDeptDto {
   @IsOptional()
   @IsString()
   @Length(0, 11)
-  @IsPhoneNumber('CN')
   phone?: string;
+
+  @ApiProperty({
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  @IsEmail()
+  email?: string;
 
   @ApiProperty({
     required: false,
@@ -57,4 +64,21 @@ export class UpdateDeptDto extends CreateDeptDto {
   })
   @IsString()
   deptId: string;
+}
+
+export class ListDeptDto {
+  @ApiProperty({
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  deptName?: string;
+
+  @ApiProperty({
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  @IsEnum(StatusEnum)
+  status?: string;
 }
