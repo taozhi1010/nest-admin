@@ -43,8 +43,8 @@ export class DeptService {
     if (query.status) {
       entity.where('entity.status = :status', { status: query.status });
     }
-    const list = await entity.getMany();
-    return ResultData.ok(list);
+    const res = await entity.getMany();
+    return ResultData.ok(res);
   }
 
   async findOne(id: string) {

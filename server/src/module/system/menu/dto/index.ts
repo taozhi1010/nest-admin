@@ -90,3 +90,20 @@ export class UpdateMenuDto extends CreateMenuDto {
   @IsString()
   menuId: string;
 }
+
+export class ListDeptDto {
+  @ApiProperty({
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  menuName?: string;
+
+  @ApiProperty({
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  @IsEnum(StatusEnum)
+  status?: string;
+}
