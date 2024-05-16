@@ -1,7 +1,7 @@
-import { Controller, Get, Post, Body, Put, Param, Delete, HttpCode } from '@nestjs/common';
+import { Controller, Get, Post, Body, Put, Param, Query, Delete, HttpCode } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBody, ApiConsumes, ApiQuery, ApiBearerAuth } from '@nestjs/swagger';
 import { DeptService } from './dept.service';
-import { CreateDeptDto, UpdateDeptDto } from './dto/index';
+import { CreateDeptDto, UpdateDeptDto, ListDeptDto } from './dto/index';
 
 @ApiTags('部门管理')
 @Controller('system/dept')
@@ -25,8 +25,8 @@ export class DeptController {
     summary: '部门管理-列表',
   })
   @Get('/list')
-  findAll() {
-    return this.deptService.findAll();
+  findAll(@Query() query: ListDeptDto) {
+    return this.deptService.findAll(query);
   }
 
   @ApiOperation({
