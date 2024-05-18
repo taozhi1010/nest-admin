@@ -322,7 +322,7 @@ export class UserService {
       username: userData.userName,
       deptId: userData.deptId,
     };
-    await this.redisService.storeSet(`${CacheEnum.LOGIN_TOKEN_KEY}${uuid}`, metaData, LOGIN_TOKEN_EXPIRESIN);
+    await this.redisService.set(`${CacheEnum.LOGIN_TOKEN_KEY}${uuid}`, metaData, LOGIN_TOKEN_EXPIRESIN);
     return ResultData.ok(
       {
         token,

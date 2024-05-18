@@ -1,6 +1,7 @@
 import { Module, Global } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { RedisClientOptions } from '@liaoliaots/nestjs-redis';
 import configuration from './config/index';
 import { HttpModule } from '@nestjs/axios';
 import { APP_GUARD } from '@nestjs/core';
@@ -47,15 +48,25 @@ import { UploadModule } from './module/upload/upload.module';
           keepConnectionAlive: true,
           timezone: '+08:00',
           ...config.get('db.mysql'),
-          // cache: {
-          //   type: 'ioredis',
-          //   ...config.get('redis'),
-          //   alwaysEnabled: true,
-          //   duration: 3 * 1000, // 缓存3s
-          // },
         } as TypeOrmModuleOptions;
       },
     }),
+    // redis
+    RedisModule.forRootAsync(
+      {
+        imports: [ConfigModule],
+        inject: [ConfigService],
+        useFactory: (config: ConfigService) => {
+          return {
+            closeClient: true,
+            readyLog: true,
+            errorLog: true,
+            config: config.get<RedisClientOptions>('redis'),
+          };
+        },
+      },
+      true,
+    ),
     HttpModule,
     AuthModule,
     UserModule,
@@ -68,7 +79,6 @@ import { UploadModule } from './module/upload/upload.module';
     SysConfigModule,
     NoticeModule,
     MainModule,
-    RedisModule,
     CacheModule,
     LoginlogModule,
     OperlogModule,
