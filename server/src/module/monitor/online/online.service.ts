@@ -13,13 +13,13 @@ export class OnlineService {
    * @returns
    */
   async findAll(query) {
-    const kes = await this.redisService.storeKeys(`${CacheEnum.LOGIN_TOKEN_KEY}*`);
-    const data = await this.redisService.storeMGet(kes);
+    const kes = await this.redisService.keys(`${CacheEnum.LOGIN_TOKEN_KEY}*`);
+    const data = await this.redisService.mget(kes);
     const list = Paginate(
       {
         list: data,
-        pageSize: 10,
-        pageNum: 1,
+        pageSize: query.pageSize,
+        pageNum: query.pageNum,
       },
       query,
     ).map((item) => {
@@ -41,7 +41,7 @@ export class OnlineService {
   }
 
   async delete(token: string) {
-    await this.redisService.storeDel(`${CacheEnum.LOGIN_TOKEN_KEY}${token}`);
+    await this.redisService.del(`${CacheEnum.LOGIN_TOKEN_KEY}${token}`);
     return ResultData.ok();
   }
 }

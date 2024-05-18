@@ -65,7 +65,7 @@ export class ConfigService {
    */
   async findOneByconfigKey(configKey: string) {
     // 尝试从Redis缓存中获取配置信息
-    const cacheData = await this.redisService.storeGet(`${CacheEnum.SYS_CONFIG_KEY}${configKey}`);
+    const cacheData = await this.redisService.get(`${CacheEnum.SYS_CONFIG_KEY}${configKey}`);
     if (cacheData) {
       // 如果缓存中存在配置信息，则直接返回
       return ResultData.ok(cacheData);
@@ -78,7 +78,7 @@ export class ConfigService {
       },
     });
     // 将从数据库中查询到的配置信息存入Redis缓存
-    await this.redisService.storeSet(`${CacheEnum.SYS_CONFIG_KEY}${configKey}`, data);
+    await this.redisService.set(`${CacheEnum.SYS_CONFIG_KEY}${configKey}`, data);
     return ResultData.ok(data);
   }
 

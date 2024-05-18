@@ -135,7 +135,7 @@ export class DictService {
     // });
 
     // 尝试从Redis缓存中获取字典数据
-    let data = await this.redisService.storeGet(`${CacheEnum.SYS_DICT_KEY}${dictType}`);
+    let data = await this.redisService.get(`${CacheEnum.SYS_DICT_KEY}${dictType}`);
 
     if (data) {
       // 如果缓存中存在，则直接返回缓存数据
@@ -151,7 +151,7 @@ export class DictService {
     });
 
     // 将查询到的数据存入Redis缓存，并返回数据
-    await this.redisService.storeSet(`${CacheEnum.SYS_DICT_KEY}${dictType}`, data);
+    await this.redisService.set(`${CacheEnum.SYS_DICT_KEY}${dictType}`, data);
     return ResultData.ok(data);
   }
 

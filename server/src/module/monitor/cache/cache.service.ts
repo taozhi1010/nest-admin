@@ -58,30 +58,30 @@ export class CacheService {
   }
 
   async getKeys(id: string) {
-    const data = await this.redisService.storeKeys(id + '*');
+    const data = await this.redisService.keys(id + '*');
     return ResultData.ok(data);
   }
 
   async clearCacheKey(id: string) {
-    const data = await this.redisService.storeDel(id);
+    const data = await this.redisService.del(id);
     return ResultData.ok(data);
   }
 
   async clearCacheName(id: string) {
-    const keys = await this.redisService.storeKeys(id + '*');
-    const data = await this.redisService.storeMDel(keys);
+    const keys = await this.redisService.keys(id + '*');
+    const data = await this.redisService.del(keys);
     return ResultData.ok(data);
   }
 
   async clearCacheAll() {
-    const data = await this.redisService.storeReset();
+    const data = await this.redisService.reset();
     return ResultData.ok(data);
   }
 
   async getValue(params) {
     const list = DeepClone(this.caches);
     const data = list.find((item) => item.cacheName === params.cacheName);
-    const cacheValue = await this.redisService.storeGet(params.cacheKey);
+    const cacheValue = await this.redisService.get(params.cacheKey);
     data.cacheValue = JSON.stringify(cacheValue);
     data.cacheKey = params.cacheKey;
     return ResultData.ok(data);

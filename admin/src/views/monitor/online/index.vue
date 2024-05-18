@@ -12,7 +12,7 @@
 				<el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
 			</el-form-item>
 		</el-form>
-		<el-table v-loading="loading" :data="list.slice((pageNum - 1) * pageSize, pageNum * pageSize)" style="width: 100%">
+		<el-table v-loading="loading" :data="list" style="width: 100%">
 			<el-table-column label="序号" type="index" align="center">
 				<template slot-scope="scope">
 					<span>{{ (pageNum - 1) * pageSize + scope.$index + 1 }}</span>
@@ -39,7 +39,7 @@
 			</el-table-column>
 		</el-table>
 
-		<pagination v-show="total > 0" :total="total" :page.sync="pageNum" :limit.sync="pageSize" />
+		<pagination v-show="total > 0" :total="total" :page.sync="pageNum" :limit.sync="pageSize" @pagination="getList" />
 	</div>
 </template>
 
@@ -72,7 +72,11 @@ export default {
 		/** 查询登录日志列表 */
 		getList() {
 			this.loading = true;
-			list(this.queryParams).then((response) => {
+			list({
+				...this.queryParams,
+				pageNum: this.pageNum,
+				pageSize: this.pageSize,
+			}).then((response) => {
 				this.list = response.data.list;
 				this.total = response.data.total;
 				this.loading = false;
@@ -80,7 +84,6 @@ export default {
 		},
 		/** 搜索按钮操作 */
 		handleQuery() {
-			this.pageNum = 1;
 			this.getList();
 		},
 		/** 重置按钮操作 */
