@@ -380,7 +380,7 @@ export default {
 		this.getList();
 		this.getDeptTree();
 		this.getConfigKey('sys.user.initPassword').then((response) => {
-			this.initPassword = response.data.configValue;
+			this.initPassword = response.data;
 		});
 	},
 	methods: {
