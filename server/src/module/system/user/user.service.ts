@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { RedisService } from 'src/module/redis/redis.service';
+import * as bcrypt from 'bcrypt';
 
 import { ListToTree, GetNowDate, GenerateUUID, Uniq } from 'src/common/utils/index';
 import { CacheEnum, DelFlagEnum, StatusEnum, DataScopeEnum } from 'src/common/enum/index';
@@ -45,6 +46,11 @@ export class UserService {
    */
   async create(createUserDto: CreateUserDto) {
     const loginDate = GetNowDate();
+
+    if (createUserDto.password) {
+      createUserDto.password = await bcrypt.hashSync(createUserDto.password, bcrypt.genSaltSync(10));
+    }
+
     const res = await this.userRepo.save({ ...createUserDto, loginDate, userType: SYS_USER_TYPE.CUSTOM });
     const postEntity = this.sysUserWithPostEntityRep.createQueryBuilder('postEntity');
     const postValues = createUserDto.postIds.map((id) => {
@@ -266,6 +272,7 @@ export class UserService {
     delete (updateUserDto as any).roles;
     delete (updateUserDto as any).roleIds;
     delete (updateUserDto as any).postIds;
+
     //更新用户信息
     const data = await this.userRepo.update({ userId: updateUserDto.userId }, updateUserDto);
     return ResultData.ok(data);
@@ -278,11 +285,11 @@ export class UserService {
     const data = await this.userRepo.findOne({
       where: {
         userName: user.username,
-        password: user.password,
       },
-      select: ['userId'],
+      select: ['userId', 'password'],
     });
-    if (!data) {
+
+    if (!(data && bcrypt.compareSync(user.password, data.password))) {
       return ResultData.fail(500, `帐号或密码错误`);
     }
 
@@ -467,10 +474,15 @@ export class UserService {
    * @returns
    */
   async resetPwd(body: ResetPwdDto) {
+    if (body.userId === 1) {
+      return ResultData.fail(500, '系统用户不能重置密码');
+    }
+    if (body.password) {
+      body.password = await bcrypt.hashSync(body.password, bcrypt.genSaltSync(10));
+    }
     await this.userRepo.update(
       {
         userId: body.userId,
-        userType: Not(SYS_USER_TYPE.SYS),
       },
       {
         password: body.password,
