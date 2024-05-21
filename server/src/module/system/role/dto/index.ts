@@ -27,11 +27,11 @@ export class CreateRoleDto {
 
   @IsOptional()
   @IsArray()
-  menuIds?: Array<string>;
+  menuIds?: Array<number>;
 
   @IsOptional()
   @IsArray()
-  deptIds?: Array<string>;
+  deptIds?: Array<number>;
 
   @ApiProperty({ required: true })
   @IsOptional()
@@ -72,16 +72,16 @@ export class UpdateRoleDto extends CreateRoleDto {
   @ApiProperty({
     required: true,
   })
-  @IsNumberString()
-  roleId: string;
+  @IsNumber()
+  roleId: number;
 }
 
 export class ChangeStatusDto {
   @ApiProperty({
     required: true,
   })
-  @IsNumberString()
-  roleId: string;
+  @IsNumber()
+  roleId: number;
 
   @ApiProperty({ required: true })
   @IsString()
@@ -115,22 +115,22 @@ export class AuthUserCancelDto {
   @ApiProperty({
     required: true,
   })
-  @IsNumberString()
-  roleId: string;
+  @IsNumber()
+  roleId: number;
 
   @ApiProperty({
     required: true,
   })
-  @IsNumberString()
-  userId: string;
+  @IsNumber()
+  userId: number;
 }
 
 export class AuthUserCancelAllDto {
   @ApiProperty({
     required: true,
   })
-  @IsNumberString()
-  roleId: string;
+  @IsNumber()
+  roleId: number;
 
   @ApiProperty({
     required: true,
@@ -143,8 +143,8 @@ export class AuthUserSelectAllDto {
   @ApiProperty({
     required: true,
   })
-  @IsNumberString()
-  roleId: string;
+  @IsNumber()
+  roleId: number;
 
   @ApiProperty({
     required: true,

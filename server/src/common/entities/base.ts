@@ -1,4 +1,5 @@
 import { Column, CreateDateColumn, Entity, UpdateDateColumn } from 'typeorm';
+
 import { ApiProperty } from '@nestjs/swagger';
 //基础实体信息
 @Entity()
@@ -18,7 +19,7 @@ export abstract class BaseEntity {
   public createBy: string;
 
   @ApiProperty({ type: Date, description: '创建时间' })
-  @CreateDateColumn({ type: 'timestamp', name: 'create_time', comment: '创建时间' })
+  @CreateDateColumn({ type: 'datetime', update: false, name: 'create_time', default: null, comment: '创建时间' })
   public createTime: Date;
 
   @ApiProperty({ type: String, description: '更新者' })
@@ -26,10 +27,10 @@ export abstract class BaseEntity {
   public updateBy: string;
 
   @ApiProperty({ type: Date, description: '更新时间' })
-  @UpdateDateColumn({ type: 'timestamp', name: 'update_time', comment: '更新时间' })
+  @UpdateDateColumn({ type: 'datetime', update: false, name: 'update_time', default: null, comment: '更新时间' })
   public updateTime: Date;
 
   @ApiProperty({ type: String, description: '备注' })
-  @Column({ type: 'varchar', name: 'remark', length: 500, default: '', comment: '备注' })
+  @Column({ type: 'varchar', name: 'remark', length: 500, default: null, comment: '备注' })
   public remark: string;
 }

@@ -39,8 +39,8 @@ export class UpdatePostDto extends CreatePostDto {
   @ApiProperty({
     required: true,
   })
-  @IsNumberString()
-  postId: string;
+  @IsNumber()
+  postId: number;
 }
 
 export class ListPostDto extends PagingDto {

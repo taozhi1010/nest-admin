@@ -71,7 +71,7 @@ export class RoleService {
     });
   }
 
-  async findOne(roleId: string) {
+  async findOne(roleId: number) {
     const res = await this.sysRoleEntityRep.findOne({
       where: {
         roleId: roleId,
@@ -151,7 +151,7 @@ export class RoleService {
     return ResultData.ok(res);
   }
 
-  async remove(roleIds: string[]) {
+  async remove(roleIds: number[]) {
     const data = await this.sysRoleEntityRep.update(
       { roleId: In(roleIds) },
       {
@@ -161,7 +161,7 @@ export class RoleService {
     return ResultData.ok(data);
   }
 
-  async deptTree(roleId: string) {
+  async deptTree(roleId: number) {
     const res = await this.sysDeptEntityRep.find({
       where: {
         delFlag: '0',
@@ -191,7 +191,7 @@ export class RoleService {
   /**
    * 根据角色获取用户权限列表
    */
-  async getPermissionsByRoleIds(roleIds: string[]) {
+  async getPermissionsByRoleIds(roleIds: number[]) {
     const list = await this.sysRoleWithMenuEntityRep.find({
       where: {
         roleId: In(roleIds),
@@ -211,7 +211,7 @@ export class RoleService {
    * @param roleId - 角色的ID，用于查询与该角色关联的部门。
    * @returns 返回一个Promise，该Promise解析为一个部门ID的数组。
    */
-  async findRoleWithDeptIds(roleId: string) {
+  async findRoleWithDeptIds(roleId: number) {
     // 使用TypeORM的实体仓库查询方法，异步查找与指定角色ID相关联的部门ID。
     const res = await this.sysRoleWithDeptEntityRep.find({
       select: ['deptId'],

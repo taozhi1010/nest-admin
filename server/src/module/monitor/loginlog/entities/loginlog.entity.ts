@@ -5,8 +5,8 @@ import { BaseEntity } from 'src/common/entities/base';
   comment: '系统访问记录',
 })
 export class MonitorLoginlogEntity extends BaseEntity {
-  @PrimaryGeneratedColumn({ type: 'bigint', name: 'info_id', comment: '访问ID' })
-  public infoId: string;
+  @PrimaryGeneratedColumn({ type: 'int', name: 'info_id', comment: '访问ID' })
+  public infoId: number;
 
   @Column({ type: 'varchar', name: 'user_name', length: 50, default: '', comment: '用户账号' })
   public userName: string;

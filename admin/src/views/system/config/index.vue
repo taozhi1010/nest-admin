@@ -176,7 +176,7 @@ export default {
 			this.loading = true;
 			listConfig(this.addDateRange(this.queryParams, this.dateRange)).then((response) => {
 				this.configList = response.data.list;
-				this.total = response.total;
+				this.total = response.data.total;
 				this.loading = false;
 			});
 		},

@@ -5,8 +5,8 @@ import { BaseEntity } from 'src/common/entities/base';
   comment: '参数配置表',
 })
 export class SysConfigEntity extends BaseEntity {
-  @PrimaryGeneratedColumn({ type: 'bigint', name: 'config_id', comment: '参数主键' })
-  public configId: string;
+  @PrimaryGeneratedColumn({ type: 'int', name: 'config_id', comment: '参数主键' })
+  public configId: number;
 
   @Column({ type: 'varchar', name: 'config_name', length: 100, default: '', comment: '参数名称' })
   public configName: string;

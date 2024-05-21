@@ -7,8 +7,8 @@ import { BaseEntity } from 'src/common/entities/base';
 })
 export class SysPostEntity extends BaseEntity {
   @ApiProperty({ type: String, description: '岗位ID' })
-  @PrimaryGeneratedColumn({ type: 'bigint', name: 'post_id', comment: '岗位ID' })
-  public postId: string;
+  @PrimaryGeneratedColumn({ type: 'int', name: 'post_id', comment: '岗位ID' })
+  public postId: number;
 
   @Column({ type: 'varchar', name: 'post_code', length: 64, comment: '岗位编码' })
   public postCode: string;

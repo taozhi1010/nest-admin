@@ -10,8 +10,8 @@ export enum StatusEnum {
 export class CreateUserDto {
   @ApiProperty({ required: false })
   @IsOptional()
-  @IsNumberString()
-  deptId?: string;
+  @IsNumber()
+  deptId?: number;
 
   @ApiProperty({ required: false })
   @IsOptional()
@@ -43,12 +43,12 @@ export class CreateUserDto {
   @ApiProperty({ required: false })
   @IsOptional()
   @IsArray()
-  postIds?: Array<string>;
+  postIds?: Array<number>;
 
   @ApiProperty({ required: false })
   @IsOptional()
   @IsArray()
-  roleIds?: Array<string>;
+  roleIds?: Array<number>;
 
   @ApiProperty({ required: false })
   @IsOptional()
@@ -78,16 +78,16 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
   @ApiProperty({
     required: true,
   })
-  @IsNumberString()
-  userId: string;
+  @IsNumber()
+  userId: number;
 }
 
 export class ChangeStatusDto {
   @ApiProperty({
     required: true,
   })
-  @IsNumberString()
-  userId: string;
+  @IsNumber()
+  userId: number;
 
   @ApiProperty({ required: true })
   @IsString()
@@ -135,8 +135,8 @@ export class ResetPwdDto {
   @ApiProperty({
     required: true,
   })
-  @IsNumberString()
-  userId: string;
+  @IsNumber()
+  userId: number;
 
   @ApiProperty({
     required: true,

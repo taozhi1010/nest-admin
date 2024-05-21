@@ -47,10 +47,10 @@ export class DeptService {
     return ResultData.ok(res);
   }
 
-  async findOne(id: string) {
+  async findOne(deptId: number) {
     const data = await this.sysDeptEntityRep.findOne({
       where: {
-        deptId: id,
+        deptId: deptId,
         delFlag: '0',
       },
     });
@@ -114,7 +114,7 @@ export class DeptService {
       .orWhere('dept.deptId = :deptId', { deptId: deptId });
   }
 
-  async findListExclude(id: string) {
+  async findListExclude(id: number) {
     //TODO 需排出ancestors 中不出现id的数据
     const data = await this.sysDeptEntityRep.find({
       where: {
@@ -125,7 +125,7 @@ export class DeptService {
   }
 
   async update(updateDeptDto: UpdateDeptDto) {
-    if (updateDeptDto.parentId && updateDeptDto.parentId !== '0') {
+    if (updateDeptDto.parentId && updateDeptDto.parentId !== 0) {
       const parent = await this.sysDeptEntityRep.findOne({
         where: {
           deptId: updateDeptDto.parentId,
@@ -143,9 +143,9 @@ export class DeptService {
     return ResultData.ok();
   }
 
-  async remove(id: string) {
+  async remove(deptId: number) {
     const data = await this.sysDeptEntityRep.update(
-      { deptId: id },
+      { deptId: deptId },
       {
         delFlag: '1',
       },

@@ -13,15 +13,15 @@ class NewBaseEntity extends BaseEntity {
 })
 export class SysMenuEntity extends NewBaseEntity {
   @ApiProperty({ type: String, description: '菜单ID' })
-  @PrimaryGeneratedColumn({ type: 'bigint', name: 'menu_id', comment: '菜单ID' })
-  public menuId: string;
+  @PrimaryGeneratedColumn({ type: 'int', name: 'menu_id', comment: '菜单ID' })
+  public menuId: number;
 
   @Column({ type: 'varchar', name: 'menu_name', length: 50, comment: '菜单名称' })
   public menuName: string;
 
   @ApiProperty({ type: String, description: '父菜单ID' })
-  @Column({ type: 'bigint', name: 'parent_id', comment: '父菜单ID' })
-  public parentId: string;
+  @Column({ type: 'int', name: 'parent_id', comment: '父菜单ID' })
+  public parentId: number;
 
   @Column({ type: 'int', name: 'order_num', default: 0, comment: '显示顺序' })
   public orderNum: number;

@@ -162,11 +162,11 @@ export class UserService {
     });
   }
 
-  async findOne(id: string) {
+  async findOne(userId: number) {
     const data = await this.userRepo.findOne({
       where: {
         delFlag: '0',
-        userId: id,
+        userId: userId,
       },
     });
 
@@ -180,7 +180,7 @@ export class UserService {
 
     const postList = await this.sysUserWithPostEntityRep.find({
       where: {
-        userId: id,
+        userId: userId,
       },
     });
     const postIds = postList.map((item) => item.postId);
@@ -190,7 +190,7 @@ export class UserService {
       },
     });
 
-    const roleIds = await this.getRoleIds([id]);
+    const roleIds = await this.getRoleIds([userId]);
     const allRoles = await this.roleService.findRoles({
       where: {
         delFlag: '0',
@@ -295,6 +295,16 @@ export class UserService {
       return ResultData.fail(500, `您已被停用，如需正常使用请联系管理员`);
     }
 
+    const loginDate = new Date();
+    await this.userRepo.update(
+      {
+        userId: data.userId,
+      },
+      {
+        loginDate: loginDate,
+      },
+    );
+
     const uuid = GenerateUUID();
     const token = this.createToken({ uuid: uuid, userId: userData.userId });
     const permissions = await this.getUserPermissions(userData.userId);
@@ -306,13 +316,12 @@ export class UserService {
     });
 
     userData['deptName'] = deptData.deptName || '';
-    const loginTime = GetNowDate();
     const roles = userData.roles.map((item) => item.roleKey);
     const metaData = {
       browser: clientInfo.browser,
       ipaddr: clientInfo.ipaddr,
       loginLocation: clientInfo.loginLocation,
-      loginTime: loginTime,
+      loginTime: loginDate,
       os: clientInfo.os,
       permissions: permissions,
       roles: roles,
@@ -336,7 +345,7 @@ export class UserService {
    * @param userId
    * @returns
    */
-  async getRoleIds(userIds: Array<string>) {
+  async getRoleIds(userIds: Array<number>) {
     const roleList = await this.sysUserWithRoleEntityRep.find({
       where: {
         userId: In(userIds),
@@ -352,9 +361,9 @@ export class UserService {
    * @param userId
    * @returns
    */
-  async getUserPermissions(userId: string) {
+  async getUserPermissions(userId: number) {
     // 超级管理员
-    if (userId === '1') {
+    if (userId === 1) {
       return ['*:*:*'];
     }
     const roleIds = await this.getRoleIds([userId]);
@@ -366,7 +375,7 @@ export class UserService {
   /**
    * 获取用户信息
    */
-  async getUserinfo(userId: string): Promise<{ dept: SysDeptEntity; roles: Array<any>; posts: Array<SysPostEntity> } & UserEntity> {
+  async getUserinfo(userId: number): Promise<{ dept: SysDeptEntity; roles: Array<any>; posts: Array<SysPostEntity> } & UserEntity> {
     const entity = this.userRepo.createQueryBuilder('user');
     entity.where({
       userId: userId,
@@ -431,7 +440,7 @@ export class UserService {
    * @param payload 数据声明
    * @return 令牌
    */
-  createToken(payload: { uuid: string; userId: string }): string {
+  createToken(payload: { uuid: string; userId: number }): string {
     const accessToken = this.jwtService.sign(payload);
     return accessToken;
   }
@@ -475,7 +484,7 @@ export class UserService {
    * @param ids
    * @returns
    */
-  async remove(ids: string[]) {
+  async remove(ids: number[]) {
     // 忽略系统角色的删除
     const data = await this.userRepo.update(
       { userId: In(ids), userType: Not(SYS_USER_TYPE.SYS) },
@@ -491,7 +500,7 @@ export class UserService {
    * @param id
    * @returns
    */
-  async authRole(id: string) {
+  async authRole(userId: number) {
     const allRoles = await this.roleService.findRoles({
       where: {
         delFlag: '0',
@@ -501,7 +510,7 @@ export class UserService {
     const user = await this.userRepo.findOne({
       where: {
         delFlag: '0',
-        userId: id,
+        userId: userId,
       },
     });
 
@@ -513,7 +522,7 @@ export class UserService {
     });
     user['dept'] = dept;
 
-    const roleIds = await this.getRoleIds([id]);
+    const roleIds = await this.getRoleIds([userId]);
     //TODO flag用来给前端表格标记选中状态，后续优化
     user['roles'] = allRoles.filter((item) => {
       if (roleIds.includes(item.roleId)) {
@@ -604,7 +613,7 @@ export class UserService {
   async allocatedList(query: AllocatedListDto) {
     const roleWidthRoleList = await this.sysUserWithRoleEntityRep.find({
       where: {
-        roleId: query.roleId,
+        roleId: +query.roleId,
       },
       select: ['userId'],
     });
@@ -644,7 +653,7 @@ export class UserService {
   async unallocatedList(query: AllocatedListDto) {
     const roleWidthRoleList = await this.sysUserWithRoleEntityRep.find({
       where: {
-        roleId: query.roleId,
+        roleId: +query.roleId,
       },
       select: ['userId'],
     });
@@ -692,10 +701,10 @@ export class UserService {
    * @returns
    */
   async authUserCancelAll(data: AuthUserCancelAllDto) {
-    const userIds = data.userIds.split(',');
+    const userIds = data.userIds.split(',').map((id) => +id);
     await this.sysUserWithRoleEntityRep.delete({
       userId: In(userIds),
-      roleId: data.roleId,
+      roleId: +data.roleId,
     });
     return ResultData.ok();
   }

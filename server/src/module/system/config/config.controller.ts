@@ -36,7 +36,7 @@ export class ConfigController {
   })
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.configService.findOne(id);
+    return this.configService.findOne(+id);
   }
 
   @ApiOperation({

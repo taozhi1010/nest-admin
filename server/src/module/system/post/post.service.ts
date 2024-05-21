@@ -42,7 +42,7 @@ export class PostService {
     });
   }
 
-  async findOne(postId: string) {
+  async findOne(postId: number) {
     const res = await this.sysPostEntityRep.findOne({
       where: {
         postId: postId,

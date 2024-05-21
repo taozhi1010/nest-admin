@@ -5,9 +5,9 @@ import { Entity, PrimaryColumn } from 'typeorm';
   comment: '用户与岗位关联表',
 })
 export class SysUserWithPostEntity {
-  @PrimaryColumn({ type: 'bigint', name: 'user_id', comment: '用户ID' })
-  public userId: string;
+  @PrimaryColumn({ type: 'int', name: 'user_id', comment: '用户ID' })
+  public userId: number;
 
-  @PrimaryColumn({ type: 'bigint', name: 'post_id', comment: '岗位ID' })
-  public postId: string;
+  @PrimaryColumn({ type: 'int', name: 'post_id', comment: '岗位ID' })
+  public postId: number;
 }

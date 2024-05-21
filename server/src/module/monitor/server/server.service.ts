@@ -29,7 +29,6 @@ export class ServerService {
 
   async getDiskStatus() {
     const disks = await nodeDiskInfo.getDiskInfoSync();
-    console.log(disks);
     const sysFiles = disks.map((disk: any) => {
       return {
         dirName: disk._mounted,
