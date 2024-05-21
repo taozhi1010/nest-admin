@@ -48,10 +48,10 @@ export class ConfigService {
     });
   }
 
-  async findOne(id: string) {
+  async findOne(configId: number) {
     const data = await this.sysConfigEntityRep.findOne({
       where: {
-        configId: id,
+        configId: configId,
       },
     });
     return ResultData.ok(data);

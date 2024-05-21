@@ -50,7 +50,7 @@ export class UserController {
   })
   @Get('/authRole/:id')
   authRole(@Param('id') id: string) {
-    return this.userService.authRole(id);
+    return this.userService.authRole(+id);
   }
 
   @ApiOperation({
@@ -66,7 +66,7 @@ export class UserController {
   })
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.userService.findOne(id);
+    return this.userService.findOne(+id);
   }
 
   @ApiOperation({
@@ -110,7 +110,7 @@ export class UserController {
   })
   @Delete(':id')
   remove(@Param('id') ids: string) {
-    const menuIds = ids.split(',').map((id) => id);
+    const menuIds = ids.split(',').map((id) => +id);
     return this.userService.remove(menuIds);
   }
 }

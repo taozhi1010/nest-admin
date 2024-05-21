@@ -52,7 +52,7 @@ export class MenuService {
     return ResultData.ok(tree);
   }
 
-  async roleMenuTreeselect(id: string): Promise<any> {
+  async roleMenuTreeselect(roleId: number): Promise<any> {
     const res = await this.sysMenuEntityRep.find({
       where: {
         delFlag: '0',
@@ -64,7 +64,7 @@ export class MenuService {
       (m) => m.menuName,
     );
     const menuIds = await this.sysRoleWithMenuEntityRep.find({
-      where: { roleId: id },
+      where: { roleId: roleId },
       select: ['menuId'],
     });
     const checkedKeys = menuIds.map((item) => {
@@ -76,11 +76,11 @@ export class MenuService {
     });
   }
 
-  async findOne(id: string) {
+  async findOne(menuId: number) {
     const res = await this.sysMenuEntityRep.findOne({
       where: {
         delFlag: '0',
-        menuId: id,
+        menuId: menuId,
       },
     });
     return ResultData.ok(res);
@@ -91,9 +91,9 @@ export class MenuService {
     return ResultData.ok(res);
   }
 
-  async remove(id: string) {
+  async remove(menuId: number) {
     const data = await this.sysMenuEntityRep.update(
-      { menuId: id },
+      { menuId: menuId },
       {
         delFlag: '1',
       },
@@ -111,10 +111,10 @@ export class MenuService {
    * @param userId 用户ID
    * @return 菜单列表
    */
-  async getMenuListByUserId(userId: string) {
+  async getMenuListByUserId(userId: number) {
     let menuWidthRoleList = [];
     const roleIds = await this.userService.getRoleIds([userId]);
-    if (roleIds.includes('1')) {
+    if (roleIds.includes(1)) {
       // 超管roleId=1，所有菜单权限
       menuWidthRoleList = await this.sysMenuEntityRep.find({
         where: {

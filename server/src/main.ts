@@ -2,18 +2,16 @@ import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { mw as requestIpMw } from 'request-ip';
-
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from 'src/app.module';
 import { ExceptionsFilter } from 'src/common/filters/exceptions-filter';
 import { HttpExceptionsFilter } from 'src/common/filters/http-exceptions-filter';
-import { MYValidationPipe } from 'src/common/pipes/validation.pipe';
-
+import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
-    cors: true,
+    cors: true, // 开启跨域访问
   });
   const config = app.get(ConfigService);
 
@@ -21,14 +19,14 @@ async function bootstrap() {
   app.use(
     rateLimit({
       windowMs: 15 * 60 * 1000, // 15分钟
-      max: 10000, // 限制15分钟内最多只能访问1000次
+      max: 1000, // 限制15分钟内最多只能访问1000次
     }),
   );
-
   // 设置 api 访问前缀
   const prefix = config.get<string>('app.prefix');
   app.setGlobalPrefix(prefix);
-  app.useGlobalPipes(new MYValidationPipe());
+  // 全局验证
+  app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true }));
   app.useGlobalFilters(new ExceptionsFilter());
   app.useGlobalFilters(new HttpExceptionsFilter());
 

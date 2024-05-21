@@ -18,7 +18,7 @@ export const buildMenus = (arr) => {
       id: m.id,
       parentId: m.parentId,
     };
-    if (m.parentId === '0') {
+    if (m.parentId === 0) {
       lData.push(kData[m.id]);
     } else {
       kData[m.parentId] = kData[m.parentId] || {};
@@ -103,7 +103,7 @@ const getRouteName = (menu) => {
  * @return 结果
  */
 const isMenuFrame = (menu): boolean => {
-  return menu.parentId === '0' && menu.menuType === 'C' && menu.isFrame === '1';
+  return menu.parentId === 0 && menu.menuType === 'C' && menu.isFrame === '1';
 };
 
 /**
@@ -123,7 +123,7 @@ const isInnerLink = (menu): boolean => {
  * @return 结果
  */
 const isParentView = (menu): boolean => {
-  return menu.parentId !== '0' && menu.menuType === 'M';
+  return menu.parentId !== 0 && menu.menuType === 'M';
 };
 
 /**
@@ -136,7 +136,7 @@ const getComponent = (menu): string => {
   let component = 'Layout';
   if (menu.component && !isMenuFrame(menu)) {
     component = menu.component;
-  } else if (!menu.component && menu.parentId !== '0' && isInnerLink(menu)) {
+  } else if (!menu.component && menu.parentId !== 0 && isInnerLink(menu)) {
     component = 'InnerLink';
   } else if (!menu.component && isParentView(menu)) {
     component = 'ParentView';
@@ -166,11 +166,11 @@ const innerLinkReplaceEach = (path: string): string => {
 const getRouterPath = (menu): string => {
   let routerPath = menu.path;
   // 内链打开外网方式
-  if (menu.parentId !== '0' && isInnerLink(menu)) {
+  if (menu.parentId !== 0 && isInnerLink(menu)) {
     routerPath = innerLinkReplaceEach(routerPath);
   }
   // 非外链并且是一级目录（类型为目录）
-  if (menu.parentId === '0' && menu.menuType === 'M' && menu.isFrame === '1') {
+  if (menu.parentId === 0 && menu.menuType === 'M' && menu.isFrame === '1') {
     routerPath = '/' + menu.path;
   }
   // 非外链并且是一级目录（类型为菜单）

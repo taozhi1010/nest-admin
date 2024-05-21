@@ -41,8 +41,8 @@ export class CreateDictTypeDto {
 }
 
 export class UpdateDictTypeDto extends CreateDictTypeDto {
-  @IsString()
-  dictId: string;
+  @IsNumber()
+  dictId: number;
 }
 
 export class ListDictType extends PagingDto {
@@ -95,8 +95,8 @@ export class CreateDictDataDto {
 }
 
 export class UpdateDictDataDto extends CreateDictDataDto {
-  @IsString()
-  dictCode: string;
+  @IsNumber()
+  dictCode: number;
 }
 
 export class ListDictData extends PagingDto {

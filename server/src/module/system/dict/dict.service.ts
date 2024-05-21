@@ -21,8 +21,8 @@ export class DictService {
     return ResultData.ok();
   }
 
-  async deleteType(ids: string[]) {
-    await this.sysDictTypeEntityRep.update({ dictId: In(ids) }, { delFlag: '1' });
+  async deleteType(dictIds: number[]) {
+    await this.sysDictTypeEntityRep.update({ dictId: In(dictIds) }, { delFlag: '1' });
     return ResultData.ok();
   }
 
@@ -60,10 +60,10 @@ export class DictService {
     });
   }
 
-  async findOneType(id: string) {
+  async findOneType(dictId: number) {
     const data = await this.sysDictTypeEntityRep.findOne({
       where: {
-        dictId: id,
+        dictId: dictId,
         delFlag: '0',
       },
     });
@@ -85,8 +85,8 @@ export class DictService {
     return ResultData.ok();
   }
 
-  async deleteDictData(id: string) {
-    await this.sysDictDataEntityRep.update({ dictCode: id }, { delFlag: '1' });
+  async deleteDictData(dictId: number) {
+    await this.sysDictDataEntityRep.update({ dictCode: dictId }, { delFlag: '1' });
     return ResultData.ok();
   }
 
@@ -155,7 +155,7 @@ export class DictService {
     return ResultData.ok(data);
   }
 
-  async findOneDictData(dictCode: string) {
+  async findOneDictData(dictCode: number) {
     const data = await this.sysDictDataEntityRep.findOne({
       where: {
         dictCode: dictCode,

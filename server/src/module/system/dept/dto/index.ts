@@ -9,8 +9,8 @@ export class CreateDeptDto {
   @ApiProperty({
     required: true,
   })
-  @IsString()
-  parentId: string;
+  @IsNumber()
+  parentId: number;
 
   @ApiProperty({
     required: true,
@@ -62,8 +62,8 @@ export class UpdateDeptDto extends CreateDeptDto {
   @ApiProperty({
     required: false,
   })
-  @IsString()
-  deptId: string;
+  @IsNumber()
+  deptId: number;
 }
 
 export class ListDeptDto {

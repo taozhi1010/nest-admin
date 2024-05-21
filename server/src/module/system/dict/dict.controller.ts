@@ -27,7 +27,7 @@ export class DictController {
   })
   @Delete('/type/:id')
   deleteType(@Param('id') ids: string) {
-    const dictIds = ids.split(',').map((id) => id);
+    const dictIds = ids.split(',').map((id) => +id);
     return this.dictService.deleteType(dictIds);
   }
 
@@ -60,7 +60,7 @@ export class DictController {
   })
   @Get('/type/:id')
   findOneType(@Param('id') id: string) {
-    return this.dictService.findOneType(id);
+    return this.dictService.findOneType(+id);
   }
 
   // 字典数据
@@ -78,7 +78,7 @@ export class DictController {
   })
   @Delete('/data/:id')
   deleteDictData(@Param('id') id: string) {
-    return this.dictService.deleteDictData(id);
+    return this.dictService.deleteDictData(+id);
   }
 
   @ApiOperation({
@@ -102,7 +102,7 @@ export class DictController {
   })
   @Get('/data/:id')
   findOneDictData(@Param('id') dictCode: string) {
-    return this.dictService.findOneDictData(dictCode);
+    return this.dictService.findOneDictData(+dictCode);
   }
 
   @ApiOperation({

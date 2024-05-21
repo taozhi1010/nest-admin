@@ -50,7 +50,7 @@
 					<el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)" v-hasPermi="['system:dept:edit']">修改</el-button>
 					<el-button size="mini" type="text" icon="el-icon-plus" @click="handleAdd(scope.row)" v-hasPermi="['system:dept:add']">新增</el-button>
 					<el-button
-						v-if="scope.row.parentId != '0'"
+						v-if="scope.row.parentId != 0"
 						size="mini"
 						type="text"
 						icon="el-icon-delete"
@@ -66,7 +66,7 @@
 		<el-dialog :title="title" :visible.sync="open" width="600px" append-to-body>
 			<el-form ref="form" :model="form" :rules="rules" label-width="80px">
 				<el-row>
-					<el-col :span="24" v-if="form.parentId != '0'">
+					<el-col :span="24" v-if="form.parentId != 0">
 						<el-form-item label="上级部门" prop="parentId">
 							<treeselect v-model="form.parentId" :options="deptOptions" :normalizer="normalizer" placeholder="选择上级部门" />
 						</el-form-item>

@@ -7,8 +7,8 @@ import { BaseEntity } from 'src/common/entities/base';
 })
 export class SysRoleEntity extends BaseEntity {
   @ApiProperty({ type: String, description: '角色ID' })
-  @PrimaryGeneratedColumn({ type: 'bigint', name: 'role_id', comment: '角色ID' })
-  public roleId: string;
+  @PrimaryGeneratedColumn({ type: 'int', name: 'role_id', comment: '角色ID' })
+  public roleId: number;
 
   @Column({ type: 'varchar', name: 'role_name', length: 30, comment: '角色名称' })
   public roleName: string;
