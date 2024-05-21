@@ -56,11 +56,19 @@ export class ConfigController {
   }
 
   @ApiOperation({
+    summary: '参数设置-刷新缓存',
+  })
+  @Delete('/refreshCache')
+  refreshCache() {
+    return this.configService.refreshCache();
+  }
+
+  @ApiOperation({
     summary: '参数设置-删除',
   })
   @Delete(':id')
   remove(@Param('id') ids: string) {
-    const configIds = ids.split(',').map((id) => id);
+    const configIds = ids.split(',').map((id) => +id);
     return this.configService.remove(configIds);
   }
 }
