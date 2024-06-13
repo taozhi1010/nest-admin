@@ -1,6 +1,9 @@
 import { Controller, Get, Post, Body, Put, Param, Query, Delete, Request } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBody, ApiConsumes, ApiQuery, ApiBearerAuth } from '@nestjs/swagger';
 import { UserService } from './user.service';
+import { RequirePermission } from 'src/common/decorators/require-premission.decorator';
+import { RequireRole } from 'src/common/decorators/require-role.decorator';
+
 import { CreateUserDto, UpdateUserDto, ListUserDto, ChangeStatusDto, ResetPwdDto } from './dto/index';
 
 @ApiTags('用户管理')
@@ -15,6 +18,7 @@ export class UserController {
     type: CreateUserDto,
     required: true,
   })
+  @RequirePermission('system:user:add')
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
@@ -23,7 +27,8 @@ export class UserController {
   @ApiOperation({
     summary: '用户-列表',
   })
-  @Get('/list')
+  @RequirePermission('system:user:query')
+  @Get('list')
   findAll(@Query() query: ListUserDto, @Request() req) {
     const user = req.user.user;
     return this.userService.findAll(query, user);
@@ -32,7 +37,8 @@ export class UserController {
   @ApiOperation({
     summary: '用户-部门树',
   })
-  @Get('/deptTree')
+  @RequirePermission('system:dept:query')
+  @Get('deptTree')
   deptTree() {
     return this.userService.deptTree();
   }
@@ -40,6 +46,7 @@ export class UserController {
   @ApiOperation({
     summary: '用户-角色+岗位',
   })
+  @RequirePermission('system:user:add')
   @Get()
   findPostAndRoleAll() {
     return this.userService.findPostAndRoleAll();
@@ -48,7 +55,8 @@ export class UserController {
   @ApiOperation({
     summary: '用户-分配角色-详情',
   })
-  @Get('/authRole/:id')
+  @RequireRole('admin')
+  @Get('authRole/:id')
   authRole(@Param('id') id: string) {
     return this.userService.authRole(+id);
   }
@@ -56,7 +64,8 @@ export class UserController {
   @ApiOperation({
     summary: '用户-角色信息-更新',
   })
-  @Put('/authRole')
+  @RequireRole('admin')
+  @Put('authRole')
   updateAuthRole(@Query() query) {
     return this.userService.updateAuthRole(query);
   }
@@ -64,9 +73,10 @@ export class UserController {
   @ApiOperation({
     summary: '用户-详情',
   })
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
+  @RequirePermission('system:user:query')
+  @Get(':userId')
+  findOne(@Param('userId') userId: string) {
+    return this.userService.findOne(+userId);
   }
 
   @ApiOperation({
@@ -76,7 +86,8 @@ export class UserController {
     type: ChangeStatusDto,
     required: true,
   })
-  @Put('/changeStatus')
+  @RequireRole('admin')
+  @Put('changeStatus')
   changeStatus(@Body() changeStatusDto: ChangeStatusDto) {
     return this.userService.changeStatus(changeStatusDto);
   }
@@ -88,9 +99,11 @@ export class UserController {
     type: UpdateUserDto,
     required: true,
   })
+  @RequirePermission('system:user:edit')
   @Put()
-  update(@Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(updateUserDto);
+  update(@Body() updateUserDto: UpdateUserDto, @Request() req) {
+    const userId = req.user.userId;
+    return this.userService.update(updateUserDto, userId);
   }
 
   @ApiOperation({
@@ -100,7 +113,8 @@ export class UserController {
     type: ResetPwdDto,
     required: true,
   })
-  @Put('/resetPwd')
+  @RequireRole('admin')
+  @Put('resetPwd')
   resetPwd(@Body() body: ResetPwdDto) {
     return this.userService.resetPwd(body);
   }
@@ -108,6 +122,7 @@ export class UserController {
   @ApiOperation({
     summary: '用户-删除',
   })
+  @RequireRole('admin')
   @Delete(':id')
   remove(@Param('id') ids: string) {
     const menuIds = ids.split(',').map((id) => +id);

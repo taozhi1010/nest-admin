@@ -1,5 +1,5 @@
 import { Repository, In, FindManyOptions, Not } from 'typeorm';
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { RedisService } from 'src/module/redis/redis.service';
@@ -219,7 +219,18 @@ export class UserService {
    * @param updateUserDto
    * @returns
    */
-  async update(updateUserDto: UpdateUserDto) {
+  async update(updateUserDto: UpdateUserDto, userId: number) {
+    //不能修改超级管理员
+    if (updateUserDto.userId === 1) throw new BadRequestException('非法操作！');
+
+    //过滤掉设置超级管理员角色
+    updateUserDto.roleIds = updateUserDto.roleIds.filter((v) => v !== 1);
+
+    //当前用户不能修改自己的状态
+    if (updateUserDto.userId === userId) {
+      delete updateUserDto.status;
+    }
+
     if (updateUserDto?.postIds?.length > 0) {
       //用户已有岗位,先删除所有关联岗位
       const hasPostId = await this.sysUserWithPostEntityRep.findOne({
