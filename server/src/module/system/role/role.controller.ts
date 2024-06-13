@@ -3,6 +3,7 @@ import { ApiTags, ApiOperation, ApiBody, ApiConsumes, ApiQuery, ApiBearerAuth } 
 import { RoleService } from './role.service';
 import { CreateRoleDto, UpdateRoleDto, ListRoleDto, ChangeStatusDto, AuthUserCancelDto, AuthUserCancelAllDto, AuthUserSelectAllDto } from './dto/index';
 import { AllocatedListDto } from '../user/dto/index';
+import { RequirePermission } from 'src/common/decorators/require-premission.decorator';
 
 import { UserService } from '../user/user.service';
 @ApiTags('角色管理')
@@ -20,6 +21,7 @@ export class RoleController {
     type: CreateRoleDto,
     required: true,
   })
+  @RequirePermission('system:role:add')
   @Post()
   create(@Body() createRoleDto: CreateRoleDto) {
     return this.roleService.create(createRoleDto);
@@ -32,7 +34,8 @@ export class RoleController {
     type: ListRoleDto,
     required: true,
   })
-  @Get('/list')
+  @RequirePermission('system:role:query')
+  @Get('list')
   findAll(@Query() query: ListRoleDto) {
     return this.roleService.findAll(query);
   }
@@ -40,7 +43,8 @@ export class RoleController {
   @ApiOperation({
     summary: '角色管理-部门树',
   })
-  @Get('/deptTree/:id')
+  @RequirePermission('system:role:edit')
+  @Get('deptTree/:id')
   deptTree(@Param('id') id: string) {
     return this.roleService.deptTree(+id);
   }
@@ -48,6 +52,7 @@ export class RoleController {
   @ApiOperation({
     summary: '角色管理-详情',
   })
+  @RequirePermission('system:role:query')
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.roleService.findOne(+id);
@@ -60,6 +65,7 @@ export class RoleController {
     type: UpdateRoleDto,
     required: true,
   })
+  @RequirePermission('system:role:edit')
   @Put()
   update(@Body() updateRoleDto: UpdateRoleDto) {
     return this.roleService.update(updateRoleDto);
@@ -72,7 +78,8 @@ export class RoleController {
     type: UpdateRoleDto,
     required: true,
   })
-  @Put('/dataScope')
+  @RequirePermission('system:role:edit')
+  @Put('dataScope')
   dataScope(@Body() updateRoleDto: UpdateRoleDto) {
     return this.roleService.dataScope(updateRoleDto);
   }
@@ -84,11 +91,13 @@ export class RoleController {
     type: ChangeStatusDto,
     required: true,
   })
-  @Put('/changeStatus')
+  @RequirePermission('system:role:edit')
+  @Put('changeStatus')
   changeStatus(@Body() changeStatusDto: ChangeStatusDto) {
     return this.roleService.changeStatus(changeStatusDto);
   }
 
+  @RequirePermission('system:role:remove')
   @Delete(':id')
   remove(@Param('id') ids: string) {
     const menuIds = ids.split(',').map((id) => +id);
@@ -102,7 +111,8 @@ export class RoleController {
     type: AllocatedListDto,
     required: true,
   })
-  @Get('/authUser/allocatedList')
+  @RequirePermission('system:role:query')
+  @Get('authUser/allocatedList')
   authUserAllocatedList(@Query() query: AllocatedListDto) {
     return this.userService.allocatedList(query);
   }
@@ -114,7 +124,8 @@ export class RoleController {
     type: AllocatedListDto,
     required: true,
   })
-  @Get('/authUser/unallocatedList')
+  @RequirePermission('system:role:query')
+  @Get('authUser/unallocatedList')
   authUserUnAllocatedList(@Query() query: AllocatedListDto) {
     return this.userService.unallocatedList(query);
   }
@@ -126,7 +137,8 @@ export class RoleController {
     type: AuthUserCancelDto,
     required: true,
   })
-  @Put('/authUser/cancel')
+  @RequirePermission('system:role:edit')
+  @Put('authUser/cancel')
   authUserCancel(@Body() body: AuthUserCancelDto) {
     return this.userService.authUserCancel(body);
   }
@@ -138,7 +150,8 @@ export class RoleController {
     type: AuthUserCancelAllDto,
     required: true,
   })
-  @Put('/authUser/cancelAll')
+  @RequirePermission('system:role:edit')
+  @Put('authUser/cancelAll')
   authUserCancelAll(@Body() body: AuthUserCancelAllDto) {
     return this.userService.authUserCancelAll(body);
   }
@@ -150,7 +163,8 @@ export class RoleController {
     type: AuthUserSelectAllDto,
     required: true,
   })
-  @Put('/authUser/selectAll')
+  @RequirePermission('system:role:edit')
+  @Put('authUser/selectAll')
   authUserSelectAll(@Body() body: AuthUserSelectAllDto) {
     return this.userService.authUserSelectAll(body);
   }
