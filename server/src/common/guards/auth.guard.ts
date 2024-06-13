@@ -4,8 +4,6 @@ import { AuthGuard } from '@nestjs/passport';
 import { pathToRegexp } from 'path-to-regexp';
 import { ExecutionContext, ForbiddenException, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 
-import { ALLOW_ANON } from '../decorators/allow-anon.decorator';
-
 import { UserService } from 'src/module/system/user/user.service';
 
 @Injectable()
@@ -27,8 +25,6 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       return true;
     }
 
-    const allowAnon = this.reflector.getAllAndOverride<boolean>(ALLOW_ANON, [ctx.getHandler(), ctx.getClass()]);
-    if (allowAnon) return true;
     const req = ctx.switchToHttp().getRequest();
     const accessToken = req.get('Authorization');
     if (!accessToken) throw new ForbiddenException('请重新登录');

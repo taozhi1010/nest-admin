@@ -6,7 +6,9 @@ import configuration from './config/index';
 import { HttpModule } from '@nestjs/axios';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from 'src/common/guards/auth.guard';
+import { PermissionGuard } from 'src/common/guards/permission.guard';
 import { RolesGuard } from './common/guards/roles.guard';
+
 import { AuthModule } from './module/system/auth/auth.module';
 import { UserModule } from './module/system/user/user.module';
 import { ToolModule } from './module/system/tool/tool.module';
@@ -95,6 +97,10 @@ import { UploadModule } from './module/upload/upload.module';
     {
       provide: APP_GUARD,
       useClass: RolesGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: PermissionGuard,
     },
   ],
 })
