@@ -19,7 +19,7 @@ export abstract class BaseEntity {
   public createBy: string;
 
   @ApiProperty({ type: Date, description: '创建时间' })
-  @CreateDateColumn({ type: 'datetime', update: false, name: 'create_time', default: null, comment: '创建时间' })
+  @CreateDateColumn({ type: 'datetime', name: 'create_time', default: null, comment: '创建时间' })
   public createTime: Date;
 
   @ApiProperty({ type: String, description: '更新者' })
@@ -27,7 +27,7 @@ export abstract class BaseEntity {
   public updateBy: string;
 
   @ApiProperty({ type: Date, description: '更新时间' })
-  @UpdateDateColumn({ type: 'datetime', update: false, name: 'update_time', default: null, comment: '更新时间' })
+  @UpdateDateColumn({ type: 'datetime', name: 'update_time', default: null, comment: '更新时间' })
   public updateTime: Date;
 
   @ApiProperty({ type: String, description: '备注' })
