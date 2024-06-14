@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Put, Param, Delete, Query } from '@nestjs/
 import { ApiTags, ApiOperation, ApiBody, ApiConsumes, ApiQuery, ApiBearerAuth } from '@nestjs/swagger';
 import { ConfigService } from './config.service';
 import { CreateConfigDto, UpdateConfigDto, ListConfigDto } from './dto/index';
+import { RequirePermission } from 'src/common/decorators/require-premission.decorator';
 
 @ApiTags('参数设置')
 @Controller('system/config')
@@ -14,6 +15,7 @@ export class ConfigController {
   @ApiBody({
     type: CreateConfigDto,
   })
+  @RequirePermission('system:config:add')
   @Post()
   create(@Body() createConfigDto: CreateConfigDto) {
     return this.configService.create(createConfigDto);
@@ -26,6 +28,7 @@ export class ConfigController {
     type: ListConfigDto,
     required: true,
   })
+  @RequirePermission('system:config:query')
   @Get('/list')
   findAll(@Query() query: ListConfigDto) {
     return this.configService.findAll(query);
@@ -34,6 +37,7 @@ export class ConfigController {
   @ApiOperation({
     summary: '参数设置-详情(id)',
   })
+  @RequirePermission('system:config:query')
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.configService.findOne(+id);
@@ -42,6 +46,7 @@ export class ConfigController {
   @ApiOperation({
     summary: '参数设置-详情(configKey)【走缓存】',
   })
+  @RequirePermission('system:config:query')
   @Get('/configKey/:id')
   findOneByconfigKey(@Param('id') configKey: string) {
     return this.configService.findOneByconfigKey(configKey);
@@ -50,6 +55,7 @@ export class ConfigController {
   @ApiOperation({
     summary: '参数设置-更新',
   })
+  @RequirePermission('system:config:edit')
   @Put()
   update(@Body() updateConfigDto: UpdateConfigDto) {
     return this.configService.update(updateConfigDto);
@@ -58,6 +64,7 @@ export class ConfigController {
   @ApiOperation({
     summary: '参数设置-刷新缓存',
   })
+  @RequirePermission('system:config:remove')
   @Delete('/refreshCache')
   refreshCache() {
     return this.configService.refreshCache();
@@ -66,6 +73,7 @@ export class ConfigController {
   @ApiOperation({
     summary: '参数设置-删除',
   })
+  @RequirePermission('system:config:remove')
   @Delete(':id')
   remove(@Param('id') ids: string) {
     const configIds = ids.split(',').map((id) => +id);
