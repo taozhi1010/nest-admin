@@ -32,7 +32,7 @@ export class MenuService {
       entity.andWhere(`entity.menuName LIKE "%${query.menuName}%"`);
     }
     if (query.status) {
-      entity.where('entity.status = :status', { status: query.status });
+      entity.andWhere('entity.status = :status', { status: query.status });
     }
     const res = await entity.getMany();
     return ResultData.ok(res);
