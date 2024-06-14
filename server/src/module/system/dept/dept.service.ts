@@ -41,7 +41,7 @@ export class DeptService {
       entity.andWhere(`entity.deptName LIKE "%${query.deptName}%"`);
     }
     if (query.status) {
-      entity.where('entity.status = :status', { status: query.status });
+      entity.andWhere('entity.status = :status', { status: query.status });
     }
     const res = await entity.getMany();
     return ResultData.ok(res);
