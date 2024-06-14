@@ -12,7 +12,7 @@ Language : 🇺🇸 | [🇨🇳](./README.zh-CN.md)
 
 <div align="center">
 
-An out-of-box UI solution for enterprise applications as a React boilerplate.
+A out of the box backend management system based on the latest version of Nestjs
 
 ![](./image.png)
 
