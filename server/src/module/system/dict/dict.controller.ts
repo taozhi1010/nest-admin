@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Query, Put, Patch, HttpCode, Param, Delete
 import { ApiTags, ApiOperation, ApiBody, ApiConsumes, ApiQuery, ApiBearerAuth } from '@nestjs/swagger';
 import { DictService } from './dict.service';
 import { CreateDictTypeDto, UpdateDictTypeDto, ListDictType, CreateDictDataDto, UpdateDictDataDto, ListDictData } from './dto/index';
+import { RequirePermission } from 'src/common/decorators/require-premission.decorator';
 
 @ApiTags('字典管理')
 @Controller('system/dict')
@@ -16,6 +17,7 @@ export class DictController {
     type: CreateDictTypeDto,
     required: true,
   })
+  @RequirePermission('system:dict:add')
   @HttpCode(200)
   @Post('/type')
   createType(@Body() createDictTypeDto: CreateDictTypeDto) {
@@ -25,6 +27,7 @@ export class DictController {
   @ApiOperation({
     summary: '字典类型-删除',
   })
+  @RequirePermission('system:dict:remove')
   @Delete('/type/:id')
   deleteType(@Param('id') ids: string) {
     const dictIds = ids.split(',').map((id) => +id);
@@ -34,6 +37,7 @@ export class DictController {
   @ApiOperation({
     summary: '字典类型-修改',
   })
+  @RequirePermission('system:dict:edit')
   @Put('/type')
   updateType(@Body() updateDictTypeDto: UpdateDictTypeDto) {
     return this.dictService.updateType(updateDictTypeDto);
@@ -42,6 +46,7 @@ export class DictController {
   @ApiOperation({
     summary: '字典类型-列表',
   })
+  @RequirePermission('system:dict:query')
   @Get('/type/list')
   findAllType(@Query() query: ListDictType) {
     return this.dictService.findAllType(query);
@@ -50,6 +55,7 @@ export class DictController {
   @ApiOperation({
     summary: '全部字典类型-下拉数据',
   })
+  @RequirePermission('system:dict:query')
   @Get('/type/optionselect')
   findOptionselect() {
     return this.dictService.findOptionselect();
@@ -58,6 +64,7 @@ export class DictController {
   @ApiOperation({
     summary: '字典类型-详情',
   })
+  @RequirePermission('system:dict:query')
   @Get('/type/:id')
   findOneType(@Param('id') id: string) {
     return this.dictService.findOneType(+id);
@@ -67,6 +74,7 @@ export class DictController {
   @ApiOperation({
     summary: '字典数据-创建',
   })
+  @RequirePermission('system:dict:add')
   @HttpCode(200)
   @Post('/data')
   createDictData(@Body() createDictDataDto: CreateDictDataDto) {
@@ -76,6 +84,7 @@ export class DictController {
   @ApiOperation({
     summary: '字典数据-删除',
   })
+  @RequirePermission('system:dict:remove')
   @Delete('/data/:id')
   deleteDictData(@Param('id') id: string) {
     return this.dictService.deleteDictData(+id);
@@ -84,6 +93,7 @@ export class DictController {
   @ApiOperation({
     summary: '字典数据-修改',
   })
+  @RequirePermission('system:dict:edit')
   @Put('/data')
   updateDictData(@Body() updateDictDataDto: UpdateDictDataDto) {
     return this.dictService.updateDictData(updateDictDataDto);
@@ -92,6 +102,7 @@ export class DictController {
   @ApiOperation({
     summary: '字典数据-列表',
   })
+  @RequirePermission('system:dict:query')
   @Get('/data/list')
   findAllData(@Query() query: ListDictData) {
     return this.dictService.findAllData(query);
