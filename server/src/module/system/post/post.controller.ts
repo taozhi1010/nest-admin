@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Put, Param, Delete, Query } from '@nestjs/
 import { ApiTags, ApiOperation, ApiBody, ApiConsumes, ApiQuery, ApiBearerAuth } from '@nestjs/swagger';
 import { PostService } from './post.service';
 import { CreatePostDto, UpdatePostDto, ListPostDto } from './dto/index';
+import { RequirePermission } from 'src/common/decorators/require-premission.decorator';
 
 @ApiTags('岗位管理')
 @Controller('system/post')
@@ -15,7 +16,8 @@ export class PostController {
     type: CreatePostDto,
     required: true,
   })
-  @Post()
+  @RequirePermission('system:post:add')
+  @Post('/')
   create(@Body() createPostDto: CreatePostDto) {
     return this.postService.create(createPostDto);
   }
@@ -27,6 +29,7 @@ export class PostController {
     type: ListPostDto,
     required: true,
   })
+  @RequirePermission('system:post:query')
   @Get('/list')
   findAll(@Query() query: ListPostDto) {
     return this.postService.findAll(query);
@@ -35,7 +38,8 @@ export class PostController {
   @ApiOperation({
     summary: '岗位管理-详情',
   })
-  @Get(':id')
+  @RequirePermission('system:post:query')
+  @Get('/:id')
   findOne(@Param('id') id: string) {
     return this.postService.findOne(+id);
   }
@@ -47,7 +51,8 @@ export class PostController {
     type: UpdatePostDto,
     required: true,
   })
-  @Put('')
+  @RequirePermission('system:post:edit')
+  @Put('/')
   update(@Body() updatePostDto: UpdatePostDto) {
     return this.postService.update(updatePostDto);
   }
@@ -55,8 +60,9 @@ export class PostController {
   @ApiOperation({
     summary: '岗位管理-删除',
   })
-  @Delete(':id')
-  remove(@Param('id') ids: string) {
+  @RequirePermission('system:post:remove')
+  @Delete('/:ids')
+  remove(@Param('ids') ids: string) {
     const menuIds = ids.split(',').map((id) => id);
     return this.postService.remove(menuIds);
   }
