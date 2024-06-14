@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Put, Param, Query, Delete, HttpCode } from
 import { ApiTags, ApiOperation, ApiBody, ApiConsumes, ApiQuery, ApiBearerAuth } from '@nestjs/swagger';
 import { DeptService } from './dept.service';
 import { CreateDeptDto, UpdateDeptDto, ListDeptDto } from './dto/index';
+import { RequirePermission } from 'src/common/decorators/require-premission.decorator';
 
 @ApiTags('部门管理')
 @Controller('system/dept')
@@ -15,6 +16,7 @@ export class DeptController {
     type: CreateDeptDto,
     required: true,
   })
+  @RequirePermission('system:dept:add')
   @Post()
   @HttpCode(200)
   create(@Body() createDeptDto: CreateDeptDto) {
@@ -24,6 +26,7 @@ export class DeptController {
   @ApiOperation({
     summary: '部门管理-列表',
   })
+  @RequirePermission('system:dept:query')
   @Get('/list')
   findAll(@Query() query: ListDeptDto) {
     return this.deptService.findAll(query);
@@ -32,6 +35,7 @@ export class DeptController {
   @ApiOperation({
     summary: '部门管理-详情',
   })
+  @RequirePermission('system:dept:query')
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.deptService.findOne(+id);
@@ -40,6 +44,7 @@ export class DeptController {
   @ApiOperation({
     summary: '部门管理-黑名单',
   })
+  @RequirePermission('system:dept:query')
   @Get('/list/exclude/:id')
   findListExclude(@Param('id') id: string) {
     return this.deptService.findListExclude(+id);
@@ -52,6 +57,7 @@ export class DeptController {
     type: UpdateDeptDto,
     required: true,
   })
+  @RequirePermission('system:dept:edit')
   @Put()
   update(@Body() updateDeptDto: UpdateDeptDto) {
     return this.deptService.update(updateDeptDto);
@@ -60,6 +66,7 @@ export class DeptController {
   @ApiOperation({
     summary: '部门管理-删除',
   })
+  @RequirePermission('system:dept:remove')
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.deptService.remove(+id);
