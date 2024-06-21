@@ -21,6 +21,7 @@ import { SysDeptEntity } from '../dept/entities/dept.entity';
 import { RoleService } from '../role/role.service';
 import { DeptService } from '../dept/dept.service';
 
+import { ConfigService } from '../config/config.service';
 @Injectable()
 export class UserService {
   constructor(
@@ -38,6 +39,7 @@ export class UserService {
     private readonly deptService: DeptService,
     private readonly jwtService: JwtService,
     private readonly redisService: RedisService,
+    private readonly configService: ConfigService,
   ) {}
   /**
    * 后台创建用户
@@ -299,6 +301,16 @@ export class UserService {
       },
       select: ['userId', 'password'],
     });
+
+    const enable = await this.configService.getConfigValue('sys.account.captchaEnabled');
+    const captchaEnabled: boolean = enable === 'true';
+
+    if (captchaEnabled) {
+      const code = await this.redisService.get(CacheEnum.CAPTCHA_CODE_KEY + user.uuid);
+      if (code !== user.code) {
+        return ResultData.fail(500, `验证码错误`);
+      }
+    }
 
     if (!(data && bcrypt.compareSync(user.password, data.password))) {
       return ResultData.fail(500, `帐号或密码错误`);

@@ -49,7 +49,7 @@ export class ConfigController {
   @RequirePermission('system:config:query')
   @Get('/configKey/:id')
   findOneByconfigKey(@Param('id') configKey: string) {
-    return this.configService.findOneByconfigKey(configKey);
+    return this.configService.findOneByConfigKey(configKey);
   }
 
   @ApiOperation({

@@ -51,6 +51,7 @@
     "reflect-metadata": "^0.1.13",
     "request-ip": "^3.3.0",
     "rxjs": "^7.8.1",
+    "svg-captcha": "^1.4.0",
     "typeorm": "^0.3.20",
     "useragent": "^2.3.0",
     "uuid": "^9.0.1"

@@ -21,6 +21,10 @@ export class LoginDto {
   @IsString()
   @Length(5, 20)
   password: string;
+
+  @IsOptional()
+  @IsString()
+  uuid?: string;
 }
 
 export class RegisterDto extends LoginDto {}

@@ -8,24 +8,19 @@
 				</el-input>
 			</el-form-item>
 			<el-form-item prop="password">
-				<el-input v-model="loginForm.password" type="password" auto-complete="off" placeholder="密码"
-					@keyup.enter.native="handleLogin">
+				<el-input v-model="loginForm.password" type="password" auto-complete="off" placeholder="密码" @keyup.enter.native="handleLogin">
 					<svg-icon slot="prefix" icon-class="password" class="el-input__icon input-icon" />
 				</el-input>
 			</el-form-item>
 			<el-form-item prop="code" v-if="captchaEnabled">
-				<el-input v-model="loginForm.code" auto-complete="off" placeholder="验证码" style="width: 63%"
-					@keyup.enter.native="handleLogin">
+				<el-input v-model="loginForm.code" auto-complete="off" placeholder="验证码" style="width: 63%" @keyup.enter.native="handleLogin">
 					<svg-icon slot="prefix" icon-class="validCode" class="el-input__icon input-icon" />
 				</el-input>
-				<div class="login-code">
-					<img :src="codeUrl" @click="getCode" class="login-code-img" />
-				</div>
+				<div class="login-code" v-html="codeUrl"></div>
 			</el-form-item>
 			<el-checkbox v-model="loginForm.rememberMe" style="margin: 0px 0px 25px 0px">记住密码</el-checkbox>
 			<el-form-item style="width: 100%">
-				<el-button :loading="loading" size="medium" type="primary" style="width: 100%"
-					@click.native.prevent="handleLogin">
+				<el-button :loading="loading" size="medium" type="primary" style="width: 100%" @click.native.prevent="handleLogin">
 					<span v-if="!loading">登 录</span>
 					<span v-else>登 录 中...</span>
 				</el-button>
@@ -86,10 +81,10 @@ export default {
 	methods: {
 		getCode() {
 			getCodeImg().then((res) => {
-				this.captchaEnabled = res.captchaEnabled === undefined ? true : res.captchaEnabled;
+				this.captchaEnabled = res.data.captchaEnabled === undefined ? true : res.data.captchaEnabled;
 				if (this.captchaEnabled) {
-					this.codeUrl = 'data:image/gif;base64,' + res.img;
-					this.loginForm.uuid = res.uuid;
+					this.codeUrl = res.data.img;
+					this.loginForm.uuid = res.data.uuid;
 				}
 			});
 		},
@@ -119,7 +114,7 @@ export default {
 					this.$store
 						.dispatch('Login', this.loginForm)
 						.then(() => {
-							this.$router.push({ path: this.redirect || '/' }).catch(() => { });
+							this.$router.push({ path: this.redirect || '/' }).catch(() => {});
 						})
 						.catch(() => {
 							this.loading = false;

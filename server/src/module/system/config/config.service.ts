@@ -57,18 +57,23 @@ export class ConfigService {
     return ResultData.ok(data);
   }
 
+  async findOneByConfigKey(configKey: string) {
+    const data = await this.getConfigValue(configKey);
+    return ResultData.ok(data);
+  }
+
   /**
    * 根据配置键值异步查找一条配置信息。
    *
    * @param configKey 配置的键值，用于查询配置信息。
    * @returns 返回一个结果对象，包含查询到的配置信息。如果未查询到，则返回空结果。
    */
-  async findOneByconfigKey(configKey: string) {
+  async getConfigValue(configKey: string) {
     // 尝试从Redis缓存中获取配置信息
     const cacheData = await this.redisService.get(`${CacheEnum.SYS_CONFIG_KEY}${configKey}`);
     if (cacheData) {
       // 如果缓存中存在配置信息，则直接返回
-      return ResultData.ok(cacheData);
+      return cacheData;
     }
 
     // 从数据库中查询配置信息
@@ -79,7 +84,7 @@ export class ConfigService {
     });
     // 将从数据库中查询到的配置信息存入Redis缓存
     await this.redisService.set(`${CacheEnum.SYS_CONFIG_KEY}${configKey}`, data.configValue);
-    return ResultData.ok(data);
+    return data;
   }
 
   async update(updateConfigDto: UpdateConfigDto) {
