@@ -3,10 +3,21 @@ import { ApiTags, ApiOperation, ApiBody, ApiConsumes, ApiQuery, ApiBearerAuth } 
 import * as Useragent from 'useragent';
 import { MainService } from './main.service';
 import { RegisterDto, LoginDto } from './dto/index';
+import { createMath, createText } from 'src/common/utils/captcha';
+import { ResultData } from 'src/common/utils/result';
+import { GenerateUUID } from 'src/common/utils/index';
+import { RedisService } from 'src/module/redis/redis.service';
+import { CacheEnum } from 'src/common/enum/index';
+import { ConfigService } from 'src/module/system/config/config.service';
+
 @ApiTags('根目录')
 @Controller('/')
 export class MainController {
-  constructor(private readonly mainService: MainService) {}
+  constructor(
+    private readonly mainService: MainService,
+    private readonly redisService: RedisService,
+    private readonly configService: ConfigService,
+  ) {}
   @ApiOperation({
     summary: '用户登陆',
   })
@@ -70,12 +81,26 @@ export class MainController {
     summary: '获取验证图片',
   })
   @Get('/captchaImage')
-  captchaImage() {
-    return {
-      captchaEnabled: false,
-      code: 200,
-      msg: '操作成功',
+  async captchaImage() {
+    //是否开启验证码
+    const enable = await this.configService.getConfigValue('sys.account.captchaEnabled');
+    const captchaEnabled: boolean = enable === 'true';
+    const data = {
+      captchaEnabled,
+      img: '',
+      uuid: '',
     };
+    try {
+      if (captchaEnabled) {
+        const captchaInfo = createText();
+        data.img = captchaInfo.data;
+        data.uuid = GenerateUUID();
+        await this.redisService.set(CacheEnum.CAPTCHA_CODE_KEY + data.uuid, captchaInfo.text.toLowerCase());
+      }
+      return ResultData.ok(data, '操作成功');
+    } catch (err) {
+      return ResultData.fail(500, '生成验证码错误，请重试');
+    }
   }
 
   @ApiOperation({
