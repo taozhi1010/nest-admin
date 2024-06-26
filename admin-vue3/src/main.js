@@ -12,6 +12,11 @@ import store from './store'
 import router from './router'
 import directive from './directive' // directive
 
+
+import draggable from "dd-form-draggable"
+import VFormDesigner from '@/assets/draggable/dist/designer.es'
+import '@/assets/draggable/dist/designer.style.css';
+
 // 注册指令
 import plugins from './plugins' // plugins
 import { download } from '@/utils/request'
@@ -64,11 +69,13 @@ app.component('ImageUpload', ImageUpload)
 app.component('ImagePreview', ImagePreview)
 app.component('RightToolbar', RightToolbar)
 app.component('Editor', Editor)
+app.component('draggable', draggable)
 
 app.use(router)
 app.use(store)
 app.use(plugins)
 app.use(elementIcons)
+app.use(VFormDesigner);
 app.component('svg-icon', SvgIcon)
 
 directive(app)
