@@ -163,3 +163,40 @@ export class AllocatedListDto extends PagingDto {
   @IsNumberString()
   roleId?: string;
 }
+
+export class UpdateProfileDto {
+  @ApiProperty({ required: true })
+  @IsOptional()
+  @IsString()
+  @Length(0, 30)
+  nickName: string;
+
+  @ApiProperty({ required: true })
+  @IsOptional()
+  @IsEmail()
+  @Length(0, 50)
+  email: string;
+
+  @ApiProperty({ required: true })
+  @IsOptional()
+  @IsString()
+  phonenumber: string;
+
+  @ApiProperty({ required: true })
+  @IsOptional()
+  @IsString()
+  @IsEnum(StatusEnum)
+  sex: string;
+}
+
+export class UpdatePwdDto {
+  @ApiProperty({ required: true })
+  @IsString()
+  @Length(0, 200)
+  oldPassword: string;
+
+  @ApiProperty({ required: true })
+  @IsString()
+  @Length(0, 200)
+  newPassword: string;
+}

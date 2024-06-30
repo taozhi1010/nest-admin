@@ -4,12 +4,42 @@ import { UserService } from './user.service';
 import { RequirePermission } from 'src/common/decorators/require-premission.decorator';
 import { RequireRole } from 'src/common/decorators/require-role.decorator';
 
-import { CreateUserDto, UpdateUserDto, ListUserDto, ChangeStatusDto, ResetPwdDto } from './dto/index';
+import { CreateUserDto, UpdateUserDto, ListUserDto, ChangeStatusDto, ResetPwdDto, UpdateProfileDto, UpdatePwdDto } from './dto/index';
 
 @ApiTags('用户管理')
 @Controller('system/user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
+
+  @ApiOperation({
+    summary: '个人中心-用户信息',
+  })
+  @RequirePermission('system:user:query')
+  @Get('/profile')
+  profile(@Request() req) {
+    const user = req.user.user;
+    return this.userService.profile(user);
+  }
+
+  @ApiOperation({
+    summary: '个人中心-修改用户信息',
+  })
+  @RequirePermission('system:user:edit')
+  @Put('/profile')
+  updateProfile(@Request() req, @Body() updateProfileDto: UpdateProfileDto) {
+    const user = req.user;
+    return this.userService.updateProfile(user, updateProfileDto);
+  }
+
+  @ApiOperation({
+    summary: '个人中心-修改密码',
+  })
+  @RequirePermission('system:user:edit')
+  @Put('/profile/updatePwd')
+  updatePwd(@Request() req, @Body() updatePwdDto: UpdatePwdDto) {
+    const user = req.user;
+    return this.userService.updatePwd(user, updatePwdDto);
+  }
 
   @ApiOperation({
     summary: '用户-创建',
