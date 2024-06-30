@@ -9,7 +9,7 @@ import { ListToTree, GetNowDate, GenerateUUID, Uniq } from 'src/common/utils/ind
 import { CacheEnum, DelFlagEnum, StatusEnum, DataScopeEnum } from 'src/common/enum/index';
 import { LOGIN_TOKEN_EXPIRESIN, SYS_USER_TYPE } from 'src/common/constant/index';
 import { ResultData } from 'src/common/utils/result';
-import { CreateUserDto, UpdateUserDto, ListUserDto, ChangeStatusDto, ResetPwdDto, AllocatedListDto } from './dto/index';
+import { CreateUserDto, UpdateUserDto, ListUserDto, ChangeStatusDto, ResetPwdDto, AllocatedListDto, UpdateProfileDto, UpdatePwdDto } from './dto/index';
 import { RegisterDto, LoginDto, ClientInfoDto } from '../../main/dto/index';
 import { AuthUserCancelDto, AuthUserCancelAllDto, AuthUserSelectAllDto } from '../role/dto/index';
 
@@ -48,9 +48,9 @@ export class UserService {
    */
   async create(createUserDto: CreateUserDto) {
     const loginDate = GetNowDate();
-
+    const salt = bcrypt.genSaltSync(10);
     if (createUserDto.password) {
-      createUserDto.password = await bcrypt.hashSync(createUserDto.password, bcrypt.genSaltSync(10));
+      createUserDto.password = await bcrypt.hashSync(createUserDto.password, salt);
     }
 
     const res = await this.userRepo.save({ ...createUserDto, loginDate, userType: SYS_USER_TYPE.CUSTOM });
@@ -759,6 +759,50 @@ export class UserService {
       });
     });
     await this.sysUserWithRoleEntityRep.save(entitys);
+    return ResultData.ok();
+  }
+
+  /**
+   * 个人中心-用户信息
+   * @param user
+   * @returns
+   */
+  async profile(user) {
+    return ResultData.ok(user);
+  }
+
+  /**
+   * 个人中心-用户信息
+   * @param user
+   * @returns
+   */
+  async updateProfile(user: any, updateProfileDto: UpdateProfileDto) {
+    await this.userRepo.update({ userId: user.user.userId }, updateProfileDto);
+    const userData = await this.redisService.get(`${CacheEnum.LOGIN_TOKEN_KEY}${user.token}`);
+    userData.user.nickName = updateProfileDto.nickName;
+    userData.user.email = updateProfileDto.email;
+    userData.user.phonenumber = updateProfileDto.phonenumber;
+    userData.user.sex = updateProfileDto.sex;
+    await this.redisService.set(`${CacheEnum.LOGIN_TOKEN_KEY}${user.token}`, userData);
+    return ResultData.ok();
+  }
+
+  /**
+   * 个人中心-修改密码
+   * @param user
+   * @param updatePwdDto
+   * @returns
+   */
+  async updatePwd(user: any, updatePwdDto: UpdatePwdDto) {
+    if (updatePwdDto.oldPassword === updatePwdDto.newPassword) {
+      return ResultData.fail(500, '新密码不能与旧密码相同');
+    }
+    if (bcrypt.compareSync(user.user.password, updatePwdDto.oldPassword)) {
+      return ResultData.fail(500, '修改密码失败，旧密码错误');
+    }
+
+    const password = await bcrypt.hashSync(updatePwdDto.newPassword, bcrypt.genSaltSync(10));
+    await this.userRepo.update({ userId: user.user.userId }, { password: password });
     return ResultData.ok();
   }
 }

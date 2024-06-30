@@ -71,7 +71,7 @@ export default {
 		return {
 			user: {},
 			roleGroup: {},
-			postGroup: {},
+			postGroup: '',
 			activeTab: 'userinfo',
 		};
 	},
@@ -82,8 +82,8 @@ export default {
 		getUser() {
 			getUserProfile().then((response) => {
 				this.user = response.data;
-				this.roleGroup = response.roleGroup;
-				this.postGroup = response.postGroup;
+				this.roleGroup = this.user.roles.map((item) => item.roleName).join(',');
+				this.postGroup = this.user.posts.map((item) => item.postName).join(',');
 			});
 		},
 	},

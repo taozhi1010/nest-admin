@@ -92,7 +92,7 @@ export class MainController {
     };
     try {
       if (captchaEnabled) {
-        const captchaInfo = createText();
+        const captchaInfo = createMath();
         data.img = captchaInfo.data;
         data.uuid = GenerateUUID();
         await this.redisService.set(CacheEnum.CAPTCHA_CODE_KEY + data.uuid, captchaInfo.text.toLowerCase());
