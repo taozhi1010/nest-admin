@@ -95,7 +95,7 @@ export class MainController {
         const captchaInfo = createMath();
         data.img = captchaInfo.data;
         data.uuid = GenerateUUID();
-        await this.redisService.set(CacheEnum.CAPTCHA_CODE_KEY + data.uuid, captchaInfo.text.toLowerCase());
+        await this.redisService.set(CacheEnum.CAPTCHA_CODE_KEY + data.uuid, captchaInfo.text.toLowerCase(), 1000 * 60 * 5);
       }
       return ResultData.ok(data, '操作成功');
     } catch (err) {

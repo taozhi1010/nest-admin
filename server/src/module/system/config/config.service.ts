@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
+import { Response } from 'express';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, In } from 'typeorm';
 import { ResultData } from 'src/common/utils/result';
+import { ExportTable } from 'src/common/utils/export';
 import { CreateConfigDto, UpdateConfigDto, ListConfigDto } from './dto/index';
 import { SysConfigEntity } from './entities/config.entity';
 import { RedisService } from 'src/module/redis/redis.service';
@@ -39,7 +41,10 @@ export class ConfigService {
       entity.andWhere('entity.createTime BETWEEN :start AND :end', { start: query.params.beginTime, end: query.params.endTime });
     }
 
-    entity.skip(query.pageSize * (query.pageNum - 1)).take(query.pageSize);
+    if (query.pageSize && query.pageNum) {
+      entity.skip(query.pageSize * (query.pageNum - 1)).take(query.pageSize);
+    }
+
     const [list, total] = await entity.getManyAndCount();
 
     return ResultData.ok({
@@ -128,5 +133,33 @@ export class ConfigService {
       this.redisService.set(`${CacheEnum.SYS_CONFIG_KEY}${item.configKey}`, item.configValue);
     });
     return ResultData.ok();
+  }
+
+  /**
+   * 导出参数管理数据为xlsx
+   * @param res
+   */
+  async export(res: Response, body: ListConfigDto) {
+    delete body.pageNum;
+    delete body.pageSize;
+    const list = await this.findAll(body);
+    const options = {
+      sheetName: '参数管理',
+      data: list.data.list,
+      header: [
+        { title: '参数主键', dataIndex: 'configId' },
+        { title: '参数名称', dataIndex: 'configName' },
+        { title: '参数键名', dataIndex: 'configKey' },
+        { title: '参数键值', dataIndex: 'configValue' },
+        { title: '系统内置', dataIndex: 'configType' },
+      ],
+      dictMap: {
+        configType: {
+          Y: '是',
+          N: '否',
+        },
+      },
+    };
+    ExportTable(options, res);
   }
 }

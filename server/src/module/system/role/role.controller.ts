@@ -1,6 +1,7 @@
-import { Controller, Get, Post, Body, Put, Param, Query, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Put, Param, Query, Delete, Res } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBody, ApiConsumes, ApiQuery, ApiBearerAuth } from '@nestjs/swagger';
 import { RoleService } from './role.service';
+import { Response } from 'express';
 import { CreateRoleDto, UpdateRoleDto, ListRoleDto, ChangeStatusDto, AuthUserCancelDto, AuthUserCancelAllDto, AuthUserSelectAllDto } from './dto/index';
 import { AllocatedListDto } from '../user/dto/index';
 import { RequirePermission } from 'src/common/decorators/require-premission.decorator';
@@ -167,5 +168,12 @@ export class RoleController {
   @Put('authUser/selectAll')
   authUserSelectAll(@Body() body: AuthUserSelectAllDto) {
     return this.userService.authUserSelectAll(body);
+  }
+
+  @ApiOperation({ summary: '导出角色管理xlsx文件' })
+  @RequirePermission('system:role:export')
+  @Post('/export')
+  async export(@Res() res: Response, @Body() body: ListRoleDto): Promise<void> {
+    return this.roleService.export(res, body);
   }
 }

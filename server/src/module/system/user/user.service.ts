@@ -1,11 +1,13 @@
-import { Repository, In, FindManyOptions, Not } from 'typeorm';
+import { Repository, In, Not } from 'typeorm';
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { RedisService } from 'src/module/redis/redis.service';
 import * as bcrypt from 'bcrypt';
+import { Response } from 'express';
+import { GetNowDate, GenerateUUID, Uniq } from 'src/common/utils/index';
+import { ExportTable } from 'src/common/utils/export';
 
-import { ListToTree, GetNowDate, GenerateUUID, Uniq } from 'src/common/utils/index';
 import { CacheEnum, DelFlagEnum, StatusEnum, DataScopeEnum } from 'src/common/enum/index';
 import { LOGIN_TOKEN_EXPIRESIN, SYS_USER_TYPE } from 'src/common/constant/index';
 import { ResultData } from 'src/common/utils/result';
@@ -136,7 +138,9 @@ export class UserService {
       entity.andWhere('user.createTime BETWEEN :start AND :end', { start: query.params.beginTime, end: query.params.endTime });
     }
 
-    entity.skip(query.pageSize * (query.pageNum - 1)).take(query.pageSize);
+    if (query.pageSize && query.pageNum) {
+      entity.skip(query.pageSize * (query.pageNum - 1)).take(query.pageSize);
+    }
     //联查部门详情
     entity.leftJoinAndMapOne('user.dept', SysDeptEntity, 'dept', 'dept.deptId = user.deptId');
 
@@ -295,22 +299,25 @@ export class UserService {
    * 登陆
    */
   async login(user: LoginDto, clientInfo: ClientInfoDto) {
+    const enable = await this.configService.getConfigValue('sys.account.captchaEnabled');
+    const captchaEnabled: boolean = enable === 'true';
+
+    if (captchaEnabled) {
+      const code = await this.redisService.get(CacheEnum.CAPTCHA_CODE_KEY + user.uuid);
+      if (!code) {
+        return ResultData.fail(500, `验证码已过期`);
+      }
+      if (code !== user.code) {
+        return ResultData.fail(500, `验证码错误`);
+      }
+    }
+
     const data = await this.userRepo.findOne({
       where: {
         userName: user.username,
       },
       select: ['userId', 'password'],
     });
-
-    const enable = await this.configService.getConfigValue('sys.account.captchaEnabled');
-    const captchaEnabled: boolean = enable === 'true';
-
-    if (captchaEnabled) {
-      const code = await this.redisService.get(CacheEnum.CAPTCHA_CODE_KEY + user.uuid);
-      if (code !== user.code) {
-        return ResultData.fail(500, `验证码错误`);
-      }
-    }
 
     if (!(data && bcrypt.compareSync(user.password, data.password))) {
       return ResultData.fail(500, `帐号或密码错误`);
@@ -804,5 +811,33 @@ export class UserService {
     const password = await bcrypt.hashSync(updatePwdDto.newPassword, bcrypt.genSaltSync(10));
     await this.userRepo.update({ userId: user.user.userId }, { password: password });
     return ResultData.ok();
+  }
+
+  /**
+   * 导出用户信息数据为xlsx
+   * @param res
+   */
+  async export(res: Response, body: ListUserDto, user) {
+    delete body.pageNum;
+    delete body.pageSize;
+    const list = await this.findAll(body, user);
+    const options = {
+      sheetName: '用户数据',
+      data: list.data.list,
+      header: [
+        { title: '用户序号', dataIndex: 'userId' },
+        { title: '登录名称', dataIndex: 'userName' },
+        { title: '用户昵称', dataIndex: 'nickName' },
+        { title: '用户邮箱', dataIndex: 'email' },
+        { title: '手机号码', dataIndex: 'phonenumber' },
+        { title: '用户性别', dataIndex: 'sex' },
+        { title: '账号状态', dataIndex: 'status' },
+        { title: '最后登录IP', dataIndex: 'loginIp' },
+        { title: '最后登录时间', dataIndex: 'loginDate', width: 20 },
+        { title: '部门', dataIndex: 'dept.deptName' },
+        { title: '部门负责人', dataIndex: 'dept.leader' },
+      ],
+    };
+    ExportTable(options, res);
   }
 }
