@@ -48,7 +48,7 @@ redis:
   password: '123456'
   port: 6379
   db: 0
-  keyPrefix: 'nest:'
+  keyPrefix: ''
 
 # jwt 配置
 jwt:
