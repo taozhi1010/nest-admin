@@ -1,10 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, In, FindManyOptions } from 'typeorm';
+import { Response } from 'express';
 import { ResultData } from 'src/common/utils/result';
 import { ListToTree } from 'src/common/utils/index';
-import { DataScopeEnum } from 'src/common/enum/index';
+import { ExportTable } from 'src/common/utils/export';
 
+import { DataScopeEnum } from 'src/common/enum/index';
 import { SysRoleEntity } from './entities/role.entity';
 import { SysRoleWithMenuEntity } from './entities/role-width-menu.entity';
 import { SysRoleWithDeptEntity } from './entities/role-width-dept.entity';
@@ -62,7 +64,9 @@ export class RoleService {
       entity.andWhere('entity.createTime BETWEEN :start AND :end', { start: query.params.beginTime, end: query.params.endTime });
     }
 
-    entity.skip(query.pageSize * (query.pageNum - 1)).take(query.pageSize);
+    if (query.pageSize && query.pageNum) {
+      entity.skip(query.pageSize * (query.pageNum - 1)).take(query.pageSize);
+    }
     const [list, total] = await entity.getManyAndCount();
 
     return ResultData.ok({
@@ -221,5 +225,28 @@ export class RoleService {
     });
     // 将查询结果映射为仅包含部门ID的数组并返回。
     return res.map((item) => item.deptId);
+  }
+
+  /**
+   * 导出角色管理数据为xlsx
+   * @param res
+   */
+  async export(res: Response, body: ListRoleDto) {
+    delete body.pageNum;
+    delete body.pageSize;
+    const list = await this.findAll(body);
+    const options = {
+      sheetName: '角色数据',
+      data: list.data.list,
+      header: [
+        { title: '角色编号', dataIndex: 'roleId' },
+        { title: '角色名称', dataIndex: 'roleName', width: 15 },
+        { title: '权限字符', dataIndex: 'roleKey' },
+        { title: '显示顺序', dataIndex: 'roleSort' },
+        { title: '状态', dataIndex: 'status' },
+        { title: '创建时间', dataIndex: 'createTime', width: 15 },
+      ],
+    };
+    ExportTable(options, res);
   }
 }

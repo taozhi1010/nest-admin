@@ -1,6 +1,7 @@
-import { Controller, Get, Post, Body, Put, Param, Query, Delete, Request } from '@nestjs/common';
+import { Controller, Get, Post, Body, Put, Param, Query, Res, Delete, Request } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBody, ApiConsumes, ApiQuery, ApiBearerAuth } from '@nestjs/swagger';
 import { UserService } from './user.service';
+import { Response } from 'express';
 import { RequirePermission } from 'src/common/decorators/require-premission.decorator';
 import { RequireRole } from 'src/common/decorators/require-role.decorator';
 
@@ -157,5 +158,13 @@ export class UserController {
   remove(@Param('id') ids: string) {
     const menuIds = ids.split(',').map((id) => +id);
     return this.userService.remove(menuIds);
+  }
+
+  @ApiOperation({ summary: '导出用户信息数据为xlsx' })
+  @RequirePermission('system:user:export')
+  @Post('/export')
+  async export(@Res() res: Response, @Body() body: ListUserDto, @Request() req): Promise<void> {
+    const user = req.user.user;
+    return this.userService.export(res, body, user);
   }
 }

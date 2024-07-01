@@ -1,5 +1,6 @@
-import { Controller, Get, Post, Body, Put, Param, Delete, Query } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBody, ApiConsumes, ApiQuery, ApiBearerAuth } from '@nestjs/swagger';
+import { Controller, Get, Post, Body, Put, Param, Delete, Query, Res } from '@nestjs/common';
+import { Response } from 'express';
+import { ApiTags, ApiOperation, ApiBody } from '@nestjs/swagger';
 import { ConfigService } from './config.service';
 import { CreateConfigDto, UpdateConfigDto, ListConfigDto } from './dto/index';
 import { RequirePermission } from 'src/common/decorators/require-premission.decorator';
@@ -78,5 +79,12 @@ export class ConfigController {
   remove(@Param('id') ids: string) {
     const configIds = ids.split(',').map((id) => +id);
     return this.configService.remove(configIds);
+  }
+
+  @ApiOperation({ summary: '导出参数管理为xlsx文件' })
+  @RequirePermission('system:config:export')
+  @Post('/export')
+  async export(@Res() res: Response, @Body() body: ListConfigDto): Promise<void> {
+    return this.configService.export(res, body);
   }
 }

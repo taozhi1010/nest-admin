@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Response } from 'express';
 import { Repository, In, Not, IsNull } from 'typeorm';
 import { ResultData } from 'src/common/utils/result';
+import { ExportTable } from 'src/common/utils/export';
 import { MonitorLoginlogEntity } from './entities/loginlog.entity';
 import { CreateLoginlogDto, ListLoginlogDto } from './dto/index';
 
@@ -51,7 +53,10 @@ export class LoginlogService {
       entity.orderBy(`entity.${query.orderByColumn}`, key);
     }
 
-    entity.skip(query.pageSize * (query.pageNum - 1)).take(query.pageSize);
+    if (query.pageSize && query.pageNum) {
+      entity.skip(query.pageSize * (query.pageNum - 1)).take(query.pageSize);
+    }
+
     const [list, total] = await entity.getManyAndCount();
 
     return ResultData.ok({
@@ -86,5 +91,37 @@ export class LoginlogService {
       },
     );
     return ResultData.ok();
+  }
+
+  /**
+   * 导出登录日志数据为xlsx
+   * @param res
+   */
+  async export(res: Response, body: ListLoginlogDto) {
+    delete body.pageNum;
+    delete body.pageSize;
+    const list = await this.findAll(body);
+    const options = {
+      sheetName: '登录日志',
+      data: list.data.list,
+      header: [
+        { title: '序号', dataIndex: 'infoId' },
+        { title: '用户账号', dataIndex: 'userName' },
+        { title: '登录状态', dataIndex: 'status' },
+        { title: '登录地址', dataIndex: 'ipaddr' },
+        { title: '登录地点', dataIndex: 'loginLocation' },
+        { title: '浏览器', dataIndex: 'browser' },
+        { title: '操作系统', dataIndex: 'os' },
+        { title: '提示消息', dataIndex: 'msg' },
+        { title: '访问时间', dataIndex: 'loginTime' },
+      ],
+      dictMap: {
+        status: {
+          '0': '成功',
+          '1': '失败',
+        },
+      },
+    };
+    ExportTable(options, res);
   }
 }

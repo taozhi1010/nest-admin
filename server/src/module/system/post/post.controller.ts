@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Body, Put, Param, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Put, Param, Delete, Res, Query } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBody, ApiConsumes, ApiQuery, ApiBearerAuth } from '@nestjs/swagger';
 import { PostService } from './post.service';
 import { CreatePostDto, UpdatePostDto, ListPostDto } from './dto/index';
 import { RequirePermission } from 'src/common/decorators/require-premission.decorator';
+import { Response } from 'express';
 
 @ApiTags('岗位管理')
 @Controller('system/post')
@@ -65,5 +66,12 @@ export class PostController {
   remove(@Param('ids') ids: string) {
     const menuIds = ids.split(',').map((id) => id);
     return this.postService.remove(menuIds);
+  }
+
+  @ApiOperation({ summary: '导出岗位管理xlsx文件' })
+  @RequirePermission('system:post:export')
+  @Post('/export')
+  async export(@Res() res: Response, @Body() body: ListPostDto): Promise<void> {
+    return this.postService.export(res, body);
   }
 }

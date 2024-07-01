@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Response } from 'express';
 import { Repository, In } from 'typeorm';
 import { ResultData } from 'src/common/utils/result';
 import { CacheEnum } from 'src/common/enum/index';
+import { ExportTable } from 'src/common/utils/export';
 import { SysDictTypeEntity } from './entities/dict.type.entity';
 import { SysDictDataEntity } from './entities/dict.data.entity';
 import { CreateDictTypeDto, UpdateDictTypeDto, ListDictType, CreateDictDataDto, UpdateDictDataDto, ListDictData } from './dto/index';
@@ -51,7 +53,10 @@ export class DictService {
       entity.andWhere('entity.createTime BETWEEN :start AND :end', { start: query.params.beginTime, end: query.params.endTime });
     }
 
-    entity.skip(query.pageSize * (query.pageNum - 1)).take(query.pageSize);
+    if (query.pageSize && query.pageNum) {
+      entity.skip(query.pageSize * (query.pageNum - 1)).take(query.pageSize);
+    }
+
     const [list, total] = await entity.getManyAndCount();
 
     return ResultData.ok({
@@ -163,5 +168,26 @@ export class DictService {
       },
     });
     return ResultData.ok(data);
+  }
+
+  /**
+   * 导出字典数据为xlsx文件
+   * @param res
+   */
+  async export(res: Response, body: ListDictType) {
+    delete body.pageNum;
+    delete body.pageSize;
+    const list = await this.findAllType(body);
+    const options = {
+      sheetName: '字典数据',
+      data: list.data.list,
+      header: [
+        { title: '字典主键', dataIndex: 'dictId' },
+        { title: '字典名称', dataIndex: 'dictName' },
+        { title: '字典类型', dataIndex: 'dictType' },
+        { title: '状态', dataIndex: 'status' },
+      ],
+    };
+    ExportTable(options, res);
   }
 }

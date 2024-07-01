@@ -37,6 +37,7 @@
     "class-validator": "^0.14.1",
     "cos-nodejs-sdk-v5": "^2.13.4",
     "dayjs": "^1.11.10",
+    "exceljs": "^4.4.0",
     "express-rate-limit": "^7.1.5",
     "helmet": "^7.1.0",
     "iconv-lite": "^0.6.3",
