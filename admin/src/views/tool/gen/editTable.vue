@@ -149,7 +149,7 @@ export default {
 		if (tableId) {
 			// 获取表详细信息
 			getGenTable(tableId).then((res) => {
-				this.columns = res.data.rows;
+				this.columns = res.data.info.columns;
 				this.info = res.data.info;
 				this.tables = res.data.tables;
 			});
@@ -173,12 +173,6 @@ export default {
 				if (validateResult) {
 					const genTable = Object.assign({}, basicForm.model, genForm.model);
 					genTable.columns = this.columns;
-					genTable.params = {
-						treeCode: genTable.treeCode,
-						treeName: genTable.treeName,
-						treeParentCode: genTable.treeParentCode,
-						parentMenuId: genTable.parentMenuId,
-					};
 					updateGenTable(genTable).then((res) => {
 						this.$modal.msgSuccess(res.msg);
 						if (res.code === 200) {
