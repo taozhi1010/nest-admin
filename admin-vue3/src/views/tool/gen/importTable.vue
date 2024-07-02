@@ -27,9 +27,8 @@
       <el-table @row-click="clickRow" ref="table" :data="dbTableList" @selection-change="handleSelectionChange" height="260px">
         <el-table-column type="selection" width="55"></el-table-column>
         <el-table-column prop="tableName" label="表名称" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column prop="tableComment" label="表描述" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column prop="createTime" label="创建时间"></el-table-column>
-        <el-table-column prop="updateTime" label="更新时间"></el-table-column>
+        <el-table-column prop="comment" label="表描述" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column prop="targetName" label="表实体"></el-table-column>
       </el-table>
       <pagination
         v-show="total>0"
@@ -82,8 +81,8 @@ function handleSelectionChange(selection) {
 /** 查询表数据 */
 function getList() {
   listDbTable(queryParams).then(res => {
-    dbTableList.value = res.rows;
-    total.value = res.total;
+    dbTableList.value = res.data.list;
+    total.value = res.data.total;
   });
 }
 /** 搜索按钮操作 */
@@ -103,7 +102,7 @@ function handleImportTable() {
     proxy.$modal.msgError("请选择要导入的表");
     return;
   }
-  importTable({ tables: tableNames }).then(res => {
+  importTable({ tableNames: tableNames }).then(res => {
     proxy.$modal.msgSuccess(res.msg);
     if (res.code === 200) {
       visible.value = false;
