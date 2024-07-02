@@ -151,12 +151,6 @@ function submitForm() {
     if (validateResult) {
       const genTable = Object.assign({}, info.value);
       genTable.columns = columns.value;
-      genTable.params = {
-        treeCode: info.value.treeCode,
-        treeName: info.value.treeName,
-        treeParentCode: info.value.treeParentCode,
-        parentMenuId: info.value.parentMenuId
-      };
       updateGenTable(genTable).then(res => {
         proxy.$modal.msgSuccess(res.msg);
         if (res.code === 200) {
@@ -185,7 +179,7 @@ function close() {
   if (tableId) {
     // 获取表详细信息
     getGenTable(tableId).then(res => {
-      columns.value = res.data.rows;
+      columns.value = res.data.info.columns;
       info.value = res.data.info;
       tables.value = res.data.tables;
     });

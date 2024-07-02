@@ -39,7 +39,7 @@ export function importTable(data) {
 	return request({
 		url: '/tool/gen/importTable',
 		method: 'post',
-		params: data,
+		data: data,
 	});
 }
 
