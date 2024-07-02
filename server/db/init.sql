@@ -673,12 +673,14 @@ create table gen_table (
   function_author   varchar(50)                                comment '生成功能作者',
   gen_type          char(1)         default '0'                comment '生成代码方式（0zip压缩包 1自定义路径）',
   gen_path          varchar(200)    default '/'                comment '生成路径（不填默认项目路径）',
-  options           varchar(1000)                              comment '其它生成选项',
+  options           varchar(1000)   default ''                 comment '其它生成选项',
+  status            char(1)         default '0'                comment '状态（0正常 1关闭）',
+  del_flag          char(1)         default '0'                comment '删除标志（0代表存在 1代表删除）',
   create_by         varchar(64)     default ''                 comment '创建者',
   create_time 	    datetime                                   comment '创建时间',
   update_by         varchar(64)     default ''                 comment '更新者',
   update_time       datetime                                   comment '更新时间',
-  remark            varchar(500)    default null               comment '备注',
+  remark            varchar(500)    default ''               comment '备注',
   primary key (table_id)
 ) engine=innodb auto_increment=1 comment = '代码生成业务表';
 
@@ -706,9 +708,12 @@ create table gen_table_column (
   html_type         varchar(200)                               comment '显示类型（文本框、文本域、下拉框、复选框、单选框、日期控件）',
   dict_type         varchar(200)    default ''                 comment '字典类型',
   sort              int                                        comment '排序',
+  status            char(1)         default '0'                comment '状态（0正常 1关闭）',
+  del_flag          char(1)         default '0'                comment '删除标志（0代表存在 1代表删除）',
   create_by         varchar(64)     default ''                 comment '创建者',
   create_time 	    datetime                                   comment '创建时间',
   update_by         varchar(64)     default ''                 comment '更新者',
   update_time       datetime                                   comment '更新时间',
+  remark            varchar(255)    default ''               comment '备注',
   primary key (column_id)
 ) engine=innodb auto_increment=1 comment = '代码生成业务表字段';
