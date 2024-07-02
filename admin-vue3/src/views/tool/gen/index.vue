@@ -113,9 +113,9 @@
           <el-tooltip content="删除" placement="top">
             <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['tool:gen:remove']"></el-button>
           </el-tooltip>
-          <el-tooltip content="同步" placement="top">
+          <!-- <el-tooltip content="同步" placement="top">
             <el-button link type="primary" icon="Refresh" @click="handleSynchDb(scope.row)" v-hasPermi="['tool:gen:edit']"></el-button>
-          </el-tooltip>
+          </el-tooltip> -->
           <el-tooltip content="生成代码" placement="top">
             <el-button link type="primary" icon="Download" @click="handleGenTable(scope.row)" v-hasPermi="['tool:gen:code']"></el-button>
           </el-tooltip>
@@ -220,7 +220,7 @@ function handleGenTable(row) {
       proxy.$modal.msgSuccess("成功生成到自定义路径：" + row.genPath);
     });
   } else {
-    proxy.$download.zip("/tool/gen/batchGenCode?tables=" + tbNames, "ruoyi.zip");
+    proxy.$download.zip("/tool/gen/batchGenCode/zip?tableNames=" + tbNames, "ruoyi.zip");
   }
 }
 /** 同步数据库操作 */
@@ -247,7 +247,7 @@ function handlePreview(row) {
   previewTable(row.tableId).then(response => {
     preview.value.data = response.data;
     preview.value.open = true;
-    preview.value.activeName = "domain.java";
+    preview.value.activeName = "entity.ts";
   });
 }
 /** 复制代码成功 */
