@@ -7,7 +7,7 @@
 			<el-form-item label="表描述" prop="tableComment">
 				<el-input v-model="queryParams.tableComment" placeholder="请输入表描述" clearable @keyup.enter.native="handleQuery" />
 			</el-form-item>
-			<el-form-item label="创建时间">
+			<!-- <el-form-item label="创建时间">
 				<el-date-picker
 					v-model="dateRange"
 					style="width: 240px"
@@ -17,7 +17,7 @@
 					start-placeholder="开始日期"
 					end-placeholder="结束日期"
 				></el-date-picker>
-			</el-form-item>
+			</el-form-item> -->
 			<el-form-item>
 				<el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
 				<el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -51,15 +51,25 @@
 					<span>{{ (queryParams.pageNum - 1) * queryParams.pageSize + scope.$index + 1 }}</span>
 				</template>
 			</el-table-column>
-			<el-table-column label="表名称" align="center" prop="tableName" :show-overflow-tooltip="true" width="120" />
-			<el-table-column label="表描述" align="center" prop="comment" :show-overflow-tooltip="true" />
-			<el-table-column label="实体" align="center" prop="targetName" :show-overflow-tooltip="true" />
+			<el-table-column label="表名称" align="center" prop="tableName" :show-overflow-tooltip="true" />
+			<el-table-column label="表描述" align="center" prop="tableComment" :show-overflow-tooltip="true" />
+			<el-table-column label="实体" align="center" prop="className" :show-overflow-tooltip="true" />
+			<el-table-column label="创建时间" align="center" prop="createTime" :show-overflow-tooltip="true"
+				><template slot-scope="scope">
+					<span>{{ parseTime(scope.row.createTime) }}</span>
+				</template></el-table-column
+			>
+			<el-table-column label="更新时间" align="center" prop="updateTime" :show-overflow-tooltip="true">
+				<template slot-scope="scope">
+					<span>{{ parseTime(scope.row.updateTime) }}</span>
+				</template>
+			</el-table-column>
 			<el-table-column label="操作" align="center" class-name="small-padding fixed-width">
 				<template slot-scope="scope">
 					<el-button type="text" size="small" icon="el-icon-view" @click="handlePreview(scope.row)" v-hasPermi="['tool:gen:preview']">预览</el-button>
 					<el-button type="text" size="small" icon="el-icon-edit" @click="handleEditTable(scope.row)" v-hasPermi="['tool:gen:edit']">编辑</el-button>
 					<el-button type="text" size="small" icon="el-icon-delete" @click="handleDelete(scope.row)" v-hasPermi="['tool:gen:remove']">删除</el-button>
-					<el-button type="text" size="small" icon="el-icon-refresh" @click="handleSynchDb(scope.row)" v-hasPermi="['tool:gen:edit']">同步</el-button>
+					<!-- <el-button type="text" size="small" icon="el-icon-refresh" @click="handleSynchDb(scope.row)" v-hasPermi="['tool:gen:edit']">同步</el-button> -->
 					<el-button type="text" size="small" icon="el-icon-download" @click="handleGenTable(scope.row)" v-hasPermi="['tool:gen:code']"
 						>生成代码</el-button
 					>
@@ -84,7 +94,7 @@
 						style="float: right"
 						>复制</el-link
 					>
-					<pre><code class="hljs" v-html="highlightedCode(value, key)"></code></pre>
+					<pre>{{ value }}</pre>
 				</el-tab-pane>
 			</el-tabs>
 		</el-dialog>
@@ -95,15 +105,6 @@
 <script>
 import { listTable, previewTable, delTable, genCode, synchDb } from '@/api/tool/gen';
 import importTable from './importTable';
-import hljs from 'highlight.js/lib/highlight';
-import 'highlight.js/styles/github-gist.css';
-hljs.registerLanguage('java', require('highlight.js/lib/languages/java'));
-hljs.registerLanguage('xml', require('highlight.js/lib/languages/xml'));
-hljs.registerLanguage('html', require('highlight.js/lib/languages/xml'));
-hljs.registerLanguage('vue', require('highlight.js/lib/languages/xml'));
-hljs.registerLanguage('javascript', require('highlight.js/lib/languages/javascript'));
-hljs.registerLanguage('sql', require('highlight.js/lib/languages/sql'));
-
 export default {
 	name: 'Gen',
 	components: { importTable },
@@ -183,7 +184,7 @@ export default {
 					this.$modal.msgSuccess('成功生成到自定义路径：' + row.genPath);
 				});
 			} else {
-				this.$download.zip('/tool/gen/batchGenCode?tables=' + tableNames, 'ruoyi.zip');
+				this.$download.zip('/tool/gen/batchGenCode/zip?tableNames=' + tableNames, 'ruoyi.zip');
 			}
 		},
 		/** 同步数据库操作 */
@@ -214,15 +215,8 @@ export default {
 			previewTable(row.tableId).then((response) => {
 				this.preview.data = response.data;
 				this.preview.open = true;
-				this.preview.activeName = 'domain.java';
+				this.preview.activeName = 'entity.ts';
 			});
-		},
-		/** 高亮显示 */
-		highlightedCode(code, key) {
-			const vmName = key.substring(key.lastIndexOf('/') + 1, key.indexOf('.vm'));
-			var language = vmName.substring(vmName.indexOf('.') + 1, vmName.length);
-			const result = hljs.highlight(language, code || '', true);
-			return result.value || '&nbsp;';
 		},
 		/** 复制代码成功 */
 		clipboardSuccess() {
@@ -237,7 +231,7 @@ export default {
 		},
 		/** 修改按钮操作 */
 		handleEditTable(row) {
-			const tableId = row.id || this.ids[0];
+			const tableId = row.tableId || this.ids[0];
 			const tableName = row.tableName || this.tableNames[0];
 			const params = { pageNum: this.queryParams.pageNum };
 			this.$tab.openPage('修改[' + tableName + ']生成配置', '/tool/gen-edit/index/' + tableId, params);
