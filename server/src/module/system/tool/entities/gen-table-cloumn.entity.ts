@@ -7,11 +7,11 @@ import { BaseEntity } from 'src/common/entities/base';
 })
 export class GenTableColumnEntity extends BaseEntity {
   @ApiProperty({ type: Number, description: '编号' })
-  @PrimaryGeneratedColumn({ type: 'bigint', name: 'column_id', comment: '编号' })
+  @PrimaryGeneratedColumn({ type: 'int', name: 'column_id', comment: '编号' })
   public columnId: number;
 
   @ApiProperty({ type: Number, description: '归属表编号' })
-  @Column({ type: 'bigint', name: 'table_id', comment: '归属表编号' })
+  @Column({ type: 'int', name: 'table_id', comment: '归属表编号' })
   public tableId: number;
 
   @ApiProperty({ type: String, description: '列名称' })
@@ -35,31 +35,31 @@ export class GenTableColumnEntity extends BaseEntity {
   public javaField: string;
 
   @ApiProperty({ type: String, description: '是否主键（1是）' })
-  @Column({ type: 'char', name: 'is_pk', default:'0',length: 1, comment: '是否主键（1是）' })
+  @Column({ type: 'char', name: 'is_pk', default: '0', length: 1, comment: '是否主键（1是）' })
   public isPk: string;
 
   @ApiProperty({ type: String, description: '是否自增（1是）' })
-  @Column({ type: 'char', name: 'is_increment',default:'0', length: 1, comment: '是否自增（1是）' })
+  @Column({ type: 'char', name: 'is_increment', default: '0', length: 1, comment: '是否自增（1是）' })
   public isIncrement: string;
 
   @ApiProperty({ type: String, description: '是否必填（1是）' })
-  @Column({ type: 'char', name: 'is_required',default:'0', length: 1, comment: '是否必填（1是）' })
+  @Column({ type: 'char', name: 'is_required', default: '0', length: 1, comment: '是否必填（1是）' })
   public isRequired: string;
 
   @ApiProperty({ type: String, description: '是否为插入字段（1是）' })
-  @Column({ type: 'char', name: 'is_insert',default:'0', length: 1, comment: '是否为插入字段（1是）' })
+  @Column({ type: 'char', name: 'is_insert', default: '0', length: 1, comment: '是否为插入字段（1是）' })
   public isInsert: string;
 
   @ApiProperty({ type: String, description: '是否编辑字段（1是）' })
-  @Column({ type: 'char', name: 'is_edit',default:'0', length: 1, comment: '是否编辑字段（1是）' })
+  @Column({ type: 'char', name: 'is_edit', default: '0', length: 1, comment: '是否编辑字段（1是）' })
   public isEdit: string;
 
   @ApiProperty({ type: String, description: '是否列表字段（1是）' })
-  @Column({ type: 'char', name: 'is_list', default:'0',length: 1, comment: '是否列表字段（1是）' })
+  @Column({ type: 'char', name: 'is_list', default: '0', length: 1, comment: '是否列表字段（1是）' })
   public isList: string;
 
   @ApiProperty({ type: String, description: '是否查询字段（1是）' })
-  @Column({ type: 'char', name: 'is_query', length: 1, comment: '是否查询字段（1是）' })
+  @Column({ type: 'char', name: 'is_query', length: 1, default: '1', comment: '是否查询字段（1是）' })
   public isQuery: string;
 
   @ApiProperty({ type: String, description: '查询方式（等于、不等于、大于、小于、范围）' })
@@ -67,7 +67,7 @@ export class GenTableColumnEntity extends BaseEntity {
   public queryType: string;
 
   @ApiProperty({ type: String, description: '显示类型（文本框、文本域、下拉框、复选框、单选框、日期控件）' })
-  @Column({ type: 'varchar', name: 'html_type', length: 200, comment: '显示类型（文本框、文本域、下拉框、复选框、单选框、日期控件）' })
+  @Column({ type: 'varchar', name: 'html_type', length: 200, default: '', comment: '显示类型（文本框、文本域、下拉框、复选框、单选框、日期控件）' })
   public htmlType: string;
 
   @ApiProperty({ type: String, description: '字典类型' })
@@ -77,5 +77,4 @@ export class GenTableColumnEntity extends BaseEntity {
   @ApiProperty({ type: Number, description: '排序' })
   @Column({ type: 'int', name: 'sort', comment: '排序' })
   public sort: number;
-
 }

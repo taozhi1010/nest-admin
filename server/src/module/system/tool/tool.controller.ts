@@ -1,7 +1,7 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Request, Query, Put, Res } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBody, ApiConsumes, ApiQuery, ApiBearerAuth } from '@nestjs/swagger';
+import { Controller, Get, Post, Body, Param, Delete, Request, Query, Put, Res } from '@nestjs/common';
+import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { ToolService } from './tool.service';
-import { TableName, GenDbTableList, GenTableList, GenTableUpdate, TableId } from './dto/create-genTable-dto';
+import { TableName, GenDbTableList, GenTableList, GenTableUpdate } from './dto/create-genTable-dto';
 import { Response } from 'express';
 
 @ApiTags('系统工具')
@@ -14,7 +14,7 @@ export class ToolController {
   findAll(@Query() query: GenTableList) {
     return this.toolService.findAll(query);
   }
-  @ApiOperation({ summary: '查询db数据库列表' })
+  @ApiOperation({ summary: '查询数据库列表' })
   @Get('/gen/db/list')
   genDbList(@Query() query: GenDbTableList) {
     return this.toolService.genDbList(query);
@@ -26,6 +26,12 @@ export class ToolController {
     return this.toolService.importTable(table, req);
   }
 
+  @ApiOperation({ summary: '同步表' })
+  @Get('/gen/synchDb/:tableName')
+  synchDb(@Param('tableName') tableName: string) {
+    return this.toolService.synchDb(tableName);
+  }
+
   @ApiOperation({ summary: '查询表详细信息' })
   @Get('/gen/:id')
   gen(@Param('id') id: string) {
@@ -34,8 +40,8 @@ export class ToolController {
 
   @ApiOperation({ summary: '修改代码生成信息' })
   @Put('/gen')
-  genUpdate(@Body() GenTableUpdate: GenTableUpdate) {
-    return this.toolService.genUpdate(GenTableUpdate);
+  genUpdate(@Body() genTableUpdate: GenTableUpdate) {
+    return this.toolService.genUpdate(genTableUpdate);
   }
 
   @ApiOperation({ summary: '删除表数据' })

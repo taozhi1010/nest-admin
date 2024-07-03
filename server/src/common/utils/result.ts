@@ -10,14 +10,14 @@ export const SUCCESS_CODE = 200;
 export class ResultData {
   constructor(code = SUCCESS_CODE, msg?: string, data?: any) {
     this.code = code;
-    this.msg = msg || 'ok';
+    this.msg = msg || '操作成功';
     this.data = data || null;
   }
 
   @ApiProperty({ type: 'number', default: SUCCESS_CODE })
   code: number;
 
-  @ApiProperty({ type: 'string', default: 'ok' })
+  @ApiProperty({ type: 'string', default: '操作成功' })
   msg?: string;
 
   data?: any;
