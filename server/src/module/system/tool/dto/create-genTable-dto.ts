@@ -1,7 +1,7 @@
 import { IsString, IsJSON, IsEnum, IsPhoneNumber, IsArray, Min, Length, IsOptional, IsBoolean, IsNumber, IsNumberString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { PagingDto } from 'src/common/dto/index';
-import {genTableCloumnUpdate} from './create-genTableCloumn-dto'
+import { genTableCloumnUpdate } from './create-genTableCloumn-dto';
 export class CreateGenTableDto {
   @ApiProperty({ type: String, description: '表名称' })
   public tableName: string;
@@ -38,10 +38,10 @@ export class UpdateGenTableDto extends CreateGenTableDto {
 export class GenDbTableList extends PagingDto {
   @IsString()
   @IsOptional()
-  tableName?:string
+  tableName?: string;
   @IsString()
   @IsOptional()
-  tableComment?:string
+  tableComment?: string;
 }
 
 export class TableName {
@@ -76,37 +76,39 @@ export class GenTableUpdate {
   tableId: number;
   @IsOptional()
   @IsString()
-  tableName?:string;
+  tableName?: string;
   @IsOptional()
   @IsString()
-  tableComment?:string;
+  tableComment?: string;
   @IsOptional()
   @IsString()
-  className?:string;
+  className?: string;
   @IsOptional()
   @IsString()
-  functionAuthor?:string;
+  functionAuthor?: string;
   @IsOptional()
   @IsString()
-  remark?:string;
+  remark?: string;
   @IsOptional()
   @IsString()
-  tplCategory?:string;
+  tplCategory?: string;
   @IsOptional()
   @IsString()
-  packageName?:string;
+  packageName?: string;
   @IsOptional()
   @IsString()
-  moduleName?:string;
+  moduleName?: string;
   @IsOptional()
   @IsString()
-  businessName?:string;
+  businessName?: string;
   @IsOptional()
   @IsString()
-  functionName?:string;
+  functionName?: string;
   @IsOptional()
   @IsString()
-  genType?:string;
+  genType?: string;
   @IsOptional()
-  columns?:genTableCloumnUpdate[];
+  columns?: genTableCloumnUpdate[];
+  @IsString()
+  tplWebType?: string;
 }

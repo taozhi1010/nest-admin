@@ -56,6 +56,16 @@ export function GetNowDate() {
 }
 
 /**
+ * 时间格式化
+ * @param date
+ * @param format
+ * @returns
+ */
+export function FormatDate(date: Date, format = 'YYYY-MM-DD HH:mm:ss') {
+  return date && dayjs(date).format(format);
+}
+
+/**
  * 深拷贝
  * @param obj
  * @returns
