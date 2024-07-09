@@ -24,7 +24,7 @@
           @keyup.enter="handleQuery"
         />
       </el-form-item>
-      <!-- <el-form-item label="创建时间" style="width: 308px">
+      <el-form-item label="创建时间" style="width: 308px">
         <el-date-picker
           v-model="dateRange"
           value-format="YYYY-MM-DD"
@@ -33,7 +33,7 @@
           start-placeholder="开始日期"
           end-placeholder="结束日期"
         ></el-date-picker>
-      </el-form-item> -->
+      </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="Search" @click="handleQuery"
           >搜索</el-button
@@ -179,9 +179,15 @@
               v-hasPermi="['tool:gen:remove']"
             ></el-button>
           </el-tooltip>
-          <!-- <el-tooltip content="同步" placement="top">
-            <el-button link type="primary" icon="Refresh" @click="handleSynchDb(scope.row)" v-hasPermi="['tool:gen:edit']"></el-button>
-          </el-tooltip> -->
+          <el-tooltip content="同步" placement="top">
+            <el-button
+              link
+              type="primary"
+              icon="Refresh"
+              @click="handleSynchDb(scope.row)"
+              v-hasPermi="['tool:gen:edit']"
+            ></el-button>
+          </el-tooltip>
           <el-tooltip content="生成代码" placement="top">
             <el-button
               link
@@ -240,9 +246,9 @@ import {
   delTable,
   genCode,
   synchDb,
-} from "@/api/tool/gen";
-import router from "@/router";
-import importTable from "./importTable";
+} from '@/api/tool/gen';
+import router from '@/router';
+import importTable from './importTable';
 
 const route = useRoute();
 const { proxy } = getCurrentInstance();
@@ -256,7 +262,7 @@ const multiple = ref(true);
 const total = ref(0);
 const tableNames = ref([]);
 const dateRange = ref([]);
-const uniqueId = ref("");
+const uniqueId = ref('');
 
 const data = reactive({
   queryParams: {
@@ -267,9 +273,9 @@ const data = reactive({
   },
   preview: {
     open: false,
-    title: "代码预览",
+    title: '代码预览',
     data: {},
-    activeName: "domain.java",
+    activeName: 'domain.java',
   },
 });
 
@@ -281,7 +287,7 @@ onActivated(() => {
     uniqueId.value = time;
     queryParams.value.pageNum = Number(route.query.pageNum);
     dateRange.value = [];
-    proxy.resetForm("queryForm");
+    proxy.resetForm('queryForm');
     getList();
   }
 });
@@ -305,18 +311,18 @@ function handleQuery() {
 /** 生成代码操作 */
 function handleGenTable(row) {
   const tbNames = row.tableName || tableNames.value;
-  if (tbNames == "") {
-    proxy.$modal.msgError("请选择要生成的数据");
+  if (tbNames == '') {
+    proxy.$modal.msgError('请选择要生成的数据');
     return;
   }
-  if (row.genType === "1") {
+  if (row.genType === '1') {
     genCode(row.tableName).then((response) => {
-      proxy.$modal.msgSuccess("成功生成到自定义路径：" + row.genPath);
+      proxy.$modal.msgSuccess('成功生成到自定义路径：' + row.genPath);
     });
   } else {
     proxy.$download.zip(
-      "/tool/gen/batchGenCode/zip?tableNames=" + tbNames,
-      "ruoyi.zip"
+      '/tool/gen/batchGenCode/zip?tableNames=' + tbNames,
+      'ruoyi.zip'
     );
   }
 }
@@ -329,18 +335,18 @@ function handleSynchDb(row) {
       return synchDb(tableName);
     })
     .then(() => {
-      proxy.$modal.msgSuccess("同步成功");
+      proxy.$modal.msgSuccess('同步成功');
     })
     .catch(() => {});
 }
 /** 打开导入表弹窗 */
 function openImportTable() {
-  proxy.$refs["importRef"].show();
+  proxy.$refs['importRef'].show();
 }
 /** 重置按钮操作 */
 function resetQuery() {
   dateRange.value = [];
-  proxy.resetForm("queryRef");
+  proxy.resetForm('queryRef');
   handleQuery();
 }
 /** 预览按钮 */
@@ -348,12 +354,12 @@ function handlePreview(row) {
   previewTable(row.tableId).then((response) => {
     preview.value.data = response.data;
     preview.value.open = true;
-    preview.value.activeName = "entity.ts";
+    preview.value.activeName = 'entity.ts';
   });
 }
 /** 复制代码成功 */
 function copyTextSuccess() {
-  proxy.$modal.msgSuccess("复制成功");
+  proxy.$modal.msgSuccess('复制成功');
 }
 // 多选框选中数据
 function handleSelectionChange(selection) {
@@ -366,7 +372,7 @@ function handleSelectionChange(selection) {
 function handleEditTable(row) {
   const tableId = row.tableId || ids.value[0];
   router.push({
-    path: "/tool/gen-edit/index/" + tableId,
+    path: '/tool/gen-edit/index/' + tableId,
     query: { pageNum: queryParams.value.pageNum },
   });
 }
@@ -380,7 +386,7 @@ function handleDelete(row) {
     })
     .then(() => {
       getList();
-      proxy.$modal.msgSuccess("删除成功");
+      proxy.$modal.msgSuccess('删除成功');
     })
     .catch(() => {});
 }
