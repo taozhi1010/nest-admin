@@ -43,6 +43,7 @@ const formatTreeNodeBuildMenus = (menus) => {
       name: getRouteName(menu),
       path: getRouterPath(menu),
       hidden: visible === '1',
+      link: isFrame === '0' ? path : null,
       component: getComponent(menu),
       meta: {
         title: menuName,
@@ -61,10 +62,11 @@ const formatTreeNodeBuildMenus = (menus) => {
     // 菜单类型且需要框架展示
     else if (isMenuFrame(menu)) {
       formattedNode.meta = null;
+      formattedNode.path = '/'
       formattedNode.children = [{
         path,
         component,
-        name: getRouteName(menu),
+        name: path,
         meta: {
           title: menuName,
           icon: icon,
@@ -77,7 +79,6 @@ const formatTreeNodeBuildMenus = (menus) => {
     // 根目录且为内链
     else if (parentId === 0 && isInnerLink(menu)) {
       formattedNode.meta = { title: menuName, icon };
-      formattedNode.path = '/';
       const routerPath = innerLinkReplaceEach(path);
       formattedNode.children = [{
         path: routerPath,
