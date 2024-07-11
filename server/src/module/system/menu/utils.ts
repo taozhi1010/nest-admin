@@ -35,47 +35,57 @@ export const buildMenus = (arr) => {
  * @param getId
  * @returns
  */
-const formatTreeNodeBuildMenus = (menus: any[]): any[] => {
+const formatTreeNodeBuildMenus = (menus) => {
   return menus.map((menu) => {
-    const formattedNode: any = {};
-    formattedNode.name = getRouteName(menu);
-    formattedNode.path = getRouterPath(menu);
-    formattedNode.hidden = menu.visible === '1';
-    formattedNode.component = getComponent(menu);
-    switch (menu.menuType) {
-      case 'M': //目录
-        formattedNode.meta = {
-          title: menu.menuName,
-          icon: menu.icon,
-          noCache: menu.isCache === '1',
-          link: menu.isFrame === '0' ? menu.path : null,
-        };
-        if (menu.children) {
-          formattedNode.alwaysShow = true;
-          formattedNode.redirect = 'noRedirect';
-          formattedNode.children = menu.children;
-        }
-        break;
-      case 'C': //菜单
-        if (menu.query) {
-          formattedNode.query = menu.query;
-        }
-        formattedNode.meta = {
-          title: menu.menuName,
-          icon: menu.icon,
-          noCache: menu.isCache === '1',
-          link: menu.isFrame === '0' ? menu.path : null,
-        };
+    const { parentId, menuType, visible, isCache, isFrame, path, query, component, menuName, icon, children } = menu;
 
-        break;
-      case 'F': //按钮
-        break;
-      default:
-        break;
+    const formattedNode:any = {
+      name: getRouteName(menu),
+      path: getRouterPath(menu),
+      hidden: visible === '1',
+      link: isFrame === '0' ? path : null,
+      component: getComponent(menu),
+      meta: {
+        title: menuName,
+        icon: icon,
+        noCache: isCache === '1',
+        path: path,
+      },
+    };
+
+    // 处理目录类型及有子菜单的情况
+    if (children?.length > 0 && menuType === 'M') {
+      formattedNode.alwaysShow = true;
+      formattedNode.redirect = 'noRedirect';
+      formattedNode.children = formatTreeNodeBuildMenus(children);
     }
-    // 如果节点有子节点，递归处理它们
-    if (formattedNode.children) {
-      formattedNode.children = formatTreeNodeBuildMenus(formattedNode.children);
+    // 菜单类型且需要框架展示
+    else if (isMenuFrame(menu)) {
+      formattedNode.meta = null;
+      formattedNode.path = '/'
+      formattedNode.children = [{
+        path,
+        component,
+        name: path,
+        meta: {
+          title: menuName,
+          icon: icon,
+          noCache: isCache === '1',
+          path,
+          query,
+        },
+      }];
+    }
+    // 根目录且为内链
+    else if (parentId === 0 && isInnerLink(menu)) {
+      formattedNode.meta = { title: menuName, icon };
+      const routerPath = innerLinkReplaceEach(path);
+      formattedNode.children = [{
+        path: routerPath,
+        component: 'InnerLink',
+        name: getRouteName(menu),
+        meta: { title: menuName, icon, path },
+      }];
     }
 
     return formattedNode;
@@ -165,6 +175,8 @@ const innerLinkReplaceEach = (path: string): string => {
  */
 const getRouterPath = (menu): string => {
   let routerPath = menu.path;
+  // console.log('routerPath',routerPath);
+
   // 内链打开外网方式
   if (menu.parentId !== 0 && isInnerLink(menu)) {
     routerPath = innerLinkReplaceEach(routerPath);
@@ -175,7 +187,8 @@ const getRouterPath = (menu): string => {
   }
   // 非外链并且是一级目录（类型为菜单）
   else if (isMenuFrame(menu)) {
-    routerPath = '/';
+    routerPath = '/' + menu.path;
+    // routerPath = '/';
   }
   return routerPath;
 };
