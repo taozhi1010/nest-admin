@@ -17,11 +17,9 @@
 					<el-table-column label="Java类型" min-width="11%">
 						<template slot-scope="scope">
 							<el-select v-model="scope.row.javaType">
-								<el-option label="Long" value="Long" />
+								<el-option label="Number" value="Number" />
 								<el-option label="String" value="String" />
-								<el-option label="Integer" value="Integer" />
-								<el-option label="Double" value="Double" />
-								<el-option label="BigDecimal" value="BigDecimal" />
+								<el-option label="BigInt" value="BigInt" />
 								<el-option label="Date" value="Date" />
 								<el-option label="Boolean" value="Boolean" />
 							</el-select>
