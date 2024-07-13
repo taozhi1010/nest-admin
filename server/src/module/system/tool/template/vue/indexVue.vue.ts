@@ -313,7 +313,7 @@ const handlerExport = (moduleName,businessName)=>{
     h+= `const  handleExport = () =>{`
     h+=` proxy.download('${moduleName}/${businessName}/export', {`
     h+=`...queryParams.value`
-    h+='}, `${businessName}_${new Date().getTime()}.xlsx`)}'
+    h+=`}, \`${businessName}_\$\{new Date().getTime()\}.xlsx\`)}`
 
     return h
 }
