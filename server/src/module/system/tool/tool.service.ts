@@ -77,7 +77,7 @@ export class ToolService {
       const tableInfo = await this.genTableEntityRep.save(tableData);
 
       const tableColumn: any = await this.getTableColumnInfo(tableName);
-
+      
       for (const column of tableColumn) {
         this.initTableColumn(column, tableInfo);
         column.sort = Number(column.sort);
@@ -165,13 +165,14 @@ export class ToolService {
   async getTableColumnInfo(tableName: string) {
     if (!tableName) return null;
     return this.dataSource.query(
-      `select column_name as columnName,
-      (case when (is_nullable = 'no' && column_key != 'PRI')  then '1' else '0' end) as isRequired,
-      (case when column_key = 'PRI' then '1' else '0' end) as isPk,
-      ordinal_position as sort, column_comment as columnComment, 
-      (case when extra = 'auto_increment' then '1' else '0' end) as isIncrement, 
-      column_type as columnType from information_schema.columns
-      where table_schema = (select database()) and table_name = '${tableName}' order by ordinal_position`,
+      `SELECT column_name AS columnName,
+      (CASE WHEN (is_nullable = 'no' && column_key != 'PRI') THEN '1' ELSE '0' END) AS isRequired,
+      (CASE WHEN column_key = 'PRI' THEN '1' ELSE '0' END) AS isPk,
+      ordinal_position AS sort, 
+      column_comment AS columnComment, 
+      (CASE WHEN extra = 'auto_increment' THEN '1' ELSE '0' END) AS isIncrement, 
+      SUBSTRING_INDEX(column_type, '(', 1) AS columnType
+      FROM information_schema.columns WHERE table_schema = (SELECT DATABASE())  AND table_name = '${tableName}' ORDER BY ordinal_position`,
     );
   }
 
@@ -217,7 +218,8 @@ export class ToolService {
    * @returns
    */
   async remove(id: number) {
-    await this.genTableEntityRep.update({ tableId: id }, { delFlag: '1' });
+    await this.genTableEntityRep.delete({ tableId: id });
+    await this.genTableColumnEntityRep.delete({ tableId: id });
     return ResultData.ok();
   }
 
@@ -247,8 +249,7 @@ export class ToolService {
       tableNamesList.map(async (item) => {
         const data = await this.genTableEntityRep.findOne({ where: { tableName: item, delFlag: '0' } });
         const columns = await this.genTableColumnEntityRep.find({ where: { tableId: data.tableId, delFlag: '0' } });
-        const metadata = this.dataSource.getMetadata(data.tableName);
-        const primaryKey = metadata.primaryColumns[0]?.propertyName || '';
+        const primaryKey = await this.getPrimaryKey(columns);
         return { primaryKey, BusinessName: data.businessName, ...data, columns };
       }),
     );
@@ -275,6 +276,18 @@ export class ToolService {
 
     await archive.finalize();
   }
+  /**
+   *
+   * 查询主键id
+   */
+  async getPrimaryKey(columns) {
+    for (let column of columns) {
+      if (column.isPk === '1') {
+        return column.javaField;
+      }
+    }
+    return null;
+  }
 
   /**
    * 预览生成代码
@@ -284,8 +297,7 @@ export class ToolService {
   async preview(id: number) {
     const data = await this.genTableEntityRep.findOne({ where: { tableId: id, delFlag: '0' } });
     const columns = await this.genTableColumnEntityRep.find({ where: { tableId: id, delFlag: '0' } });
-    const metadata = this.dataSource.getMetadata(data.tableName);
-    const primaryKey = metadata.primaryColumns[0]?.propertyName || '';
+    const primaryKey = await this.getPrimaryKey(columns);
     const info = { primaryKey, BusinessName: capitalize(data.businessName), ...data, columns };
     return ResultData.ok(templateIndex(info));
   }
@@ -362,7 +374,7 @@ export class ToolService {
       column.htmlType = GenConstants.HTML_INPUT;
       column.javaType = GenConstants.TYPE_NUMBER;
     }
-
+    
     // 插入字段（默认所有字段都需要插入）
     column.isInsert = GenConstants.REQUIRE;
 

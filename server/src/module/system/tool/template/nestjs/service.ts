@@ -50,5 +50,6 @@ export const serviceTem = (options)=>{
               );
               return ResultData.ok(data);
         }
+      }
     `
 }
