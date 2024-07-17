@@ -8,7 +8,7 @@ import { FormatDate, GetNowDate } from 'src/common/utils/index';
 import { GenTableEntity } from './entities/gen-table.entity';
 import { GenTableColumnEntity } from './entities/gen-table-cloumn.entity';
 import toolConfig from './config';
-import { GenConstants } from 'src/common/constant/GenConstants';
+import { GenConstants } from 'src/common/constant/genConstants';
 import { camelCase, toLower } from 'lodash';
 import { arraysContains, getColumnLength, StringUtils, capitalize } from './utils/index';
 import { index as templateIndex } from './template/index';
@@ -77,7 +77,7 @@ export class ToolService {
       const tableInfo = await this.genTableEntityRep.save(tableData);
 
       const tableColumn: any = await this.getTableColumnInfo(tableName);
-      
+
       for (const column of tableColumn) {
         this.initTableColumn(column, tableInfo);
         column.sort = Number(column.sort);
@@ -374,7 +374,7 @@ export class ToolService {
       column.htmlType = GenConstants.HTML_INPUT;
       column.javaType = GenConstants.TYPE_NUMBER;
     }
-    
+
     // 插入字段（默认所有字段都需要插入）
     column.isInsert = GenConstants.REQUIRE;
 
