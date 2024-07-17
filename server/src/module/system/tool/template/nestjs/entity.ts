@@ -1,10 +1,9 @@
+import { GenConstants } from 'src/common/constant/genConstants';
+export const entityTem = (options) => {
+  const { BusinessName, tableName, tableComment } = options;
 
-import { GenConstants } from 'src/common/constant/GenConstants';
-export const entityTem = (options)=>{
-    const {BusinessName,tableName,tableComment} = options
-
-    const contentTem  = content(options)
-    return `
+  const contentTem = content(options);
+  return `
     import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
     import { ApiProperty } from '@nestjs/swagger';
     import { BaseEntity } from 'src/common/entities/base';
@@ -14,38 +13,37 @@ export const entityTem = (options)=>{
     export class ${BusinessName}Entity extends BaseEntity {
         ${contentTem}
     }
-    `
-}
+    `;
+};
 
-const content = (options)=>{
-    const {columns} = options
-    let html = ``
-    columns.forEach(column=>{
-        const {javaType,javaField,isPk,columnType,columnComment} = column
-        const filed = convertToSnakeCase(javaField)
-        const type = lowercaseFirstLetter(javaType)
-        if(isPk == '1'){
-            html += `@PrimaryGeneratedColumn({ type: '${columnType}', name: '${filed}', comment: '${columnComment}' })
+const content = (options) => {
+  const { columns } = options;
+  let html = ``;
+  columns.forEach((column) => {
+    const { javaType, javaField, isPk, columnType, columnComment } = column;
+    const filed = convertToSnakeCase(javaField);
+    const type = lowercaseFirstLetter(javaType);
+    if (isPk == '1') {
+      html += `@PrimaryGeneratedColumn({ type: '${columnType}', name: '${filed}', comment: '${columnComment}' })
             public ${javaField}: ${type};
-            `
-        }else if (!GenConstants.BASE_ENTITY.includes(javaField)){
-            html += `@Column({ type: '${columnType}', name: '${filed}', comment: '${columnComment}' })
+            `;
+    } else if (!GenConstants.BASE_ENTITY.includes(javaField)) {
+      html += `@Column({ type: '${columnType}', name: '${filed}', comment: '${columnComment}' })
             public ${javaField}: ${type};
-            `
-        }
-    })
+            `;
+    }
+  });
 
-    return html
-  
-}
+  return html;
+};
 
 function convertToSnakeCase(str) {
-    return str.replace(/([A-Z])/g, '_$1').toLowerCase();
+  return str.replace(/([A-Z])/g, '_$1').toLowerCase();
 }
 
 function lowercaseFirstLetter(str) {
-    if (str.length === 0) {
-        return str;
-    }
-    return str.charAt(0).toLowerCase() + str.slice(1);
+  if (str.length === 0) {
+    return str;
+  }
+  return str.charAt(0).toLowerCase() + str.slice(1);
 }

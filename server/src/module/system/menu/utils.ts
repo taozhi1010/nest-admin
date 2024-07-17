@@ -1,4 +1,6 @@
 import { isURL } from 'class-validator';
+import * as Lodash from 'lodash';
+import * as UserConstants from 'src/common/constant/userConstants';
 
 /**
  * 菜单列表转树形结构
@@ -35,61 +37,70 @@ export const buildMenus = (arr) => {
  * @param getId
  * @returns
  */
-const formatTreeNodeBuildMenus = (menus) => {
+const formatTreeNodeBuildMenus = (menus: any[]): any[] => {
   return menus.map((menu) => {
-    const { parentId, menuType, visible, isCache, isFrame, path, query, component, menuName, icon, children } = menu;
+    const router: any = {};
+    router.hidden = menu.visible === '1';
+    router.name = getRouteName(menu);
+    router.path = getRouterPath(menu);
+    router.component = getComponent(menu);
+    router.query = menu.query;
+    router.meta = setMeta(menu);
 
-    const formattedNode:any = {
-      name: getRouteName(menu),
-      path: getRouterPath(menu),
-      hidden: visible === '1',
-      link: isFrame === '0' ? path : null,
-      component: getComponent(menu),
-      meta: {
-        title: menuName,
-        icon: icon,
-        noCache: isCache === '1',
-        path: path,
-      },
-    };
-
-    // 处理目录类型及有子菜单的情况
-    if (children?.length > 0 && menuType === 'M') {
-      formattedNode.alwaysShow = true;
-      formattedNode.redirect = 'noRedirect';
-      formattedNode.children = formatTreeNodeBuildMenus(children);
-    }
-    // 菜单类型且需要框架展示
-    else if (isMenuFrame(menu)) {
-      formattedNode.meta = null;
-      formattedNode.path = '/'
-      formattedNode.children = [{
-        path,
-        component,
-        name: path,
-        meta: {
-          title: menuName,
-          icon: icon,
-          noCache: isCache === '1',
-          path,
-          query,
-        },
-      }];
-    }
-    // 根目录且为内链
-    else if (parentId === 0 && isInnerLink(menu)) {
-      formattedNode.meta = { title: menuName, icon };
-      const routerPath = innerLinkReplaceEach(path);
-      formattedNode.children = [{
-        path: routerPath,
-        component: 'InnerLink',
-        name: getRouteName(menu),
-        meta: { title: menuName, icon, path },
-      }];
+    if (menu.children && menu.children.length > 0 && menu.menuType === UserConstants.TYPE_DIR) {
+      router.alwaysShow = true;
+      router.redirect = 'noRedirect';
+      router.children = formatTreeNodeBuildMenus(menu.children);
+    } else if (isMenuFrame(menu)) {
+      router.meta = null;
+      const childrenList = [];
+      const childrenRouter: any = {};
+      childrenRouter.path = menu.path;
+      childrenRouter.component = menu.component;
+      childrenRouter.name = Lodash.capitalize(menu.name);
+      childrenRouter.meta = setMeta(menu);
+      childrenRouter.query = menu.query;
+      childrenList.push(childrenRouter);
+      router.children = childrenList;
+    } else if (menu.parentId === 0 && isInnerLink(menu)) {
+      router.meta = {
+        name: menu.name,
+        icon: menu.icon,
+      };
+      router.path = '/';
+      const childrenList = [];
+      const childrenRouter: any = {};
+      childrenRouter.path = innerLinkReplaceEach(menu.path);
+      childrenRouter.component = UserConstants.INNER_LINK;
+      childrenRouter.name = Lodash.capitalize(menu.name);
+      childrenRouter.meta = {
+        name: menu.name,
+        icon: menu.icon,
+        path: menu.path,
+      };
+      childrenList.push(childrenRouter);
+      router.children = childrenList;
     }
 
-    return formattedNode;
+    return router;
   });
+};
+
+/**
+ * 设置meta信息
+ */
+const setMeta = (menu) => {
+  const meta = {
+    title: menu.menuName,
+    icon: menu.icon,
+    noCache: menu.isCache === '1',
+  };
+
+  if (isURL(menu.link)) {
+    meta['link'] = menu.link;
+  }
+
+  return meta;
 };
 
 /**
@@ -99,7 +110,7 @@ const formatTreeNodeBuildMenus = (menus) => {
  * @return 路由名称
  */
 const getRouteName = (menu) => {
-  let routerName = menu.path.replace(/^\w/, (c) => c.toUpperCase());
+  let routerName = Lodash.capitalize(menu.path);
   // 非外链并且是一级目录（类型为目录）
   if (isMenuFrame(menu)) {
     routerName = '';
@@ -113,7 +124,7 @@ const getRouteName = (menu) => {
  * @return 结果
  */
 const isMenuFrame = (menu): boolean => {
-  return menu.parentId === 0 && menu.menuType === 'C' && menu.isFrame === '1';
+  return menu.parentId === 0 && menu.menuType === UserConstants.TYPE_MENU && menu.isFrame === UserConstants.NO_FRAME;
 };
 
 /**
@@ -123,7 +134,7 @@ const isMenuFrame = (menu): boolean => {
  * @return 结果
  */
 const isInnerLink = (menu): boolean => {
-  return menu.isFrame === '0' && isURL(menu.path);
+  return menu.isFrame === UserConstants.NO_FRAME && isURL(menu.path);
 };
 
 /**
@@ -133,7 +144,7 @@ const isInnerLink = (menu): boolean => {
  * @return 结果
  */
 const isParentView = (menu): boolean => {
-  return menu.parentId !== 0 && menu.menuType === 'M';
+  return menu.parentId !== 0 && menu.menuType === UserConstants.TYPE_DIR;
 };
 
 /**
@@ -143,13 +154,13 @@ const isParentView = (menu): boolean => {
  * @return 组件信息
  */
 const getComponent = (menu): string => {
-  let component = 'Layout';
+  let component = UserConstants.LAYOUT;
   if (menu.component && !isMenuFrame(menu)) {
     component = menu.component;
   } else if (!menu.component && menu.parentId !== 0 && isInnerLink(menu)) {
-    component = 'InnerLink';
+    component = UserConstants.INNER_LINK;
   } else if (!menu.component && isParentView(menu)) {
-    component = 'ParentView';
+    component = UserConstants.PARENT_VIEW;
   }
   return component;
 };
@@ -160,11 +171,20 @@ const getComponent = (menu): string => {
  * @return 替换后的内链域名
  */
 const innerLinkReplaceEach = (path: string): string => {
-  if (!path) {
-    return path;
+  const replacements = [
+    ['http://', ''],
+    ['https://', ''],
+    ['www.', ''],
+    ['.', '/'],
+    [':', '/'],
+  ];
+
+  // 遍历替换规则并应用到路径上
+  for (const [oldValue, newValue] of replacements) {
+    path = path.replace(new RegExp(oldValue, 'g'), newValue);
   }
-  const urlObj = new URL(path);
-  return urlObj.hostname;
+
+  return path;
 };
 
 /**
@@ -175,20 +195,17 @@ const innerLinkReplaceEach = (path: string): string => {
  */
 const getRouterPath = (menu): string => {
   let routerPath = menu.path;
-  // console.log('routerPath',routerPath);
-
   // 内链打开外网方式
   if (menu.parentId !== 0 && isInnerLink(menu)) {
     routerPath = innerLinkReplaceEach(routerPath);
   }
   // 非外链并且是一级目录（类型为目录）
-  if (menu.parentId === 0 && menu.menuType === 'M' && menu.isFrame === '1') {
+  if (menu.parentId === 0 && menu.menuType === UserConstants.TYPE_DIR && menu.isFrame === UserConstants.NO_FRAME) {
     routerPath = '/' + menu.path;
   }
   // 非外链并且是一级目录（类型为菜单）
   else if (isMenuFrame(menu)) {
-    routerPath = '/' + menu.path;
-    // routerPath = '/';
+    routerPath = '/';
   }
   return routerPath;
 };
