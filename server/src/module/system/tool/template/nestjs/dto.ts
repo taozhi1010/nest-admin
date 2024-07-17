@@ -29,12 +29,13 @@ const dtoIsReq = (options) => {
         const type = lowercaseFirstLetter(javaType);
         const decorators = [
             `@ApiProperty({ required: ${isRequired == 1} })`,
-            isRequired != 1 && '@IsOptional()',
+            isRequired != 1 && `@IsOptional()`,
             getValidatorDecorator(javaType)
         ].filter(Boolean).join('\n');
 
         return `
-        ${decorators}${javaField}${isRequired == 1 ? '' : '?'}: ${type == 'date' ? javaType : type};
+        ${decorators}
+        ${javaField}${isRequired == 1 ? '' : '?'}: ${type == 'date' ? javaType : type};
         `;
     }).join('\n');
 };
@@ -52,18 +53,18 @@ const listDtoTem = (options) => {
 
         return `
         ${decorators}
-        ${javaField}${isRequired == 1 ? '' : '?'}: ${type? javaType : type};
+        ${javaField}${isRequired == 1 ? '' : '?'}: ${type};
         `;
     }).join('\n');
 };
 
 function getValidatorDecorator(javaType) {
     switch (javaType) {
-        case 'String': return '@IsString()';
-        case 'Number': return '@IsNumber()';
-        case 'Boolean': return '@IsBoolean()';
-        case 'Date': return '@IsDate()';
-        default: return '';
+        case 'String': return `@IsString()`;
+        case 'Number': return `@IsNumber()`;
+        case 'Boolean': return `@IsBoolean()`;
+        case 'Date': return `@IsDate()`;
+        default: return ``;
     }
 }
 
