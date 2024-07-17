@@ -80,6 +80,11 @@ export class CreateMenuDto {
   @IsString()
   @IsEnum(StatusEnum)
   visible: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  perms: string;
 }
 
 export class UpdateMenuDto extends CreateMenuDto {
