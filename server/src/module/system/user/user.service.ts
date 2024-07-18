@@ -405,7 +405,9 @@ export class UserService {
     }
     const roleIds = await this.getRoleIds([userId]);
     const list = await this.roleService.getPermissionsByRoleIds(roleIds);
-    const permissions = Uniq(list.map((item) => item.perms)).filter((item) => item.trim());
+    const permissions = Uniq(list.map((item) => item.perms)).filter((item) => {
+      return item;
+    });
     return permissions;
   }
 
