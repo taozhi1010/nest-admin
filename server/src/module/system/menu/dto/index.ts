@@ -29,10 +29,11 @@ export class CreateMenuDto {
   @IsNumber()
   parentId: number;
 
-  @ApiProperty({ required: true })
+  @ApiProperty({ required: false })
+  @IsOptional()
   @IsString()
   @Length(0, 200)
-  path: string;
+  path?: string;
 
   @ApiProperty({ required: false })
   @IsOptional()
