@@ -16,7 +16,7 @@ export class LoginlogController {
     type: ListLoginlogDto,
     required: true,
   })
-  @RequirePermission('monitor:logininfor:query')
+  @RequirePermission('monitor:logininfor:list')
   @Get('/list')
   findAll(@Query() query: ListLoginlogDto) {
     return this.loginlogService.findAll(query);

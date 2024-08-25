@@ -15,7 +15,7 @@ export class OnlineController {
   @ApiBody({
     type: OnlineListDto,
   })
-  @RequirePermission('monitor:online:query')
+  @RequirePermission('monitor:online:list')
   @Get('/list')
   findAll(@Query() query) {
     return this.onlineService.findAll(query);
