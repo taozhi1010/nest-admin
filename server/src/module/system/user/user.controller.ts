@@ -58,7 +58,7 @@ export class UserController {
   @ApiOperation({
     summary: '用户-列表',
   })
-  @RequirePermission('system:user:query')
+  @RequirePermission('system:user:list')
   @Get('list')
   findAll(@Query() query: ListUserDto, @Request() req) {
     const user = req.user.user;

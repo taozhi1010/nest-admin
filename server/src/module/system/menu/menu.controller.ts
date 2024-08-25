@@ -25,7 +25,7 @@ export class MenuController {
   @ApiOperation({
     summary: '菜单管理-列表',
   })
-  @RequirePermission('system:menu:query')
+  @RequirePermission('system:menu:list')
   @Get('/list')
   findAll(@Query() query: ListDeptDto) {
     return this.menuService.findAll(query);

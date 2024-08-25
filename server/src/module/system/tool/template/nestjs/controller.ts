@@ -1,9 +1,9 @@
 export const controllerTem = (options) => {
-    const { BusinessName, businessName,functionName ,moduleName} = options;
-    const serviceName = `${BusinessName}Service`;
-    const serviceInstance = `${businessName}Service`;
+  const { BusinessName, businessName, functionName, moduleName } = options;
+  const serviceName = `${BusinessName}Service`;
+  const serviceInstance = `${businessName}Service`;
 
-    return `
+  return `
     import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
     import { ${serviceName} } from './${businessName}.service';
     import { Create${BusinessName}Dto,Update${BusinessName}Dto } from './dto/${businessName}.dto';
@@ -22,7 +22,7 @@ export const controllerTem = (options) => {
         @ApiOperation({
             summary: '${functionName}-列表',
         })
-        @RequirePermission('${moduleName}:${businessName}:query')
+        @RequirePermission('${moduleName}:${businessName}:list')
         @Get()
         findAll() {
             return this.${serviceInstance}.findAll();

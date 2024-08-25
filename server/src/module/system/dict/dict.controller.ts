@@ -47,7 +47,7 @@ export class DictController {
   @ApiOperation({
     summary: '字典类型-列表',
   })
-  @RequirePermission('system:dict:query')
+  @RequirePermission('system:dict:list')
   @Get('/type/list')
   findAllType(@Query() query: ListDictType) {
     return this.dictService.findAllType(query);
@@ -103,7 +103,7 @@ export class DictController {
   @ApiOperation({
     summary: '字典数据-列表',
   })
-  @RequirePermission('system:dict:query')
+  @RequirePermission('system:dict:list')
   @Get('/data/list')
   findAllData(@Query() query: ListDictData) {
     return this.dictService.findAllData(query);

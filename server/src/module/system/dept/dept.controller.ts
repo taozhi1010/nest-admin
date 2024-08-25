@@ -26,7 +26,7 @@ export class DeptController {
   @ApiOperation({
     summary: '部门管理-列表',
   })
-  @RequirePermission('system:dept:query')
+  @RequirePermission('system:dept:list')
   @Get('/list')
   findAll(@Query() query: ListDeptDto) {
     return this.deptService.findAll(query);
