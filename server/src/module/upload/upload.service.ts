@@ -10,6 +10,7 @@ import fs from 'fs';
 import path from 'path';
 import iconv from 'iconv-lite';
 import COS from 'cos-nodejs-sdk-v5';
+import Mime from 'mime-types';
 
 @Injectable()
 export class UploadService {
@@ -53,7 +54,7 @@ export class UploadService {
     }
     const uploadId = GenerateUUID();
     await this.sysUploadEntityRep.save({ uploadId, ...res, ext: path.extname(res.newFileName), size: file.size });
-    return ResultData.ok(res);
+    return res;
   }
 
   /**
@@ -216,10 +217,12 @@ export class UploadService {
     const rootPath = process.cwd();
     //文件根目录
     const baseDirPath = path.join(rootPath, this.config.get('app.file.location'));
+
     //对文件名转码
     const originalname = iconv.decode(Buffer.from(file.originalname, 'binary'), 'utf8');
+    const ext = Mime.extension(file.mimetype);
     //重新生成文件名加上时间戳
-    const newFileName = this.getNewFileName(originalname);
+    const newFileName = this.getNewFileName(originalname) + '.' + ext;
     //文件路径
     const targetFile = path.join(baseDirPath, newFileName);
     //文件目录
@@ -251,7 +254,7 @@ export class UploadService {
       return originalname;
     }
     const newFileNameArr = originalname.split('.');
-    newFileNameArr[newFileNameArr.length - 2] = `${newFileNameArr[newFileNameArr.length - 2]}_${new Date().getTime()}`;
+    newFileNameArr[newFileNameArr.length - 1] = `${newFileNameArr[newFileNameArr.length - 1]}_${new Date().getTime()}`;
     return newFileNameArr.join('.');
   }
 

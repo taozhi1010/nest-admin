@@ -187,6 +187,11 @@ export class UpdateProfileDto {
   @IsString()
   @IsEnum(StatusEnum)
   sex: string;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  avatar?: string;
 }
 
 export class UpdatePwdDto {

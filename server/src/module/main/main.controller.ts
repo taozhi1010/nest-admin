@@ -61,7 +61,9 @@ export class MainController {
       os: os,
       loginLocation: '',
     };
-    await this.redisService.del(`${CacheEnum.LOGIN_TOKEN_KEY}${req.user.uuid}`);
+    if (req.user?.token) {
+      await this.redisService.del(`${CacheEnum.LOGIN_TOKEN_KEY}${req.user.token}`);
+    }
     return this.mainService.logout(clientInfo);
   }
 
