@@ -64,6 +64,14 @@ export default {
 	data() {
 		return {};
 	},
+  watch: {
+    page: {
+      handler(val) {
+				this.$emit('pagination', { page: val, limit: this.pageSize });
+      },
+      immediate: true,
+    },
+  },
 	computed: {
 		currentPage: {
 			get() {
