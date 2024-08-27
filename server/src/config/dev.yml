@@ -13,8 +13,8 @@ app:
     location: '../upload'
     # 文件服务器地址，这是开发环境的配置 生产环境请自行配置成可访问域名
     domain: 'http://localhost:8080'
-    # 文件虚拟路径, 必须以 / 开头， 如 http://localhost:8081/static/****.jpg  , 如果不需要则 设置 ''
-    serveRoot: '/upload'
+    # 文件虚拟路径, 必须以 / 开头， 如 http://localhost:8080/profile/****.jpg  , 如果不需要则 设置 ''
+    serveRoot: '/profile'
     # 文件大小限制，单位M
     maxSize: 10
 # 腾讯云cos配置
@@ -30,8 +30,8 @@ db:
   mysql:
     host: 'localhost'
     username: 'root'
-    password: ''
-    database: ''
+    password: 'yehuozhili'
+    database: 'test-db-1'
     port: 3306
     charset: 'utf8mb4'
     logger: 'file'
@@ -44,10 +44,10 @@ db:
 
 # redis 配置
 redis:
-  host: 'localhost'
-  password: '123456'
+  host: '42.192.134.224'
+  password: 'taozhi187'
   port: 6379
-  db: 0
+  db: 2
   keyPrefix: ''
 
 # jwt 配置

@@ -1,16 +1,21 @@
-import { Controller, Get, Post, Body, Put, Param, Query, Res, Delete, Request } from '@nestjs/common';
+import { Controller, Get, Post, Body, Put, Param, Query, Res, Delete, Request, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBody, ApiConsumes, ApiQuery, ApiBearerAuth } from '@nestjs/swagger';
 import { UserService } from './user.service';
 import { Response } from 'express';
 import { RequirePermission } from 'src/common/decorators/require-premission.decorator';
 import { RequireRole } from 'src/common/decorators/require-role.decorator';
-
+import { UploadService } from 'src/module/upload/upload.service';
 import { CreateUserDto, UpdateUserDto, ListUserDto, ChangeStatusDto, ResetPwdDto, UpdateProfileDto, UpdatePwdDto } from './dto/index';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { ResultData } from 'src/common/utils/result';
 
 @ApiTags('用户管理')
 @Controller('system/user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly uploadService: UploadService,
+  ) {}
 
   @ApiOperation({
     summary: '个人中心-用户信息',
@@ -30,6 +35,19 @@ export class UserController {
   updateProfile(@Request() req, @Body() updateProfileDto: UpdateProfileDto) {
     const user = req.user;
     return this.userService.updateProfile(user, updateProfileDto);
+  }
+
+  @ApiOperation({
+    summary: '个人中心-上传用户头像',
+  })
+  @RequirePermission('system:user:edit')
+  @Post('/profile/avatar')
+  @UseInterceptors(FileInterceptor('avatarfile'))
+  async avatar(@UploadedFile() avatarfile: Express.Multer.File) {
+    const res = await this.uploadService.singleFileUpload(avatarfile);
+    return ResultData.ok({
+      imgUrl: res.fileName,
+    });
   }
 
   @ApiOperation({
