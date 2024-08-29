@@ -8,6 +8,7 @@ import { UploadService } from 'src/module/upload/upload.service';
 import { CreateUserDto, UpdateUserDto, ListUserDto, ChangeStatusDto, ResetPwdDto, UpdateProfileDto, UpdatePwdDto } from './dto/index';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ResultData } from 'src/common/utils/result';
+import { GetNowDate } from 'src/common/utils';
 
 @ApiTags('用户管理')
 @ApiBearerAuth()
@@ -70,7 +71,9 @@ export class UserController {
   })
   @RequirePermission('system:user:add')
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
+  create(@Body() createUserDto: CreateUserDto, @Request() req) {
+    createUserDto['createTime'] = GetNowDate();
+    createUserDto['createBy'] = req.user.user.userName;
     return this.userService.create(createUserDto);
   }
 
