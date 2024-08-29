@@ -788,7 +788,7 @@ export class UserService {
   async updateProfile(user: any, updateProfileDto: UpdateProfileDto) {
     await this.userRepo.update({ userId: user.user.userId }, updateProfileDto);
     const userData = await this.redisService.get(`${CacheEnum.LOGIN_TOKEN_KEY}${user.token}`);
-    userData.user = Object.assign(userData.user, updateProfileDto)
+    userData.user = Object.assign(userData.user, updateProfileDto);
     await this.redisService.set(`${CacheEnum.LOGIN_TOKEN_KEY}${user.token}`, userData);
     return ResultData.ok();
   }

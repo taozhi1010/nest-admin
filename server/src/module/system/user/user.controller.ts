@@ -10,6 +10,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { ResultData } from 'src/common/utils/result';
 
 @ApiTags('用户管理')
+@ApiBearerAuth()
 @Controller('system/user')
 export class UserController {
   constructor(
