@@ -8,7 +8,7 @@ export class HttpExceptionsFilter implements ExceptionFilter {
     const status = HttpStatus.INTERNAL_SERVER_ERROR;
     //exception.getStatus();
     const exceptionResponse = exception.getResponse();
-    let message = 'Service Error';
+    let message = exceptionResponse.message ?? 'Service Error';
 
     if (exceptionResponse?.message instanceof Array) {
       message = exceptionResponse.message[0];
