@@ -31,7 +31,7 @@ export class DictController {
   @RequirePermission('system:dict:remove')
   @Delete('/type/refreshCache')
   refreshCache() {
-    return this.dictService.refreshCache();
+    return this.dictService.resetDictCache();
   }
 
   @ApiOperation({
