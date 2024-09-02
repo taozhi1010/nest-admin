@@ -68,7 +68,7 @@ export class ConfigController {
   @RequirePermission('system:config:remove')
   @Delete('/refreshCache')
   refreshCache() {
-    return this.configService.refreshCache();
+    return this.configService.resetConfigCache();
   }
 
   @ApiOperation({
