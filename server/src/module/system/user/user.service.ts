@@ -339,6 +339,7 @@ export class UserService {
       },
       {
         loginDate: loginDate,
+        loginIp: clientInfo.ipaddr,
       },
     );
 
