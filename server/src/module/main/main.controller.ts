@@ -19,7 +19,7 @@ export class MainController {
     private readonly configService: ConfigService,
   ) {}
   @ApiOperation({
-    summary: '用户登陆',
+    summary: '用户登录',
   })
   @ApiBody({
     type: LoginDto,
@@ -42,7 +42,7 @@ export class MainController {
   }
 
   @ApiOperation({
-    summary: '退出登陆',
+    summary: '退出登录',
   })
   @ApiBody({
     type: LoginDto,
@@ -50,7 +50,7 @@ export class MainController {
   })
   @Post('/logout')
   @HttpCode(200)
-  logout(@Request() req) {
+  async logout(@Request() req) {
     const agent = Useragent.parse(req.headers['user-agent']);
     const os = agent.os.toJSON().family;
     const browser = agent.toAgent();
@@ -61,6 +61,9 @@ export class MainController {
       os: os,
       loginLocation: '',
     };
+    if (req.user?.token) {
+      await this.redisService.del(`${CacheEnum.LOGIN_TOKEN_KEY}${req.user.token}`);
+    }
     return this.mainService.logout(clientInfo);
   }
 

@@ -7,6 +7,8 @@ import * as UserConstants from 'src/common/constant/userConstants';
  * @param arr
  */
 export const buildMenus = (arr) => {
+  //保证父级菜单排在前面
+  arr.sort((a, b) => a.parentId - b.parentId);
   const kData = {}; // 以id做key的对象 暂时储存数据
   const lData = []; // 最终的数据 arr
   arr.forEach((m) => {

@@ -1,20 +1,20 @@
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
+import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { mw as requestIpMw } from 'request-ip';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from 'src/app.module';
-import { ExceptionsFilter } from 'src/common/filters/exceptions-filter';
 import { HttpExceptionsFilter } from 'src/common/filters/http-exceptions-filter';
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { join } from 'path';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, {
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     cors: true, // 开启跨域访问
   });
   const config = app.get(ConfigService);
-
   // 设置访问频率
   app.use(
     rateLimit({
@@ -24,10 +24,15 @@ async function bootstrap() {
   );
   // 设置 api 访问前缀
   const prefix = config.get<string>('app.prefix');
+
+  app.useStaticAssets(join(__dirname, '..', '../upload'), {
+    prefix: '/profile/',
+    maxAge: 86400000 * 365,
+  });
+
   app.setGlobalPrefix(prefix);
   // 全局验证
   app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true }));
-  app.useGlobalFilters(new ExceptionsFilter());
   app.useGlobalFilters(new HttpExceptionsFilter());
 
   // web 安全，防常见漏洞
@@ -52,6 +57,16 @@ async function bootstrap() {
   const port = config.get<number>('app.port') || 8080;
   await app.listen(port);
 
-  console.log(`Nest-Admin 服务启动成功 `, '\n', '\n', '服务地址', `http://localhost:${port}${prefix}/`, '\n', 'swagger 文档地址        ', `http://localhost:${port}${prefix}/swagger-ui/`);
+  console.log(
+    `Nest-Admin 服务启动成功 `,
+    '\n',
+    '\n',
+    join(__dirname, '..', '../upload'),
+    '服务地址',
+    `http://localhost:${port}${prefix}/`,
+    '\n',
+    'swagger 文档地址        ',
+    `http://localhost:${port}${prefix}/swagger-ui/`,
+  );
 }
 bootstrap();

@@ -64,6 +64,14 @@ export default {
 	data() {
 		return {};
 	},
+  watch: {
+    page: {
+      handler(val) {
+				this.$emit('pagination', { page: val, limit: this.pageSize });
+      },
+      immediate: true,
+    },
+  },
 	computed: {
 		currentPage: {
 			get() {
@@ -93,7 +101,7 @@ export default {
 			}
 		},
 		handleCurrentChange(val) {
-			this.$emit('pagination', { page: val, limit: this.pageSize });
+			// this.$emit('pagination', { page: val, limit: this.pageSize });
 			if (this.autoScroll) {
 				scrollTo(0, 800);
 			}

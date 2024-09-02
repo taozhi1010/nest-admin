@@ -28,6 +28,8 @@ import elementIcons from '@/components/SvgIcon/svgicon'
 
 import './permission' // permission control
 
+import submitNoEnter from '@/utils/submitNoEnter'; //取消回车提交
+
 import { useDict } from '@/utils/dict'
 import { parseTime, resetForm, addDateRange, handleTree, selectDictLabel, selectDictLabels } from '@/utils/ruoyi'
 
@@ -77,7 +79,7 @@ app.use(plugins)
 app.use(elementIcons)
 app.use(VFormDesigner);
 app.component('svg-icon', SvgIcon)
-
+app.mixin(submitNoEnter);
 directive(app)
 
 // 使用element-plus 并且设置全局的大小
