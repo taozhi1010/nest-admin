@@ -125,7 +125,7 @@ function handleSelectUser() {
     proxy.$modal.msgError("请选择要分配的用户");
     return;
   }
-  authUserSelectAll({ roleId: roleId, userIds: uIds }).then(res => {
+  authUserSelectAll({ roleId: +roleId, userIds: uIds }).then(res => {
     proxy.$modal.msgSuccess(res.msg);
     if (res.code === 200) {
       visible.value = false;
