@@ -195,7 +195,7 @@ export class DictService {
    * 刷新字典缓存
    * @returns
    */
-  async refreshCache() {
+  async resetDictCache() {
     await this.clearDictCache();
     await this.loadingDictCache();
     return ResultData.ok();
@@ -218,6 +218,7 @@ export class DictService {
    */
   async loadingDictCache() {
     const entity = this.sysDictTypeEntityRep.createQueryBuilder('entity');
+    entity.where('entity.delFlag = :delFlag', { delFlag: '0' });
     entity.leftJoinAndMapMany('entity.dictTypeList', SysDictDataEntity, 'dictType', 'dictType.dictType = entity.dictType');
     const list = await entity.getMany();
     list.forEach((item: any) => {
