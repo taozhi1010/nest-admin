@@ -30,7 +30,7 @@ export class PostController {
     type: ListPostDto,
     required: true,
   })
-  @RequirePermission('system:post:query')
+  @RequirePermission('system:post:list')
   @Get('/list')
   findAll(@Query() query: ListPostDto) {
     return this.postService.findAll(query);

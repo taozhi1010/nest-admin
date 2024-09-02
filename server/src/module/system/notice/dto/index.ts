@@ -35,6 +35,10 @@ export class CreateNoticeDto {
   @IsString()
   @IsEnum(StatusEnum)
   status?: string;
+
+  @IsOptional()
+  @IsString()
+  noticeContent?: string;
 }
 
 export class UpdateNoticeDto extends CreateNoticeDto {

@@ -10,7 +10,7 @@
                </template>
                <div>
                   <div class="text-center">
-                     <userAvatar :user="state.user" />
+                     <userAvatar :user="state.user" @updateAvatar="updateAvatar"/>
                   </div>
                   <ul class="list-group list-group-striped">
                      <li class="list-group-item">
@@ -81,6 +81,11 @@ function getUser() {
     state.roleGroup = response.roleGroup;
     state.postGroup = response.postGroup;
   });
+};
+
+function updateAvatar(url) {
+  state.user.avatar = url;
+  console.log('---------->>>>>',state.user)
 };
 
 getUser();

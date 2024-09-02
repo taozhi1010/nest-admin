@@ -29,7 +29,7 @@ export class ConfigController {
     type: ListConfigDto,
     required: true,
   })
-  @RequirePermission('system:config:query')
+  @RequirePermission('system:config:list')
   @Get('/list')
   findAll(@Query() query: ListConfigDto) {
     return this.configService.findAll(query);

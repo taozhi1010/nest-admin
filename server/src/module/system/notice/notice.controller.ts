@@ -28,7 +28,7 @@ export class NoticeController {
     type: ListNoticeDto,
     required: true,
   })
-  @RequirePermission('system:notice:query')
+  @RequirePermission('system:notice:list')
   @Get('/list')
   findAll(@Query() query: ListNoticeDto) {
     return this.noticeService.findAll(query);

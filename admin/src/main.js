@@ -13,7 +13,7 @@ import router from './router';
 import directive from './directive'; // directive
 import plugins from './plugins'; // plugins
 import { download } from '@/utils/request';
-
+import submitNoEnter from '@/utils/submitNoEnter'; // 取消回车提交
 import './assets/icons'; // icon
 import './permission'; // permission control
 import { getDicts } from '@/api/system/dict/data';
@@ -61,6 +61,7 @@ Vue.component('ImagePreview', ImagePreview);
 Vue.use(directive);
 Vue.use(plugins);
 Vue.use(VueMeta);
+Vue.mixin(submitNoEnter);
 DictData.install();
 
 /**

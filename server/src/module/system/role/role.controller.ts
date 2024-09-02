@@ -35,7 +35,7 @@ export class RoleController {
     type: ListRoleDto,
     required: true,
   })
-  @RequirePermission('system:role:query')
+  @RequirePermission('system:role:list')
   @Get('list')
   findAll(@Query() query: ListRoleDto) {
     return this.roleService.findAll(query);
