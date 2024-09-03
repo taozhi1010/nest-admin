@@ -338,6 +338,7 @@ export class UserService {
       },
       {
         loginDate: loginDate,
+        loginIp: clientInfo.ipaddr,
       },
     );
 
@@ -398,10 +399,10 @@ export class UserService {
    * @returns
    */
   async getUserPermissions(userId: number) {
-    // 超级管理员
-    if (userId === 1) {
-      return ['*:*:*'];
-    }
+    // 超级管理员 - 根据角色赋予 权限
+    // if (userId === 1) {
+    //   return ['*:*:*'];
+    // }
     const roleIds = await this.getRoleIds([userId]);
     const list = await this.roleService.getPermissionsByRoleIds(roleIds);
     const permissions = Uniq(list.map((item) => item.perms)).filter((item) => {

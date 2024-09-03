@@ -196,6 +196,7 @@ export class RoleService {
    * 根据角色获取用户权限列表
    */
   async getPermissionsByRoleIds(roleIds: number[]) {
+    if (roleIds.includes(1)) return [{ perms: '*:*:*' }]; //当角色为超级管理员时，开放所有权限
     const list = await this.sysRoleWithMenuEntityRep.find({
       where: {
         roleId: In(roleIds),
