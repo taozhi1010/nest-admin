@@ -717,3 +717,25 @@ create table gen_table_column (
   remark            varchar(255)    default ''               comment '备注',
   primary key (column_id)
 ) engine=innodb auto_increment=1 comment = '代码生成业务表字段';
+
+
+-- ----------------------------
+-- 20、文件上传记录
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_upload`;
+CREATE TABLE `sys_upload` (
+  `status` char(1) NOT NULL DEFAULT '0' COMMENT '状态',
+  `del_flag` char(1) NOT NULL DEFAULT '0' COMMENT '删除标志',
+  `create_by` varchar(64) NOT NULL DEFAULT '' COMMENT '创建者',
+  `create_time` datetime(6) DEFAULT CURRENT_TIMESTAMP(6) COMMENT '创建时间',
+  `update_by` varchar(64) NOT NULL DEFAULT '' COMMENT '更新者',
+  `update_time` datetime(6) DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6) COMMENT '更新时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `upload_id` varchar(255) NOT NULL COMMENT '任务Id',
+  `size` int NOT NULL COMMENT '文件大小',
+  `file_name` varchar(255) NOT NULL COMMENT '文件路径',
+  `new_file_name` varchar(255) NOT NULL COMMENT '文件名',
+  `url` varchar(255) NOT NULL COMMENT '文件地址',
+  `ext` varchar(255) DEFAULT NULL COMMENT '拓展名',
+  PRIMARY KEY (`upload_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='文件上传记录';
