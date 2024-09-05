@@ -123,18 +123,6 @@ export class ConfigService {
     return ResultData.ok(data);
   }
 
-  async refreshCache() {
-    const list = await this.sysConfigEntityRep.find({
-      where: {
-        delFlag: '0',
-      },
-    });
-    list.forEach((item) => {
-      this.redisService.set(`${CacheEnum.SYS_CONFIG_KEY}${item.configKey}`, item.configValue);
-    });
-    return ResultData.ok();
-  }
-
   /**
    * 导出参数管理数据为xlsx
    * @param res
@@ -161,5 +149,41 @@ export class ConfigService {
       },
     };
     ExportTable(options, res);
+  }
+
+  /**
+   * 刷新系统配置缓存
+   * @returns
+   */
+  async resetConfigCache() {
+    await this.clearConfigCache();
+    await this.loadingConfigCache();
+    return ResultData.ok();
+  }
+
+  /**
+   * 删除系统配置缓存
+   * @returns
+   */
+  async clearConfigCache() {
+    const keys = await this.redisService.keys(`${CacheEnum.SYS_CONFIG_KEY}*`);
+    if (keys && keys.length > 0) {
+      await this.redisService.del(keys);
+    }
+  }
+
+  /**
+   * 加载系统配置缓存
+   * @returns
+   */
+  async loadingConfigCache() {
+    const entity = this.sysConfigEntityRep.createQueryBuilder('entity');
+    entity.where('entity.delFlag = :delFlag', { delFlag: '0' });
+    const list = await entity.getMany();
+    list.forEach((item) => {
+      if (item.configKey) {
+        this.redisService.set(`${CacheEnum.SYS_CONFIG_KEY}${item.configKey}`, item.configValue);
+      }
+    });
   }
 }

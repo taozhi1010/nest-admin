@@ -11,7 +11,7 @@ export class SysConfigEntity extends BaseEntity {
   @Column({ type: 'varchar', name: 'config_name', length: 100, default: '', comment: '参数名称' })
   public configName: string;
 
-  @Column({ type: 'varchar', name: 'config_key', length: 100, default: '', comment: '岗位编码' })
+  @Column({ type: 'varchar', name: 'config_key', length: 100, default: '', comment: '参数键名' })
   public configKey: string;
 
   @Column({ type: 'varchar', name: 'config_value', length: 500, default: '', comment: '参数键值' })
