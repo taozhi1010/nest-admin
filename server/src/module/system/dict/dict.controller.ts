@@ -26,6 +26,15 @@ export class DictController {
   }
 
   @ApiOperation({
+    summary: '字典数据-刷新缓存',
+  })
+  @RequirePermission('system:dict:remove')
+  @Delete('/type/refreshCache')
+  refreshCache() {
+    return this.dictService.resetDictCache();
+  }
+
+  @ApiOperation({
     summary: '字典类型-删除',
   })
   @RequirePermission('system:dict:remove')
@@ -126,7 +135,7 @@ export class DictController {
   }
 
   @ApiOperation({ summary: '导出字典数据为xlsx文件' })
-  @RequirePermission('system:post:export')
+  @RequirePermission('system:dict:export')
   @Post('/type/export')
   async export(@Res() res: Response, @Body() body: ListDictType): Promise<void> {
     return this.dictService.export(res, body);

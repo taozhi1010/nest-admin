@@ -97,7 +97,7 @@ export function authUserCancelAll(data) {
   return request({
     url: '/system/role/authUser/cancelAll',
     method: 'put',
-    params: data
+    data: data
   })
 }
 
@@ -106,7 +106,7 @@ export function authUserSelectAll(data) {
   return request({
     url: '/system/role/authUser/selectAll',
     method: 'put',
-    params: data
+    data: data
   })
 }
 

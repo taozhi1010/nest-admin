@@ -190,4 +190,41 @@ export class DictService {
     };
     ExportTable(options, res);
   }
+
+  /**
+   * 刷新字典缓存
+   * @returns
+   */
+  async resetDictCache() {
+    await this.clearDictCache();
+    await this.loadingDictCache();
+    return ResultData.ok();
+  }
+
+  /**
+   * 删除字典缓存
+   * @returns
+   */
+  async clearDictCache() {
+    const keys = await this.redisService.keys(`${CacheEnum.SYS_DICT_KEY}*`);
+    if (keys && keys.length > 0) {
+      await this.redisService.del(keys);
+    }
+  }
+
+  /**
+   * 加载字典缓存
+   * @returns
+   */
+  async loadingDictCache() {
+    const entity = this.sysDictTypeEntityRep.createQueryBuilder('entity');
+    entity.where('entity.delFlag = :delFlag', { delFlag: '0' });
+    entity.leftJoinAndMapMany('entity.dictTypeList', SysDictDataEntity, 'dictType', 'dictType.dictType = entity.dictType');
+    const list = await entity.getMany();
+    list.forEach((item: any) => {
+      if (item.dictType) {
+        this.redisService.set(`${CacheEnum.SYS_DICT_KEY}${item.dictType}`, item.dictTypeList);
+      }
+    });
+  }
 }
