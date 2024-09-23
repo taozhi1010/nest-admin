@@ -738,4 +738,4 @@ CREATE TABLE `sys_upload` (
   `url` varchar(255) NOT NULL COMMENT '文件地址',
   `ext` varchar(255) DEFAULT NULL COMMENT '拓展名',
   PRIMARY KEY (`upload_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='文件上传记录';
+) ENGINE=InnoDB COMMENT='文件上传记录';
