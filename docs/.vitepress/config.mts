@@ -3,24 +3,28 @@ import { defineConfig } from 'vitepress'
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   title: "nest-admin使用指南",
-  description: "用来帮助更好的使用nest-admin的教程",
+  description: "帮助你更好的使用nest-admin",
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
-      { text: 'Home', link: '/' },
+      { text: '主页', link: '/' },
       { text: '部署', link: '/deploy' },
     ],
 
     sidebar: [
       {
-        text: '部署文档',
+        text: '线上部署',
         items: [
-          { text: 'nginx部署', link: '/deploy' }
+          { text: '流程简介', link: '/deploy-online/step' },
+          { text: 'MySQL部署', link: '/deploy-online/mysql' },
+          { text: 'Redis部署', link: '/deploy-online/redis' },
+          { text: 'PM2部署', link: '/deploy-online/pm2' },
+          { text: 'Nginx部署', link: '/deploy-online/nginx' },
         ]
       }
     ],
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/vuejs/vitepress' }
+      { icon: 'github', link: 'https://github.com/taozhi1010/nest-admin' }
     ]
   }
 })

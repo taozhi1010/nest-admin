@@ -3,23 +3,26 @@
 layout: home
 
 hero:
-  name: "nest-admin使用教程"
+  name: "nest-admin"
   # text: "更好的使用nest-admin"
-  tagline: 更好用的Nest使用教程，更简单的部署，更方便的开发
-  actions:
-    - theme: brand
-      text: Markdown Examples
-      link: /markdown-examples
-    - theme: alt
-      text: API Examples
-      link: /api-examples
+  tagline: 让开发，部署更简单
+  # actions:
+  #   - theme: brand
+  #     text: Markdown Examples
+  #     link: /markdown-examples
+  #   - theme: alt
+  #     text: API Examples
+  #     link: /api-examples
 
 features:
-  - title: Feature A
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature B
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature C
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+  - title: nest中文网
+    details: 一个用于构建高效、可扩展的 Node.js 服务器端应用程序的框架。
+    link: https://nest.nodejs.cn/
+  - title: vue3官网
+    details: Vue 3 框架的全面指南，更好支持组合式API，TypeScript 等。
+    link: https://cn.vuejs.org/
+  - title: vite官方中文文档
+    details: 更快，更高效的进行前端项目开发
+    link: https://vitejs.cn/vite3-cn/guide/
 ---
 
