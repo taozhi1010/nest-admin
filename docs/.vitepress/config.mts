@@ -8,7 +8,7 @@ export default defineConfig({
     // https://vitepress.dev/reference/default-theme-config
     nav: [
       { text: '主页', link: '/' },
-      { text: '部署', link: '/deploy' },
+      { text: '部署', link: '/deploy-online/step' },
     ],
 
     sidebar: [
