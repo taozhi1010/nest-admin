@@ -50,7 +50,9 @@ sudo tar -xJvf node-v20.5.0-linux-x64.tar.xz -C /server/soft/node
 
 #### 配置nodejs环境
 
-看了其他人的文档，有人说
+看了其他人的文档，有人说创建软链接的方式不太好，个人参考那篇文档没跑通。
+
+折腾了一段时间之后，还是选择如下方案，node环境推荐按照当前最新的稳定版本（node20）。
 
 ##### 在默认路径中创建对应的软链 (推荐)
 
@@ -63,8 +65,8 @@ sudo ln -s /server/soft/node/node-v20.5.0-linux-x64/bin/npm /usr/bin/npm
 sudo ln -s /server/soft/node/node-v20.5.0-linux-x64/bin/npx /usr/bin/npx
 ```
 
-优点: 创建一次，所有用户均可运行node相关命令
-缺点: 每增加一个全局node相关命令都要创建软链
+- 优点: 创建一次，所有用户均可运行node相关命令
+- 缺点: 每增加一个全局node相关命令都要创建软链
 
 ##### 移除对应内容
 
