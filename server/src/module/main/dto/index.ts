@@ -14,16 +14,25 @@ export class LoginDto {
   @IsString()
   code?: string;
 
+  @ApiProperty({
+    required: true,
+  })
   @IsString()
   @MinLength(2)
   @MaxLength(10)
   username: string;
 
+  @ApiProperty({
+    required: true,
+  })
   @IsString()
   @MinLength(5)
   @MaxLength(20)
   password: string;
 
+  @ApiProperty({
+    required: true,
+  })
   @IsOptional()
   @IsString()
   uuid?: string;

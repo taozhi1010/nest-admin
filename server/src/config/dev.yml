@@ -28,10 +28,10 @@ cos:
 # 数据库配置
 db:
   mysql:
-    host: 'localhost'
+    host: '127.0.0.1'
     username: 'root'
-    password: 'yehuozhili'
-    database: 'test-db-1'
+    password: ''
+    database: 'admin_db'
     port: 3306
     charset: 'utf8mb4'
     logger: 'file'
