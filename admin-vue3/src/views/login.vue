@@ -1,9 +1,9 @@
 <template>
-  <div class="login">
-    <div class="login-bg">
-      <div v-for="n in 5" :key="n" />
-    </div>
+  <div class="login-bg">
+    <div v-for="n in 5" :key="n" />
+  </div>
 
+  <div class="login">
     <el-form ref="loginRef" :model="loginForm" :rules="loginForm.rules" class="login-form">
       <h3 class="title">nest-admin后台管理系统</h3>
       <el-form-item prop="username">
@@ -20,7 +20,7 @@
           </template>
         </el-input>
       </el-form-item>
-      <el-form-item prop="code" v-show="captchaEnabled">
+      <el-form-item prop="code" v-if="captchaEnabled">
         <el-input v-model="loginForm.code" size="large" auto-complete="off" placeholder="验证码" style="width: 63%" @keyup.enter="handleLogin">
           <template #prefix>
             <svg-icon icon-class="validCode" class="input-icon" />
@@ -57,7 +57,6 @@ const userStore = useUserStore()
 const route = useRoute()
 const router = useRouter()
 const loginRef = ref('')
-const { proxy } = getCurrentInstance()
 
 const loginForm = reactive({
   model: {
