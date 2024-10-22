@@ -1,6 +1,10 @@
 import { defineConfig, loadEnv } from 'vite'
 import path from 'path'
+
 import createVitePlugins from './vite/plugins'
+
+// 打包后的文件是否开启hash
+const outputHash = true
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode, command }) => {
@@ -37,6 +41,31 @@ export default defineConfig(({ mode, command }) => {
         }
       }
     },
+    build: {
+      assetsDir: 'static',
+      // build时规定触发警告的 chunk 大小。（以 kbs 为单位）
+      chunkSizeWarningLimit: 20480,
+      // build时启用/禁用 CSS 代码拆分
+      cssCodeSplit: true,
+      // 生产环境构建文件的目录名
+      outDir: 'dist',
+      // 启用/禁用 gzip 压缩大小报告
+      reportCompressedSize: false,
+      rollupOptions: {
+        onwarn: () => {
+          return
+        },
+        output: {
+          chunkFileNames: outputHash ? 'static/js/[name]-[hash].js' : 'static/js/[name].js',
+          entryFileNames: outputHash ? 'static/js/[name]-[hash].js' : 'static/js/[name].js',
+          assetFileNames: outputHash ? 'static/[ext]/[name]-[hash].[ext]' : 'static/[ext]/[name].[ext]',
+        }
+      },
+      // 混淆器 boolean | 'terser' | 'esbuild'
+      minify: 'esbuild',
+      target: 'es2015',
+      sourcemap: false
+    },
     //fix:error:stdin>:7356:1: warning: "@charset" must be the first rule in the file
     css: {
       postcss: {
@@ -46,13 +75,19 @@ export default defineConfig(({ mode, command }) => {
             AtRule: {
               charset: (atRule) => {
                 if (atRule.name === 'charset') {
-                  atRule.remove();
+                  atRule.remove()
                 }
               }
             }
           }
         ]
-      }
+      },
+      preprocessorOptions: {
+        scss: {
+          sassOptions: { outputStyle: 'expanded' }
+        }
+      },
+      devSourcemap: true
     }
   }
 })
