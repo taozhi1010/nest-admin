@@ -59,6 +59,9 @@ export default defineConfig(({ mode, command }) => {
           chunkFileNames: outputHash ? 'static/js/[name]-[hash].js' : 'static/js/[name].js',
           entryFileNames: outputHash ? 'static/js/[name]-[hash].js' : 'static/js/[name].js',
           assetFileNames: outputHash ? 'static/[ext]/[name]-[hash].[ext]' : 'static/[ext]/[name].[ext]',
+          manualChunks: {
+            'element-plus': ['element-plus']
+          }
         }
       },
       // 混淆器 boolean | 'terser' | 'esbuild'
@@ -84,7 +87,7 @@ export default defineConfig(({ mode, command }) => {
       },
       preprocessorOptions: {
         scss: {
-          sassOptions: { outputStyle: 'expanded' }
+          sassOptions: { outputStyle: 'compressed' }
         }
       },
       devSourcemap: true
