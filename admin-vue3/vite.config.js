@@ -60,7 +60,9 @@ export default defineConfig(({ mode, command }) => {
           entryFileNames: outputHash ? 'static/js/[name]-[hash].js' : 'static/js/[name].js',
           assetFileNames: outputHash ? 'static/[ext]/[name]-[hash].[ext]' : 'static/[ext]/[name].[ext]',
           manualChunks: {
-            'element-plus': ['element-plus']
+            'element-plus': ['element-plus'],
+            echarts: ['echarts'],
+            vuedraggable: ['vuedraggable']
           }
         }
       },
