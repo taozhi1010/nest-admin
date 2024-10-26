@@ -3,8 +3,10 @@
     <template v-if="hasOneShowingChild(item.children, item) && (!onlyOneChild.children || onlyOneChild.noShowingChildren) && !item.alwaysShow">
       <app-link v-if="onlyOneChild.meta" :to="resolvePath(onlyOneChild.path, onlyOneChild.query)">
         <el-menu-item :index="resolvePath(onlyOneChild.path)" :class="{ 'submenu-title-noDropdown': !isNest }">
-          <svg-icon :icon-class="onlyOneChild.meta.icon || (item.meta && item.meta.icon)"/>
-          <template #title><span class="menu-title" :title="hasTitle(onlyOneChild.meta.title)">{{ onlyOneChild.meta.title }}</span></template>
+          <svg-icon :icon-class="onlyOneChild.meta.icon || (item.meta && item.meta.icon)" />
+          <template #title>
+            <span class="menu-title" :title="hasTitle(onlyOneChild.meta.title)">{{ onlyOneChild.meta.title }}</span>
+          </template>
         </el-menu-item>
       </app-link>
     </template>
@@ -15,14 +17,7 @@
         <span class="menu-title" :title="hasTitle(item.meta.title)">{{ item.meta.title }}</span>
       </template>
 
-      <sidebar-item
-        v-for="child in item.children"
-        :key="child.path"
-        :is-nest="true"
-        :item="child"
-        :base-path="resolvePath(child.path)"
-        class="nest-menu"
-      />
+      <sidebar-item v-for="child in item.children" :key="child.path" :is-nest="true" :item="child" :base-path="resolvePath(child.path)" class="nest-menu" />
     </el-sub-menu>
   </div>
 </template>
@@ -48,13 +43,13 @@ const props = defineProps({
   }
 })
 
-const onlyOneChild = ref({});
+const onlyOneChild = ref({})
 
 function hasOneShowingChild(children = [], parent) {
   if (!children) {
-    children = [];
+    children = []
   }
-  const showingChildren = children.filter(item => {
+  const showingChildren = children.filter((item) => {
     if (item.hidden) {
       return false
     } else {
@@ -76,7 +71,7 @@ function hasOneShowingChild(children = [], parent) {
   }
 
   return false
-};
+}
 
 function resolvePath(routePath, routeQuery) {
   if (isExternal(routePath)) {
@@ -86,17 +81,17 @@ function resolvePath(routePath, routeQuery) {
     return props.basePath
   }
   if (routeQuery) {
-    let query = JSON.parse(routeQuery);
+    let query = JSON.parse(routeQuery)
     return { path: getNormalPath(props.basePath + '/' + routePath), query: query }
   }
   return getNormalPath(props.basePath + '/' + routePath)
 }
 
-function hasTitle(title){
+function hasTitle(title) {
   if (title.length > 5) {
-    return title;
+    return title
   } else {
-    return "";
+    return ''
   }
 }
 </script>
