@@ -59,18 +59,25 @@ import { UploadModule } from './module/upload/upload.module';
         imports: [ConfigModule],
         inject: [ConfigService],
         useFactory: (config: ConfigService) => {
-          console.log(config.get<RedisClientOptions>('redis'));
-          return {
-            closeClient: true,
-            readyLog: true,
-            errorLog: true,
-            config: {
+          // 动态读取config中的redis
+          let redisConfig = {};
+          if (process.env.NODE_ENV === 'development') {
+            redisConfig = {
               host: '43.155.4.176',
               password: '123456',
               port: 6379,
               db: 2,
               keyPrefix: '',
-            },
+            };
+          } else {
+            redisConfig = config.get<RedisClientOptions>('redis');
+          }
+
+          return {
+            closeClient: true,
+            readyLog: true,
+            errorLog: true,
+            config: redisConfig,
           };
         },
       },
