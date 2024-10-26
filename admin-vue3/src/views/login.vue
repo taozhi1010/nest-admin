@@ -41,7 +41,7 @@
     </el-form>
 
     <div class="el-login-footer">
-      <span>Copyright © 2018-2023 nest-admin All Rights Reserved.</span>
+      <span>Copyright © 2018-2024 nest-admin All Rights Reserved.</span>
     </div>
   </div>
 </template>
