@@ -22,6 +22,11 @@ const getValidateCode = async (loginForm) => {
     return
   }
 
+  if (authCodeInfo.loading) {
+    ElMessage.warning('正在请求验证码，请稍等')
+    return
+  }
+
   try {
     const result = await getCodeImg()
     authCodeInfo.loading = true
