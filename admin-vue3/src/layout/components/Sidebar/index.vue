@@ -12,12 +12,7 @@
         :collapse-transition="false"
         mode="vertical"
       >
-        <sidebar-item
-          v-for="(route, index) in sidebarRouters"
-          :key="route.path + index"
-          :item="route"
-          :base-path="route.path"
-        />
+        <sidebar-item v-for="(route, index) in sidebarRouters" :key="route.path + index" :item="route" :base-path="route.path" />
       </el-menu>
     </el-scrollbar>
   </div>
@@ -31,24 +26,23 @@ import useAppStore from '@/store/modules/app'
 import useSettingsStore from '@/store/modules/settings'
 import usePermissionStore from '@/store/modules/permission'
 
-const route = useRoute();
+const route = useRoute()
 const appStore = useAppStore()
 const settingsStore = useSettingsStore()
 const permissionStore = usePermissionStore()
 
-const sidebarRouters =  computed(() => permissionStore.sidebarRouters);
-const showLogo = computed(() => settingsStore.sidebarLogo);
-const sideTheme = computed(() => settingsStore.sideTheme);
-const theme = computed(() => settingsStore.theme);
-const isCollapse = computed(() => !appStore.sidebar.opened);
+const sidebarRouters = computed(() => permissionStore.sidebarRouters)
+const showLogo = computed(() => settingsStore.sidebarLogo)
+const sideTheme = computed(() => settingsStore.sideTheme)
+const theme = computed(() => settingsStore.theme)
+const isCollapse = computed(() => !appStore.sidebar.opened)
 
 const activeMenu = computed(() => {
-  const { meta, path } = route;
+  const { meta, path } = route
   // if set path, the sidebar will highlight the path you set
   if (meta.activeMenu) {
-    return meta.activeMenu;
+    return meta.activeMenu
   }
-  return path;
+  return path
 })
-
 </script>
