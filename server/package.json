@@ -58,7 +58,9 @@
     "svg-captcha": "^1.4.0",
     "typeorm": "^0.3.20",
     "useragent": "^2.3.0",
-    "uuid": "^9.0.1"
+    "uuid": "^9.0.1",
+    "winston": "^3.15.0",
+    "winston-daily-rotate-file": "^5.0.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",
@@ -84,6 +86,9 @@
     "ts-node": "^10.9.1",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.1.3"
+  },
+  "resolutions": {
+    "string-width": "4.2.3"
   },
   "jest": {
     "moduleFileExtensions": [
