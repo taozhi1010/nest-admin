@@ -92,21 +92,18 @@ function handleLogin() {
   loginRef.value.validate((valid) => {
     if (valid) {
       loading.value = true
-      // 勾选了需要记住密码设置在 cookie 中设置记住用户名和密码
+      // 勾选了需要记住密码设置在 cookie 中设置记住用户名和密码，否则移除
       if (loginForm.model.rememberMe) {
         Cookies.set('username', loginForm.model.username, { expires: 30 })
-        Cookies.set('password', encrypt(loginForm.model.password), {
-          expires: 30
-        })
+        Cookies.set('password', encrypt(loginForm.model.password), { expires: 30 })
         Cookies.set('rememberMe', loginForm.model.rememberMe, { expires: 30 })
       } else {
-        // 否则移除
         Cookies.remove('username')
         Cookies.remove('password')
         Cookies.remove('rememberMe')
       }
-      // 调用action的登录方法
 
+      // 调用action的登录方法
       userStore
         .login(loginForm.model)
         .then(() => {
