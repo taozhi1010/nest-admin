@@ -14,7 +14,6 @@
         </el-input>
       </el-form-item>
       <el-form-item prop="password">
-        
         <el-input v-model="loginForm.model.password" type="password" size="large" auto-complete="off" placeholder="密码" @keyup.enter="handleLogin">
           <template #prefix>
             <svg-icon icon-class="password" class="input-icon" />
@@ -107,7 +106,7 @@ function handleLogin() {
         Cookies.remove('rememberMe')
       }
       // 调用action的登录方法
-  
+
       userStore
         .login(loginForm.model)
         .then(() => {
@@ -178,9 +177,10 @@ getCookie()
 }
 
 .login-code {
-  width: 33%;
-  height: 40px;
+  width: 35%;
+  height: 48px;
   float: right;
+  text-align: right;
   img {
     cursor: pointer;
     vertical-align: middle;

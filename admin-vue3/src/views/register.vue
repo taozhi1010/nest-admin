@@ -2,7 +2,7 @@
   <div class="login-bg">
     <div v-for="n in 5" :key="n" />
   </div>
-  
+
   <div class="register">
     <el-form ref="registerRef" :model="registerForm" :rules="registerRules" class="register-form">
       <h3 class="title">nest-admin后台管理系统</h3>
