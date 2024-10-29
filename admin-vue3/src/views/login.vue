@@ -7,21 +7,22 @@
     <el-form ref="loginRef" :model="loginForm.model" :rules="loginForm.rules" class="login-form">
       <h3 class="title">nest-admin后台管理系统</h3>
       <el-form-item prop="username">
-        <el-input v-model="loginForm.model.username" type="text" size="large" auto-complete="off" placeholder="账号">
+        <el-input v-model.trim="loginForm.model.username" maxlength="10" type="text" size="large" auto-complete="off" placeholder="账号">
           <template #prefix>
-            <svg-icon icon-class="user" class="input-icon" />
+            <!-- <svg-icon icon-class="User" class="input-icon" /> -->
+            <User class="input-icon" />
           </template>
         </el-input>
       </el-form-item>
       <el-form-item prop="password">
-        <el-input v-model="loginForm.model.password" type="password" size="large" auto-complete="off" placeholder="密码" @keyup.enter="handleLogin">
+        <el-input v-model="loginForm.model.password" maxlength="20" type="password" size="large" auto-complete="off" placeholder="密码" @keyup.enter="handleLogin">
           <template #prefix>
-            <svg-icon icon-class="password" class="input-icon" />
+            <Lock class="input-icon" />
           </template>
         </el-input>
       </el-form-item>
       <el-form-item prop="code" v-if="authCodeInfo.captchaEnabled">
-        <el-input v-model="loginForm.model.code" size="large" auto-complete="off" placeholder="验证码" style="width: 63%" @keyup.enter="handleLogin">
+        <el-input v-model.trim="loginForm.model.code" maxlength="3" size="large" auto-complete="off" placeholder="验证码" style="width: 63%" @keyup.enter="handleLogin">
           <template #prefix>
             <svg-icon icon-class="validCode" class="input-icon" />
           </template>
