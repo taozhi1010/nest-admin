@@ -4,31 +4,32 @@
   </div>
 
   <div class="login">
-    <el-form ref="loginRef" :model="loginForm" :rules="loginForm.rules" class="login-form">
+    <el-form ref="loginRef" :model="loginForm.model" :rules="loginForm.rules" class="login-form">
       <h3 class="title">nest-admin后台管理系统</h3>
       <el-form-item prop="username">
-        <el-input v-model="loginForm.username" type="text" size="large" auto-complete="off" placeholder="账号">
+        <el-input v-model="loginForm.model.username" type="text" size="large" auto-complete="off" placeholder="账号">
           <template #prefix>
             <svg-icon icon-class="user" class="input-icon" />
           </template>
         </el-input>
       </el-form-item>
       <el-form-item prop="password">
-        <el-input v-model="loginForm.password" type="password" size="large" auto-complete="off" placeholder="密码" @keyup.enter="handleLogin">
+        
+        <el-input v-model="loginForm.model.password" type="password" size="large" auto-complete="off" placeholder="密码" @keyup.enter="handleLogin">
           <template #prefix>
             <svg-icon icon-class="password" class="input-icon" />
           </template>
         </el-input>
       </el-form-item>
       <el-form-item prop="code" v-if="captchaEnabled">
-        <el-input v-model="loginForm.code" size="large" auto-complete="off" placeholder="验证码" style="width: 63%" @keyup.enter="handleLogin">
+        <el-input v-model="loginForm.model.code" size="large" auto-complete="off" placeholder="验证码" style="width: 63%" @keyup.enter="handleLogin">
           <template #prefix>
             <svg-icon icon-class="validCode" class="input-icon" />
           </template>
         </el-input>
         <div class="login-code" v-html="codeUrl" @click="getCode"></div>
       </el-form-item>
-      <el-checkbox v-model="loginForm.rememberMe" style="margin: 0px 0px 25px 0px">记住密码</el-checkbox>
+      <el-checkbox v-model="loginForm.model.rememberMe" style="margin: 0px 0px 25px 0px">记住密码</el-checkbox>
       <el-form-item style="width: 100%">
         <el-button :loading="loading" size="large" type="primary" style="width: 100%" @click.prevent="handleLogin">
           <span v-if="!loading">登 录</span>
@@ -41,7 +42,7 @@
     </el-form>
 
     <div class="el-login-footer">
-      <span>Copyright © 2018-2023 nest-admin All Rights Reserved.</span>
+      <span>Copyright © 2018-2024 nest-admin All Rights Reserved.</span>
     </div>
   </div>
 </template>
@@ -51,7 +52,6 @@ import { getCodeImg } from '@/api/login'
 import Cookies from 'js-cookie'
 import { encrypt, decrypt } from '@/utils/jsencrypt'
 import useUserStore from '@/store/modules/user'
-import { reactive } from 'vue'
 
 const userStore = useUserStore()
 const route = useRoute()
@@ -107,6 +107,7 @@ function handleLogin() {
         Cookies.remove('rememberMe')
       }
       // 调用action的登录方法
+  
       userStore
         .login(loginForm.model)
         .then(() => {
