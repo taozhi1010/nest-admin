@@ -1,0 +1,62 @@
+// 登录页背景效果
+.login-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    margin: 0px;
+    padding: 0px;
+    div {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: #fff;
+      animation: animate 25s linear infinite;
+      bottom: -200px;
+      @keyframes animate {
+        0% {
+          transform: translateY(0) rotate(0deg);
+          opacity: 1;
+          border-radius: 0;
+        }
+        100% {
+          transform: translateY(-1000px) rotate(720deg);
+          opacity: 0;
+          border-radius: 50%;
+        }
+      }
+      &:nth-child(1) {
+        left: 15%;
+        width: 80px;
+        height: 80px;
+        animation-delay: 0s;
+      }
+      &:nth-child(2) {
+        left: 5%;
+        width: 20px;
+        height: 20px;
+        animation-delay: 1s;
+        animation-duration: 12s;
+      }
+      &:nth-child(3) {
+        left: 70%;
+        width: 20px;
+        height: 20px;
+        animation-delay: 2s;
+      }
+      &:nth-child(4) {
+        left: 25%;
+        width: 100px;
+        height: 100px;
+        animation-delay: 3s;
+      }
+      &:nth-child(5) {
+        left: 75%;
+        width: 150px;
+        height: 150px;
+        animation-delay: 4s;
+      }
+    }
+  }
