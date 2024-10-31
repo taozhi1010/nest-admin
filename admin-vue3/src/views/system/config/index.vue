@@ -10,11 +10,11 @@
       <el-form-item label="系统内置" prop="configType" label-width="100px">
         <template #label>
           <el-tooltip class="box-item" effect="dark" content="系统内置，代表该行配置不可删除，是代表不可删除，否代表可以删除" placement="top-start">
-            <QuestionFilled style="width: 1.2em; height: 1.2em; text-align: center; margin-right: 4px; position: relative; top: 2px" />
+            <QuestionFilled class="tips" />
           </el-tooltip>
           <span style="width: 200px">系统内置</span>
         </template>
-        <el-select v-model="queryParams.configType" placeholder="系统内置" clearable  style="width: 160px">
+        <el-select v-model="queryParams.configType" placeholder="系统内置" clearable style="width: 160px">
           <el-option v-for="dict in sys_yes_no" :key="dict.value" :label="dict.label" :value="dict.value" />
         </el-select>
       </el-form-item>
@@ -75,7 +75,7 @@
 
     <!-- 添加或修改参数配置对话框 -->
     <el-dialog :title="title" v-model="open" width="500px" append-to-body>
-      <el-form ref="configRef" :model="form" :rules="rules" label-width="80px">
+      <el-form ref="configRef" :model="form" :rules="rules" label-width="90px">
         <el-form-item label="参数名称" prop="configName">
           <el-input v-model="form.configName" placeholder="请输入参数名称" />
         </el-form-item>
@@ -86,12 +86,12 @@
           <el-input v-model="form.configValue" placeholder="请输入参数键值" />
         </el-form-item>
         <el-form-item prop="configType">
-         <template #label>
-          <el-tooltip class="box-item" effect="dark" content="系统内置，代表该行配置不可删除，是代表不可删除，否代表可以删除" placement="top-start">
-            <QuestionFilled style="width: 1.2em; height: 1.2em; text-align: center; margin-right: 4px; position: relative; top: 2px" />
-          </el-tooltip>
-          <span style="width: 200px">系统内置</span>
-        </template>
+          <template #label>
+            <el-tooltip class="box-item" effect="dark" content="系统内置，代表该行配置不可删除，是代表不可删除，否代表可以删除" placement="top-start">
+              <QuestionFilled class="tips" />
+            </el-tooltip>
+            <span style="width: 200px">系统内置</span>
+          </template>
           <el-radio-group v-model="form.configType">
             <el-radio v-for="dict in sys_yes_no" :key="dict.value" :label="dict.value">{{ dict.label }}</el-radio>
           </el-radio-group>
@@ -257,3 +257,13 @@ function handleRefreshCache() {
 
 getList()
 </script>
+
+<style lang="scss" scoped>
+.tips {
+  width: 32px;
+  height: 32px;
+  font-size: 32px;
+  text-align: center;
+  margin-right: 4px;
+}
+</style>
