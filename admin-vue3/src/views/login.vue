@@ -35,6 +35,9 @@
           <span v-if="!authCodeInfo.loading">登 录</span>
           <span v-else>登 录 中...</span>
         </el-button>
+        <div style="float: right">
+          <router-link class="link-type" :to="'/register'">去注册账号</router-link>
+        </div>
       </el-form-item>
     </el-form>
 
@@ -94,12 +97,13 @@ function handleLogin() {
           router.push({ path: redirect.value || '/' })
         })
         .catch(() => {
-          authCodeInfo.loading = false
           // 重新获取验证码
           if (authCodeInfo.captchaEnabled) {
-            console.log(loginForm.model, '??')
             useAuthCode.getValidateCode(loginForm.model, true)
           }
+        })
+        .finally(() => {
+          authCodeInfo.loading = false
         })
     }
   })
