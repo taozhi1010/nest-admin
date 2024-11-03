@@ -29,15 +29,17 @@
         </el-input>
         <div class="login-code" v-html="authCodeInfo.imgUrl" @click="useAuthCode.getValidateCode(loginForm.model, true)" />
       </el-form-item>
-      <el-checkbox v-model="loginForm.model.rememberMe" style="margin: 0px 0px 25px 0px">记住密码</el-checkbox>
+
+      <div class="login-tips">
+        <el-checkbox v-model="loginForm.model.rememberMe" style="margin: 0px 0px 25px 0px">记住密码</el-checkbox>
+        <el-link class="login-tips-link" type="primary" href="/register" target="_blank">去注册账号</el-link>
+      </div>
+
       <el-form-item style="width: 100%">
         <el-button :loading="authCodeInfo.loading" size="large" type="primary" style="width: 100%" @click.prevent="handleLogin">
           <span v-if="!authCodeInfo.loading">登 录</span>
           <span v-else>登 录 中...</span>
         </el-button>
-        <div style="float: right">
-          <router-link class="link-type" :to="'/register'">去注册账号</router-link>
-        </div>
       </el-form-item>
     </el-form>
 
@@ -162,5 +164,14 @@ loginForm.model = useAuthCode.getUserCookie(loginForm.model)
   font-family: Arial;
   font-size: 12px;
   letter-spacing: 1px;
+}
+
+.login-tips {
+  &-link {
+    position: relative;
+    top: -3px;
+    left: 10px;
+    font-size: 13px;
+  }
 }
 </style>
