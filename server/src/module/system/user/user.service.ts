@@ -331,6 +331,9 @@ export class UserService {
       return ResultData.fail(500, `您已被停用，如需正常使用请联系管理员`);
     }
 
+    /**
+     * 更新用户登录信息
+     */
     const loginDate = new Date();
     await this.userRepo.update(
       {
@@ -352,9 +355,13 @@ export class UserService {
       select: ['deptName'],
     });
 
+    /**
+     * 设置公司名称
+     */
     userData['deptName'] = deptData.deptName || '';
     const roles = userData.roles.map((item) => item.roleKey);
-    const metaData = {
+
+    await this.updateRedisToken(uuid, {
       browser: clientInfo.browser,
       ipaddr: clientInfo.ipaddr,
       loginLocation: clientInfo.loginLocation,
@@ -367,14 +374,45 @@ export class UserService {
       userId: userData.userId,
       username: userData.userName,
       deptId: userData.deptId,
-    };
-    await this.redisService.set(`${CacheEnum.LOGIN_TOKEN_KEY}${uuid}`, metaData, LOGIN_TOKEN_EXPIRESIN);
+    });
+
     return ResultData.ok(
       {
         token,
       },
       '登录成功',
     );
+  }
+
+  /**
+   * 更新redis中用户权限和角色信息
+   */
+  async updateRedisUserRolesAndPermissions(uuid: string, userId: number) {
+    const userData = await this.getUserinfo(userId);
+
+    const permissions = await this.getUserPermissions(userId);
+    const roles = userData.roles.map((item) => item.roleKey);
+
+    await this.updateRedisToken(uuid, {
+      permissions: permissions,
+      roles: roles,
+    });
+  }
+
+  /**
+   * 更新redis中的元数据
+   * @param token
+   * @param metaData
+   */
+  async updateRedisToken(token: string, metaData: any) {
+    const oldMetaData = await this.redisService.get(`${CacheEnum.LOGIN_TOKEN_KEY}${token}`);
+
+    let newMetaData = metaData;
+    if (oldMetaData) {
+      newMetaData = Object.assign(oldMetaData, metaData);
+    }
+
+    await this.redisService.set(`${CacheEnum.LOGIN_TOKEN_KEY}${token}`, newMetaData, LOGIN_TOKEN_EXPIRESIN);
   }
 
   /**
