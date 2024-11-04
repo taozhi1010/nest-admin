@@ -36,12 +36,12 @@
               <li class="list-group-item">
                 <svg-icon icon-class="peoples" />
                 所属角色
-                <div class="pull-right">{{ state.roleGroup }}</div>
+                <div class="pull-right">{{ state.user.roles?.map(x=>x.roleName)?.join('、') }}</div>
               </li>
               <li class="list-group-item">
                 <svg-icon icon-class="date" />
                 创建日期
-                <div class="pull-right">{{ state.user.createTime }}</div>
+                <div class="pull-right">{{ dayjs(state.user.createTime).format('YYYY-MM-DD HH:mm:ss') }}</div>
               </li>
             </ul>
           </div>
@@ -73,6 +73,7 @@ import userAvatar from './userAvatar'
 import userInfo from './userInfo'
 import resetPwd from './resetPwd'
 import { getUserProfile } from '@/api/system/user'
+import dayjs from 'dayjs';
 
 const activeTab = ref('userinfo')
 const state = reactive({
