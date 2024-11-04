@@ -1,9 +1,10 @@
-import { Controller, Get, Post, Body, Put, Param, Delete, Query, Res } from '@nestjs/common';
+import { Controller, Get, Post, Body, Put, Param, Delete, Request, Query, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { ApiTags, ApiOperation, ApiBody } from '@nestjs/swagger';
 import { ConfigService } from './config.service';
 import { CreateConfigDto, UpdateConfigDto, ListConfigDto } from './dto/index';
 import { RequirePermission } from 'src/common/decorators/require-premission.decorator';
+import { GetNowDate } from 'src/common/utils';
 
 @ApiTags('参数设置')
 @Controller('system/config')
@@ -18,7 +19,9 @@ export class ConfigController {
   })
   @RequirePermission('system:config:add')
   @Post()
-  create(@Body() createConfigDto: CreateConfigDto) {
+  create(@Body() createConfigDto: CreateConfigDto, @Request() req) {
+    createConfigDto['createTime'] = GetNowDate();
+    createConfigDto['createBy'] = req.user.user.userName;
     return this.configService.create(createConfigDto);
   }
 
