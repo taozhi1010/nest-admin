@@ -9,6 +9,8 @@ import { GenerateUUID } from 'src/common/utils/index';
 import { RedisService } from 'src/module/redis/redis.service';
 import { CacheEnum } from 'src/common/enum/index';
 import { ConfigService } from 'src/module/system/config/config.service';
+import { ClientInfo, ClientInfoDto } from 'src/common/decorators/common.decorator';
+import { User, UserDto } from 'src/common/decorators/user.decorator';
 
 @ApiTags('根目录')
 @Controller('/')
@@ -27,17 +29,7 @@ export class MainController {
   })
   @Post('/login')
   @HttpCode(200)
-  login(@Body() user: LoginDto, @Request() req) {
-    const agent = Useragent.parse(req.headers['user-agent']);
-    const os = agent.os.toJSON().family;
-    const browser = agent.toAgent();
-    const clientInfo = {
-      userAgent: req.headers['user-agent'],
-      ipaddr: req.ip,
-      browser: browser,
-      os: os,
-      loginLocation: '',
-    };
+  login(@Body() user: LoginDto, @ClientInfo() clientInfo: ClientInfoDto) {
     return this.mainService.login(user, clientInfo);
   }
 
@@ -50,19 +42,9 @@ export class MainController {
   })
   @Post('/logout')
   @HttpCode(200)
-  async logout(@Request() req) {
-    const agent = Useragent.parse(req.headers['user-agent']);
-    const os = agent.os.toJSON().family;
-    const browser = agent.toAgent();
-    const clientInfo = {
-      userAgent: req.headers['user-agent'],
-      ipaddr: req.ip,
-      browser: browser,
-      os: os,
-      loginLocation: '',
-    };
-    if (req.user?.token) {
-      await this.redisService.del(`${CacheEnum.LOGIN_TOKEN_KEY}${req.user.token}`);
+  async logout(@User() user: UserDto, @ClientInfo() clientInfo: ClientInfoDto) {
+    if (user?.token) {
+      await this.redisService.del(`${CacheEnum.LOGIN_TOKEN_KEY}${user.token}`);
     }
     return this.mainService.logout(clientInfo);
   }
@@ -110,8 +92,7 @@ export class MainController {
     summary: '用户信息',
   })
   @Get('/getInfo')
-  async getInfo(@Request() req) {
-    const user = req.user;
+  async getInfo(@User() user: UserDto) {
     return {
       msg: '操作成功',
       code: 200,
@@ -125,8 +106,8 @@ export class MainController {
     summary: '路由信息',
   })
   @Get('/getRouters')
-  getRouters(@Request() req) {
-    const userId: string = req.user.user.userId;
+  getRouters(@User() user: UserDto) {
+    const userId = user.user.userId.toString();
     return this.mainService.getRouters(+userId);
   }
 }

@@ -9,6 +9,7 @@ import { CreateUserDto, UpdateUserDto, ListUserDto, ChangeStatusDto, ResetPwdDto
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ResultData } from 'src/common/utils/result';
 import { GetNowDate } from 'src/common/utils';
+import { User, UserDto } from 'src/common/decorators/user.decorator';
 
 @ApiTags('用户管理')
 @ApiBearerAuth()
@@ -24,9 +25,8 @@ export class UserController {
   })
   @RequirePermission('system:user:query')
   @Get('/profile')
-  profile(@Request() req) {
-    const user = req.user.user;
-    return this.userService.profile(user);
+  profile(@User() user: UserDto) {
+    return this.userService.profile(user.user);
   }
 
   @ApiOperation({
@@ -34,8 +34,7 @@ export class UserController {
   })
   @RequirePermission('system:user:edit')
   @Put('/profile')
-  updateProfile(@Request() req, @Body() updateProfileDto: UpdateProfileDto) {
-    const user = req.user;
+  updateProfile(@User() user: UserDto, @Body() updateProfileDto: UpdateProfileDto) {
     return this.userService.updateProfile(user, updateProfileDto);
   }
 
@@ -57,8 +56,7 @@ export class UserController {
   })
   @RequirePermission('system:user:edit')
   @Put('/profile/updatePwd')
-  updatePwd(@Request() req, @Body() updatePwdDto: UpdatePwdDto) {
-    const user = req.user;
+  updatePwd(@User() user: UserDto, @Body() updatePwdDto: UpdatePwdDto) {
     return this.userService.updatePwd(user, updatePwdDto);
   }
 
@@ -71,9 +69,9 @@ export class UserController {
   })
   @RequirePermission('system:user:add')
   @Post()
-  create(@Body() createUserDto: CreateUserDto, @Request() req) {
+  create(@Body() createUserDto: CreateUserDto, @User() user: UserDto) {
     createUserDto['createTime'] = GetNowDate();
-    createUserDto['createBy'] = req.user.user.userName;
+    createUserDto['createBy'] = user.user.userName;
     return this.userService.create(createUserDto);
   }
 
@@ -82,9 +80,8 @@ export class UserController {
   })
   @RequirePermission('system:user:list')
   @Get('list')
-  findAll(@Query() query: ListUserDto, @Request() req) {
-    const user = req.user.user;
-    return this.userService.findAll(query, user);
+  findAll(@Query() query: ListUserDto, @User() user: UserDto) {
+    return this.userService.findAll(query, user.user);
   }
 
   @ApiOperation({
@@ -154,9 +151,9 @@ export class UserController {
   })
   @RequirePermission('system:user:edit')
   @Put()
-  async update(@Body() updateUserDto: UpdateUserDto, @Request() req) {
-    const userId = req.user.userId;
-    const uuid = req.user.token;
+  async update(@Body() updateUserDto: UpdateUserDto, @User() user: UserDto) {
+    const userId = user.userId;
+    const uuid = user.token;
 
     const result = await this.userService.update(updateUserDto, userId);
     await this.userService.updateRedisUserRolesAndPermissions(uuid, userId);
@@ -190,8 +187,7 @@ export class UserController {
   @ApiOperation({ summary: '导出用户信息数据为xlsx' })
   @RequirePermission('system:user:export')
   @Post('/export')
-  async export(@Res() res: Response, @Body() body: ListUserDto, @Request() req): Promise<void> {
-    const user = req.user.user;
-    return this.userService.export(res, body, user);
+  async export(@Res() res: Response, @Body() body: ListUserDto, @User() user: UserDto): Promise<void> {
+    return this.userService.export(res, body, user.user);
   }
 }

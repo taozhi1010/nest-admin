@@ -12,7 +12,7 @@ import { CacheEnum, DelFlagEnum, StatusEnum, DataScopeEnum } from 'src/common/en
 import { LOGIN_TOKEN_EXPIRESIN, SYS_USER_TYPE } from 'src/common/constant/index';
 import { ResultData } from 'src/common/utils/result';
 import { CreateUserDto, UpdateUserDto, ListUserDto, ChangeStatusDto, ResetPwdDto, AllocatedListDto, UpdateProfileDto, UpdatePwdDto } from './dto/index';
-import { RegisterDto, LoginDto, ClientInfoDto } from '../../main/dto/index';
+import { RegisterDto, LoginDto } from '../../main/dto/index';
 import { AuthUserCancelDto, AuthUserCancelAllDto, AuthUserSelectAllDto } from '../role/dto/index';
 
 import { UserEntity } from './entities/sys-user.entity';
@@ -27,6 +27,7 @@ import { ConfigService } from '../config/config.service';
 import { SysRoleEntity } from '../role/entities/role.entity';
 import { SysMenuEntity } from '../menu/entities/menu.entity';
 import { UserType } from './dto/user';
+import { ClientInfoDto } from 'src/common/decorators/common.decorator';
 
 @Injectable()
 export class UserService {
@@ -866,7 +867,7 @@ export class UserService {
    * 导出用户信息数据为xlsx
    * @param res
    */
-  async export(res: Response, body: ListUserDto, user) {
+  async export(res: Response, body: ListUserDto, user: UserType['user']) {
     delete body.pageNum;
     delete body.pageSize;
     const list = await this.findAll(body, user);

@@ -15,6 +15,8 @@ import { index as templateIndex } from './template/index';
 import archiver from 'archiver';
 import * as fs from 'fs-extra';
 import * as path from 'path';
+import { UserDto } from 'src/common/decorators/user.decorator';
+
 @Injectable()
 export class ToolService {
   constructor(
@@ -57,7 +59,7 @@ export class ToolService {
    * @param req
    * @returns
    */
-  async importTable(table: TableName, req: any) {
+  async importTable(table: TableName, user: UserDto) {
     const tableNames = table.tableNames.split(',');
     const tableList = await this.selectDbTableListByNames(tableNames);
 
@@ -72,7 +74,7 @@ export class ToolService {
         businessName: tableName.slice(tableName.lastIndexOf('_') + 1), //生成业务名
         functionName: table.tableComment?.trim() || table.tableName, //生成功能名
         functionAuthor: toolConfig.author,
-        createBy: req.user.username,
+        createBy: user.username,
       };
       const tableInfo = await this.genTableEntityRep.save(tableData);
 
@@ -90,7 +92,6 @@ export class ToolService {
   /**
    * 同步数据库,  我们导入了需要生成代码的数据表，但是我们更改了数据库的结构（比如删除了一些字段，和添加了一些字段），同步更新表数据
    * @param table
-   * @param req
    */
   async synchDb(tableName: string) {
     const table = await this.findOneByTableName(tableName);
@@ -280,8 +281,8 @@ export class ToolService {
    *
    * 查询主键id
    */
-  async getPrimaryKey(columns) {
-    for (let column of columns) {
+  async getPrimaryKey(columns: GenTableColumnEntity[]) {
+    for (const column of columns) {
       if (column.isPk === '1') {
         return column.javaField;
       }
