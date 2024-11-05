@@ -739,3 +739,31 @@ CREATE TABLE `sys_upload` (
   `ext` varchar(255) DEFAULT NULL COMMENT '拓展名',
   PRIMARY KEY (`upload_id`)
 ) ENGINE=InnoDB COMMENT='文件上传记录';
+
+
+-- ----------------------------
+-- 21、游戏库表
+-- ----------------------------
+DROP TABLE IF EXISTS `game_info`;
+CREATE TABLE `game_info` (
+  `id` varchar(64) NOT NULL COMMENT '主键',
+  `name_zh` varchar(64) NOT NULL COMMENT '游戏中文名',
+  `name_en` varchar(64) NOT NULL COMMENT '游戏英文名',
+  `desc` varchar(255) DEFAULT NULL COMMENT '游戏简介',
+  `cover` varchar(255) DEFAULT NULL COMMENT '游戏封面',
+  `desc_cover_url` varchar(255) DEFAULT NULL COMMENT '游戏描述图片',
+  `game_type` varchar(255) DEFAULT NULL COMMENT '游戏类型',
+  `version` varchar(255) DEFAULT NULL COMMENT '当前版本号',
+  `language` varchar(255) DEFAULT NULL COMMENT '支持语言',
+  `online` char(1) NOT NULL DEFAULT '0' COMMENT '是否支持联机（1：是，0：否）',
+  `age_range` varchar(255) DEFAULT NULL COMMENT '适龄区间',
+  `sale_platform` varchar(255) DEFAULT NULL COMMENT '发售平台',
+  `operate_system` varchar(255) DEFAULT NULL COMMENT '操作系统',
+  `release_date` datetime(6) DEFAULT NULL COMMENT '发售日期',
+  `price` decimal(10,2) DEFAULT NULL COMMENT '最近价格',
+  `lowest_price` decimal(10,2) DEFAULT NULL COMMENT '史上最低价格',
+  `game_studio` varchar(255) DEFAULT NULL COMMENT '游戏开发商',
+  `create_time` datetime(6) DEFAULT CURRENT_TIMESTAMP(6) COMMENT '创建时间',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `del_flag` char(1) NOT NULL DEFAULT '0' COMMENT '删除标志（0代表存在 1代表删除）',
+) engine=innodb auto_increment=1 comment = '游戏库';
