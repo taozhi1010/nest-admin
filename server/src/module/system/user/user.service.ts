@@ -24,6 +24,10 @@ import { RoleService } from '../role/role.service';
 import { DeptService } from '../dept/dept.service';
 
 import { ConfigService } from '../config/config.service';
+import { SysRoleEntity } from '../role/entities/role.entity';
+import { SysMenuEntity } from '../menu/entities/menu.entity';
+import { UserType } from './dto/user';
+
 @Injectable()
 export class UserService {
   constructor(
@@ -81,7 +85,7 @@ export class UserService {
    * @param query
    * @returns
    */
-  async findAll(query: ListUserDto, user: any) {
+  async findAll(query: ListUserDto, user: UserType['user']) {
     const entity = this.userRepo.createQueryBuilder('user');
     entity.where('user.delFlag = :delFlag', { delFlag: '0' });
 
@@ -361,7 +365,7 @@ export class UserService {
     userData['deptName'] = deptData.deptName || '';
     const roles = userData.roles.map((item) => item.roleKey);
 
-    await this.updateRedisToken(uuid, {
+    const userInfo = {
       browser: clientInfo.browser,
       ipaddr: clientInfo.ipaddr,
       loginLocation: clientInfo.loginLocation,
@@ -374,7 +378,9 @@ export class UserService {
       userId: userData.userId,
       username: userData.userName,
       deptId: userData.deptId,
-    });
+    };
+
+    await this.updateRedisToken(uuid, userInfo);
 
     return ResultData.ok(
       {
@@ -404,7 +410,7 @@ export class UserService {
    * @param token
    * @param metaData
    */
-  async updateRedisToken(token: string, metaData: any) {
+  async updateRedisToken(token: string, metaData: Partial<UserType>) {
     const oldMetaData = await this.redisService.get(`${CacheEnum.LOGIN_TOKEN_KEY}${token}`);
 
     let newMetaData = metaData;
@@ -443,7 +449,7 @@ export class UserService {
     // }
     const roleIds = await this.getRoleIds([userId]);
     const list = await this.roleService.getPermissionsByRoleIds(roleIds);
-    const permissions = Uniq(list.map((item) => item.perms)).filter((item) => {
+    const permissions = Uniq(list.map((item: SysMenuEntity) => item.perms)).filter((item) => {
       return item;
     });
     return permissions;
@@ -452,7 +458,7 @@ export class UserService {
   /**
    * 获取用户信息
    */
-  async getUserinfo(userId: number): Promise<{ dept: SysDeptEntity; roles: Array<any>; posts: Array<SysPostEntity> } & UserEntity> {
+  async getUserinfo(userId: number): Promise<{ dept: SysDeptEntity; roles: Array<SysRoleEntity>; posts: Array<SysPostEntity> } & UserEntity> {
     const entity = this.userRepo.createQueryBuilder('user');
     entity.where({
       userId: userId,
@@ -485,10 +491,16 @@ export class UserService {
       },
     });
 
-    const data: any = await entity.getOne();
-    data['roles'] = roles;
-    data['posts'] = posts;
-    return data;
+    const data = await entity.getOne();
+
+    const result = {
+      ...data,
+      roles,
+      posts,
+      dept: (data as any).dept,
+    };
+
+    return result;
   }
 
   /**
@@ -823,7 +835,7 @@ export class UserService {
    * @param user
    * @returns
    */
-  async updateProfile(user: any, updateProfileDto: UpdateProfileDto) {
+  async updateProfile(user: UserType, updateProfileDto: UpdateProfileDto) {
     await this.userRepo.update({ userId: user.user.userId }, updateProfileDto);
     const userData = await this.redisService.get(`${CacheEnum.LOGIN_TOKEN_KEY}${user.token}`);
     userData.user = Object.assign(userData.user, updateProfileDto);
@@ -837,7 +849,7 @@ export class UserService {
    * @param updatePwdDto
    * @returns
    */
-  async updatePwd(user: any, updatePwdDto: UpdatePwdDto) {
+  async updatePwd(user: UserType, updatePwdDto: UpdatePwdDto) {
     if (updatePwdDto.oldPassword === updatePwdDto.newPassword) {
       return ResultData.fail(500, '新密码不能与旧密码相同');
     }
