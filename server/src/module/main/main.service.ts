@@ -4,9 +4,9 @@ import { SUCCESS_CODE } from 'src/common/utils/result';
 import { UserService } from '../system/user/user.service';
 import { LoginlogService } from '../monitor/loginlog/loginlog.service';
 import { AxiosService } from 'src/module/axios/axios.service';
-import { ListToTree } from 'src/common/utils/index';
-import { RegisterDto, LoginDto, ClientInfoDto } from './dto/index';
+import { RegisterDto, LoginDto } from './dto/index';
 import { MenuService } from '../system/menu/menu.service';
+import { ClientInfoDto } from 'src/common/decorators/common.decorator';
 @Injectable()
 export class MainService {
   constructor(

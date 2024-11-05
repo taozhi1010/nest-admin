@@ -39,11 +39,3 @@ export class LoginDto {
 }
 
 export class RegisterDto extends LoginDto {}
-
-export class ClientInfoDto {
-  ipaddr: string;
-  userAgent: string;
-  browser: string;
-  os: string;
-  loginLocation: string;
-}
