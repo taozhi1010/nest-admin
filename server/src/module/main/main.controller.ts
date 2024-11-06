@@ -10,7 +10,7 @@ import { RedisService } from 'src/module/redis/redis.service';
 import { CacheEnum } from 'src/common/enum/index';
 import { ConfigService } from 'src/module/system/config/config.service';
 import { ClientInfo, ClientInfoDto } from 'src/common/decorators/common.decorator';
-import { User, UserDto } from 'src/common/decorators/user.decorator';
+import { NotRequireAuth, User, UserDto } from 'src/common/decorators/user.decorator';
 
 @ApiTags('根目录')
 @Controller('/')
@@ -40,6 +40,7 @@ export class MainController {
     type: LoginDto,
     required: true,
   })
+  @NotRequireAuth()
   @Post('/logout')
   @HttpCode(200)
   async logout(@User() user: UserDto, @ClientInfo() clientInfo: ClientInfoDto) {

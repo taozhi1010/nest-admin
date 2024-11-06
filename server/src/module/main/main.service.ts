@@ -45,7 +45,6 @@ export class MainService {
   async logout(clientInfo: ClientInfoDto) {
     const loginLog = {
       ...clientInfo,
-      userName: '',
       status: '0',
       msg: '退出成功',
     };
