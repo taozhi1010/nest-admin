@@ -10,6 +10,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { ResultData } from 'src/common/utils/result';
 import { GetNowDate } from 'src/common/utils';
 import { User, UserDto } from 'src/common/decorators/user.decorator';
+import { ClientInfo, ClientInfoDto } from 'src/common/decorators/common.decorator';
 
 @ApiTags('用户管理')
 @ApiBearerAuth()
@@ -69,9 +70,9 @@ export class UserController {
   })
   @RequirePermission('system:user:add')
   @Post()
-  create(@Body() createUserDto: CreateUserDto, @User() user: UserDto) {
-    createUserDto['createTime'] = GetNowDate();
-    createUserDto['createBy'] = user.user.userName;
+  create(@Body() createUserDto: CreateUserDto, @ClientInfo() clientInfo: ClientInfoDto) {
+    createUserDto['createTime'] = clientInfo.dateTime;
+    createUserDto['createBy'] = clientInfo.userName;
     return this.userService.create(createUserDto);
   }
 
