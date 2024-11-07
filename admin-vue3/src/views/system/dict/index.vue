@@ -65,7 +65,7 @@ const dictTree = reactive({
     try {
       const result = await listType(dictTree.query)
       dictTree.data[0].children = result.data.list
-      total.value = result.data.total
+      // total.value = result.data.total
     } catch (e) {
       console.log('dictGroup:', e)
     } finally {
@@ -84,6 +84,7 @@ const dictTree = reactive({
     proxy.$modal
       .confirm('是否确认删除字典编号为"' + dictIds + '"的数据项？')
       .then(() => {
+        dictTree.loading = true
         return delType(dictIds)
       })
       .then(() => {

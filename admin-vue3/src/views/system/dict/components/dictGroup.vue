@@ -20,6 +20,7 @@
     <template #footer>
       <div class="dialog-footer">
         <el-button type="primary" @click="form.submit">确 定</el-button>
+        <el-button type="warning" @click="form.reset">重置</el-button>
         <el-button @click="form.cancel">取 消</el-button>
       </div>
     </template>
@@ -48,6 +49,12 @@ const form = reactive({
     dictName: [{ required: true, message: '字典名称不能为空', trigger: 'blur' }],
     dictType: [{ required: true, message: '字典类型不能为空', trigger: 'blur' }]
   },
+  reset: () => {
+    nextTick(() => {
+      console.log(123)
+      formRef.value.resetFields()
+    })
+  },
   submit: () => {
     formRef.value.validate((valid) => {
       if (valid) {
@@ -68,13 +75,21 @@ const form = reactive({
     })
   },
   cancel: () => {
+    form.reset()
     dialogTableVisible.value = false
   }
 })
 
-const handleDialogOpen = (type) => {
+const handleDialogOpen = (type, row) => {
   form.title = type === 'add' ? '新增字典类型' : '修改字典类型'
   dialogTableVisible.value = true
+  if (type === 'edit') {
+    form.model = { ...row }
+  } else {
+    nextTick(() => {
+      form.reset()
+    })
+  }
 }
 
 defineExpose({
