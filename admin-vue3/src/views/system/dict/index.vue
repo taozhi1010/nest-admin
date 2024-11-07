@@ -1,49 +1,152 @@
 <template>
   <div class="app-container dict">
-    <el-card class="dict-tree" shadow="never">
-      <el-button type="primary" size="mini" icon="el-icon-plus" class="add-btn" @click="dictTree.handleAdd">添加字典分类</el-button>
-      <el-input v-model="dictTree.query.dictName" style="width: 200px" placeholder="请输入字典项筛选" class="search-input" />
-      <el-tree
-        ref="treeRef"
-        v-loading="dictTree.loading"
-        :data="dictTree.data"
-        node-key="id"
-        :default-expanded-keys="[0]"
-        :default-expand-all="true"
-        :indent="10"
-        :props="dictTree.props"
-        :filter-node-method="dictTree.filterNode"
-      >
-        <template #default="{ node, data }">
-          <span class="custom-tree-node">
-            <span>{{ node.label }}</span>
-            <span v-if="node.label !== '全部字典项'" class="custom-tree-node-icon">
-              <el-button link type="primary" :title="'编辑'" icon="Edit" @click="dictTree.handleUpdate(data)" v-hasPermi="['system:dict:edit']" />
-              <el-button link type="primary" :title="'删除'" icon="Delete" @click.prevent="dictTree.handleDelete(data)" v-hasPermi="['system:dict:remove']" />
+    <el-card v-loading="dictGroup.loading" class="dict-tree" shadow="never">
+      <div class="dict-tree-header">
+        <el-button type="primary" size="mini" icon="el-icon-plus" class="dict-tree-header-item add-btn" @click="dictGroup.handleAdd">添加字典分类</el-button>
+        <el-input v-model="dictGroup.query.dictName" style="width: 200px" placeholder="请输入字典项筛选" class="dict-tree-header-item search-input" />
+      </div>
+
+      <div class="dict-tree-body">
+        <el-tree
+          ref="dictGroupRef"
+          :data="dictGroup.data"
+          node-key="id"
+          :default-expanded-keys="[0]"
+          :default-expand-all="true"
+          :indent="10"
+          :props="dictGroup.props"
+          :filter-node-method="dictGroup.filterNode"
+          @node-click="dictGroup.handleNodeClick"
+        >
+          <template #default="{ node, data }">
+            <span class="custom-tree-node">
+              <span>{{ node.label }}</span>
+              <span v-if="node.label !== '全部字典项'" class="custom-tree-node-icon">
+                <el-button link type="primary" :title="'编辑'" icon="Edit" @click="dictGroup.handleUpdate(data)" v-hasPermi="['system:dict:edit']" />
+                <el-button link type="primary" :title="'删除'" icon="Delete" @click.prevent="dictGroup.handleDelete(data)" v-hasPermi="['system:dict:remove']" />
+              </span>
+              <span v-else class="custom-tree-node-icon refresh-icon">
+                <el-button link type="primary" :title="'刷新'" icon="Refresh" @click="dictGroup.handleRefresh" />
+              </span>
             </span>
-            <span v-else class="custom-tree-node-icon refresh-icon">
-              <el-button link type="primary" :title="'刷新'" icon="Refresh" @click="dictTree.handleRefresh" />
-            </span>
-          </span>
-        </template>
-      </el-tree>
+          </template>
+        </el-tree>
+      </div>
     </el-card>
 
-    <el-card class="dict-table" shadow="never"></el-card>
+    <el-card v-loading="dictGroup.loading" class="dict-table" shadow="never">
+      <div v-if="dictGroup.selectNode.dictId === 0">
+        <el-row :gutter="10" class="mb8">
+          <el-col :span="1.5">
+            <el-button type="primary" plain icon="Plus" @click="dictGroup.handleAdd" v-hasPermi="['system:dict:add']">新增</el-button>
+          </el-col>
+          <el-col :span="1.5">
+            <el-button type="danger" plain icon="Delete" :disabled="multiple" @click="dictGroup.handleDelete" v-hasPermi="['system:dict:remove']">删除</el-button>
+          </el-col>
+          <el-col :span="1.5">
+            <el-button type="warning" plain icon="Refresh" @click="dictGroup.handleRefreshCache" v-hasPermi="['system:dict:remove']">刷新缓存</el-button>
+          </el-col>
+          <right-toolbar @queryTable="dictGroup.handleRefresh" />
+        </el-row>
+
+        <el-table ref="dictGroupTableRef" :data="dictGroup.data[0].children" max-height="70vh" @selection-change="dictGroup.handleSelectionChange">
+          <el-table-column type="selection" width="55" align="center" />
+          <el-table-column label="字典编号" align="center" width="100" prop="dictId" />
+          <el-table-column label="字典名称" align="center" prop="dictName" :show-overflow-tooltip="true" />
+          <el-table-column label="字典类型" align="center" prop="dictType" :show-overflow-tooltip="true" />
+          <el-table-column label="状态" align="center" prop="status">
+            <template #default="scope">
+              <dict-tag :options="sys_normal_disable" :value="scope.row.status" />
+            </template>
+          </el-table-column>
+          <el-table-column label="备注" align="center" prop="remark" :show-overflow-tooltip="true" />
+          <el-table-column label="创建时间" align="center" prop="createTime" width="180">
+            <template #default="scope">
+              <span>{{ parseTime(scope.row.createTime) }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" align="center" width="160" fixed="right">
+            <template #default="scope">
+              <el-button link type="primary" icon="Edit" @click="dictGroup.handleUpdate(scope.row)" v-hasPermi="['system:dict:edit']">修改</el-button>
+              <el-button link type="primary" icon="Delete" @click="dictGroup.handleDelete(scope.row)" v-hasPermi="['system:dict:remove']">删除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+
+      <div v-else>
+        <el-row :gutter="10" class="mb8">
+          <el-col :span="1.5">
+            <el-button type="primary" plain icon="Plus" @click="handleAdd" v-hasPermi="['system:dict:add']">新增</el-button>
+          </el-col>
+          <el-col :span="1.5">
+            <el-button type="success" plain icon="Edit" :disabled="single" @click="handleUpdate" v-hasPermi="['system:dict:edit']">修改</el-button>
+          </el-col>
+          <el-col :span="1.5">
+            <el-button type="danger" plain icon="Delete" :disabled="multiple" @click="handleDelete" v-hasPermi="['system:dict:remove']">删除</el-button>
+          </el-col>
+          <el-col :span="1.5">
+            <el-button type="warning" plain icon="Download" @click="handleExport" v-hasPermi="['system:dict:export']">导出</el-button>
+          </el-col>
+
+          <right-toolbar @queryTable="getList"></right-toolbar>
+        </el-row>
+
+        <el-table ref="dictDataRef" :data="dictData.data" @selection-change="dictData.handleSelectionChange">
+          <el-table-column type="selection" width="55" align="center" />
+          <el-table-column label="字典编码" align="center" prop="dictCode" />
+          <el-table-column label="字典标签" align="center" prop="dictLabel">
+            <template #default="scope">
+              <span v-if="scope.row.listClass == '' || scope.row.listClass == 'default'">{{ scope.row.dictLabel }}</span>
+              <el-tag v-else :type="scope.row.listClass == 'primary' ? '' : scope.row.listClass">{{ scope.row.dictLabel }}</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column label="字典键值" align="center" prop="dictValue" />
+          <el-table-column label="字典排序" align="center" prop="dictSort" />
+          <el-table-column label="状态" align="center" prop="status">
+            <template #default="scope">
+              <dict-tag :options="sys_normal_disable" :value="scope.row.status" />
+            </template>
+          </el-table-column>
+          <el-table-column label="备注" align="center" prop="remark" :show-overflow-tooltip="true" />
+          <el-table-column label="创建时间" align="center" prop="createTime" width="180">
+            <template #default="scope">
+              <span>{{ parseTime(scope.row.createTime) }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" align="center" width="160" class-name="small-padding fixed-width">
+            <template #default="scope">
+              <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['system:dict:edit']">修改</el-button>
+              <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['system:dict:remove']">删除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+    </el-card>
   </div>
 
-  <dictGroup ref="dictGroupRef" @refresh="dictTree.handleRefresh" />
+  <dictGroupEdit ref="dictGroupEditRef" @refresh="dictGroup.handleRefresh" />
+  <dictDataEdit ref="dictDataEditRef" @refresh="dictGroup.handleRefresh" />
 </template>
 
 <script setup name="Dict">
-import dictGroup from './components/dictGroup'
-import { listType, delType } from '@/api/system/dict/type'
+import dictGroupEdit from './components/dictGroupEdit'
+import dictDataEdit from './components/dictDataEdit';
+import { listType, delType, refreshCache } from '@/api/system/dict/type'
+import { listData, delData } from '@/api/system/dict/data'
 
-const treeRef = ref()
-const dictGroupRef = ref()
 const { proxy } = getCurrentInstance()
+const { sys_normal_disable } = proxy.useDict('sys_normal_disable')
 
-const dictTree = reactive({
+const dictGroupRef = ref()
+const dictGroupTableRef = ref()
+
+const dictDataRef = ref()
+
+const dictGroupEditRef = ref()
+const dictDataEditRef = ref()
+// 字典组
+const dictGroup = reactive({
   query: {
     pageNum: 1,
     pageSize: 99,
@@ -58,54 +161,100 @@ const dictTree = reactive({
       children: []
     }
   ],
+  selectNode: {
+    dictId: 0,
+    dictName: '全部字典项'
+  },
+  selection: [],
   props: { label: 'dictName', children: 'children' },
   loading: true,
   request: async () => {
-    dictTree.loading = true
+    dictGroup.loading = true
     try {
-      const result = await listType(dictTree.query)
-      dictTree.data[0].children = result.data.list
+      const result = await listType(dictGroup.query)
+      dictGroup.data[0].children = result.data.list
       // total.value = result.data.total
     } catch (e) {
       console.log('dictGroup:', e)
     } finally {
-      dictTree.loading = false
+      dictGroup.loading = false
     }
   },
   handleAdd: () => {
-    dictGroupRef.value.handleDialogOpen('add')
+    dictGroupEditRef.value.handleDialogOpen('add')
   },
   handleUpdate: (row) => {
-    dictGroupRef.value.handleDialogOpen('edit', row)
+    dictGroupEditRef.value.handleDialogOpen('edit', row)
   },
   handleDelete(row) {
     const dictIds = row.dictId
-
     proxy.$modal
       .confirm('是否确认删除字典编号为"' + dictIds + '"的数据项？')
       .then(() => {
-        dictTree.loading = true
+        dictGroup.loading = true
         return delType(dictIds)
       })
       .then(() => {
-        dictTree.request()
+        dictGroup.request()
         proxy.$modal.msgSuccess('删除成功')
       })
   },
   handleRefresh: () => {
-    dictTree.request()
+    dictGroup.request()
+  },
+  handleNodeClick: (data) => {
+    dictGroup.selectNode = data
+    if (data.dictId !== 0) {
+      dictData.handleQuery()
+    }
+  },
+  handleSelectionChange: (val) => {
+    dictGroup.selection = val
+  },
+  handleSelect: (selection) => {
+    dictGroup.query.dictId = selection.length === 1 ? selection[0].dictId : undefined
+
+    dictGroup.request()
   },
   filterNode: (value, data) => {
     if (!value) return true
     return data.dictName.includes(value)
+  },
+  handleRefreshCache: () => {
+    refreshCache().then(() => {
+      proxy.$modal.msgSuccess('刷新成功')
+      useDictStore().cleanDict()
+    })
   }
 })
 
-watch(dictTree.query, (val) => {
-  treeRef.value.filter(val.dictName)
+// 具体字典项
+const dictData = reactive({
+  queryParams: {
+    pageNum: 1,
+    pageSize: 10,
+    dictName: undefined,
+    dictType: undefined,
+    status: undefined
+  },
+  data: [],
+  handleQuery: () => {
+    dictData.queryParams.dictType = dictGroup.selectNode.dictType
+    listData(dictData.queryParams).then((res) => {
+      dictData.data = res.data.list
+    })
+  },
+  handleSelectionChange: (selection) => {
+    dictData.multiple = selection
+  },
+
 })
 
-dictTree.request()
+watch(dictGroup.query, (val) => {
+  dictGroupEditRef.value.filter(val.dictName)
+})
+
+dictGroup.request()
 </script>
 
 <style lang="scss" scoped>
@@ -120,20 +269,34 @@ dictTree.request()
     height: calc(100vh - 200px);
     margin-right: 20px;
 
-    .add-btn {
-      width: 100%;
-      margin-bottom: 10px;
+    &-header {
+      &-item {
+        width: 100%;
+        margin-bottom: 10px;
+      }
+
+      .add-btn {
+        width: 100%;
+        margin-bottom: 10px;
+      }
+
+      .search-input {
+        width: 100%;
+        margin-bottom: 10px;
+      }
     }
 
-    .search-input {
-      width: 100%;
-      margin-bottom: 10px;
+    &-body {
+      height: calc(100vh - 320px);
+      padding-right: 20px;
+      overflow-y: scroll;
     }
   }
 
   &-table {
     position: relative;
     width: calc(100% - 250px);
+    height: calc(100vh - 200px);
   }
 }
 

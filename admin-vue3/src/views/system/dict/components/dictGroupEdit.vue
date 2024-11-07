@@ -51,7 +51,7 @@ const form = reactive({
   },
   reset: () => {
     nextTick(() => {
-      console.log(123)
+      console.log(12344)
       formRef.value.resetFields()
     })
   },
@@ -59,13 +59,13 @@ const form = reactive({
     formRef.value.validate((valid) => {
       if (valid) {
         if (form.model.dictId != undefined) {
-          updateType(form.model).then((res) => {
+          updateType(form.model).then(() => {
             proxy.$modal.msgSuccess('修改成功')
             dialogTableVisible.value = false
             emit('refresh')
           })
         } else {
-          addType(form.model).then((res) => {
+          addType(form.model).then(() => {
             proxy.$modal.msgSuccess('新增成功')
             dialogTableVisible.value = false
             emit('refresh')
