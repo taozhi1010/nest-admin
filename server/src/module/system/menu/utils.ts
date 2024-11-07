@@ -59,7 +59,7 @@ const formatTreeNodeBuildMenus = (menus: any[]): any[] => {
       const childrenRouter: any = {};
       childrenRouter.path = menu.path;
       childrenRouter.component = menu.component;
-      childrenRouter.name = Lodash.capitalize(menu.name);
+      childrenRouter.name = Lodash.capitalize(menu.path);
       childrenRouter.meta = setMeta(menu);
       childrenRouter.query = menu.query;
       childrenList.push(childrenRouter);
