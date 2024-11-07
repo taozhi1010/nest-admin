@@ -64,6 +64,7 @@ export class MenuService {
       },
       order: {
         orderNum: 'ASC',
+        parentId: 'ASC',
       },
     });
     const tree = ListToTree(

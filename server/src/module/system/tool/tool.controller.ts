@@ -3,6 +3,7 @@ import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { ToolService } from './tool.service';
 import { TableName, GenDbTableList, GenTableList, GenTableUpdate } from './dto/create-genTable-dto';
 import { Response } from 'express';
+import { User, UserDto } from 'src/common/decorators/user.decorator';
 
 @ApiTags('系统工具')
 @Controller('tool')
@@ -22,8 +23,8 @@ export class ToolController {
 
   @ApiOperation({ summary: '导入表' })
   @Post('/gen/importTable')
-  genImportTable(@Body() table: TableName, @Request() req) {
-    return this.toolService.importTable(table, req);
+  genImportTable(@Body() table: TableName, @User() user: UserDto) {
+    return this.toolService.importTable(table, user);
   }
 
   @ApiOperation({ summary: '同步表' })
