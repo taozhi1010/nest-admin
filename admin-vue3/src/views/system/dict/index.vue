@@ -1,6 +1,6 @@
 <template>
   <div class="app-container dict">
-    <el-card v-loading="dictGroup.loading" class="dict-tree" shadow="never">
+    <el-card v-loading="loading" class="dict-tree" shadow="never">
       <div class="dict-tree-header">
         <el-button type="primary" size="mini" icon="el-icon-plus" class="dict-tree-header-item add-btn" @click="dictGroup.handleAdd">添加字典分类</el-button>
         <el-input v-model="dictGroup.query.dictName" style="width: 200px" placeholder="请输入字典项筛选" class="dict-tree-header-item search-input" />
@@ -16,16 +16,19 @@
           :indent="10"
           :props="dictGroup.props"
           :filter-node-method="dictGroup.filterNode"
-          @node-click="dictGroup.handleNodeClick"
         >
           <template #default="{ node, data }">
-            <span class="custom-tree-node">
+            <span v-if="node.label !== '全部字典项'" class="custom-tree-node" @click.stop="dictGroup.handleNodeSelect(data)">
               <span>{{ node.label }}</span>
-              <span v-if="node.label !== '全部字典项'" class="custom-tree-node-icon">
+              <span class="custom-tree-node-icon">
                 <el-button link type="primary" :title="'编辑'" icon="Edit" @click="dictGroup.handleUpdate(data)" v-hasPermi="['system:dict:edit']" />
                 <el-button link type="primary" :title="'删除'" icon="Delete" @click.prevent="dictGroup.handleDelete(data)" v-hasPermi="['system:dict:remove']" />
               </span>
-              <span v-else class="custom-tree-node-icon refresh-icon">
+            </span>
+
+            <span v-else class="custom-tree-node" @click.stop="dictGroup.handleGroupSelect(data)">
+              <span>{{ node.label }}</span>
+              <span class="custom-tree-node-icon refresh-icon">
                 <el-button link type="primary" :title="'刷新'" icon="Refresh" @click="dictGroup.handleRefresh" />
               </span>
             </span>
@@ -34,7 +37,7 @@
       </div>
     </el-card>
 
-    <el-card v-loading="dictGroup.loading" class="dict-table" shadow="never">
+    <el-card v-loading="loading" class="dict-table" shadow="never">
       <div v-if="dictGroup.selectNode.dictId === 0">
         <el-row :gutter="10" class="mb8">
           <el-col :span="1.5">
@@ -117,7 +120,7 @@
           <el-table-column label="操作" align="center" width="160" class-name="small-padding fixed-width">
             <template #default="scope">
               <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['system:dict:edit']">修改</el-button>
-              <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['system:dict:remove']">删除</el-button>
+              <el-button link type="primary" icon="Delete" @click="dictData.handleDelete(scope.row)" v-hasPermi="['system:dict:remove']">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -131,7 +134,7 @@
 
 <script setup name="Dict">
 import dictGroupEdit from './components/dictGroupEdit'
-import dictDataEdit from './components/dictDataEdit';
+import dictDataEdit from './components/dictDataEdit'
 import { listType, delType, refreshCache } from '@/api/system/dict/type'
 import { listData, delData } from '@/api/system/dict/data'
 
@@ -145,6 +148,8 @@ const dictDataRef = ref()
 
 const dictGroupEditRef = ref()
 const dictDataEditRef = ref()
+const loading = ref(false)
+
 // 字典组
 const dictGroup = reactive({
   query: {
@@ -167,9 +172,8 @@ const dictGroup = reactive({
   },
   selection: [],
   props: { label: 'dictName', children: 'children' },
-  loading: true,
   request: async () => {
-    dictGroup.loading = true
+    loading.value = true
     try {
       const result = await listType(dictGroup.query)
       dictGroup.data[0].children = result.data.list
@@ -177,7 +181,7 @@ const dictGroup = reactive({
     } catch (e) {
       console.log('dictGroup:', e)
     } finally {
-      dictGroup.loading = false
+      loading.value = false
     }
   },
   handleAdd: () => {
@@ -191,7 +195,7 @@ const dictGroup = reactive({
     proxy.$modal
       .confirm('是否确认删除字典编号为"' + dictIds + '"的数据项？')
       .then(() => {
-        dictGroup.loading = true
+        loading.value = true
         return delType(dictIds)
       })
       .then(() => {
@@ -202,33 +206,37 @@ const dictGroup = reactive({
   handleRefresh: () => {
     dictGroup.request()
   },
-  handleNodeClick: (data) => {
+  handleNodeSelect: (data) => {
     dictGroup.selectNode = data
     if (data.dictId !== 0) {
       dictData.handleQuery()
     }
   },
+  handleGroupSelect: (data) => {
+    dictGroup.selectNode.dictId = data.dictId
+    dictGroup.request()
+  },
   handleSelectionChange: (val) => {
     dictGroup.selection = val
-  },
-  handleSelect: (selection) => {
-    dictGroup.query.dictId = selection.length === 1 ? selection[0].dictId : undefined
-
-    dictGroup.request()
   },
   filterNode: (value, data) => {
     if (!value) return true
     return data.dictName.includes(value)
   },
   handleRefreshCache: () => {
-    refreshCache().then(() => {
-      proxy.$modal.msgSuccess('刷新成功')
-      useDictStore().cleanDict()
-    })
+    loading.value = true
+    refreshCache()
+      .then(() => {
+        proxy.$modal.msgSuccess('刷新成功')
+        useDictStore().cleanDict()
+      })
+      .finally(() => {
+        loading.value = false
+      })
   }
 })
 
-// 具体字典项
+// 字典行
 const dictData = reactive({
   queryParams: {
     pageNum: 1,
@@ -239,15 +247,29 @@ const dictData = reactive({
   },
   data: [],
   handleQuery: () => {
+    loading.value = true
     dictData.queryParams.dictType = dictGroup.selectNode.dictType
     listData(dictData.queryParams).then((res) => {
       dictData.data = res.data.list
+      loading.value = false
     })
+  },
+  handleDelete: (row) => {
+    const dictCodes = row.dictCode || ids.value
+    proxy.$modal
+      .confirm('是否确认删除字典编码为"' + dictCodes + '"的数据项？')
+      .then(function () {
+        return delData(dictCodes)
+      })
+      .then(() => {
+        dictData.handleQuery()
+        proxy.$modal.msgSuccess('删除成功')
+        useDictStore().removeDict(queryParams.value.dictType)
+      })
   },
   handleSelectionChange: (selection) => {
     dictData.multiple = selection
-  },
-
+  }
 })
 
 watch(dictGroup.query, (val) => {
