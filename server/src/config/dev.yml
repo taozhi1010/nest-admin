@@ -30,22 +30,22 @@ db:
   mysql:
     host: '127.0.0.1'
     username: 'root'
-    password: 'yehuozhili'
-    database: 'test-db-1'
+    password: ''
+    database: 'admin_db'
     port: 3306
     charset: 'utf8mb4'
     logger: 'file'
     logging: true
     multipleStatements: true
     dropSchema: false
-    synchronize: true
+    synchronize: false
     supportBigNumbers: true
     bigNumberStrings: true
 
 # redis 配置
 redis:
-  host: '42.192.134.224'
-  password: 'taozhi187'
+  host: 'localhost'
+  password: '*********'
   port: 6379
   db: 2
   keyPrefix: ''
