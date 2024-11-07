@@ -9,10 +9,12 @@ import { CreateUserDto, UpdateUserDto, ListUserDto, ChangeStatusDto, ResetPwdDto
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ResultData } from 'src/common/utils/result';
 import { GetNowDate } from 'src/common/utils';
+import { OperlogInterceptor } from 'src/common/interceptor/operlog.interceptor';
 
 @ApiTags('用户管理')
 @ApiBearerAuth()
 @Controller('system/user')
+@UseInterceptors(OperlogInterceptor)
 export class UserController {
   constructor(
     private readonly userService: UserService,
