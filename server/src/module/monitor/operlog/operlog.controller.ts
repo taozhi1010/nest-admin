@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { OperlogService } from './operlog.service';
 import { CreateOperlogDto } from './dto/create-operlog.dto';
 import { UpdateOperlogDto } from './dto/update-operlog.dto';
@@ -12,9 +12,9 @@ export class OperlogController {
     return this.operlogService.create(createOperlogDto);
   }
 
-  @Get()
-  findAll() {
-    return this.operlogService.findAll();
+  @Get('/list')
+  findAll(@Query() query: any) {
+    return this.operlogService.findAll(query);
   }
 
   @Get(':id')
