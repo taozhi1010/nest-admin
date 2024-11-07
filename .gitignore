@@ -1,2 +1,5 @@
 .DS_Store
 /server/src/config/*
+/docs/.vitepress/cache
+/docs/node_modules
+/docs/dist
