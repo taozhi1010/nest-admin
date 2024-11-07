@@ -89,7 +89,7 @@ export function GenerateUUID(): string {
  * @param list
  * @returns
  */
-export function Uniq(list: Array<number | string>) {
+export function Uniq<T extends number | string>(list: Array<T>): Array<T> {
   return Lodash.uniq(list);
 }
 
