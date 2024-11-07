@@ -28,6 +28,7 @@ import { SysRoleEntity } from '../role/entities/role.entity';
 import { SysMenuEntity } from '../menu/entities/menu.entity';
 import { UserType } from './dto/user';
 import { ClientInfoDto } from 'src/common/decorators/common.decorator';
+import { Cacheable } from 'src/common/decorators/redis.decorator';
 
 @Injectable()
 export class UserService {
@@ -86,6 +87,7 @@ export class UserService {
    * @param query
    * @returns
    */
+  @Cacheable(CacheEnum.USER_KEY, 'list{user.userId}')
   async findAll(query: ListUserDto, user: UserType['user']) {
     const entity = this.userRepo.createQueryBuilder('user');
     entity.where('user.delFlag = :delFlag', { delFlag: '0' });
