@@ -40,10 +40,8 @@ function convertToSnakeCase(str) {
 }
 
 function lowercaseFirstLetter(str) {
-  if (str.length === 0) {
+  if (str.length === 0 || str === 'Date') {
     return str;
-  } else if (str === 'Date') {
-    return 'Date';
   }
   return str.charAt(0).toLowerCase() + str.slice(1);
 }
