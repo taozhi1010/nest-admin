@@ -19,7 +19,7 @@ constructor(private readonly ${serviceInstance}: ${serviceName}) {}
     @RequirePermission('${moduleName}:${businessName}:add')
     @Post()
     create(@Body() create${Lodash.upperFirst(BusinessName)}Dto: Create${Lodash.upperFirst(BusinessName)}Dto) {
-        return this.${serviceInstance}.create(create${BusinessName}Dto);
+        return this.${serviceInstance}.create(create${Lodash.upperFirst(BusinessName)}Dto);
     }\n
     @ApiOperation({
         summary: '${functionName}-列表',
@@ -27,7 +27,7 @@ constructor(private readonly ${serviceInstance}: ${serviceName}) {}
     @RequirePermission('${moduleName}:${businessName}:list')
     @Get()
     findAll(@Body() list${Lodash.upperFirst(BusinessName)}Dto: List${Lodash.upperFirst(BusinessName)}Dto) {
-        return this.${serviceInstance}.findAll(list${BusinessName}Dto);
+        return this.${serviceInstance}.findAll(list${Lodash.upperFirst(BusinessName)}Dto);
     }\n
     @ApiOperation({
         summary: '${functionName}-详情',
@@ -43,7 +43,7 @@ constructor(private readonly ${serviceInstance}: ${serviceName}) {}
     @RequirePermission('${moduleName}:${businessName}:edit')
     @Put()
     update(@Body() update${Lodash.upperFirst(BusinessName)}Dto: Update${Lodash.upperFirst(BusinessName)}Dto) {
-        return this.${serviceInstance}.update(update${BusinessName}Dto);
+        return this.${serviceInstance}.update(update${Lodash.upperFirst(BusinessName)}Dto);
     }\n
     @ApiOperation({
         summary: '${functionName}-删除',
