@@ -62,7 +62,7 @@ export class OperlogService {
   /**
    * @description: 录入日志
    */
-  async logAction(resultData) {
+  async logAction({ resultData, costTime, title, handlerName }) {
     const { originalUrl, method, headers, ip, body, query } = this.request;
     const { user } = this.request.user;
     const operLocation = await this.axiosService.getIpAddress(ip);
@@ -73,18 +73,21 @@ export class OperlogService {
     const browser = parser.toAgent();
 
     const params = {
+      title,
+      method: handlerName,
       operName: user.nickName,
       deptName: user.deptName,
       operUrl: originalUrl,
       requestMethod: method.toUpperCase(),
       operIp: ip,
+      costTime: costTime,
       operLocation: operLocation,
       os: parser.os.toJSON().family,
       browser: parser.toAgent(),
       operParam: JSON.stringify({ ...body, ...query }),
       jsonResult: JSON.stringify(resultData),
     };
-    console.log('--------->>>>', user, params);
+    // console.log('--------->>>>', user, params);
 
     await this.sysOperlogEntityRep.save(params);
 
