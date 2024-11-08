@@ -39,39 +39,45 @@ const generateTemplate = ({ columns }) => {
             <editor v-model="form.${field}" :min-height="192"/>
           </el-form-item>
         `,
-        select: dictType ? `
+        select: dictType
+          ? `
           <el-form-item label="${comment}" prop="${field}">
             <el-select v-model="form.${field}" placeholder="请选择${comment}">
               <el-option v-for="dict in ${dictType}" :key="dict.value" :label="dict.label" :value="dict.value"></el-option>
             </el-select>
           </el-form-item>
-        ` : `
+        `
+          : `
           <el-form-item label="${comment}" prop="${field}">
             <el-select v-model="form.${field}" placeholder="请选择${comment}">
               <el-option label="请选择字典生成" value="" />
             </el-select>
           </el-form-item>
         `,
-        checkbox: dictType ? `
+        checkbox: dictType
+          ? `
           <el-form-item label="${comment}" prop="${field}">
             <el-checkbox-group v-model="form.${field}">
               <el-checkbox v-for="dict in ${dictType}" :key="dict.value" :label="dict.value">{{dict.label}}</el-checkbox>
             </el-checkbox-group>
           </el-form-item>
-        ` : `
+        `
+          : `
           <el-form-item label="${comment}" prop="${field}">
             <el-checkbox-group v-model="form.${field}">
               <el-checkbox>请选择字典生成</el-checkbox>
             </el-checkbox-group>
           </el-form-item>
         `,
-        radio: dictType ? `
+        radio: dictType
+          ? `
           <el-form-item label="${comment}" prop="${field}">
             <el-radio-group v-model="form.${field}">
               <el-radio v-for="dict in ${dictType}" :key="dict.value" :value="dict.value">{{dict.label}}</el-radio>
             </el-radio-group>
           </el-form-item>
-        ` : `
+        `
+          : `
           <el-form-item label="${comment}" prop="${field}">
             <el-radio-group v-model="form.${field}">
               <el-radio label="1">请选择字典生成</el-radio>
@@ -87,7 +93,7 @@ const generateTemplate = ({ columns }) => {
           <el-form-item label="${comment}" prop="${field}">
             <el-input v-model="form.${field}" type="textarea" placeholder="请输入内容" />
           </el-form-item>
-        `
+        `,
       };
 
       html += htmlMap[htmlType] || '';
@@ -168,15 +174,17 @@ const generateScriptSetup = ({ columns, BusinessName, moduleName, businessName, 
 
 const generateFormData = (columns) => {
   return columns
-    .filter(item => item.isInsert === '1' && item.isPk === '0')
-    .map(item => `
-    ${item.javaField}: ${item.htmlType === 'checkbox' ? '[]' : '""'}`)
+    .filter((item) => item.isInsert === '1' && item.isPk === '0')
+    .map(
+      (item) => `
+    ${item.javaField}: ${item.htmlType === 'checkbox' ? '[]' : '""'}`,
+    )
     .join(',\n');
 };
 
 const generateRulesData = (columns) => {
   return columns
-    .filter(item => item.isRequired === '1')
-    .map(item => `${item.javaField}: [{ required: true, message: "${item.columnComment}不能为空", trigger: "blur" }]`)
+    .filter((item) => item.isRequired === '1')
+    .map((item) => `${item.javaField}: [{ required: true, message: "${item.columnComment}不能为空", trigger: "blur" }]`)
     .join(',\n');
 };
