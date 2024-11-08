@@ -5,11 +5,12 @@ export const controllerTem = (options) => {
   const serviceInstance = `${businessName}Service`;
   return `
 import { Controller, Get, Post, Put, Body, Patch, Param, Delete } from '@nestjs/common';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { RequirePermission } from 'src/common/decorators/require-premission.decorator';
 import { ${serviceName} } from './${businessName}.service';
 import { Create${Lodash.upperFirst(BusinessName)}Dto, Update${Lodash.upperFirst(BusinessName)}Dto, List${Lodash.upperFirst(BusinessName)}Dto } from './dto/${businessName}.dto';
 
+@ApiTags('${functionName}')
 @Controller('${businessName}')
 export class ${Lodash.upperFirst(BusinessName)}Controller {
 constructor(private readonly ${serviceInstance}: ${serviceName}) {}
