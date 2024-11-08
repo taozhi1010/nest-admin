@@ -11,10 +11,12 @@ import { ResultData } from 'src/common/utils/result';
 import { GetNowDate } from 'src/common/utils';
 import { User, UserDto } from 'src/common/decorators/user.decorator';
 import { ClientInfo, ClientInfoDto } from 'src/common/decorators/common.decorator';
+import { OperlogInterceptor } from 'src/common/interceptor/operlog.interceptor';
 
 @ApiTags('用户管理')
 @ApiBearerAuth()
 @Controller('system/user')
+@UseInterceptors(OperlogInterceptor)
 export class UserController {
   constructor(
     private readonly userService: UserService,

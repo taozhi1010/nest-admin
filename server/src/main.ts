@@ -52,21 +52,10 @@ async function bootstrap() {
 
   // 获取真实 ip
   app.use(requestIpMw({ attributeName: 'ip' }));
-
   //服务端口
   const port = config.get<number>('app.port') || 8080;
   await app.listen(port);
 
-  console.log(
-    `Nest-Admin 服务启动成功 `,
-    '\n',
-    '\n',
-    join(__dirname, '..', '../upload'),
-    '服务地址',
-    `http://localhost:${port}${prefix}/`,
-    '\n',
-    'swagger 文档地址        ',
-    `http://localhost:${port}${prefix}/swagger-ui/`,
-  );
+  console.log(`Nest-Admin 服务启动成功`, '\n', '服务地址', `http://localhost:${port}${prefix}/`, '\n', 'swagger 文档地址', `http://localhost:${port}${prefix}/swagger-ui/`);
 }
 bootstrap();
