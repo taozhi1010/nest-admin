@@ -140,14 +140,14 @@ export class DictController {
     return this.dictService.findOneDataType(dictType);
   }
 
-  @ApiOperation({ summary: '导出字典数据为xlsx文件' })
+  @ApiOperation({ summary: '导出字典组为xlsx文件' })
   @RequirePermission('system:dict:export')
   @Post('/type/export')
   async export(@Res() res: Response, @Body() body: ListDictType): Promise<void> {
     return this.dictService.export(res, body);
   }
 
-  @ApiOperation({ summary: '导出字典数据为xlsx文件' })
+  @ApiOperation({ summary: '导出字典内容为xlsx文件' })
   @RequirePermission('system:dict:export')
   @Post('/data/export')
   async exportData(@Res() res: Response, @Body() body: ListDictType): Promise<void> {
