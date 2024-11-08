@@ -4,7 +4,7 @@ import Redis from 'ioredis';
 
 @Injectable()
 export class RedisService {
-  constructor(@InjectRedis() private readonly client: Redis) {}
+  constructor(@InjectRedis() private readonly client: Redis) { }
 
   getClient(): Redis {
     return this.client;
@@ -354,6 +354,7 @@ export class RedisService {
    * @returns
    */
   async reset() {
-    return this.client.reset();
+    const keys = await this.client.keys('*');
+    return this.client.del(keys);
   }
 }
