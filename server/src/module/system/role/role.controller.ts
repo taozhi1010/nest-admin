@@ -7,6 +7,8 @@ import { AllocatedListDto } from '../user/dto/index';
 import { RequirePermission } from 'src/common/decorators/require-premission.decorator';
 
 import { UserService } from '../user/user.service';
+import { User, UserDto } from 'src/common/decorators/user.decorator';
+
 @ApiTags('角色管理')
 @Controller('system/role')
 export class RoleController {
@@ -37,7 +39,7 @@ export class RoleController {
   })
   @RequirePermission('system:role:list')
   @Get('list')
-  findAll(@Query() query: ListRoleDto) {
+  findAll(@Query() query: ListRoleDto, @User() user: UserDto) {
     return this.roleService.findAll(query);
   }
 
