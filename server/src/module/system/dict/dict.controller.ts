@@ -101,8 +101,9 @@ export class DictController {
   })
   @RequirePermission('system:dict:remove')
   @Delete('/data/:id')
-  deleteDictData(@Param('id') id: string) {
-    return this.dictService.deleteDictData(+id);
+  deleteDictData(@Param('id') ids: string) {
+    const dictIds = ids.split(',').map((id) => +id);
+    return this.dictService.deleteDictData(dictIds);
   }
 
   @ApiOperation({

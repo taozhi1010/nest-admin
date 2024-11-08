@@ -90,8 +90,9 @@ export class DictService {
     return ResultData.ok();
   }
 
-  async deleteDictData(dictId: number) {
-    await this.sysDictDataEntityRep.update({ dictCode: dictId }, { delFlag: '1' });
+  async deleteDictData(dictIds: number[]) {
+    await this.sysDictDataEntityRep.update({ dictCode: In(dictIds) }, { delFlag: '1' });
+    // await this.sysDictDataEntityRep.update({ dictCode: dictId }, { delFlag: '1' });
     return ResultData.ok();
   }
 
