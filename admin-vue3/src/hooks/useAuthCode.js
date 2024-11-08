@@ -6,7 +6,7 @@ import { getCodeImg } from '@/api/login'
 
 // 验证码相关信息
 const authCodeInfo = reactive({
-  captchaEnabled: false, // 验证码开关
+  captchaEnabled: true, // 验证码开关
   loading: false, // 是否加载中
   imgUrl: '', // 验证码图片地址
   uuid: '' // 验证码唯一标识
