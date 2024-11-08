@@ -1,39 +1,39 @@
 <template>
-  <el-dialog :title="title" v-model="open" width="500px" append-to-body>
-    <el-form ref="dataRef" :model="form" :rules="rules" label-width="80px">
+  <el-dialog :title="form.title" v-model="dialogTableVisible" width="500px" append-to-body>
+    <el-form ref="formRef" :model="form.model" :rules="form.rules" label-width="80px">
       <el-form-item label="字典类型">
-        <el-input v-model="form.dictType" :disabled="true" />
+        <el-input v-model="form.model.dictType" :disabled="true" />
       </el-form-item>
       <el-form-item label="数据标签" prop="dictLabel">
-        <el-input v-model="form.dictLabel" placeholder="请输入数据标签" />
+        <el-input v-model="form.model.dictLabel" placeholder="请输入数据标签" />
       </el-form-item>
       <el-form-item label="数据键值" prop="dictValue">
-        <el-input v-model="form.dictValue" placeholder="请输入数据键值" />
+        <el-input v-model="form.model.dictValue" placeholder="请输入数据键值" />
       </el-form-item>
       <el-form-item label="样式属性" prop="cssClass">
-        <el-input v-model="form.cssClass" placeholder="请输入样式属性" />
+        <el-input v-model="form.model.cssClass" placeholder="请输入样式属性" />
       </el-form-item>
       <el-form-item label="显示排序" prop="dictSort">
-        <el-input-number v-model="form.dictSort" controls-position="right" :min="0" />
+        <el-input-number v-model="form.model.dictSort" controls-position="right" :min="0" />
       </el-form-item>
       <el-form-item label="回显样式" prop="listClass">
-        <el-select v-model="form.listClass">
+        <el-select v-model="form.model.listClass">
           <el-option v-for="item in listClassOptions" :key="item.value" :label="item.label + '(' + item.value + ')'" :value="item.value"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="状态" prop="status">
-        <el-radio-group v-model="form.status">
+        <el-radio-group v-model="form.model.status">
           <el-radio v-for="dict in sys_normal_disable" :key="dict.value" :label="dict.value">{{ dict.label }}</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="备注" prop="remark">
-        <el-input v-model="form.remark" type="textarea" placeholder="请输入内容"></el-input>
+        <el-input v-model="form.model.remark" type="textarea" placeholder="请输入内容"></el-input>
       </el-form-item>
     </el-form>
     <template #footer>
       <div class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
-        <el-button @click="cancel">取 消</el-button>
+        <el-button type="primary" @click="form.submit">确 定</el-button>
+        <el-button @click="form.cancel">取 消</el-button>
       </div>
     </template>
   </el-dialog>
@@ -42,23 +42,11 @@
 <script setup name="Data">
 import useDictStore from '@/store/modules/dict'
 import { optionselect as getDictOptionselect, getType } from '@/api/system/dict/type'
-import { listData, getData, delData, addData, updateData } from '@/api/system/dict/data'
+import {  getData, delData, addData, updateData } from '@/api/system/dict/data'
 
 const { proxy } = getCurrentInstance()
 const { sys_normal_disable } = proxy.useDict('sys_normal_disable')
 
-const dataList = ref([])
-const open = ref(false)
-const loading = ref(true)
-const showSearch = ref(true)
-const ids = ref([])
-const single = ref(true)
-const multiple = ref(true)
-const total = ref(0)
-const title = ref('')
-const defaultDictType = ref('')
-const typeOptions = ref([])
-const route = useRoute()
 // 数据标签回显样式
 const listClassOptions = ref([
   { value: 'default', label: '默认' },
@@ -69,154 +57,69 @@ const listClassOptions = ref([
   { value: 'danger', label: '危险' }
 ])
 
-const data = reactive({
-  form: {},
-  queryParams: {
-    pageNum: 1,
-    pageSize: 10,
-    dictName: undefined,
-    dictType: undefined,
-    status: undefined
+const dialogTableVisible = ref(false)
+const formRef = ref()
+const emit = defineEmits(['refresh'])
+
+const form = reactive({
+  title: '',
+  model: {
+    dictName: '',
+    dictType: null,
+    status: '0',
+    remark: ''
   },
   rules: {
     dictLabel: [{ required: true, message: '数据标签不能为空', trigger: 'blur' }],
     dictValue: [{ required: true, message: '数据键值不能为空', trigger: 'blur' }],
-    dictSort: [{ required: true, message: '数据顺序不能为空', trigger: 'blur' }]
+    dictSort: [{ required: true, message: '数据顺序不能为空', trigger: 'blur' }],
+    listClass: [{ required: true, message: '回显样式不能为空', trigger: 'change' }]
+  },
+  reset: () => {
+    nextTick(() => {
+      proxy.resetForm('formRef')
+    })
+  },
+  submit: () => {
+    formRef.value.validate((valid) => {
+      if (valid) {
+        if (form.model.dictCode != undefined) {
+          updateData(form.model).then(() => {
+            proxy.$modal.msgSuccess('修改成功')
+            dialogTableVisible.value = false
+            emit('refresh')
+          })
+        } else {
+          addData(form.model).then(() => {
+            proxy.$modal.msgSuccess('新增成功')
+            dialogTableVisible.value = false
+            emit('refresh')
+          })
+        }
+      }
+    })
+  },
+  cancel: () => {
+    form.reset()
+    dialogTableVisible.value = false
   }
 })
 
-const { queryParams, form, rules } = toRefs(data)
+const handleDialogOpen = (type, group, row) => {
+  form.title = type === 'add' ? `新增-${group.dictName}` : `修改-${group.dictName}`
+  dialogTableVisible.value = true
 
-/** 查询字典类型详细 */
-function getTypes(dictId) {
-  getType(dictId).then((response) => {
-    queryParams.value.dictType = response.data.dictType
-    defaultDictType.value = response.data.dictType
-    getList()
-  })
-}
-
-/** 查询字典类型列表 */
-function getTypeList() {
-  getDictOptionselect().then((response) => {
-    typeOptions.value = response.data
-  })
-}
-/** 查询字典数据列表 */
-function getList() {
-  loading.value = true
-  listData(queryParams.value).then((response) => {
-    dataList.value = response.data.list
-    total.value = response.data.total
-    loading.value = false
-  })
-}
-/** 取消按钮 */
-function cancel() {
-  open.value = false
-  reset()
-}
-/** 表单重置 */
-function reset() {
-  form.value = {
-    dictCode: undefined,
-    dictLabel: undefined,
-    dictValue: undefined,
-    cssClass: undefined,
-    listClass: 'default',
-    dictSort: 0,
-    status: '0',
-    remark: undefined
+  if (type === 'edit') {
+    form.model = Object.assign({}, row)
+  } else {
+    nextTick(() => {
+      form.reset()
+      form.model.dictType = group.dictType
+    })
   }
-  proxy.resetForm('dataRef')
-}
-/** 搜索按钮操作 */
-function handleQuery() {
-  queryParams.value.pageNum = 1
-  getList()
-}
-/** 返回按钮操作 */
-function handleClose() {
-  const obj = { path: '/system/dict' }
-  proxy.$tab.closeOpenPage(obj)
-}
-/** 重置按钮操作 */
-function resetQuery() {
-  proxy.resetForm('queryRef')
-  queryParams.value.dictType = defaultDictType
-  handleQuery()
-}
-/** 新增按钮操作 */
-function handleAdd() {
-  reset()
-  open.value = true
-  title.value = '添加字典数据'
-  form.value.dictType = queryParams.value.dictType
-}
-/** 多选框选中数据 */
-function handleSelectionChange(selection) {
-  ids.value = selection.map((item) => item.dictCode)
-  single.value = selection.length != 1
-  multiple.value = !selection.length
-}
-/** 修改按钮操作 */
-function handleUpdate(row) {
-  reset()
-  const dictCode = row.dictCode || ids.value
-  getData(dictCode).then((response) => {
-    form.value = response.data
-    open.value = true
-    title.value = '修改字典数据'
-  })
-}
-/** 提交按钮 */
-function submitForm() {
-  proxy.$refs['dataRef'].validate((valid) => {
-    if (valid) {
-      if (form.value.dictCode != undefined) {
-        updateData(form.value).then((response) => {
-          useDictStore().removeDict(queryParams.value.dictType)
-          proxy.$modal.msgSuccess('修改成功')
-          open.value = false
-          getList()
-        })
-      } else {
-        addData(form.value).then((response) => {
-          useDictStore().removeDict(queryParams.value.dictType)
-          proxy.$modal.msgSuccess('新增成功')
-          open.value = false
-          getList()
-        })
-      }
-    }
-  })
-}
-/** 删除按钮操作 */
-function handleDelete(row) {
-  const dictCodes = row.dictCode || ids.value
-  proxy.$modal
-    .confirm('是否确认删除字典编码为"' + dictCodes + '"的数据项？')
-    .then(function () {
-      return delData(dictCodes)
-    })
-    .then(() => {
-      getList()
-      proxy.$modal.msgSuccess('删除成功')
-      useDictStore().removeDict(queryParams.value.dictType)
-    })
-    .catch(() => {})
-}
-/** 导出按钮操作 */
-function handleExport() {
-  proxy.download(
-    'system/dict/data/export',
-    {
-      ...queryParams.value
-    },
-    `dict_data_${new Date().getTime()}.xlsx`
-  )
 }
 
-getTypes(route.params && route.params.dictId)
-getTypeList()
+defineExpose({
+  handleDialogOpen
+})
 </script>
