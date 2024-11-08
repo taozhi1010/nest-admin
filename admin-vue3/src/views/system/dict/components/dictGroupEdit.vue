@@ -51,8 +51,7 @@ const form = reactive({
   },
   reset: () => {
     nextTick(() => {
-      console.log(12344)
-      formRef.value.resetFields()
+      proxy.resetForm('formRef')
     })
   },
   submit: () => {
