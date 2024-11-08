@@ -213,7 +213,7 @@ const dictGroup = reactive({
     proxy.download(
       'system/dict/type/export',
       {
-        ...dictGroup.queryParams
+        ...dictGroup.query
       },
       `dict_${new Date().getTime()}.xlsx`
     )
@@ -253,7 +253,7 @@ const dictGroup = reactive({
 
 // 字典内容
 const dictData = reactive({
-  queryParams: {
+  query: {
     pageNum: 1,
     pageSize: 9999,
     dictName: undefined,
@@ -264,8 +264,8 @@ const dictData = reactive({
   selection: [],
   request: () => {
     loading.value = true
-    dictData.queryParams.dictType = dictGroup.selectNode.dictType
-    listData(dictData.queryParams).then((res) => {
+    dictData.query.dictType = dictGroup.selectNode.dictType
+    listData(dictData.query).then((res) => {
       dictData.data = res.data.list
       loading.value = false
     })
@@ -286,14 +286,14 @@ const dictData = reactive({
       .then(() => {
         dictData.request()
         proxy.$modal.msgSuccess('删除成功')
-        useDictStore().removeDict(queryParams.value.dictType)
+        useDictStore().removeDict(dictData.query.dictType)
       })
   },
   handleExport: () => {
     proxy.download(
       'system/dict/data/export',
       {
-        ...dictData.queryParams
+        ...dictData.query
       },
       `dict_data_${new Date().getTime()}.xlsx`
     )
