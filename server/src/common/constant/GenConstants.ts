@@ -35,6 +35,9 @@ export class GenConstants {
   /** 数据库数字类型 */
   public static readonly COLUMNTYPE_NUMBER: string[] = ['tinyint', 'smallint', 'mediumint', 'int', 'number', 'integer', 'bit', 'bigint', 'float', 'double', 'decimal'];
 
+  /** 页面不需要插入字段 */
+  public static readonly COLUMNNAME_NOT_INSERT: string[] = ['id', 'create_by', 'create_time', 'del_flag'];
+
   /** 页面不需要编辑字段 */
   public static readonly COLUMNNAME_NOT_EDIT: string[] = ['id', 'create_by', 'create_time', 'del_flag'];
 
@@ -95,17 +98,35 @@ export class GenConstants {
   /** 时间类型 */
   public static readonly TYPE_DATE: string = 'Date';
 
+  /** 相等查询 */
+  public static readonly QUERY_EQ: string = 'EQ';
+
+  /** 不等于查询 */
+  public static readonly QUERY_NE: string = 'NE';
+
+  /** 大于查询 */
+  public static readonly QUERY_GT: string = 'GT';
+
+  /** 大于等于查询 */
+  public static readonly QUERY_GTE: string = 'GTE';
+
+  /** 小于查询 */
+  public static readonly QUERY_LT: string = 'LT';
+
+  /** 小于等于查询 */
+  public static readonly QUERY_LTE: string = 'LTE';
+
   /** 模糊查询 */
   public static readonly QUERY_LIKE: string = 'LIKE';
 
-  /** 相等查询 */
-  public static readonly QUERY_EQ: string = 'EQ';
+  /** 日期区间查询 */
+  public static readonly QUERY_BETWEEN: string = 'BETWEEN';
 
   /** 需要 */
   public static readonly REQUIRE: string = '1';
 
-  public static readonly TYPE_NUMBER: string = 'Number';
+  /** 不需要 */
+  public static readonly NOT_REQUIRE: string = '0';
 
-  /** 日期区间查询 */
-  public static readonly QUERY_BETWEEN: string = 'BETWEEN';
+  public static readonly TYPE_NUMBER: string = 'Number';
 }

@@ -9,6 +9,7 @@ import { HttpExceptionsFilter } from 'src/common/filters/http-exceptions-filter'
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { join } from 'path';
+import { writeFileSync } from 'fs';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
@@ -49,6 +50,9 @@ async function bootstrap() {
     },
     customSiteTitle: 'Nest-Admin API Docs',
   });
+
+  // 保存OpenAPI规范文件
+  writeFileSync(join(process.cwd(), 'openApi.json'), JSON.stringify(document, null, 2));
 
   // 获取真实 ip
   app.use(requestIpMw({ attributeName: 'ip' }));
