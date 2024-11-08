@@ -41,9 +41,9 @@ const htmlTemplate = (options) => {
 };
 
 const indexScript = (options) => {
-  const { columns, BusinessName, moduleName, businessName ,primaryKey} = options;
+  const { columns, BusinessName, moduleName, businessName, primaryKey } = options;
   const dicts = indexScriptDicts(columns);
-  const exportScript = handlerExport(moduleName,businessName)
+  const exportScript = handlerExport(moduleName, businessName);
   let script = '';
 
   script += `
@@ -103,7 +103,6 @@ const indexScript = (options) => {
       getList();
     </script>
     `;
-  
 
   return script;
 };
@@ -308,12 +307,12 @@ export const indexScriptDicts = (columns) => {
   }
   return script;
 };
-const handlerExport = (moduleName,businessName)=>{
-    let h = ''
-    h+= `const  handleExport = () =>{`
-    h+=` proxy.download('${moduleName}/${businessName}/export', {`
-    h+=`...queryParams.value`
-    h+=`}, \`${businessName}_\$\{new Date().getTime()\}.xlsx\`)}`
+const handlerExport = (moduleName, businessName) => {
+  let h = '';
+  h += `const  handleExport = () =>{`;
+  h += ` proxy.download('${moduleName}/${businessName}/export', {`;
+  h += `...queryParams.value`;
+  h += `}, \`${businessName}_\$\{new Date().getTime()\}.xlsx\`)}`;
 
-    return h
-}
+  return h;
+};
