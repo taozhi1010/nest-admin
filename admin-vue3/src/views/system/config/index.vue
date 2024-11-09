@@ -9,10 +9,12 @@
       </el-form-item>
       <el-form-item label="系统内置" prop="configType" label-width="100px">
         <template #label>
-          <el-tooltip class="box-item" effect="dark" content="系统内置，代表该行配置不可删除，是代表不可删除，否代表可以删除" placement="top-start">
-            <QuestionFilled class="tips" />
+          <el-tooltip effect="dark" content="系统内置，代表该行配置不可删除，是代表不可删除，否代表可以删除" placement="top-start">
+            <div class="tips">
+              <QuestionFilled class="tips-icon" :size="'14px'" />
+            </div>
           </el-tooltip>
-          <span style="width: 200px">系统内置</span>
+          <span style="width: 80px">系统内置</span>
         </template>
         <el-select v-model="queryParams.configType" placeholder="系统内置" clearable style="width: 160px">
           <el-option v-for="dict in sys_yes_no" :key="dict.value" :label="dict.label" :value="dict.value" />
@@ -72,42 +74,44 @@
     </el-table>
 
     <pagination v-show="total > 0" :total="total" v-model:page="queryParams.pageNum" v-model:limit="queryParams.pageSize" @pagination="getList" />
-
-    <!-- 添加或修改参数配置对话框 -->
-    <el-dialog :title="title" v-model="open" width="500px" append-to-body>
-      <el-form ref="configRef" :model="form" :rules="rules" label-width="90px">
-        <el-form-item label="参数名称" prop="configName">
-          <el-input v-model="form.configName" placeholder="请输入参数名称" />
-        </el-form-item>
-        <el-form-item label="参数键名" prop="configKey">
-          <el-input v-model="form.configKey" placeholder="请输入参数键名" />
-        </el-form-item>
-        <el-form-item label="参数键值" prop="configValue">
-          <el-input v-model="form.configValue" placeholder="请输入参数键值" />
-        </el-form-item>
-        <el-form-item prop="configType">
-          <template #label>
-            <el-tooltip class="box-item" effect="dark" content="系统内置，代表该行配置不可删除，是代表不可删除，否代表可以删除" placement="top-start">
-              <QuestionFilled class="tips" />
-            </el-tooltip>
-            <span style="width: 200px">系统内置</span>
-          </template>
-          <el-radio-group v-model="form.configType">
-            <el-radio v-for="dict in sys_yes_no" :key="dict.value" :label="dict.value">{{ dict.label }}</el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item label="备注" prop="remark">
-          <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
-        </el-form-item>
-      </el-form>
-      <template #footer>
-        <div class="dialog-footer">
-          <el-button type="primary" @click="submitForm">确 定</el-button>
-          <el-button @click="cancel">取 消</el-button>
-        </div>
-      </template>
-    </el-dialog>
   </div>
+
+  <!-- 添加或修改参数配置对话框 -->
+  <el-dialog :title="title" v-model="open" width="600px" append-to-body>
+    <el-form ref="configRef" :model="form" :rules="rules" label-width="100px">
+      <el-form-item label="参数名称" prop="configName">
+        <el-input v-model="form.configName" placeholder="请输入参数名称" />
+      </el-form-item>
+      <el-form-item label="参数键名" prop="configKey">
+        <el-input v-model="form.configKey" placeholder="请输入参数键名" />
+      </el-form-item>
+      <el-form-item label="参数键值" prop="configValue">
+        <el-input v-model="form.configValue" placeholder="请输入参数键值" />
+      </el-form-item>
+      <el-form-item prop="configType">
+        <template #label>
+          <el-tooltip effect="dark" content="系统内置，代表该行配置不可删除，是代表不可删除，否代表可以删除" placement="top-start">
+            <div class="tips">
+              <QuestionFilled class="tips-icon" :size="'14px'" />
+            </div>
+          </el-tooltip>
+          <span style="width: 80px">系统内置</span>
+        </template>
+        <el-radio-group v-model="form.configType">
+          <el-radio v-for="dict in sys_yes_no" :key="dict.value" :label="dict.value">{{ dict.label }}</el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="备注" prop="remark">
+        <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
+      </el-form-item>
+    </el-form>
+    <template #footer>
+      <div class="dialog-footer">
+        <el-button type="primary" @click="submitForm">确 定</el-button>
+        <el-button @click="cancel">取 消</el-button>
+      </div>
+    </template>
+  </el-dialog>
 </template>
 
 <script setup name="Config">
@@ -257,13 +261,3 @@ function handleRefreshCache() {
 
 getList()
 </script>
-
-<style lang="scss" scoped>
-.tips {
-  width: 32px;
-  height: 32px;
-  font-size: 32px;
-  text-align: center;
-  margin-right: 4px;
-}
-</style>
