@@ -10,16 +10,16 @@
       <el-form-item label="数据键值" prop="dictValue">
         <el-input v-model="form.model.dictValue" placeholder="请输入数据键值" />
       </el-form-item>
-      <el-form-item label="样式属性" prop="cssClass">
-        <el-input v-model="form.model.cssClass" placeholder="请输入样式属性" />
-      </el-form-item>
-      <el-form-item label="显示排序" prop="dictSort">
-        <el-input-number v-model="form.model.dictSort" controls-position="right" :min="0" />
-      </el-form-item>
       <el-form-item label="回显样式" prop="listClass">
         <el-select v-model="form.model.listClass">
           <el-option v-for="item in listClassOptions" :key="item.value" :label="item.label + '(' + item.value + ')'" :value="item.value"></el-option>
         </el-select>
+      </el-form-item>
+      <el-form-item label="显示排序" prop="dictSort">
+        <el-input-number v-model="form.model.dictSort" controls-position="right" :min="0" />
+      </el-form-item>
+      <el-form-item label="样式属性" prop="cssClass">
+        <el-input v-model="form.model.cssClass" placeholder="请输入样式属性" />
       </el-form-item>
       <el-form-item label="状态" prop="status">
         <el-radio-group v-model="form.model.status">
@@ -40,9 +40,7 @@
 </template>
 
 <script setup name="Data">
-import useDictStore from '@/store/modules/dict'
-import { optionselect as getDictOptionselect, getType } from '@/api/system/dict/type'
-import {  getData, delData, addData, updateData } from '@/api/system/dict/data'
+import {  addData, updateData } from '@/api/system/dict/data'
 
 const { proxy } = getCurrentInstance()
 const { sys_normal_disable } = proxy.useDict('sys_normal_disable')
@@ -67,6 +65,7 @@ const form = reactive({
     dictName: '',
     dictType: null,
     status: '0',
+    listClass: 'default',
     remark: ''
   },
   rules: {
