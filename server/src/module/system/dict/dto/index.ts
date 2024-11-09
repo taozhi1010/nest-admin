@@ -79,6 +79,7 @@ export class CreateDictDataDto {
   @Length(0, 100)
   listClass: string;
 
+  @IsOptional()
   @IsString()
   @Length(0, 100)
   cssClass: string;
