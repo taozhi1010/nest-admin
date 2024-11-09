@@ -2,7 +2,7 @@
   <div class="app-container dict">
     <el-card v-loading="loading" class="dict-tree" shadow="never">
       <div class="dict-tree-header">
-        <el-button type="primary" size="mini" icon="el-icon-plus" class="dict-tree-header-item add-btn" @click="dictGroup.handleAdd">添加字典分类</el-button>
+        <el-button v-hasPermi="['system:dict:add']" type="primary" size="mini" icon="el-icon-plus" class="dict-tree-header-item add-btn" @click="dictGroup.handleAdd">添加字典分类</el-button>
         <el-input v-model="dictGroup.query.dictName" style="width: 200px" placeholder="请输入字典项筛选" class="dict-tree-header-item search-input" />
       </div>
 
@@ -19,15 +19,15 @@
         >
           <template #default="{ node, data }">
             <span v-if="node.label !== '全部字典项'" class="custom-tree-node" @click="dictGroup.handleNodeSelect(data)">
-              <span>{{ node.label }}</span>
+              <span class="custom-tree-node-text" :title="node.label">{{ node.label }}</span>
               <span class="custom-tree-node-icon">
-                <el-button link type="primary" :title="'编辑'" icon="Edit" @click.stop="dictGroup.handleUpdate(data)" v-hasPermi="['system:dict:edit']" />
-                <el-button link type="primary" :title="'删除'" icon="Delete" @click.stop="dictGroup.handleDelete(data)" v-hasPermi="['system:dict:remove']" />
+                <el-button v-hasPermi="['system:dict:edit']" link type="primary" :title="'编辑'" icon="Edit" @click.stop="dictGroup.handleUpdate(data)" />
+                <el-button v-hasPermi="['system:dict:remove']" link type="primary" :title="'删除'" icon="Delete" @click.stop="dictGroup.handleDelete(data)" />
               </span>
             </span>
 
             <span v-else class="custom-tree-node" @click.stop="dictGroup.handleGroupSelect(data)">
-              <span>{{ node.label }}</span>
+              <span class="custom-tree-node-text" :title="node.label">{{ node.label }}</span>
               <span class="custom-tree-node-icon refresh-icon">
                 <el-button link type="primary" :title="'刷新'" icon="Refresh" @click="dictGroup.handleRefresh" />
               </span>
@@ -41,16 +41,16 @@
       <div v-if="dictGroup.selectNode.dictId === 0">
         <el-row :gutter="10" class="mb8">
           <el-col :span="1.5">
-            <el-button type="primary" plain icon="Plus" @click="dictGroup.handleAdd" v-hasPermi="['system:dict:add']">新增</el-button>
+            <el-button v-hasPermi="['system:dict:add']" type="primary" plain icon="Plus" @click="dictGroup.handleAdd">新增</el-button>
           </el-col>
           <el-col :span="1.5">
-            <el-button type="danger" plain icon="Delete" :disabled="multiple" @click="dictGroup.handleDelete" v-hasPermi="['system:dict:remove']">删除</el-button>
+            <el-button v-hasPermi="['system:dict:remove']" type="danger" plain icon="Delete" :disabled="multiple" @click="dictGroup.handleDelete">删除</el-button>
           </el-col>
           <el-col :span="1.5">
-            <el-button type="warning" plain icon="Download" @click="dictGroup.handleExport" v-hasPermi="['system:dict:export']">导出</el-button>
+            <el-button v-hasPermi="['system:dict:export']" type="warning" plain icon="Download" @click="dictGroup.handleExport">导出</el-button>
           </el-col>
           <el-col :span="1.5">
-            <el-button type="warning" plain icon="Refresh" @click="dictGroup.handleRefreshCache" v-hasPermi="['system:dict:remove']">刷新缓存</el-button>
+            <el-button v-hasPermi="['system:dict:remove']" type="warning" plain icon="Refresh" @click="dictGroup.handleRefreshCache">刷新缓存</el-button>
           </el-col>
           <right-toolbar :show-search="false" @queryTable="dictGroup.handleRefresh" />
         </el-row>
@@ -73,8 +73,8 @@
           </el-table-column>
           <el-table-column label="操作" align="center" width="160" fixed="right">
             <template #default="scope">
-              <el-button link type="primary" icon="Edit" @click="dictGroup.handleUpdate(scope.row)" v-hasPermi="['system:dict:edit']">修改</el-button>
-              <el-button link type="primary" icon="Delete" @click="dictGroup.handleDelete(scope.row)" v-hasPermi="['system:dict:remove']">删除</el-button>
+              <el-button v-hasPermi="['system:dict:edit']" link type="primary" icon="Edit" @click="dictGroup.handleUpdate(scope.row)">修改</el-button>
+              <el-button v-hasPermi="['system:dict:remove']" link type="primary" icon="Delete" @click="dictGroup.handleDelete(scope.row)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -83,19 +83,19 @@
       <div v-else>
         <el-row :gutter="10" class="mb8">
           <el-col :span="1.5">
-            <el-button type="primary" plain icon="Plus" @click="dictData.handleAdd" v-hasPermi="['system:dict:add']">新增</el-button>
+            <el-button v-hasPermi="['system:dict:add']" type="primary" plain icon="Plus" @click="dictData.handleAdd">新增</el-button>
           </el-col>
           <el-col :span="1.5">
-            <el-button type="success" plain icon="Edit" :disabled="single" @click="dictData.handleUpdate" v-hasPermi="['system:dict:edit']">修改</el-button>
+            <el-button v-hasPermi="['system:dict:edit']" type="success" plain icon="Edit" :disabled="single" @click="dictData.handleUpdate">修改</el-button>
           </el-col>
           <el-col :span="1.5">
-            <el-button type="danger" plain icon="Delete" :disabled="multiple" @click="dictData.handleDelete" v-hasPermi="['system:dict:remove']">删除</el-button>
+            <el-button v-hasPermi="['system:dict:remove']" type="danger" plain icon="Delete" :disabled="multiple" @click="dictData.handleDelete">删除</el-button>
           </el-col>
           <el-col :span="1.5">
-            <el-button type="warning" plain icon="Download" @click="dictData.handleExport" v-hasPermi="['system:dict:export']">导出</el-button>
+            <el-button v-hasPermi="['system:dict:export']" type="warning" plain icon="Download" @click="dictData.handleExport">导出</el-button>
           </el-col>
 
-          <right-toolbar :show-search="false" @queryTable="getList"></right-toolbar>
+          <right-toolbar :show-search="false" @queryTable="dictData.handleRefresh" />
         </el-row>
 
         <el-table ref="dictDataRef" :data="dictData.data" @selection-change="dictData.handleSelectionChange">
@@ -120,10 +120,10 @@
               <span>{{ parseTime(scope.row.createTime) }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="操作" align="center" width="160" class-name="small-padding fixed-width">
+          <el-table-column label="操作" align="center" width="160" fixed="right">
             <template #default="scope">
-              <el-button link type="primary" icon="Edit" @click="dictData.handleUpdate(scope.row)" v-hasPermi="['system:dict:edit']">修改</el-button>
-              <el-button link type="primary" icon="Delete" @click="dictData.handleDelete(scope.row)" v-hasPermi="['system:dict:remove']">删除</el-button>
+              <el-button v-hasPermi="['system:dict:edit']" link type="primary" icon="Edit" @click="dictData.handleUpdate(scope.row)">修改</el-button>
+              <el-button v-hasPermi="['system:dict:remove']" link type="primary" icon="Delete" @click="dictData.handleDelete(scope.row)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -358,6 +358,16 @@ dictGroup.request()
 
 .custom-tree-node {
   width: 200px;
+  margin: 10px 0;
+
+  &-text {
+    display: inline-block;
+    width: 85px !important;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
   &-icon {
     float: right;
   }

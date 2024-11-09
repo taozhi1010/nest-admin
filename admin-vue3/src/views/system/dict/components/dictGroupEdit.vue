@@ -1,7 +1,7 @@
 <template>
-  <!-- 添加或修改参数配置对话框 -->
-  <el-dialog :title="form.title" v-model="dialogTableVisible" width="500px" append-to-body>
-    <el-form ref="formRef" :model="form.model" :rules="form.rules" label-width="80px">
+  <!-- 添加或修改数据字典项配置 -->
+  <el-dialog :title="form.title" v-model="dialogTableVisible" width="600px" append-to-body>
+    <el-form ref="formRef" :model="form.model" :rules="form.rules" label-width="100px">
       <el-form-item label="字典名称" prop="dictName">
         <el-input v-model="form.model.dictName" placeholder="请输入字典名称" />
       </el-form-item>
@@ -19,7 +19,7 @@
     </el-form>
     <template #footer>
       <div class="dialog-footer">
-        <el-button type="primary" @click="form.submit">确 定</el-button>
+        <el-button :loading="form.loading" type="primary" @click="form.submit">确 定</el-button>
         <el-button type="warning" @click="form.reset">重置</el-button>
         <el-button @click="form.cancel">取 消</el-button>
       </div>
@@ -38,6 +38,7 @@ const formRef = ref()
 const emit = defineEmits(['refresh'])
 
 const form = reactive({
+  loading: false,
   title: '',
   model: {
     dictName: '',
@@ -50,6 +51,7 @@ const form = reactive({
     dictType: [{ required: true, message: '字典类型不能为空', trigger: 'blur' }]
   },
   reset: () => {
+    form.loading = false
     nextTick(() => {
       proxy.resetForm('formRef')
     })
@@ -57,15 +59,18 @@ const form = reactive({
   submit: () => {
     formRef.value.validate((valid) => {
       if (valid) {
+        form.loading = true
         if (form.model.dictId != undefined) {
           updateType(form.model).then(() => {
             proxy.$modal.msgSuccess('修改成功')
+            form.reset()
             dialogTableVisible.value = false
             emit('refresh')
           })
         } else {
           addType(form.model).then(() => {
             proxy.$modal.msgSuccess('新增成功')
+            form.reset()
             dialogTableVisible.value = false
             emit('refresh')
           })
