@@ -424,7 +424,7 @@ export default {
 				this.open = true;
 				this.$nextTick(() => {
 					roleMenu.then((res) => {
-						let checkedKeys = res.checkedKeys;
+						let checkedKeys = res.data.checkedKeys;
 						checkedKeys.forEach((v) => {
 							this.$nextTick(() => {
 								this.$refs.menu.setChecked(v, true, false);
