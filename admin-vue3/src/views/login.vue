@@ -32,7 +32,7 @@
 
       <div class="login-tips">
         <el-checkbox v-model="loginForm.model.rememberMe" style="margin: 0px 0px 25px 0px">记住密码</el-checkbox>
-        <el-link class="login-tips-link" type="primary" href="/register" target="_blank">去注册账号</el-link>
+        <el-link v-if="false" class="login-tips-link" type="primary" href="/register" target="_blank">去注册账号</el-link>
       </div>
 
       <el-form-item style="width: 100%">
