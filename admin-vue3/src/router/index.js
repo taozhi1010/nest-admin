@@ -117,20 +117,6 @@ export const dynamicRoutes = [
     ]
   },
   {
-    path: '/system/dict-data',
-    component: Layout,
-    hidden: true,
-    permissions: ['system:dict:list'],
-    children: [
-      {
-        path: 'index/:dictId(\\d+)',
-        component: () => import('@/views/system/dict/data'),
-        name: 'Data',
-        meta: { title: '字典数据', activeMenu: '/system/dict' }
-      }
-    ]
-  },
-  {
     path: '/monitor/job-log',
     component: Layout,
     hidden: true,
