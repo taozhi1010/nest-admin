@@ -63,8 +63,8 @@ import { UploadModule } from './module/upload/upload.module';
           let redisConfig = {};
           if (process.env.NODE_ENV === 'development') {
             redisConfig = {
-              host: '43.155.4.176',
-              password: '123456',
+              host: '111.229.29.214',
+              password: 'redis_kjkikp_6379',
               port: 6379,
               db: 2,
               keyPrefix: '',
