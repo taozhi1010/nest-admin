@@ -80,6 +80,11 @@ export class CreateDictDataDto {
   listClass: string;
 
   @IsOptional()
+  @IsString()
+  @Length(0, 100)
+  cssClass: string;
+
+  @IsOptional()
   @IsNumber()
   dictSort?: number;
 
