@@ -1,7 +1,7 @@
 import { Module, Global } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
-import { RedisClientOptions } from '@liaoliaots/nestjs-redis';
+import { RedisClientOptions } from '@songkeys/nestjs-redis';
 import configuration from './config/index';
 import { HttpModule } from '@nestjs/axios';
 import { APP_GUARD } from '@nestjs/core';
