@@ -281,7 +281,7 @@ export class ToolService {
    *
    * 查询主键id
    */
-  async getPrimaryKey(columns: GenTableColumnEntity[]) {
+  async getPrimaryKey(columns) {
     for (const column of columns) {
       if (column.isPk === '1') {
         return column.javaField;
@@ -376,21 +376,32 @@ export class ToolService {
       column.javaType = GenConstants.TYPE_NUMBER;
     }
 
-    // 插入字段（默认所有字段都需要插入）
-    column.isInsert = GenConstants.REQUIRE;
+    // 插入字段
+    if (!arraysContains(GenConstants.COLUMNNAME_NOT_INSERT, columnName)) {
+      column.isInsert = GenConstants.REQUIRE;
+    }
 
     // 编辑字段
-    if (!arraysContains(GenConstants.COLUMNNAME_NOT_EDIT, columnName) && column.isPk != 1) {
+    if (!arraysContains(GenConstants.COLUMNNAME_NOT_EDIT, columnName)) {
       column.isEdit = GenConstants.REQUIRE;
     }
     // 列表字段
-    if (!arraysContains(GenConstants.COLUMNNAME_NOT_LIST, columnName) && column.isPk != 1) {
+    if (!arraysContains(GenConstants.COLUMNNAME_NOT_LIST, columnName)) {
       column.isList = GenConstants.REQUIRE;
     }
     // 查询字段
-    if (!arraysContains(GenConstants.COLUMNNAME_NOT_QUERY, columnName) && column.isPk != 1 && column.htmlType != GenConstants.HTML_TEXTAREA) {
+    if (!arraysContains(GenConstants.COLUMNNAME_NOT_QUERY, columnName) && column.htmlType != GenConstants.HTML_TEXTAREA) {
       column.isQuery = GenConstants.REQUIRE;
     }
+
+    // 主键字段
+    if (column.isPk == '1') {
+      column.isInsert = GenConstants.NOT_REQUIRE;
+      column.isEdit = GenConstants.REQUIRE;
+      column.isQuery = GenConstants.REQUIRE;
+      column.isList = GenConstants.REQUIRE;
+    }
+
     const lowerColumnName = toLower(columnName);
     // 查询字段类型
     if (lowerColumnName.includes('name')) {
