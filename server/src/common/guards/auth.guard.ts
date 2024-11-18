@@ -35,6 +35,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
 
     const req = ctx.switchToHttp().getRequest();
     const accessToken = req.get('Authorization');
+
     if (!accessToken) throw new ForbiddenException('请重新登录');
     const atUserId = await this.userService.parseToken(accessToken);
     if (!atUserId) throw new UnauthorizedException('当前登录已过期，请重新登录');
@@ -69,7 +70,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     const req = ctx.switchToHttp().getRequest();
     const i = this.globalWhiteList.findIndex((route) => {
       // 请求方法类型相同
-      if (req.method.toUpperCase() === route.method.toUpperCase()) {
+      if (!route.method || req.method.toUpperCase() === route.method.toUpperCase()) {
         // 对比 url
         return !!pathToRegexp(route.path).exec(req.url);
       }

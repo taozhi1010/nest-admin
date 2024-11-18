@@ -40,8 +40,23 @@ async function bootstrap() {
   // 注意： 开发环境如果开启 nest static module 需要将 crossOriginResourcePolicy 设置为 false 否则 静态资源 跨域不可访问
   app.use(helmet({ crossOriginOpenerPolicy: { policy: 'same-origin-allow-popups' }, crossOriginResourcePolicy: false }));
 
-  const swaggerOptions = new DocumentBuilder().setTitle('Nest-Admin').setDescription('Nest-Admin 接口文档').setVersion('2.0.0').addBearerAuth().build();
+  const swaggerOptions = new DocumentBuilder()
+    .setTitle('Nest-Admin')
+    .setDescription('Nest-Admin 接口文档')
+    .setVersion('2.0.0')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+      },
+      'token',
+    )
+    .build();
   const document = SwaggerModule.createDocument(app, swaggerOptions);
+  // 保存OpenAPI规范文件
+  writeFileSync(join(process.cwd(), 'openApi.json'), JSON.stringify(document, null, 2));
+
   // 项目依赖当前文档功能，最好不要改变当前地址
   // 生产环境使用 nginx 可以将当前文档地址 屏蔽外部访问
   SwaggerModule.setup(`${prefix}/swagger-ui`, app, document, {
@@ -50,9 +65,6 @@ async function bootstrap() {
     },
     customSiteTitle: 'Nest-Admin API Docs',
   });
-
-  // 保存OpenAPI规范文件
-  writeFileSync(join(process.cwd(), 'openApi.json'), JSON.stringify(document, null, 2));
 
   // 获取真实 ip
   app.use(requestIpMw({ attributeName: 'ip' }));

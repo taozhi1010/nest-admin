@@ -74,6 +74,9 @@ export class GenTableColumnEntity extends BaseEntity {
   @Column({ type: 'varchar', name: 'dict_type', length: 200, default: '', comment: '字典类型' })
   public dictType: string;
 
+  @Column({ type: 'varchar', name: 'column_default', length: 200, default: null, comment: '默认值' })
+  public columnDefault: string;
+
   @ApiProperty({ type: Number, description: '排序' })
   @Column({ type: 'int', name: 'sort', comment: '排序' })
   public sort: number;
