@@ -89,7 +89,7 @@ export class ConfigService {
     });
     // 将从数据库中查询到的配置信息存入Redis缓存
     await this.redisService.set(`${CacheEnum.SYS_CONFIG_KEY}${configKey}`, data.configValue);
-    return data;
+    return data.configValue;
   }
 
   async update(updateConfigDto: UpdateConfigDto) {
