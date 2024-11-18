@@ -1,6 +1,6 @@
 import { isURL } from 'class-validator';
 import * as Lodash from 'lodash';
-import * as UserConstants from 'src/common/constant/userConstants';
+import * as UserConstants from 'src/module/system/user/user.constant';
 
 /**
  * 菜单列表转树形结构

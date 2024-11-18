@@ -19,8 +19,7 @@ export class NoticeController {
   @RequirePermission('system:notice:add')
   @Post()
   create(@Body() createConfigDto: CreateNoticeDto, @Request() req) {
-    createConfigDto['createTime'] = GetNowDate();
-    createConfigDto['createBy'] = req.user.user.userName;
+    createConfigDto['createBy'] = req.user.userName;
     return this.noticeService.create(createConfigDto);
   }
 

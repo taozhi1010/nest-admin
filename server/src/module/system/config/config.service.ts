@@ -6,8 +6,9 @@ import { ResultData } from 'src/common/utils/result';
 import { ExportTable } from 'src/common/utils/export';
 import { CreateConfigDto, UpdateConfigDto, ListConfigDto } from './dto/index';
 import { SysConfigEntity } from './entities/config.entity';
-import { RedisService } from 'src/module/redis/redis.service';
+import { RedisService } from 'src/module/common/redis/redis.service';
 import { CacheEnum } from 'src/common/enum/index';
+import { Cacheable, CacheEvict } from 'src/common/decorators/redis.decorator';
 
 @Injectable()
 export class ConfigService {
@@ -73,22 +74,9 @@ export class ConfigService {
    * @param configKey 配置的键值，用于查询配置信息。
    * @returns 返回一个结果对象，包含查询到的配置信息。如果未查询到，则返回空结果。
    */
+  @Cacheable(CacheEnum.SYS_CONFIG_KEY, 'configKey')
   async getConfigValue(configKey: string) {
-    // 尝试从Redis缓存中获取配置信息
-    const cacheData = await this.redisService.get(`${CacheEnum.SYS_CONFIG_KEY}${configKey}`);
-    if (cacheData) {
-      // 如果缓存中存在配置信息，则直接返回
-      return cacheData;
-    }
-
-    // 从数据库中查询配置信息
-    const data = await this.sysConfigEntityRep.findOne({
-      where: {
-        configKey: configKey,
-      },
-    });
-    // 将从数据库中查询到的配置信息存入Redis缓存
-    await this.redisService.set(`${CacheEnum.SYS_CONFIG_KEY}${configKey}`, data.configValue);
+    const data = await this.sysConfigEntityRep.findOne({ where: { configKey: configKey } });
     return data.configValue;
   }
 
@@ -165,12 +153,8 @@ export class ConfigService {
    * 删除系统配置缓存
    * @returns
    */
-  async clearConfigCache() {
-    const keys = await this.redisService.keys(`${CacheEnum.SYS_CONFIG_KEY}*`);
-    if (keys && keys.length > 0) {
-      await this.redisService.del(keys);
-    }
-  }
+  @CacheEvict(CacheEnum.SYS_CONFIG_KEY, '*')
+  async clearConfigCache() {}
 
   /**
    * 加载系统配置缓存

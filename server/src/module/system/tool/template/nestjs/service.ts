@@ -1,5 +1,5 @@
 import * as Lodash from 'lodash';
-import { GenConstants } from 'src/common/constant/genConstants';
+import { GenConstants } from 'src/common/constant/gen.constant';
 
 export const serviceTem = (options) => {
   const { BusinessName, primaryKey, businessName } = options;

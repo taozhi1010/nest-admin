@@ -1,4 +1,3 @@
-export class Operlog {}
 import { Column, Entity, PrimaryGeneratedColumn, CreateDateColumn } from 'typeorm';
 
 @Entity('sys_oper_log', {
