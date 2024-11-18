@@ -1,14 +1,13 @@
 import { Injectable, Inject, Scope } from '@nestjs/common';
-import { Repository, In } from 'typeorm';
+import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateOperlogDto } from './dto/create-operlog.dto';
 import { UpdateOperlogDto } from './dto/update-operlog.dto';
 import { SysOperlogEntity } from './entities/operlog.entity';
-import * as Useragent from 'useragent';
 import { REQUEST } from '@nestjs/core';
 import { Request } from 'express';
 import { ResultData } from 'src/common/utils/result';
-import { AxiosService } from 'src/module/axios/axios.service';
+import { AxiosService } from 'src/module/common/axios/axios.service';
 
 @Injectable({ scope: Scope.REQUEST })
 export class OperlogService {
@@ -62,15 +61,24 @@ export class OperlogService {
   /**
    * @description: 录入日志
    */
-  async logAction({ resultData, costTime, title, handlerName }) {
-    const { originalUrl, method, headers, ip, body, query } = this.request;
+  async logAction({
+    resultData,
+    costTime,
+    title,
+    handlerName,
+    errorMsg,
+    businessType,
+  }: {
+    resultData?: any;
+    costTime: number;
+    title: string;
+    handlerName: string;
+    errorMsg?: string;
+    businessType: number;
+  }) {
+    const { originalUrl, method, ip, body, query } = this.request;
     const { user } = this.request.user;
     const operLocation = await this.axiosService.getIpAddress(ip);
-
-    const userAgent = headers['user-agent'];
-    const parser = Useragent.parse(headers['user-agent']);
-    const os = parser.os.toJSON().family;
-    const browser = parser.toAgent();
 
     const params = {
       title,
@@ -82,38 +90,15 @@ export class OperlogService {
       operIp: ip,
       costTime: costTime,
       operLocation: operLocation,
-      os: parser.os.toJSON().family,
-      browser: parser.toAgent(),
       operParam: JSON.stringify({ ...body, ...query }),
       jsonResult: JSON.stringify(resultData),
+      errorMsg,
+
+      businessType,
+      operatorType: '1',
+      operTime: new Date(),
     };
-    // console.log('--------->>>>', user, params);
 
     await this.sysOperlogEntityRep.save(params);
-
-    // let { userInfo } = this.request.user;
-    // // 登录接口需要单独处理
-    // const isLogin = originalUrl === '/auth/login';
-    // if ((userInfo && method.toUpperCase() !== 'GET') || isLogin) {
-    //   // if (isLogin) {
-    //   //   // 查询数据库中对应的用户
-    //   //   userInfo = await this.prisma.user.findUnique({
-    //   //     where: { userName: body.userName },
-    //   //   });
-    //   // }
-    //   // const data: any = {
-    //   //   userId: userInfo.id,
-    //   //   action: originalUrl,
-    //   //   method: method.toUpperCase(),
-    //   //   ip,
-    //   //   params: { ...body, ...query },
-    //   //   os: Object.values(parser.getOS()).join(' '),
-    //   //   browser: parser.getBrowser().name,
-    //   // };
-    //   // // 插入数据到表
-    //   // await this.prisma.log.create({
-    //   //   data,
-    //   // });
-    // }
   }
 }

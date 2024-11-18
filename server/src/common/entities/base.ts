@@ -1,16 +1,28 @@
 import { Column, CreateDateColumn, Entity, UpdateDateColumn } from 'typeorm';
 
-//基础实体信息
-@Entity()
-export abstract class BaseEntity {
-  //0正常 1停用
-  @Column({ type: 'char', name: 'status', default: '0', length: 1, comment: '状态' })
-  public status: string;
+import { ApiProperty } from '@nestjs/swagger';
 
+// 删除
+@Entity()
+export abstract class DeleteStatusEntity {
   //0代表存在 1代表删除
   @Column({ type: 'char', name: 'del_flag', default: '0', length: 1, comment: '删除标志' })
   public delFlag: string;
+}
 
+// 状态
+@Entity()
+export abstract class BaseStatusEntity extends DeleteStatusEntity {
+  //0正常 1停用
+  @ApiProperty({ type: String, description: '状态' })
+  @Column({ type: 'char', name: 'status', default: '0', length: 1, comment: '状态' })
+  public status: string;
+}
+
+//基础实体信息
+@Entity()
+export abstract class BaseEntity extends BaseStatusEntity {
+  @ApiProperty({ type: String, description: '创建者' })
   @Column({ type: 'varchar', name: 'create_by', length: 64, default: '', comment: '创建者' })
   public createBy: string;
 
