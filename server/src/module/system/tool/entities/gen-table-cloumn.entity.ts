@@ -51,15 +51,15 @@ export class GenTableColumnEntity extends BaseEntity {
   public isInsert: string;
 
   @ApiProperty({ type: String, description: '是否编辑字段（1是）' })
-  @Column({ type: 'char', name: 'is_edit', default: '0', length: 1, comment: '是否编辑字段（1是）' })
+  @Column({ type: 'char', name: 'is_edit', nullable: true, default: '0', length: 1, comment: '是否编辑字段（1是）' })
   public isEdit: string;
 
   @ApiProperty({ type: String, description: '是否列表字段（1是）' })
-  @Column({ type: 'char', name: 'is_list', default: '0', length: 1, comment: '是否列表字段（1是）' })
+  @Column({ type: 'char', name: 'is_list', nullable: true, default: '0', length: 1, comment: '是否列表字段（1是）' })
   public isList: string;
 
   @ApiProperty({ type: String, description: '是否查询字段（1是）' })
-  @Column({ type: 'char', name: 'is_query', length: 1, default: '1', comment: '是否查询字段（1是）' })
+  @Column({ type: 'char', name: 'is_query', nullable: true, default: '1', length: 1, comment: '是否查询字段（1是）' })
   public isQuery: string;
 
   @ApiProperty({ type: String, description: '查询方式（等于、不等于、大于、小于、范围）' })

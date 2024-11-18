@@ -8,14 +8,14 @@ import { FormatDate, GetNowDate } from 'src/common/utils/index';
 import { GenTableEntity } from './entities/gen-table.entity';
 import { GenTableColumnEntity } from './entities/gen-table-cloumn.entity';
 import toolConfig from './config';
-import { GenConstants } from 'src/common/constant/genConstants';
+import { GenConstants } from 'src/common/constant/gen.constant';
 import { camelCase, toLower } from 'lodash';
 import { arraysContains, getColumnLength, StringUtils, capitalize } from './utils/index';
 import { index as templateIndex } from './template/index';
 import archiver from 'archiver';
 import * as fs from 'fs-extra';
 import * as path from 'path';
-import { UserDto } from 'src/common/decorators/user.decorator';
+import { UserDto } from 'src/module/system/user/user.decorator';
 
 @Injectable()
 export class ToolService {

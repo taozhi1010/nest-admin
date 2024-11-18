@@ -2,7 +2,7 @@ import { Repository, In, Not } from 'typeorm';
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
-import { RedisService } from 'src/module/redis/redis.service';
+import { RedisService } from 'src/module/common/redis/redis.service';
 import * as bcrypt from 'bcrypt';
 import { Response } from 'express';
 import { GetNowDate, GenerateUUID, Uniq } from 'src/common/utils/index';
@@ -28,7 +28,8 @@ import { SysRoleEntity } from '../role/entities/role.entity';
 import { SysMenuEntity } from '../menu/entities/menu.entity';
 import { UserType } from './dto/user';
 import { ClientInfoDto } from 'src/common/decorators/common.decorator';
-import { Cacheable } from 'src/common/decorators/redis.decorator';
+import { Cacheable, CacheEvict } from 'src/common/decorators/redis.decorator';
+import { Captcha } from 'src/common/decorators/captcha.decorator';
 
 @Injectable()
 export class UserService {
@@ -87,7 +88,6 @@ export class UserService {
    * @param query
    * @returns
    */
-  @Cacheable(CacheEnum.USER_KEY, 'list{user.userId}')
   async findAll(query: ListUserDto, user: UserType['user']) {
     const entity = this.userRepo.createQueryBuilder('user');
     entity.where('user.delFlag = :delFlag', { delFlag: '0' });
@@ -180,6 +180,7 @@ export class UserService {
     });
   }
 
+  @Cacheable(CacheEnum.SYS_USER_KEY, '{userId}')
   async findOne(userId: number) {
     const data = await this.userRepo.findOne({
       where: {
@@ -231,6 +232,7 @@ export class UserService {
    * @param updateUserDto
    * @returns
    */
+  @CacheEvict(CacheEnum.SYS_USER_KEY, '{userId}')
   async update(updateUserDto: UpdateUserDto, userId: number) {
     //不能修改超级管理员
     if (updateUserDto.userId === 1) throw new BadRequestException('非法操作！');
@@ -301,29 +303,23 @@ export class UserService {
     return ResultData.ok(data);
   }
 
+  @CacheEvict(CacheEnum.SYS_USER_KEY, '{userId}')
+  clearCacheByUserId(userId: number) {
+    return userId;
+  }
+
   /**
    * 登陆
    */
+  @Captcha('user')
   async login(user: LoginDto, clientInfo: ClientInfoDto) {
-    const enable = await this.configService.getConfigValue('sys.account.captchaEnabled');
-    const captchaEnabled: boolean = enable === 'true';
-
-    if (captchaEnabled) {
-      const code = await this.redisService.get(CacheEnum.CAPTCHA_CODE_KEY + user.uuid);
-      if (!code) {
-        return ResultData.fail(500, `验证码已过期`);
-      }
-      if (code !== user.code) {
-        return ResultData.fail(500, `验证码错误`);
-      }
-    }
-
     const data = await this.userRepo.findOne({
       where: {
         userName: user.username,
       },
       select: ['userId', 'password'],
     });
+    this.clearCacheByUserId(data.userId);
 
     if (!(data && bcrypt.compareSync(user.password, data.password))) {
       return ResultData.fail(500, `帐号或密码错误`);

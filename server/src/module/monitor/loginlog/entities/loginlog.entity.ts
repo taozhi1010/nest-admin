@@ -1,10 +1,10 @@
 import { Column, Entity, PrimaryGeneratedColumn, CreateDateColumn } from 'typeorm';
-import { BaseEntity } from 'src/common/entities/base';
+import { BaseStatusEntity } from 'src/common/entities/base';
 
 @Entity('sys_logininfor', {
   comment: '系统访问记录',
 })
-export class MonitorLoginlogEntity extends BaseEntity {
+export class MonitorLoginlogEntity extends BaseStatusEntity {
   @PrimaryGeneratedColumn({ type: 'int', name: 'info_id', comment: '访问ID' })
   public infoId: number;
 

@@ -3,7 +3,7 @@ import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { ToolService } from './tool.service';
 import { TableName, GenDbTableList, GenTableList, GenTableUpdate } from './dto/create-genTable-dto';
 import { Response } from 'express';
-import { User, UserDto } from 'src/common/decorators/user.decorator';
+import { User, UserDto } from 'src/module/system/user/user.decorator';
 
 @ApiTags('系统工具')
 @Controller('tool')
