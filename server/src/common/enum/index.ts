@@ -124,3 +124,19 @@ export enum SexEnum {
    */
   WOMAN = '1',
 }
+
+/**
+ * 排序规则枚举
+ */
+export enum SortRuleEnum {
+  ASCENDING = 'ascending',
+  DESCENDING = 'descending',
+}
+
+/**
+ * char类型字段枚举
+ */
+export enum CharEnum {
+  ENABLE = '0',
+  DISABLE = '1',
+}
