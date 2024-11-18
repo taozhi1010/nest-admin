@@ -8,15 +8,13 @@ import { UploadService } from 'src/module/upload/upload.service';
 import { CreateUserDto, UpdateUserDto, ListUserDto, ChangeStatusDto, ResetPwdDto, UpdateProfileDto, UpdatePwdDto } from './dto/index';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ResultData } from 'src/common/utils/result';
-import { GetNowDate } from 'src/common/utils';
-import { User, UserDto } from 'src/common/decorators/user.decorator';
-import { ClientInfo, ClientInfoDto } from 'src/common/decorators/common.decorator';
-import { OperlogInterceptor } from 'src/common/interceptor/operlog.interceptor';
+import { User, UserDto, UserTool, UserToolType } from 'src/module/system/user/user.decorator';
+import { BusinessType } from 'src/common/constant/business.constant';
+import { Operlog } from 'src/common/decorators/operlog.decorator';
 
 @ApiTags('用户管理')
 @ApiBearerAuth()
 @Controller('system/user')
-@UseInterceptors(OperlogInterceptor)
 export class UserController {
   constructor(
     private readonly userService: UserService,
@@ -29,7 +27,7 @@ export class UserController {
   @RequirePermission('system:user:query')
   @Get('/profile')
   profile(@User() user: UserDto) {
-    return this.userService.profile(user.user);
+    return ResultData.ok(user);
   }
 
   @ApiOperation({
@@ -37,6 +35,7 @@ export class UserController {
   })
   @RequirePermission('system:user:edit')
   @Put('/profile')
+  @Operlog({ businessType: BusinessType.UPDATE })
   updateProfile(@User() user: UserDto, @Body() updateProfileDto: UpdateProfileDto) {
     return this.userService.updateProfile(user, updateProfileDto);
   }
@@ -47,11 +46,9 @@ export class UserController {
   @RequirePermission('system:user:edit')
   @Post('/profile/avatar')
   @UseInterceptors(FileInterceptor('avatarfile'))
-  async avatar(@UploadedFile() avatarfile: Express.Multer.File) {
-    const res = await this.uploadService.singleFileUpload(avatarfile);
-    return ResultData.ok({
-      imgUrl: res.fileName,
-    });
+  async avatar(@UploadedFile() avatarfile: Express.Multer.File, @User() user: UserDto) {
+    const res = await this.uploadService.singleFileUpload(avatarfile, user, 'system-user', 'avatar');
+    return ResultData.ok({ imgUrl: res.fileName });
   }
 
   @ApiOperation({
@@ -72,10 +69,8 @@ export class UserController {
   })
   @RequirePermission('system:user:add')
   @Post()
-  create(@Body() createUserDto: CreateUserDto, @ClientInfo() clientInfo: ClientInfoDto) {
-    createUserDto['createTime'] = clientInfo.dateTime;
-    createUserDto['createBy'] = clientInfo.userName;
-    return this.userService.create(createUserDto);
+  create(@Body() createUserDto: CreateUserDto, @UserTool() { injectCreate }: UserToolType) {
+    return this.userService.create(injectCreate(createUserDto));
   }
 
   @ApiOperation({
@@ -155,7 +150,7 @@ export class UserController {
   @RequirePermission('system:user:edit')
   @Put()
   async update(@Body() updateUserDto: UpdateUserDto, @User() user: UserDto) {
-    const userId = user.userId;
+    const userId = user.user.userId;
     const uuid = user.token;
 
     const result = await this.userService.update(updateUserDto, userId);

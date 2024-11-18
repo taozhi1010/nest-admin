@@ -1,17 +1,8 @@
 import { Inject } from '@nestjs/common';
-import { get } from 'lodash';
-import { RedisService } from 'src/module/redis/redis.service';
+import { RedisService } from 'src/module/common/redis/redis.service';
+import { paramsKeyFormat } from '../utils/decorator';
 
-function getArgs(func) {
-  const funcString = func.toString();
-  return funcString.slice(funcString.indexOf('(') + 1, funcString.indexOf(')')).match(/([^\s,]+)/g);
-}
-
-const stringFormat = (str: string, callback: (key: string) => string): string => {
-  return str.replace(/\{([^}]+)\}/g, (word, key) => callback(key));
-};
-
-export function CacheEvict(CACHE_NAME: string, CACHE_KEY: string, ALL_ENTRIES?: boolean) {
+export function CacheEvict(CACHE_NAME: string, CACHE_KEY: string) {
   const injectRedis = Inject(RedisService);
 
   return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
@@ -19,26 +10,15 @@ export function CacheEvict(CACHE_NAME: string, CACHE_KEY: string, ALL_ENTRIES?: 
 
     const originMethod = descriptor.value;
 
-    const originMethodArgs = getArgs(originMethod);
-
     descriptor.value = async function (...args: any[]) {
-      const paramsMap = {};
+      const key = paramsKeyFormat(originMethod, CACHE_KEY, args);
 
-      originMethodArgs.forEach((arg, index) => {
-        paramsMap[arg] = args[index];
-      });
-
-      let isNotGet = false;
-      const key = stringFormat(CACHE_KEY, (key) => {
-        const str = get(paramsMap, key);
-        if (!str) isNotGet = true;
-        return str;
-      });
-
-      if (ALL_ENTRIES) {
+      if (key === '*') {
         await this.redis.del(await this.redis.keys(`${CACHE_NAME}*`));
-      } else if (!isNotGet && key) {
+      } else if (key !== null) {
         await this.redis.del(`${CACHE_NAME}${key}`);
+      } else {
+        await this.redis.del(`${CACHE_NAME}${CACHE_KEY}`);
       }
 
       return await originMethod.apply(this, args);
@@ -54,23 +34,10 @@ export function Cacheable(CACHE_NAME: string, CACHE_KEY: string, CACHE_EXPIRESIN
 
     const originMethod = descriptor.value;
 
-    const originMethodArgs = getArgs(originMethod);
-
     descriptor.value = async function (...args: any[]) {
-      const paramsMap = {};
+      const key = paramsKeyFormat(originMethod, CACHE_KEY, args);
 
-      originMethodArgs.forEach((arg, index) => {
-        paramsMap[arg] = args[index];
-      });
-
-      let isNotGet = false;
-      const key = stringFormat(CACHE_KEY, (key) => {
-        const str = get(paramsMap, key);
-        if (!str) isNotGet = true;
-        return str;
-      });
-
-      if (!key || isNotGet) {
+      if (key === null) {
         return await originMethod.apply(this, args);
       }
 
