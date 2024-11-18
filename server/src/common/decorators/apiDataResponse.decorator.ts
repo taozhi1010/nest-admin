@@ -10,7 +10,7 @@ const baseTypeNames = ['String', 'Number', 'Boolean'];
  * @param isArray data 是否是数组
  * @param isPager 设置为 true, 则 data 类型为 { list, total } , false data 类型是纯数组
  */
-export const ApiResult = <TModel extends Type<any>>(model?: TModel, isArray?: boolean, isPager?: boolean) => {
+export const ApiDataResponse = <TModel extends Type<any>>(model?: TModel, isArray?: boolean, isPager?: boolean) => {
   let items = null;
   const modelIsBaseType = model && baseTypeNames.includes(model.name);
   if (modelIsBaseType) {
@@ -19,6 +19,7 @@ export const ApiResult = <TModel extends Type<any>>(model?: TModel, isArray?: bo
     items = { $ref: getSchemaPath(model) };
   }
   let prop = null;
+
   if (isArray && isPager) {
     prop = {
       type: 'object',
@@ -41,7 +42,15 @@ export const ApiResult = <TModel extends Type<any>>(model?: TModel, isArray?: bo
   } else if (model) {
     prop = items;
   } else {
-    prop = { type: 'null', default: null };
+    prop = prop = {
+      type: 'object',
+      properties: {
+        value: {
+          type: 'boolean',
+          default: true,
+        },
+      },
+    };
   }
   return applyDecorators(
     ApiExtraModels(...(model && !modelIsBaseType ? [ResultData, model] : [ResultData])),
