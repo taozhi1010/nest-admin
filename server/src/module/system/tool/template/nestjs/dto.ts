@@ -1,37 +1,61 @@
 import * as Lodash from 'lodash';
 export const dtoTem = (options) => {
-  const { BusinessName, primaryKey } = options;
-  const insert = dtoGenerate(options, 'isInsert');
-  const edit = dtoGenerate(options, 'isEdit');
-  const list = dtoGenerate(options, 'isQuery');
+  const { BusinessName } = options;
+  const insertExclude = getExcludeClounmByType(options, 'isInsert');
+  const editExclude = getExcludeClounmByType(options, 'isEdit');
+  const queryExclude = getExcludeClounmByType(options, 'isQuery');
+  const listExclude = getExcludeClounmByType(options, 'isList');
+  const All = getAllBaseDto(options);
+
   return `
 import { IsString, IsNumber, IsBoolean, IsDate, IsOptional, IsEnum } from 'class-validator';
-import { ApiProperty, PartialType } from '@nestjs/swagger';
+import { ApiProperty, OmitType, IntersectionType } from '@nestjs/swagger';
 import { PagingDto } from 'src/common/dto/index';
+import { CharEnum } from 'src/common/enum/index';
 
-export enum CharEnum {
-  ENABLE = '0',
-  DISABLE = '1',
+
+export class Base${Lodash.upperFirst(BusinessName)}Dto{
+${All}
 }
 
-export class Create${Lodash.upperFirst(BusinessName)}Dto {
-${insert}
-}
+export class Create${Lodash.upperFirst(BusinessName)}Dto extends OmitType(Base${Lodash.upperFirst(BusinessName)}Dto, [${insertExclude}]){}
 
-export class Update${Lodash.upperFirst(BusinessName)}Dto{
- ${edit}
-}
+export class Update${Lodash.upperFirst(BusinessName)}Dto extends OmitType(Base${Lodash.upperFirst(BusinessName)}Dto, [${editExclude}]){}
 
-export class List${Lodash.upperFirst(BusinessName)}Dto extends PagingDto{
-${list}
-}
+export class Query${Lodash.upperFirst(BusinessName)}Dto extends OmitType(IntersectionType( Base${Lodash.upperFirst(BusinessName)}Dto, PagingDto), [${queryExclude}]){}
+
+export class List${Lodash.upperFirst(BusinessName)}Dto  extends OmitType(Base${Lodash.upperFirst(BusinessName)}Dto, [${listExclude}]) {}
 `;
 };
 
-const dtoGenerate = (options, type) => {
+/**
+ * 排除对应类型的字段
+ * @param options
+ * @param type
+ * @returns
+ */
+const getExcludeClounmByType = (options, type) => {
   const { columns } = options;
   return columns
-    .filter((column) => column[type] === '1')
+    .filter((column) => {
+      return column[type] === '0';
+    })
+    .map((column) => {
+      const { javaField } = column;
+      return ` '${javaField}'`;
+    })
+    .join(',');
+};
+
+/**
+ * 全局的字段
+ * @param options
+ * @param type
+ * @returns
+ */
+const getAllBaseDto = (options) => {
+  const { columns } = options;
+  return columns
     .map((column) => {
       const { javaType, javaField, isRequired, columnComment, columnType } = column;
       const type = lowercaseFirstLetter(javaType);
@@ -57,7 +81,7 @@ function getValidatorDecorator(javaType) {
     case 'Boolean':
       return `@IsBoolean()`;
     case 'Date':
-      return `@IsDate()`;
+      return `@IsString()`;
     default:
       return ``;
   }
@@ -65,7 +89,7 @@ function getValidatorDecorator(javaType) {
 
 function lowercaseFirstLetter(str) {
   if (str === 'Date') {
-    return str;
+    return 'string';
   }
   return str.charAt(0).toLowerCase() + str.slice(1);
 }
