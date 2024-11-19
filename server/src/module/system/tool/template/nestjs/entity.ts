@@ -1,4 +1,5 @@
-import { GenConstants } from 'src/common/constant/genConstants';
+import { GenConstants } from 'src/common/constant/gen.constant';
+
 export const entityTem = (options) => {
   const { BusinessName, tableName, tableComment } = options;
 

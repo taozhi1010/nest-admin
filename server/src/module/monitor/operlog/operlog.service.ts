@@ -1,5 +1,5 @@
 import { Injectable, Inject, Scope } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { IsNull, Not, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateOperlogDto } from './dto/create-operlog.dto';
 import { UpdateOperlogDto } from './dto/update-operlog.dto';
@@ -44,6 +44,11 @@ export class OperlogService {
       list,
       total,
     });
+  }
+
+  async removeAll() {
+    await this.sysOperlogEntityRep.delete({ operId: Not(IsNull()) });
+    return ResultData.ok();
   }
 
   findOne(id: number) {
