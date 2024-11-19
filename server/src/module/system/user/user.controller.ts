@@ -27,7 +27,7 @@ export class UserController {
   @RequirePermission('system:user:query')
   @Get('/profile')
   profile(@User() user: UserDto) {
-    return ResultData.ok(user);
+    return ResultData.ok(user.user);
   }
 
   @ApiOperation({
