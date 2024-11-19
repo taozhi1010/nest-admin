@@ -27,7 +27,7 @@ export class UserController {
   @RequirePermission('system:user:query')
   @Get('/profile')
   profile(@User() user: UserDto) {
-    return ResultData.ok(user);
+    return ResultData.ok(user.user);
   }
 
   @ApiOperation({
@@ -47,7 +47,7 @@ export class UserController {
   @Post('/profile/avatar')
   @UseInterceptors(FileInterceptor('avatarfile'))
   async avatar(@UploadedFile() avatarfile: Express.Multer.File, @User() user: UserDto) {
-    const res = await this.uploadService.singleFileUpload(avatarfile, user, 'system-user', 'avatar');
+    const res = await this.uploadService.singleFileUpload(avatarfile);
     return ResultData.ok({ imgUrl: res.fileName });
   }
 

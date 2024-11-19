@@ -12,8 +12,6 @@ import { UploadModule } from './module/upload/upload.module';
 import { SystemModule } from './module/system/system.module';
 import { CommonModule } from './module/common/common.module';
 import { MonitorModule } from './module/monitor/monitor.module';
-import { MemberModule } from './module/member/member.module';
-import { ExtendsModule } from './module/extends/extends.module';
 
 @Global()
 @Module({
@@ -46,9 +44,6 @@ import { ExtendsModule } from './module/extends/extends.module';
     CommonModule,
     SystemModule,
     MonitorModule,
-
-    ExtendsModule,
-    MemberModule,
   ],
   providers: [
     {
