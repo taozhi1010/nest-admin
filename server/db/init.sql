@@ -768,3 +768,49 @@ CREATE TABLE `game_info` (
   `del_flag` CHAR(1) NOT NULL DEFAULT '0' COMMENT '删除标志（0代表存在 1代表删除）',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB COMMENT='游戏库';
+
+
+
+-- ----------------------------
+-- 22、游戏文章库
+-- ----------------------------
+DROP TABLE IF EXISTS `game_article`;
+CREATE TABLE `game_article` (
+  `id` varchar(64) NOT NULL COMMENT '文章id',
+  `title` varchar(64) NOT NULL COMMENT '文章标题',
+  `desc` varchar(255) DEFAULT NULL COMMENT '文章简介',
+  `subject_id` varchar(64) NOT NULL COMMENT '专栏id',
+  `content` longtext COMMENT '文章内容',
+  `cover` varchar(255) DEFAULT NULL COMMENT '封面',
+  `author` varchar(64) DEFAULT NULL COMMENT '作者',
+  `publish_time` datetime(6) DEFAULT NULL COMMENT '发布时间',
+  `like_num` VARCHAR(64) NOT NULL DEFAULT '0' COMMENT '点赞数',
+  `read_num` VARCHAR(64) NOT NULL DEFAULT '0' COMMENT '阅读数',
+  `comment_num` VARCHAR(64) NOT NULL DEFAULT '0' COMMENT '评论数',
+  `status` char(1) NOT NULL DEFAULT '0' COMMENT '发布状态（0草稿 1发布 2下架 3审核中）',
+  `sort` int(11) DEFAULT NULL COMMENT '排序',
+  `create_time` datetime(6) DEFAULT CURRENT_TIMESTAMP(6) COMMENT '创建时间',
+  `update_time` datetime(6) DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6) COMMENT '更新时间',
+  `del_flag` CHAR(1) NOT NULL DEFAULT '0' COMMENT '删除标志（0代表存在 1代表删除）',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB COMMENT='文章库';
+
+
+
+-- ----------------------------
+-- 22、游戏专栏库
+-- ----------------------------
+DROP TABLE IF EXISTS `game_subject`;
+CREATE TABLE `game_subject`  (
+  `id` varchar(64) NOT NULL COMMENT '专栏id',
+  `title` varchar(64) NOT NULL COMMENT '专栏标题',
+  `desc` varchar(255) DEFAULT NULL COMMENT '专栏简介',
+  `cover` varchar(255) DEFAULT NULL COMMENT '专栏封面',
+  `author` varchar(64) DEFAULT NULL COMMENT '作者',
+  `status` char(1) NOT NULL DEFAULT '0' COMMENT '发布状态（0草稿 1发布 2下架 3审核中）',
+  `sort` int(11) DEFAULT NULL COMMENT '排序',
+  `create_time` datetime(6) DEFAULT CURRENT_TIMESTAMP(6) COMMENT '创建时间',
+  `update_time` datetime(6) DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6) COMMENT '更新时间',
+  `del_flag` CHAR(1) NOT NULL DEFAULT '0' COMMENT '删除标志（0代表存在 1代表删除）',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB COMMENT='专栏库';
