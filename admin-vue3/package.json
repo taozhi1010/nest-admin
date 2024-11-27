@@ -27,6 +27,7 @@
     "jsencrypt": "3.3.1",
     "nprogress": "0.2.0",
     "pinia": "2.0.22",
+    "pnpm": "^9.14.2",
     "vue": "3.2.45",
     "vue-cropper": "1.0.3",
     "vue-router": "4.1.4",
@@ -43,6 +44,6 @@
     "vite-plugin-vue-setup-extend": "0.4.0"
   },
   "volta": {
-    "node": "20.18.0"
+    "node": "20.18.1"
   }
 }
