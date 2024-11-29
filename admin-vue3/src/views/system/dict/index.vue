@@ -307,7 +307,7 @@ const dictData = reactive({
 })
 
 watch(dictGroup.query, (val) => {
-  dictGroupEditRef.value.filter(val.dictName)
+  dictGroupRef.value.filter(val.dictName)
 })
 
 dictGroup.request()
