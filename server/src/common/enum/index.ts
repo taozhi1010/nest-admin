@@ -46,6 +46,11 @@ export enum CacheEnum {
    * 微信code存储
    */
   MA_CODE = 'ma_code:',
+
+  /**
+   * 用户
+   */
+  USER_KEY = 'user:',
 }
 
 /**

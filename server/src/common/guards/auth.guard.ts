@@ -20,8 +20,16 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
   }
 
   async canActivate(ctx: ExecutionContext): Promise<boolean> {
+    const notRequireAuth = this.reflector.getAllAndOverride('notRequireAuth', [ctx.getClass(), ctx.getHandler()]);
+
+    if (notRequireAuth) {
+      await this.jumpActivate(ctx);
+      return true;
+    }
+
     const isInWhiteList = this.checkWhiteList(ctx);
     if (isInWhiteList) {
+      await this.jumpActivate(ctx);
       return true;
     }
 
@@ -33,8 +41,23 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     return await this.activate(ctx);
   }
 
-  async activate(ctx: ExecutionContext): Promise<boolean> {
-    return super.canActivate(ctx) as Promise<boolean>;
+  async activate(ctx: ExecutionContext) {
+    return super.canActivate(ctx) as boolean;
+  }
+
+  /**
+   * 跳过验证
+   * @param ctx
+   * @returns
+   */
+  async jumpActivate(ctx: ExecutionContext) {
+    try {
+      await this.activate(ctx);
+    } catch (e) {
+      // 未登录不做任何处理，直接返回 true
+    }
+
+    return true;
   }
 
   /**
