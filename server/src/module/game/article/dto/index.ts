@@ -9,22 +9,24 @@ export class CreateGameAricleDto {
   @ApiProperty({
     required: true,
   })
-  @IsNumber()
-  parentId: number;
+  @IsString()
+  @Length(0, 50)
+  title: string;
 
   @ApiProperty({
     required: true,
   })
   @IsString()
-  @Length(0, 30)
-  deptName: string;
+  @Length(0, 50)
+  desc: string;
 
   @ApiProperty({
     required: true,
   })
-  @IsNumber()
-  @Min(0)
-  orderNum: number;
+  @IsOptional()
+  @IsString()
+  @IsEnum(StatusEnum)
+  status?: string;
 }
 
 export class UpdateGameAricleDto extends CreateGameAricleDto {

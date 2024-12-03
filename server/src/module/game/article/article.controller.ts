@@ -4,13 +4,13 @@ import { GameArticleService } from './article.service';
 import { CreateGameAricleDto, UpdateGameAricleDto, ListGameAricleDto } from './dto/index';
 import { RequirePermission } from 'src/common/decorators/require-premission.decorator';
 
-@ApiTags('游戏管理')
+@ApiTags('游戏文章')
 @Controller('game/article')
 export class GameArticleController {
   constructor(private readonly GameArticleService: GameArticleService) {}
 
   @ApiOperation({
-    summary: '游戏管理-创建',
+    summary: '游戏文章-创建',
   })
   @ApiBody({
     type: CreateGameAricleDto,
@@ -24,7 +24,7 @@ export class GameArticleController {
   }
 
   @ApiOperation({
-    summary: '游戏管理-列表',
+    summary: '游戏文章-列表',
   })
   @RequirePermission('system:Game:list')
   @Get('/list')
@@ -33,7 +33,7 @@ export class GameArticleController {
   }
 
   @ApiOperation({
-    summary: '游戏管理-详情',
+    summary: '游戏文章-详情',
   })
   @RequirePermission('system:Game:query')
   @Get(':id')
@@ -42,7 +42,7 @@ export class GameArticleController {
   }
 
   @ApiOperation({
-    summary: '游戏管理-更新',
+    summary: '游戏文章-更新',
   })
   @ApiBody({
     type: UpdateGameAricleDto,
@@ -55,7 +55,7 @@ export class GameArticleController {
   }
 
   @ApiOperation({
-    summary: '游戏管理-删除',
+    summary: '游戏文章-删除',
   })
   @RequirePermission('system:Game:remove')
   @Delete(':id')

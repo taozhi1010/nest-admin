@@ -13,21 +13,7 @@ export class GameArticleService {
   ) {}
 
   async create(createGameAricleDto: CreateGameAricleDto) {
-    // if (createGameAricleDto.parentId) {
-    //   const parent = await this.gameAricleEntityRep.findOne({
-    //     where: {
-    //       deptId: createGameAricleDto.parentId,
-    //       delFlag: '0',
-    //     },
-    //     select: ['ancestors'],
-    //   });
-    //   if (!parent) {
-    //     return ResultData.fail(500, '父级部门不存在');
-    //   }
-    //   const ancestors = parent.ancestors ? `${parent.ancestors},${createGameAricleDto.parentId}` : `${createGameAricleDto.parentId}`;
-    //   Object.assign(createGameAricleDto, { ancestors: ancestors });
-    // }
-    // await this.gameAricleEntityRep.save(createGameAricleDto);
+    await this.gameAricleEntityRep.save(createGameAricleDto);
     return ResultData.ok();
   }
 

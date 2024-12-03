@@ -11,4 +11,4 @@ import { gameAricleEntity } from './entities/article.entity';
   providers: [GameArticleService],
   exports: [GameArticleService],
 })
-export class DeptModule {}
+export class GameArticleModule {}

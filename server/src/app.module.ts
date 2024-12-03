@@ -9,6 +9,7 @@ import { JwtAuthGuard } from 'src/common/guards/auth.guard';
 import { PermissionGuard } from 'src/common/guards/permission.guard';
 import { RolesGuard } from './common/guards/roles.guard';
 
+import { GameArticleModule } from './module/game/article/article.module';
 import { AuthModule } from './module/system/auth/auth.module';
 import { UserModule } from './module/system/user/user.module';
 import { ToolModule } from './module/system/tool/tool.module';
@@ -84,6 +85,7 @@ import { UploadModule } from './module/upload/upload.module';
       true,
     ),
     HttpModule,
+    GameArticleModule,
     AuthModule,
     UserModule,
     ToolModule,

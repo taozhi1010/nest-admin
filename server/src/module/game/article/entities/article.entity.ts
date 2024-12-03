@@ -15,11 +15,11 @@ export class gameAricleEntity extends BaseEntity {
   public title: string;
 
   @ApiProperty({ type: String, description: '文章简介' })
-  @Column({ type: 'varchar', name: 'desc', length: 50, default: '', comment: '文章简介' })
-  public desc: string;
+  @Column({ type: 'varchar', name: 'remark', length: 50, default: '', comment: '文章简介' })
+  public remark: string;
 
   @ApiProperty({ type: String, description: '文章专栏' })
-  @Column({ type: 'varchar', name: 'subject_id', length: 50, default: '', comment: '文章专栏' })
+  @Column({ type: 'int', name: 'subject_id', default: null, comment: '文章专栏' })
   public subjectId: string;
 
   @ApiProperty({ type: String, description: '文章内容' })
@@ -34,30 +34,26 @@ export class gameAricleEntity extends BaseEntity {
   @Column({ type: 'varchar', name: 'author', length: 200, default: '', comment: '作者' })
   public author: string;
 
-  //0正常 1停用
-  @ApiProperty({ type: String, description: '状态' })
-  @Column({ type: 'char', name: 'status', default: '0', length: 1, comment: '文章状态' })
-  public status: string;
-
   @ApiProperty({ type: Date, description: '发布时间' })
   @Column({ type: 'datetime', name: 'publish_time', default: null, comment: '发布时间' })
   public publishTime: Date;
 
-  @ApiProperty({ type: String, description: '创建者' })
-  @Column({ type: 'varchar', name: 'create_by', length: 64, default: '', comment: '创建者' })
-  public createBy: string;
+  @ApiProperty({ type: Number, description: '点赞数' })
+  @Column({ type: 'int', name: 'like_num', default: null, comment: '点赞数' })
+  public likeNum: number;
 
-  @ApiProperty({ type: Date, description: '创建时间' })
-  @CreateDateColumn({ type: 'datetime', name: 'create_time', default: null, comment: '创建时间' })
-  public createTime: Date;
+  @ApiProperty({ type: Number, description: '阅读量' })
+  @Column({ type: 'int', name: 'read_num', default: null, comment: '阅读量' })
+  public readNum: number;
 
-  @ApiProperty({ type: String, description: '更新者' })
-  @Column({ type: 'varchar', name: 'update_by', length: 64, default: '', comment: '更新者' })
-  public updateBy: string;
+  @ApiProperty({ type: Number, description: '阅读量' })
+  @Column({ type: 'int', name: 'comment_num', default: null, comment: '阅读量' })
+  public commentNum: number;
 
-  @ApiProperty({ type: Date, description: '更新时间' })
-  @UpdateDateColumn({ type: 'datetime', name: 'update_time', default: null, comment: '更新时间' })
-  public updateTime: Date;
+  // 0草稿 1发布 2下架 3审核中
+  @ApiProperty({ type: Number, description: '状态' })
+  @Column({ type: 'char', name: 'status', default: '0', length: 1, comment: '文章状态 0草稿 1发布 2下架 3审核中' })
+  public status: string;
 
   //0代表存在 1代表删除
   @ApiProperty({ type: String, description: '删除标志' })
