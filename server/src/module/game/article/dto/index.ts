@@ -34,7 +34,7 @@ export class UpdateGameAricleDto extends CreateGameAricleDto {
     required: false,
   })
   @IsNumber()
-  deptId: number;
+  articleId: number;
 }
 
 export class ListGameAricleDto {
@@ -43,7 +43,7 @@ export class ListGameAricleDto {
   })
   @IsOptional()
   @IsString()
-  deptName?: string;
+  title?: string;
 
   @ApiProperty({
     required: false,

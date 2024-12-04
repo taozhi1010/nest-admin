@@ -8,7 +8,7 @@ import { ApiProperty } from '@nestjs/swagger';
 export class gameAricleEntity extends BaseEntity {
   @ApiProperty({ type: Number, description: '文章ID' })
   @PrimaryGeneratedColumn({ type: 'int', name: 'article_id', comment: '文章ID' })
-  public noticeId: number;
+  public articleId: number;
 
   @ApiProperty({ type: String, description: '文章标题' })
   @Column({ type: 'varchar', name: 'title', length: 50, default: '', comment: '文章标题' })

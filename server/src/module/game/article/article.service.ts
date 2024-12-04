@@ -21,8 +21,8 @@ export class GameArticleService {
     const entity = this.gameAricleEntityRep.createQueryBuilder('entity');
     entity.where('entity.delFlag = :delFlag', { delFlag: '0' });
 
-    if (query.deptName) {
-      entity.andWhere(`entity.deptName LIKE "%${query.deptName}%"`);
+    if (query.title) {
+      entity.andWhere(`entity.title LIKE "%${query.title}%"`);
     }
     if (query.status) {
       entity.andWhere('entity.status = :status', { status: query.status });
@@ -31,14 +31,14 @@ export class GameArticleService {
     return ResultData.ok(res);
   }
 
-  async findOne(deptId: number) {
-    // const data = await this.gameAricleEntityRep.findOne({
-    //   where: {
-    //     deptId: deptId,
-    //     delFlag: '0',
-    //   },
-    // });
-    const data = [];
+  async findOne(articleId: number) {
+    const data = await this.gameAricleEntityRep.findOne({
+      where: {
+        articleId: articleId,
+        delFlag: '0',
+      },
+    });
+
     return ResultData.ok(data);
   }
 
@@ -53,32 +53,23 @@ export class GameArticleService {
   }
 
   async update(updateGameAricleDto: UpdateGameAricleDto) {
-    // if (updateGameAricleDto.parentId && updateGameAricleDto.parentId !== 0) {
-    //   const parent = await this.gameAricleEntityRep.findOne({
-    //     where: {
-    //       deptId: updateGameAricleDto.parentId,
-    //       delFlag: '0',
-    //     },
-    //     select: ['ancestors'],
-    //   });
-    //   if (!parent) {
-    //     return ResultData.fail(500, '父级部门不存在');
-    //   }
-    //   const ancestors = parent.ancestors ? `${parent.ancestors},${updateGameAricleDto.parentId}` : `${updateGameAricleDto.parentId}`;
-    //   Object.assign(updateGameAricleDto, { ancestors: ancestors });
-    // }
-    // await this.gameAricleEntityRep.update({ deptId: updateGameAricleDto.deptId }, updateGameAricleDto);
+    await this.gameAricleEntityRep.update(
+      {
+        articleId: updateGameAricleDto.articleId,
+      },
+      updateGameAricleDto,
+    );
     return ResultData.ok();
   }
 
-  async remove(deptId: number) {
-    // const data = await this.gameAricleEntityRep.update(
-    //   { deptId: deptId },
-    //   {
-    //     delFlag: '1',
-    //   },
-    // );
-    const data = [];
-    return ResultData.ok(data);
+  async remove(articleId: number) {
+    const data = await this.gameAricleEntityRep.update(
+      { articleId: articleId },
+      {
+        delFlag: '1',
+      },
+    );
+    console.log(data);
+    return ResultData.ok(true);
   }
 }

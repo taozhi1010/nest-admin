@@ -1,6 +1,132 @@
 {
   "openapi": "3.0.0",
   "paths": {
+    "/game/article": {
+      "post": {
+        "operationId": "GameArticleController_create",
+        "summary": "游戏文章-创建",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateGameAricleDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "游戏文章"
+        ]
+      },
+      "put": {
+        "operationId": "GameArticleController_update",
+        "summary": "游戏文章-更新",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateGameAricleDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "游戏文章"
+        ]
+      }
+    },
+    "/game/article/list": {
+      "get": {
+        "operationId": "GameArticleController_findAll",
+        "summary": "游戏文章-列表",
+        "parameters": [
+          {
+            "name": "title",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "游戏文章"
+        ]
+      }
+    },
+    "/game/article/{id}": {
+      "get": {
+        "operationId": "GameArticleController_findOne",
+        "summary": "游戏文章-详情",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "游戏文章"
+        ]
+      },
+      "delete": {
+        "operationId": "GameArticleController_remove",
+        "summary": "游戏文章-删除",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "游戏文章"
+        ]
+      }
+    },
     "/system/user/profile": {
       "get": {
         "operationId": "UserController_profile",
@@ -3264,6 +3390,47 @@
       }
     },
     "schemas": {
+      "CreateGameAricleDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "desc": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "title",
+          "desc",
+          "status"
+        ]
+      },
+      "UpdateGameAricleDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "desc": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "articleId": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "title",
+          "desc",
+          "status"
+        ]
+      },
       "UpdateProfileDto": {
         "type": "object",
         "properties": {
