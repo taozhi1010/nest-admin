@@ -177,10 +177,10 @@ ip地址:8080/swagger-ui/
 
 ### pm2相关操作
 
-```
-pm2 start app.js # 运行pm2启动项目
-pm2 restart app.js # 运行pm2启动项目
-pm2 stop app.js # 运行pm2启动项目
+```bash
+pm2 start main.js # 运行pm2启动项目
+pm2 restart main.js # 运行pm2启动项目
+pm2 stop main.js # 运行pm2启动项目
 pm2 list # 显示所有进程状态
 pm2 monit # 监视所有进程
 pm2 logs # 显示所有进程日志
