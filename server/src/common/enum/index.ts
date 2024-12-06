@@ -50,7 +50,12 @@ export enum CacheEnum {
   /**
    * 用户
    */
-  USER_KEY = 'user:',
+  SYS_USER_KEY = 'user:',
+
+  /**
+   * 部门
+   */
+  SYS_DEPT_KEY = 'sys_dept:',
 }
 
 /**

@@ -23,8 +23,7 @@ export class DictController {
   @HttpCode(200)
   @Post('/type')
   createType(@Body() createDictTypeDto: CreateDictTypeDto, @Request() req) {
-    createDictTypeDto['createTime'] = GetNowDate();
-    createDictTypeDto['createBy'] = req.user.user.userName;
+    createDictTypeDto['createBy'] = req.user.userName;
     return this.dictService.createType(createDictTypeDto);
   }
 
@@ -91,8 +90,7 @@ export class DictController {
   @HttpCode(200)
   @Post('/data')
   createDictData(@Body() createDictDataDto: CreateDictDataDto, @Request() req) {
-    createDictDataDto['createTime'] = GetNowDate();
-    createDictDataDto['createBy'] = req.user.user.userName;
+    createDictDataDto['createBy'] = req.user.userName;
     return this.dictService.createDictData(createDictDataDto);
   }
 
