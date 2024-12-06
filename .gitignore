@@ -3,3 +3,4 @@
 /docs/.vitepress/cache
 /docs/node_modules
 /docs/dist
+admin-vue3/.env.development
