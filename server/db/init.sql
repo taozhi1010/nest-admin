@@ -707,6 +707,7 @@ create table gen_table_column (
   query_type        varchar(200)    default 'EQ'               comment '查询方式（等于、不等于、大于、小于、范围）',
   html_type         varchar(200)                               comment '显示类型（文本框、文本域、下拉框、复选框、单选框、日期控件）',
   dict_type         varchar(200)    default ''                 comment '字典类型',
+  column_default    varchar(200)    default null               comment '默认值',
   sort              int                                        comment '排序',
   status            char(1)         default '0'                comment '状态（0正常 1关闭）',
   del_flag          char(1)         default '0'                comment '删除标志（0代表存在 1代表删除）',
