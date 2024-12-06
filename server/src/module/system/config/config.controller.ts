@@ -20,8 +20,7 @@ export class ConfigController {
   @RequirePermission('system:config:add')
   @Post()
   create(@Body() createConfigDto: CreateConfigDto, @Request() req) {
-    createConfigDto['createTime'] = GetNowDate();
-    createConfigDto['createBy'] = req.user.user.userName;
+    createConfigDto['createBy'] = req.user.userName;
     return this.configService.create(createConfigDto);
   }
 

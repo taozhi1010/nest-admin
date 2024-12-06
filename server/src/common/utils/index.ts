@@ -70,7 +70,7 @@ export function FormatDate(date: Date, format = 'YYYY-MM-DD HH:mm:ss') {
  * @param obj
  * @returns
  */
-export function DeepClone(obj: object) {
+export function DeepClone<T>(obj: T) {
   return Lodash.cloneDeep(obj);
 }
 
@@ -116,8 +116,8 @@ export function Paginate(data: { list: Array<any>; pageSize: number; pageNum: nu
         arr.push(Boolean(item.ipaddr.includes(filterParam.ipaddr)));
       }
 
-      if (filterParam.userName && item.username) {
-        arr.push(Boolean(item.username.includes(filterParam.userName)));
+      if (filterParam.userName && item.userName) {
+        arr.push(Boolean(item.userName.includes(filterParam.userName)));
       }
       return !Boolean(arr.includes(false));
     });
@@ -150,4 +150,36 @@ export async function DataScopeFilter<T>(entity: any, dataScope: DataScopeEnum):
       break;
   }
   return entity;
+}
+
+/**
+ * Simple object check.
+ * @param item
+ * @returns {boolean}
+ */
+export function isObject(item) {
+  return item && typeof item === 'object' && !Array.isArray(item);
+}
+
+/**
+ * Deep merge two objects.
+ * @param target
+ * @param ...sources
+ */
+export function mergeDeep(target, ...sources) {
+  if (!sources.length) return target;
+  const source = sources.shift();
+
+  if (isObject(target) && isObject(source)) {
+    for (const key in source) {
+      if (isObject(source[key])) {
+        if (!target[key]) Object.assign(target, { [key]: {} });
+        mergeDeep(target[key], source[key]);
+      } else {
+        Object.assign(target, { [key]: source[key] });
+      }
+    }
+  }
+
+  return mergeDeep(target, ...sources);
 }

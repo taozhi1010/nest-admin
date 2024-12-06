@@ -1,5 +1,6 @@
-import { IsDateString, IsNumberString, IsObject, IsOptional, IsString, IsEnum } from 'class-validator';
+import { IsDateString, IsNumber, IsNumberString, IsObject, IsOptional, IsString, IsEnum } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 import { SortRuleEnum } from 'src/common/enum/index';
 
 /**
@@ -17,13 +18,21 @@ export class DateParamsDTO {
  * 分页DTO
  */
 export class PagingDto {
-  @ApiProperty({ required: true, description: '当前分页' })
+  @ApiProperty({ required: true, description: '当前分页', default: 1 })
+  @IsOptional()
+  @Transform(({ value }) => {
+    return value?.toString?.() || '1';
+  })
   @IsNumberString()
-  pageNum: number;
+  pageNum?: number;
 
-  @ApiProperty({ required: true, description: '每页数量' })
+  @ApiProperty({ required: true, description: '每页数量', default: 10 })
+  @IsOptional()
+  @Transform(({ value }) => {
+    return value?.toString?.() || '10';
+  })
   @IsNumberString()
-  pageSize: number;
+  pageSize?: number;
 
   /**
    * 时间区间

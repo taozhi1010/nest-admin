@@ -41,6 +41,6 @@ export class UserEntity extends BaseEntity {
   @Column({ type: 'varchar', name: 'login_ip', length: 128, default: '', comment: '最后登录IP' })
   public loginIp: string;
 
-  @Column({ type: 'timestamp', name: 'login_date', comment: '最后登录时间' })
+  @Column({ type: 'timestamp', name: 'login_date', nullable: true, comment: '最后登录时间' })
   public loginDate: Date;
 }
