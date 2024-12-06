@@ -39,6 +39,24 @@
 
     <el-card v-loading="loading" class="dict-table" shadow="never">
       <div v-if="dictGroup.selectNode.dictId === 0">
+        <el-form :model="dictGroup.query" ref="queryDictGroupRef" :inline="true">
+          <el-form-item label="字典名称" prop="menuName">
+            <el-input v-model="dictGroup.query.dictName" placeholder="请输入字典名称" clearable style="width: 200px" @keyup.enter="dictGroup.handleRefresh" />
+          </el-form-item>
+          <el-form-item label="字典类型" prop="status">
+            <el-input v-model="dictGroup.query.dictType" placeholder="请输入字典类型" clearable style="width: 200px" @keyup.enter="dictGroup.handleRefresh" />
+          </el-form-item>
+          <el-form-item label="状态" prop="status">
+            <el-select v-model="dictGroup.query.status" placeholder="请选择字典状态" clearable style="width: 200px">
+              <el-option v-for="dict in sys_normal_disable" :key="dict.value" :label="dict.label" :value="dict.value" />
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" icon="Search" @click="dictGroup.handleRefresh">搜索</el-button>
+            <el-button icon="Refresh" @click="dictGroup.handleReset">重置</el-button>
+          </el-form-item>
+        </el-form>
+
         <el-row :gutter="10" class="mb8">
           <el-col :span="1.5">
             <el-button v-hasPermi="['system:dict:add']" type="primary" plain icon="Plus" @click="dictGroup.handleAdd">新增</el-button>
@@ -57,7 +75,7 @@
 
         <el-table ref="dictGroupTableRef" :data="dictGroup.data[0].children" max-height="70vh" @selection-change="dictGroup.handleSelectionChange">
           <el-table-column type="selection" width="55" align="center" />
-          <el-table-column label="字典编号" align="center" width="100" prop="dictId" />
+          <el-table-column label="字典编号" align="center" prop="dictId" width="100" />
           <el-table-column label="字典名称" align="center" prop="dictName" :show-overflow-tooltip="true" />
           <el-table-column label="字典类型" align="center" prop="dictType" :show-overflow-tooltip="true" />
           <el-table-column label="状态" align="center" prop="status">
@@ -81,12 +99,19 @@
       </div>
 
       <div v-else>
+        <el-descriptions :column="4" border>
+          <el-descriptions-item label="字典项">{{ dictGroup.selectNode.dictName }}</el-descriptions-item>
+          <el-descriptions-item label="字典编号">{{ dictGroup.selectNode.dictType }}</el-descriptions-item>
+          <el-descriptions-item label="状态">
+            <dict-tag :options="sys_normal_disable" :value="dictGroup.selectNode.status" />
+          </el-descriptions-item>
+        </el-descriptions>
+
+        <el-divider content-position="left">数据字典详情</el-divider>
+
         <el-row :gutter="10" class="mb8">
           <el-col :span="1.5">
             <el-button v-hasPermi="['system:dict:add']" type="primary" plain icon="Plus" @click="dictData.handleAdd">新增</el-button>
-          </el-col>
-          <el-col :span="1.5">
-            <el-button v-hasPermi="['system:dict:edit']" type="success" plain icon="Edit" :disabled="single" @click="dictData.handleUpdate">修改</el-button>
           </el-col>
           <el-col :span="1.5">
             <el-button v-hasPermi="['system:dict:remove']" type="danger" plain icon="Delete" :disabled="multiple" @click="dictData.handleDelete">删除</el-button>
@@ -94,7 +119,6 @@
           <el-col :span="1.5">
             <el-button v-hasPermi="['system:dict:export']" type="warning" plain icon="Download" @click="dictData.handleExport">导出</el-button>
           </el-col>
-
           <right-toolbar :show-search="false" @queryTable="dictData.handleRefresh" />
         </el-row>
 
@@ -163,8 +187,8 @@ const dictGroup = reactive({
     pageNum: 1,
     pageSize: 9999,
     dictName: '',
-    dictType: undefined,
-    status: undefined
+    dictType: '',
+    status: ''
   },
   data: [
     {
@@ -219,6 +243,10 @@ const dictGroup = reactive({
     )
   },
   handleRefresh: () => {
+    dictGroup.request()
+  },
+  handleReset: () => {
+    proxy.resetForm('queryDictGroupRef')
     dictGroup.request()
   },
   handleNodeSelect: (data) => {
@@ -307,7 +335,7 @@ const dictData = reactive({
 })
 
 watch(dictGroup.query, (val) => {
-  dictGroupEditRef.value.filter(val.dictName)
+  dictGroupRef.value.filter(val.dictName)
 })
 
 dictGroup.request()
