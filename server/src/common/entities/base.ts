@@ -1,11 +1,11 @@
 import { Column, CreateDateColumn, Entity, UpdateDateColumn } from 'typeorm';
 
 import { ApiProperty } from '@nestjs/swagger';
-
-// 删除
+//基础实体信息
 @Entity()
 export abstract class DeleteStatusEntity {
   //0代表存在 1代表删除
+  @ApiProperty({ type: String, description: '删除标志' })
   @Column({ type: 'char', name: 'del_flag', default: '0', length: 1, comment: '删除标志' })
   public delFlag: string;
 }
