@@ -90,8 +90,8 @@ export class DictService {
     return ResultData.ok();
   }
 
-  async deleteDictData(dictId: number) {
-    await this.sysDictDataEntityRep.update({ dictCode: dictId }, { delFlag: '1' });
+  async deleteDictData(dictIds: number[]) {
+    await this.sysDictDataEntityRep.update({ dictCode: In(dictIds) }, { delFlag: '1' });
     return ResultData.ok();
   }
 
@@ -114,8 +114,10 @@ export class DictService {
     if (query.status) {
       entity.andWhere('entity.status = :status', { status: query.status });
     }
+    if (query.pageSize && query.pageNum) {
+      entity.skip(query.pageSize * (query.pageNum - 1)).take(query.pageSize);
+    }
 
-    entity.skip(query.pageSize * (query.pageNum - 1)).take(query.pageSize);
     const [list, total] = await entity.getManyAndCount();
 
     return ResultData.ok({
@@ -186,6 +188,27 @@ export class DictService {
         { title: '字典名称', dataIndex: 'dictName' },
         { title: '字典类型', dataIndex: 'dictType' },
         { title: '状态', dataIndex: 'status' },
+      ],
+    };
+    ExportTable(options, res);
+  }
+
+  /**
+   * 导出字典数据为xlsx文件
+   * @param res
+   */
+  async exportData(res: Response, body: ListDictType) {
+    delete body.pageNum;
+    delete body.pageSize;
+    const list = await this.findAllData(body);
+    const options = {
+      sheetName: '字典数据',
+      data: list.data.list,
+      header: [
+        { title: '字典主键', dataIndex: 'dictCode' },
+        { title: '字典名称', dataIndex: 'dictLabel' },
+        { title: '字典类型', dataIndex: 'dictValue' },
+        { title: '备注', dataIndex: 'remark' },
       ],
     };
     ExportTable(options, res);
