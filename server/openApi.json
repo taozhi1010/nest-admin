@@ -1,132 +1,6 @@
 {
   "openapi": "3.0.0",
   "paths": {
-    "/game/article": {
-      "post": {
-        "operationId": "GameArticleController_create",
-        "summary": "游戏文章-创建",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateGameAricleDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "游戏文章"
-        ]
-      },
-      "put": {
-        "operationId": "GameArticleController_update",
-        "summary": "游戏文章-更新",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateGameAricleDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "游戏文章"
-        ]
-      }
-    },
-    "/game/article/list": {
-      "get": {
-        "operationId": "GameArticleController_findAll",
-        "summary": "游戏文章-列表",
-        "parameters": [
-          {
-            "name": "title",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "status",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "游戏文章"
-        ]
-      }
-    },
-    "/game/article/{id}": {
-      "get": {
-        "operationId": "GameArticleController_findOne",
-        "summary": "游戏文章-详情",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "游戏文章"
-        ]
-      },
-      "delete": {
-        "operationId": "GameArticleController_remove",
-        "summary": "游戏文章-删除",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "游戏文章"
-        ]
-      }
-    },
     "/system/user/profile": {
       "get": {
         "operationId": "UserController_profile",
@@ -137,9 +11,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "用户管理"
-        ],
+        "tags": ["用户管理"],
         "security": [
           {
             "bearer": []
@@ -165,9 +37,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "用户管理"
-        ],
+        "tags": ["用户管理"],
         "security": [
           {
             "bearer": []
@@ -185,9 +55,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "用户管理"
-        ],
+        "tags": ["用户管理"],
         "security": [
           {
             "bearer": []
@@ -215,9 +83,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "用户管理"
-        ],
+        "tags": ["用户管理"],
         "security": [
           {
             "bearer": []
@@ -245,9 +111,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "用户管理"
-        ],
+        "tags": ["用户管理"],
         "security": [
           {
             "bearer": []
@@ -263,9 +127,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "用户管理"
-        ],
+        "tags": ["用户管理"],
         "security": [
           {
             "bearer": []
@@ -291,9 +153,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "用户管理"
-        ],
+        "tags": ["用户管理"],
         "security": [
           {
             "bearer": []
@@ -308,16 +168,18 @@
         "parameters": [
           {
             "name": "pageNum",
-            "required": false,
+            "required": true,
             "in": "query",
+            "description": "当前分页",
             "schema": {
               "type": "number"
             }
           },
           {
             "name": "pageSize",
-            "required": false,
+            "required": true,
             "in": "query",
+            "description": "每页数量",
             "schema": {
               "type": "number"
             }
@@ -326,6 +188,7 @@
             "name": "orderByColumn",
             "required": false,
             "in": "query",
+            "description": "排序字段",
             "schema": {
               "type": "string"
             }
@@ -334,6 +197,7 @@
             "name": "isAsc",
             "required": false,
             "in": "query",
+            "description": "排序规则",
             "schema": {
               "type": "string"
             }
@@ -392,9 +256,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "用户管理"
-        ],
+        "tags": ["用户管理"],
         "security": [
           {
             "bearer": []
@@ -412,9 +274,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "用户管理"
-        ],
+        "tags": ["用户管理"],
         "security": [
           {
             "bearer": []
@@ -441,9 +301,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "用户管理"
-        ],
+        "tags": ["用户管理"],
         "security": [
           {
             "bearer": []
@@ -461,9 +319,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "用户管理"
-        ],
+        "tags": ["用户管理"],
         "security": [
           {
             "bearer": []
@@ -490,9 +346,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "用户管理"
-        ],
+        "tags": ["用户管理"],
         "security": [
           {
             "bearer": []
@@ -520,9 +374,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "用户管理"
-        ],
+        "tags": ["用户管理"],
         "security": [
           {
             "bearer": []
@@ -550,9 +402,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "用户管理"
-        ],
+        "tags": ["用户管理"],
         "security": [
           {
             "bearer": []
@@ -579,9 +429,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "用户管理"
-        ],
+        "tags": ["用户管理"],
         "security": [
           {
             "bearer": []
@@ -609,9 +457,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "用户管理"
-        ],
+        "tags": ["用户管理"],
         "security": [
           {
             "bearer": []
@@ -626,16 +472,18 @@
         "parameters": [
           {
             "name": "pageNum",
-            "required": false,
+            "required": true,
             "in": "query",
+            "description": "当前分页",
             "schema": {
               "type": "number"
             }
           },
           {
             "name": "pageSize",
-            "required": false,
+            "required": true,
             "in": "query",
+            "description": "每页数量",
             "schema": {
               "type": "number"
             }
@@ -644,6 +492,7 @@
             "name": "orderByColumn",
             "required": false,
             "in": "query",
+            "description": "排序字段",
             "schema": {
               "type": "string"
             }
@@ -652,6 +501,7 @@
             "name": "isAsc",
             "required": false,
             "in": "query",
+            "description": "排序规则",
             "schema": {
               "type": "string"
             }
@@ -662,9 +512,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "系统工具"
-        ]
+        "tags": ["系统工具"]
       }
     },
     "/tool/gen/db/list": {
@@ -674,16 +522,18 @@
         "parameters": [
           {
             "name": "pageNum",
-            "required": false,
+            "required": true,
             "in": "query",
+            "description": "当前分页",
             "schema": {
               "type": "number"
             }
           },
           {
             "name": "pageSize",
-            "required": false,
+            "required": true,
             "in": "query",
+            "description": "每页数量",
             "schema": {
               "type": "number"
             }
@@ -692,6 +542,7 @@
             "name": "orderByColumn",
             "required": false,
             "in": "query",
+            "description": "排序字段",
             "schema": {
               "type": "string"
             }
@@ -700,6 +551,7 @@
             "name": "isAsc",
             "required": false,
             "in": "query",
+            "description": "排序规则",
             "schema": {
               "type": "string"
             }
@@ -710,9 +562,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "系统工具"
-        ]
+        "tags": ["系统工具"]
       }
     },
     "/tool/gen/importTable": {
@@ -735,9 +585,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "系统工具"
-        ]
+        "tags": ["系统工具"]
       }
     },
     "/tool/gen/synchDb/{tableName}": {
@@ -759,9 +607,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "系统工具"
-        ]
+        "tags": ["系统工具"]
       }
     },
     "/tool/gen/{id}": {
@@ -783,9 +629,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "系统工具"
-        ]
+        "tags": ["系统工具"]
       },
       "delete": {
         "operationId": "ToolController_remove",
@@ -805,9 +649,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "系统工具"
-        ]
+        "tags": ["系统工具"]
       }
     },
     "/tool/gen": {
@@ -830,9 +672,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "系统工具"
-        ]
+        "tags": ["系统工具"]
       }
     },
     "/tool/gen/batchGenCode/zip": {
@@ -854,9 +694,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "系统工具"
-        ]
+        "tags": ["系统工具"]
       }
     },
     "/tool/gen/preview/{id}": {
@@ -878,9 +716,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "系统工具"
-        ]
+        "tags": ["系统工具"]
       }
     },
     "/system/dept": {
@@ -903,9 +739,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "部门管理"
-        ]
+        "tags": ["部门管理"]
       },
       "put": {
         "operationId": "DeptController_update",
@@ -926,9 +760,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "部门管理"
-        ]
+        "tags": ["部门管理"]
       }
     },
     "/system/dept/list": {
@@ -958,9 +790,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "部门管理"
-        ]
+        "tags": ["部门管理"]
       }
     },
     "/system/dept/{id}": {
@@ -982,9 +812,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "部门管理"
-        ]
+        "tags": ["部门管理"]
       },
       "delete": {
         "operationId": "DeptController_remove",
@@ -1004,9 +832,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "部门管理"
-        ]
+        "tags": ["部门管理"]
       }
     },
     "/system/dept/list/exclude/{id}": {
@@ -1028,9 +854,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "部门管理"
-        ]
+        "tags": ["部门管理"]
       }
     },
     "/system/dict/type": {
@@ -1053,9 +877,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "字典管理"
-        ]
+        "tags": ["字典管理"]
       },
       "put": {
         "operationId": "DictController_updateType",
@@ -1076,9 +898,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "字典管理"
-        ]
+        "tags": ["字典管理"]
       }
     },
     "/system/dict/type/refreshCache": {
@@ -1091,9 +911,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "字典管理"
-        ]
+        "tags": ["字典管理"]
       }
     },
     "/system/dict/type/{id}": {
@@ -1115,9 +933,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "字典管理"
-        ]
+        "tags": ["字典管理"]
       },
       "get": {
         "operationId": "DictController_findOneType",
@@ -1137,9 +953,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "字典管理"
-        ]
+        "tags": ["字典管理"]
       }
     },
     "/system/dict/type/list": {
@@ -1149,16 +963,18 @@
         "parameters": [
           {
             "name": "pageNum",
-            "required": false,
+            "required": true,
             "in": "query",
+            "description": "当前分页",
             "schema": {
               "type": "number"
             }
           },
           {
             "name": "pageSize",
-            "required": false,
+            "required": true,
             "in": "query",
+            "description": "每页数量",
             "schema": {
               "type": "number"
             }
@@ -1167,6 +983,7 @@
             "name": "orderByColumn",
             "required": false,
             "in": "query",
+            "description": "排序字段",
             "schema": {
               "type": "string"
             }
@@ -1175,6 +992,7 @@
             "name": "isAsc",
             "required": false,
             "in": "query",
+            "description": "排序规则",
             "schema": {
               "type": "string"
             }
@@ -1185,9 +1003,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "字典管理"
-        ]
+        "tags": ["字典管理"]
       }
     },
     "/system/dict/type/optionselect": {
@@ -1200,9 +1016,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "字典管理"
-        ]
+        "tags": ["字典管理"]
       }
     },
     "/system/dict/data": {
@@ -1225,9 +1039,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "字典管理"
-        ]
+        "tags": ["字典管理"]
       },
       "put": {
         "operationId": "DictController_updateDictData",
@@ -1248,9 +1060,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "字典管理"
-        ]
+        "tags": ["字典管理"]
       }
     },
     "/system/dict/data/{id}": {
@@ -1272,9 +1082,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "字典管理"
-        ]
+        "tags": ["字典管理"]
       },
       "get": {
         "operationId": "DictController_findOneDictData",
@@ -1294,9 +1102,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "字典管理"
-        ]
+        "tags": ["字典管理"]
       }
     },
     "/system/dict/data/list": {
@@ -1306,16 +1112,18 @@
         "parameters": [
           {
             "name": "pageNum",
-            "required": false,
+            "required": true,
             "in": "query",
+            "description": "当前分页",
             "schema": {
               "type": "number"
             }
           },
           {
             "name": "pageSize",
-            "required": false,
+            "required": true,
             "in": "query",
+            "description": "每页数量",
             "schema": {
               "type": "number"
             }
@@ -1324,6 +1132,7 @@
             "name": "orderByColumn",
             "required": false,
             "in": "query",
+            "description": "排序字段",
             "schema": {
               "type": "string"
             }
@@ -1332,6 +1141,7 @@
             "name": "isAsc",
             "required": false,
             "in": "query",
+            "description": "排序规则",
             "schema": {
               "type": "string"
             }
@@ -1342,9 +1152,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "字典管理"
-        ]
+        "tags": ["字典管理"]
       }
     },
     "/system/dict/data/type/{id}": {
@@ -1366,15 +1174,13 @@
             "description": ""
           }
         },
-        "tags": [
-          "字典管理"
-        ]
+        "tags": ["字典管理"]
       }
     },
     "/system/dict/type/export": {
       "post": {
         "operationId": "DictController_export",
-        "summary": "导出字典组为xlsx文件",
+        "summary": "导出字典数据为xlsx文件",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -1391,34 +1197,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "字典管理"
-        ]
-      }
-    },
-    "/system/dict/data/export": {
-      "post": {
-        "operationId": "DictController_exportData",
-        "summary": "导出字典内容为xlsx文件",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ListDictType"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "字典管理"
-        ]
+        "tags": ["字典管理"]
       }
     },
     "/system/menu": {
@@ -1441,9 +1220,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "菜单管理"
-        ]
+        "tags": ["菜单管理"]
       },
       "put": {
         "operationId": "MenuController_update",
@@ -1464,9 +1241,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "菜单管理"
-        ]
+        "tags": ["菜单管理"]
       }
     },
     "/system/menu/list": {
@@ -1496,9 +1271,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "菜单管理"
-        ]
+        "tags": ["菜单管理"]
       }
     },
     "/system/menu/treeselect": {
@@ -1511,9 +1284,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "菜单管理"
-        ]
+        "tags": ["菜单管理"]
       }
     },
     "/system/menu/roleMenuTreeselect/{menuId}": {
@@ -1535,9 +1306,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "菜单管理"
-        ]
+        "tags": ["菜单管理"]
       }
     },
     "/system/menu/{menuId}": {
@@ -1559,9 +1328,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "菜单管理"
-        ]
+        "tags": ["菜单管理"]
       },
       "delete": {
         "operationId": "MenuController_remove",
@@ -1581,9 +1348,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "菜单管理"
-        ]
+        "tags": ["菜单管理"]
       }
     },
     "/system/role": {
@@ -1606,9 +1371,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "角色管理"
-        ]
+        "tags": ["角色管理"]
       },
       "put": {
         "operationId": "RoleController_update",
@@ -1629,9 +1392,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "角色管理"
-        ]
+        "tags": ["角色管理"]
       }
     },
     "/system/role/list": {
@@ -1641,16 +1402,18 @@
         "parameters": [
           {
             "name": "pageNum",
-            "required": false,
+            "required": true,
             "in": "query",
+            "description": "当前分页",
             "schema": {
               "type": "number"
             }
           },
           {
             "name": "pageSize",
-            "required": false,
+            "required": true,
             "in": "query",
+            "description": "每页数量",
             "schema": {
               "type": "number"
             }
@@ -1659,6 +1422,7 @@
             "name": "orderByColumn",
             "required": false,
             "in": "query",
+            "description": "排序字段",
             "schema": {
               "type": "string"
             }
@@ -1667,6 +1431,7 @@
             "name": "isAsc",
             "required": false,
             "in": "query",
+            "description": "排序规则",
             "schema": {
               "type": "string"
             }
@@ -1687,9 +1452,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "角色管理"
-        ]
+        "tags": ["角色管理"]
       }
     },
     "/system/role/deptTree/{id}": {
@@ -1711,9 +1474,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "角色管理"
-        ]
+        "tags": ["角色管理"]
       }
     },
     "/system/role/{id}": {
@@ -1735,9 +1496,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "角色管理"
-        ]
+        "tags": ["角色管理"]
       },
       "delete": {
         "operationId": "RoleController_remove",
@@ -1756,9 +1515,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "角色管理"
-        ]
+        "tags": ["角色管理"]
       }
     },
     "/system/role/dataScope": {
@@ -1781,9 +1538,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "角色管理"
-        ]
+        "tags": ["角色管理"]
       }
     },
     "/system/role/changeStatus": {
@@ -1806,9 +1561,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "角色管理"
-        ]
+        "tags": ["角色管理"]
       }
     },
     "/system/role/authUser/allocatedList": {
@@ -1818,16 +1571,18 @@
         "parameters": [
           {
             "name": "pageNum",
-            "required": false,
+            "required": true,
             "in": "query",
+            "description": "当前分页",
             "schema": {
               "type": "number"
             }
           },
           {
             "name": "pageSize",
-            "required": false,
+            "required": true,
             "in": "query",
+            "description": "每页数量",
             "schema": {
               "type": "number"
             }
@@ -1836,6 +1591,7 @@
             "name": "orderByColumn",
             "required": false,
             "in": "query",
+            "description": "排序字段",
             "schema": {
               "type": "string"
             }
@@ -1844,6 +1600,7 @@
             "name": "isAsc",
             "required": false,
             "in": "query",
+            "description": "排序规则",
             "schema": {
               "type": "string"
             }
@@ -1888,9 +1645,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "角色管理"
-        ]
+        "tags": ["角色管理"]
       }
     },
     "/system/role/authUser/unallocatedList": {
@@ -1900,16 +1655,18 @@
         "parameters": [
           {
             "name": "pageNum",
-            "required": false,
+            "required": true,
             "in": "query",
+            "description": "当前分页",
             "schema": {
               "type": "number"
             }
           },
           {
             "name": "pageSize",
-            "required": false,
+            "required": true,
             "in": "query",
+            "description": "每页数量",
             "schema": {
               "type": "number"
             }
@@ -1918,6 +1675,7 @@
             "name": "orderByColumn",
             "required": false,
             "in": "query",
+            "description": "排序字段",
             "schema": {
               "type": "string"
             }
@@ -1926,6 +1684,7 @@
             "name": "isAsc",
             "required": false,
             "in": "query",
+            "description": "排序规则",
             "schema": {
               "type": "string"
             }
@@ -1970,9 +1729,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "角色管理"
-        ]
+        "tags": ["角色管理"]
       }
     },
     "/system/role/authUser/cancel": {
@@ -1995,9 +1752,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "角色管理"
-        ]
+        "tags": ["角色管理"]
       }
     },
     "/system/role/authUser/cancelAll": {
@@ -2020,9 +1775,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "角色管理"
-        ]
+        "tags": ["角色管理"]
       }
     },
     "/system/role/authUser/selectAll": {
@@ -2045,9 +1798,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "角色管理"
-        ]
+        "tags": ["角色管理"]
       }
     },
     "/system/role/export": {
@@ -2070,9 +1821,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "角色管理"
-        ]
+        "tags": ["角色管理"]
       }
     },
     "/system/post": {
@@ -2095,9 +1844,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "岗位管理"
-        ]
+        "tags": ["岗位管理"]
       },
       "put": {
         "operationId": "PostController_update",
@@ -2118,9 +1865,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "岗位管理"
-        ]
+        "tags": ["岗位管理"]
       }
     },
     "/system/post/list": {
@@ -2130,16 +1875,18 @@
         "parameters": [
           {
             "name": "pageNum",
-            "required": false,
+            "required": true,
             "in": "query",
+            "description": "当前分页",
             "schema": {
               "type": "number"
             }
           },
           {
             "name": "pageSize",
-            "required": false,
+            "required": true,
             "in": "query",
+            "description": "每页数量",
             "schema": {
               "type": "number"
             }
@@ -2148,6 +1895,7 @@
             "name": "orderByColumn",
             "required": false,
             "in": "query",
+            "description": "排序字段",
             "schema": {
               "type": "string"
             }
@@ -2156,6 +1904,7 @@
             "name": "isAsc",
             "required": false,
             "in": "query",
+            "description": "排序规则",
             "schema": {
               "type": "string"
             }
@@ -2176,9 +1925,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "岗位管理"
-        ]
+        "tags": ["岗位管理"]
       }
     },
     "/system/post/{id}": {
@@ -2200,9 +1947,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "岗位管理"
-        ]
+        "tags": ["岗位管理"]
       }
     },
     "/system/post/{ids}": {
@@ -2224,9 +1969,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "岗位管理"
-        ]
+        "tags": ["岗位管理"]
       }
     },
     "/system/post/export": {
@@ -2249,9 +1992,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "岗位管理"
-        ]
+        "tags": ["岗位管理"]
       }
     },
     "/system/config": {
@@ -2274,9 +2015,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "参数设置"
-        ]
+        "tags": ["参数设置"]
       },
       "put": {
         "operationId": "ConfigController_update",
@@ -2297,9 +2036,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "参数设置"
-        ]
+        "tags": ["参数设置"]
       }
     },
     "/system/config/list": {
@@ -2309,16 +2046,18 @@
         "parameters": [
           {
             "name": "pageNum",
-            "required": false,
+            "required": true,
             "in": "query",
+            "description": "当前分页",
             "schema": {
               "type": "number"
             }
           },
           {
             "name": "pageSize",
-            "required": false,
+            "required": true,
             "in": "query",
+            "description": "每页数量",
             "schema": {
               "type": "number"
             }
@@ -2327,6 +2066,7 @@
             "name": "orderByColumn",
             "required": false,
             "in": "query",
+            "description": "排序字段",
             "schema": {
               "type": "string"
             }
@@ -2335,6 +2075,7 @@
             "name": "isAsc",
             "required": false,
             "in": "query",
+            "description": "排序规则",
             "schema": {
               "type": "string"
             }
@@ -2355,9 +2096,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "参数设置"
-        ]
+        "tags": ["参数设置"]
       }
     },
     "/system/config/{id}": {
@@ -2379,9 +2118,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "参数设置"
-        ]
+        "tags": ["参数设置"]
       },
       "delete": {
         "operationId": "ConfigController_remove",
@@ -2401,9 +2138,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "参数设置"
-        ]
+        "tags": ["参数设置"]
       }
     },
     "/system/config/configKey/{id}": {
@@ -2425,9 +2160,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "参数设置"
-        ]
+        "tags": ["参数设置"]
       }
     },
     "/system/config/refreshCache": {
@@ -2440,9 +2173,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "参数设置"
-        ]
+        "tags": ["参数设置"]
       }
     },
     "/system/config/export": {
@@ -2465,9 +2196,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "参数设置"
-        ]
+        "tags": ["参数设置"]
       }
     },
     "/system/notice": {
@@ -2490,9 +2219,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "通知公告"
-        ]
+        "tags": ["通知公告"]
       },
       "put": {
         "operationId": "NoticeController_update",
@@ -2513,9 +2240,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "通知公告"
-        ]
+        "tags": ["通知公告"]
       }
     },
     "/system/notice/list": {
@@ -2525,16 +2250,18 @@
         "parameters": [
           {
             "name": "pageNum",
-            "required": false,
+            "required": true,
             "in": "query",
+            "description": "当前分页",
             "schema": {
               "type": "number"
             }
           },
           {
             "name": "pageSize",
-            "required": false,
+            "required": true,
             "in": "query",
+            "description": "每页数量",
             "schema": {
               "type": "number"
             }
@@ -2543,6 +2270,7 @@
             "name": "orderByColumn",
             "required": false,
             "in": "query",
+            "description": "排序字段",
             "schema": {
               "type": "string"
             }
@@ -2551,6 +2279,7 @@
             "name": "isAsc",
             "required": false,
             "in": "query",
+            "description": "排序规则",
             "schema": {
               "type": "string"
             }
@@ -2571,9 +2300,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "通知公告"
-        ]
+        "tags": ["通知公告"]
       }
     },
     "/system/notice/{id}": {
@@ -2595,9 +2322,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "通知公告"
-        ]
+        "tags": ["通知公告"]
       },
       "delete": {
         "operationId": "NoticeController_remove",
@@ -2617,9 +2342,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "通知公告"
-        ]
+        "tags": ["通知公告"]
       }
     },
     "/login": {
@@ -2642,9 +2365,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "根目录"
-        ]
+        "tags": ["根目录"]
       }
     },
     "/logout": {
@@ -2667,9 +2388,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "根目录"
-        ]
+        "tags": ["根目录"]
       }
     },
     "/register": {
@@ -2692,9 +2411,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "根目录"
-        ]
+        "tags": ["根目录"]
       }
     },
     "/captchaImage": {
@@ -2707,9 +2424,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "根目录"
-        ]
+        "tags": ["根目录"]
       }
     },
     "/getInfo": {
@@ -2722,9 +2437,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "根目录"
-        ]
+        "tags": ["根目录"]
       }
     },
     "/getRouters": {
@@ -2737,9 +2450,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "根目录"
-        ]
+        "tags": ["根目录"]
       }
     },
     "/monitor/cache": {
@@ -2752,9 +2463,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "缓存管理"
-        ]
+        "tags": ["缓存管理"]
       }
     },
     "/monitor/cache/getNames": {
@@ -2767,9 +2476,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "缓存管理"
-        ]
+        "tags": ["缓存管理"]
       }
     },
     "/monitor/cache/getKeys/{id}": {
@@ -2791,9 +2498,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "缓存管理"
-        ]
+        "tags": ["缓存管理"]
       }
     },
     "/monitor/cache/getValue/{cacheName}/{cacheKey}": {
@@ -2806,9 +2511,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "缓存管理"
-        ]
+        "tags": ["缓存管理"]
       }
     },
     "/monitor/cache/clearCacheName/{cacheName}": {
@@ -2830,9 +2533,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "缓存管理"
-        ]
+        "tags": ["缓存管理"]
       }
     },
     "/monitor/cache/clearCacheKey/{cacheKey}": {
@@ -2854,9 +2555,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "缓存管理"
-        ]
+        "tags": ["缓存管理"]
       }
     },
     "/monitor/cache/clearCacheAll": {
@@ -2869,9 +2568,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "缓存管理"
-        ]
+        "tags": ["缓存管理"]
       }
     },
     "/monitor/logininfor/list": {
@@ -2881,16 +2578,18 @@
         "parameters": [
           {
             "name": "pageNum",
-            "required": false,
+            "required": true,
             "in": "query",
+            "description": "当前分页",
             "schema": {
               "type": "number"
             }
           },
           {
             "name": "pageSize",
-            "required": false,
+            "required": true,
             "in": "query",
+            "description": "每页数量",
             "schema": {
               "type": "number"
             }
@@ -2899,6 +2598,7 @@
             "name": "orderByColumn",
             "required": false,
             "in": "query",
+            "description": "排序字段",
             "schema": {
               "type": "string"
             }
@@ -2907,6 +2607,7 @@
             "name": "isAsc",
             "required": false,
             "in": "query",
+            "description": "排序规则",
             "schema": {
               "type": "string"
             }
@@ -2951,9 +2652,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "登录日志"
-        ]
+        "tags": ["登录日志"]
       }
     },
     "/monitor/logininfor/clean": {
@@ -2966,9 +2665,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "登录日志"
-        ]
+        "tags": ["登录日志"]
       }
     },
     "/monitor/logininfor/{id}": {
@@ -2990,9 +2687,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "登录日志"
-        ]
+        "tags": ["登录日志"]
       }
     },
     "/monitor/logininfor/export": {
@@ -3015,9 +2710,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "登录日志"
-        ]
+        "tags": ["登录日志"]
       }
     },
     "/monitor/operlog": {
@@ -3136,9 +2829,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "系统监控-在线用户"
-        ]
+        "tags": ["系统监控-在线用户"]
       }
     },
     "/monitor/online/{token}": {
@@ -3160,9 +2851,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "系统监控-在线用户"
-        ]
+        "tags": ["系统监控-在线用户"]
       }
     },
     "/monitor/server": {
@@ -3172,55 +2861,10 @@
         "parameters": [],
         "responses": {
           "200": {
-            "description": "返回成功",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "example": {
-                    "code": 200,
-                    "msg": "ok",
-                    "data": {
-                      "cpu": {
-                        "cpuNum": 8,
-                        "total": 1062538890,
-                        "sys": "6.88",
-                        "used": "12.76",
-                        "wait": 0,
-                        "free": "80.36"
-                      },
-                      "mem": {
-                        "total": "16.00",
-                        "used": "15.94",
-                        "free": "0.06",
-                        "usage": "99.64"
-                      },
-                      "sys": {
-                        "computerName": "MacBook-Pro-4.local",
-                        "computerIp": "127.0.0.1",
-                        "userDir": "/Users/taozhi/Desktop/admin/nest-admin/",
-                        "osName": "darwin",
-                        "osArch": "x64"
-                      },
-                      "sysFiles": [
-                        {
-                          "dirName": "/",
-                          "typeName": "/dev/disk1s1s1",
-                          "total": "0.91GB",
-                          "used": "0.04GB",
-                          "free": "0.05GB",
-                          "usage": "4.68"
-                        }
-                      ]
-                    }
-                  }
-                }
-              }
-            }
+            "description": ""
           }
         },
-        "tags": [
-          "系统监控-服务监控"
-        ]
+        "tags": ["系统监控-服务监控"]
       }
     },
     "/common/upload": {
@@ -3243,9 +2887,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "通用-文件上传"
-        ]
+        "tags": ["通用-文件上传"]
       }
     },
     "/common/upload/chunk/uploadId": {
@@ -3268,9 +2910,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "通用-文件上传"
-        ]
+        "tags": ["通用-文件上传"]
       }
     },
     "/common/upload/chunk": {
@@ -3293,9 +2933,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "通用-文件上传"
-        ]
+        "tags": ["通用-文件上传"]
       }
     },
     "/common/upload/chunk/merge": {
@@ -3318,9 +2956,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "通用-文件上传"
-        ]
+        "tags": ["通用-文件上传"]
       }
     },
     "/common/upload/chunk/result": {
@@ -3342,9 +2978,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "通用-文件上传"
-        ]
+        "tags": ["通用-文件上传"]
       }
     },
     "/common/upload/cos/authorization": {
@@ -3367,9 +3001,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "通用-文件上传"
-        ]
+        "tags": ["通用-文件上传"]
       }
     }
   },
@@ -3383,54 +3015,13 @@
   "servers": [],
   "components": {
     "securitySchemes": {
-      "bearer": {
+      "token": {
         "scheme": "bearer",
         "bearerFormat": "JWT",
         "type": "http"
       }
     },
     "schemas": {
-      "CreateGameAricleDto": {
-        "type": "object",
-        "properties": {
-          "title": {
-            "type": "string"
-          },
-          "desc": {
-            "type": "string"
-          },
-          "status": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "title",
-          "desc",
-          "status"
-        ]
-      },
-      "UpdateGameAricleDto": {
-        "type": "object",
-        "properties": {
-          "title": {
-            "type": "string"
-          },
-          "desc": {
-            "type": "string"
-          },
-          "status": {
-            "type": "string"
-          },
-          "articleId": {
-            "type": "number"
-          }
-        },
-        "required": [
-          "title",
-          "desc",
-          "status"
-        ]
-      },
       "UpdateProfileDto": {
         "type": "object",
         "properties": {
@@ -3450,12 +3041,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "nickName",
-          "email",
-          "phonenumber",
-          "sex"
-        ]
+        "required": ["nickName", "email", "phonenumber", "sex"]
       },
       "UpdatePwdDto": {
         "type": "object",
@@ -3467,10 +3053,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "oldPassword",
-          "newPassword"
-        ]
+        "required": ["oldPassword", "newPassword"]
       },
       "CreateUserDto": {
         "type": "object",
@@ -3518,12 +3101,7 @@
             "type": "number"
           }
         },
-        "required": [
-          "nickName",
-          "userName",
-          "password",
-          "postSort"
-        ]
+        "required": ["nickName", "userName", "password", "postSort"]
       },
       "ChangeStatusDto": {
         "type": "object",
@@ -3535,10 +3113,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "roleId",
-          "status"
-        ]
+        "required": ["roleId", "status"]
       },
       "UpdateUserDto": {
         "type": "object",
@@ -3589,9 +3164,7 @@
             "type": "number"
           }
         },
-        "required": [
-          "userId"
-        ]
+        "required": ["userId"]
       },
       "ResetPwdDto": {
         "type": "object",
@@ -3603,10 +3176,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "userId",
-          "password"
-        ]
+        "required": ["userId", "password"]
       },
       "DateParamsDTO": {
         "type": "object",
@@ -3616,19 +3186,28 @@
         "type": "object",
         "properties": {
           "pageNum": {
-            "type": "number"
+            "type": "number",
+            "description": "当前分页"
           },
           "pageSize": {
-            "type": "number"
+            "type": "number",
+            "description": "每页数量"
           },
           "params": {
-            "$ref": "#/components/schemas/DateParamsDTO"
+            "description": "时间范围",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DateParamsDTO"
+              }
+            ]
           },
           "orderByColumn": {
-            "type": "string"
+            "type": "string",
+            "description": "排序字段"
           },
           "isAsc": {
-            "type": "string"
+            "type": "string",
+            "description": "排序规则"
           },
           "deptId": {
             "type": "string"
@@ -3648,7 +3227,8 @@
           "status": {
             "type": "string"
           }
-        }
+        },
+        "required": ["pageNum", "pageSize"]
       },
       "TableName": {
         "type": "object",
@@ -3657,9 +3237,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "tableNames"
-        ]
+        "required": ["tableNames"]
       },
       "GenTableUpdate": {
         "type": "object",
@@ -3668,9 +3246,7 @@
             "type": "number"
           }
         },
-        "required": [
-          "tableId"
-        ]
+        "required": ["tableId"]
       },
       "CreateDeptDto": {
         "type": "object",
@@ -3697,11 +3273,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "parentId",
-          "deptName",
-          "orderNum"
-        ]
+        "required": ["parentId", "deptName", "orderNum"]
       },
       "UpdateDeptDto": {
         "type": "object",
@@ -3731,11 +3303,7 @@
             "type": "number"
           }
         },
-        "required": [
-          "parentId",
-          "deptName",
-          "orderNum"
-        ]
+        "required": ["parentId", "deptName", "orderNum"]
       },
       "CreateDictTypeDto": {
         "type": "object",
@@ -3753,11 +3321,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "dictName",
-          "dictType",
-          "remark"
-        ]
+        "required": ["dictName", "dictType", "remark"]
       },
       "UpdateDictTypeDto": {
         "type": "object",
@@ -3775,11 +3339,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "dictName",
-          "dictType",
-          "remark"
-        ]
+        "required": ["dictName", "dictType", "remark"]
       },
       "CreateDictDataDto": {
         "type": "object",
@@ -3793,21 +3353,31 @@
         "type": "object",
         "properties": {
           "pageNum": {
-            "type": "number"
+            "type": "number",
+            "description": "当前分页"
           },
           "pageSize": {
-            "type": "number"
+            "type": "number",
+            "description": "每页数量"
           },
           "params": {
-            "$ref": "#/components/schemas/DateParamsDTO"
+            "description": "时间范围",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DateParamsDTO"
+              }
+            ]
           },
           "orderByColumn": {
-            "type": "string"
+            "type": "string",
+            "description": "排序字段"
           },
           "isAsc": {
-            "type": "string"
+            "type": "string",
+            "description": "排序规则"
           }
-        }
+        },
+        "required": ["pageNum", "pageSize"]
       },
       "CreateMenuDto": {
         "type": "object",
@@ -3852,11 +3422,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "menuName",
-          "parentId",
-          "isFrame"
-        ]
+        "required": ["menuName", "parentId", "isFrame"]
       },
       "UpdateMenuDto": {
         "type": "object",
@@ -3904,12 +3470,7 @@
             "type": "number"
           }
         },
-        "required": [
-          "menuName",
-          "parentId",
-          "isFrame",
-          "menuId"
-        ]
+        "required": ["menuName", "parentId", "isFrame", "menuId"]
       },
       "CreateRoleDto": {
         "type": "object",
@@ -3933,31 +3494,37 @@
             "type": "string"
           }
         },
-        "required": [
-          "roleName",
-          "roleKey",
-          "roleSort"
-        ]
+        "required": ["roleName", "roleKey", "roleSort"]
       },
       "ListRoleDto": {
         "type": "object",
         "properties": {
           "pageNum": {
-            "type": "number"
+            "type": "number",
+            "description": "当前分页"
           },
           "pageSize": {
-            "type": "number"
+            "type": "number",
+            "description": "每页数量"
           },
           "params": {
-            "$ref": "#/components/schemas/DateParamsDTO"
+            "description": "时间范围",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DateParamsDTO"
+              }
+            ]
           },
           "orderByColumn": {
-            "type": "string"
+            "type": "string",
+            "description": "排序字段"
           },
           "isAsc": {
-            "type": "string"
+            "type": "string",
+            "description": "排序规则"
           }
-        }
+        },
+        "required": ["pageNum", "pageSize"]
       },
       "UpdateRoleDto": {
         "type": "object",
@@ -3984,30 +3551,34 @@
             "type": "number"
           }
         },
-        "required": [
-          "roleName",
-          "roleKey",
-          "roleSort",
-          "roleId"
-        ]
+        "required": ["roleName", "roleKey", "roleSort", "roleId"]
       },
       "AllocatedListDto": {
         "type": "object",
         "properties": {
           "pageNum": {
-            "type": "number"
+            "type": "number",
+            "description": "当前分页"
           },
           "pageSize": {
-            "type": "number"
+            "type": "number",
+            "description": "每页数量"
           },
           "params": {
-            "$ref": "#/components/schemas/DateParamsDTO"
+            "description": "时间范围",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DateParamsDTO"
+              }
+            ]
           },
           "orderByColumn": {
-            "type": "string"
+            "type": "string",
+            "description": "排序字段"
           },
           "isAsc": {
-            "type": "string"
+            "type": "string",
+            "description": "排序规则"
           },
           "userName": {
             "type": "string"
@@ -4018,7 +3589,8 @@
           "roleId": {
             "type": "string"
           }
-        }
+        },
+        "required": ["pageNum", "pageSize"]
       },
       "AuthUserCancelDto": {
         "type": "object",
@@ -4030,10 +3602,7 @@
             "type": "number"
           }
         },
-        "required": [
-          "roleId",
-          "userId"
-        ]
+        "required": ["roleId", "userId"]
       },
       "AuthUserCancelAllDto": {
         "type": "object",
@@ -4045,10 +3614,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "roleId",
-          "userIds"
-        ]
+        "required": ["roleId", "userIds"]
       },
       "AuthUserSelectAllDto": {
         "type": "object",
@@ -4060,10 +3626,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "roleId",
-          "userIds"
-        ]
+        "required": ["roleId", "userIds"]
       },
       "CreatePostDto": {
         "type": "object",
@@ -4075,29 +3638,37 @@
             "type": "number"
           }
         },
-        "required": [
-          "postSort"
-        ]
+        "required": ["postSort"]
       },
       "ListPostDto": {
         "type": "object",
         "properties": {
           "pageNum": {
-            "type": "number"
+            "type": "number",
+            "description": "当前分页"
           },
           "pageSize": {
-            "type": "number"
+            "type": "number",
+            "description": "每页数量"
           },
           "params": {
-            "$ref": "#/components/schemas/DateParamsDTO"
+            "description": "时间范围",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DateParamsDTO"
+              }
+            ]
           },
           "orderByColumn": {
-            "type": "string"
+            "type": "string",
+            "description": "排序字段"
           },
           "isAsc": {
-            "type": "string"
+            "type": "string",
+            "description": "排序规则"
           }
-        }
+        },
+        "required": ["pageNum", "pageSize"]
       },
       "UpdatePostDto": {
         "type": "object",
@@ -4112,10 +3683,7 @@
             "type": "number"
           }
         },
-        "required": [
-          "postSort",
-          "postId"
-        ]
+        "required": ["postSort", "postId"]
       },
       "CreateConfigDto": {
         "type": "object",
@@ -4127,29 +3695,37 @@
             "type": "string"
           }
         },
-        "required": [
-          "remark"
-        ]
+        "required": ["remark"]
       },
       "ListConfigDto": {
         "type": "object",
         "properties": {
           "pageNum": {
-            "type": "number"
+            "type": "number",
+            "description": "当前分页"
           },
           "pageSize": {
-            "type": "number"
+            "type": "number",
+            "description": "每页数量"
           },
           "params": {
-            "$ref": "#/components/schemas/DateParamsDTO"
+            "description": "时间范围",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DateParamsDTO"
+              }
+            ]
           },
           "orderByColumn": {
-            "type": "string"
+            "type": "string",
+            "description": "排序字段"
           },
           "isAsc": {
-            "type": "string"
+            "type": "string",
+            "description": "排序规则"
           }
-        }
+        },
+        "required": ["pageNum", "pageSize"]
       },
       "UpdateConfigDto": {
         "type": "object",
@@ -4161,9 +3737,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "remark"
-        ]
+        "required": ["remark"]
       },
       "CreateNoticeDto": {
         "type": "object",
@@ -4175,29 +3749,37 @@
             "type": "string"
           }
         },
-        "required": [
-          "remark"
-        ]
+        "required": ["remark"]
       },
       "ListNoticeDto": {
         "type": "object",
         "properties": {
           "pageNum": {
-            "type": "number"
+            "type": "number",
+            "description": "当前分页"
           },
           "pageSize": {
-            "type": "number"
+            "type": "number",
+            "description": "每页数量"
           },
           "params": {
-            "$ref": "#/components/schemas/DateParamsDTO"
+            "description": "时间范围",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DateParamsDTO"
+              }
+            ]
           },
           "orderByColumn": {
-            "type": "string"
+            "type": "string",
+            "description": "排序字段"
           },
           "isAsc": {
-            "type": "string"
+            "type": "string",
+            "description": "排序规则"
           }
-        }
+        },
+        "required": ["pageNum", "pageSize"]
       },
       "UpdateNoticeDto": {
         "type": "object",
@@ -4209,9 +3791,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "remark"
-        ]
+        "required": ["remark"]
       },
       "LoginDto": {
         "type": "object",
@@ -4229,11 +3809,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "username",
-          "password",
-          "uuid"
-        ]
+        "required": ["username", "password", "uuid"]
       },
       "RegisterDto": {
         "type": "object",
@@ -4251,29 +3827,34 @@
             "type": "string"
           }
         },
-        "required": [
-          "username",
-          "password",
-          "uuid"
-        ]
+        "required": ["username", "password", "uuid"]
       },
       "ListLoginlogDto": {
         "type": "object",
         "properties": {
           "pageNum": {
-            "type": "number"
+            "type": "number",
+            "description": "当前分页"
           },
           "pageSize": {
-            "type": "number"
+            "type": "number",
+            "description": "每页数量"
           },
           "params": {
-            "$ref": "#/components/schemas/DateParamsDTO"
+            "description": "时间范围",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DateParamsDTO"
+              }
+            ]
           },
           "orderByColumn": {
-            "type": "string"
+            "type": "string",
+            "description": "排序字段"
           },
           "isAsc": {
-            "type": "string"
+            "type": "string",
+            "description": "排序规则"
           },
           "ipaddr": {
             "type": "string"
@@ -4284,7 +3865,8 @@
           "status": {
             "type": "string"
           }
-        }
+        },
+        "required": ["pageNum", "pageSize"]
       },
       "CreateOperlogDto": {
         "type": "object",
@@ -4319,9 +3901,7 @@
             "format": "binary"
           }
         },
-        "required": [
-          "file"
-        ]
+        "required": ["file"]
       },
       "ChunkMergeFileDto": {
         "type": "object",
@@ -4333,10 +3913,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "uploadId",
-          "fileName"
-        ]
+        "required": ["uploadId", "fileName"]
       }
     }
   }

@@ -79,7 +79,6 @@ export class ToolService {
       const tableInfo = await this.genTableEntityRep.save(tableData);
 
       const tableColumn: any = await this.getTableColumnInfo(tableName);
-
       for (const column of tableColumn) {
         this.initTableColumn(column, tableInfo);
         column.sort = Number(column.sort);
@@ -171,6 +170,7 @@ export class ToolService {
       (CASE WHEN column_key = 'PRI' THEN '1' ELSE '0' END) AS isPk,
       ordinal_position AS sort, 
       column_comment AS columnComment, 
+      column_default AS columnDefault,
       (CASE WHEN extra = 'auto_increment' THEN '1' ELSE '0' END) AS isIncrement, 
       SUBSTRING_INDEX(column_type, '(', 1) AS columnType
       FROM information_schema.columns WHERE table_schema = (SELECT DATABASE())  AND table_name = '${tableName}' ORDER BY ordinal_position`,
@@ -375,6 +375,8 @@ export class ToolService {
       column.htmlType = GenConstants.HTML_INPUT;
       column.javaType = GenConstants.TYPE_NUMBER;
     }
+
+    column.isRequired = GenConstants.NOT_REQUIRE;
 
     // 插入字段
     if (!arraysContains(GenConstants.COLUMNNAME_NOT_INSERT, columnName)) {

@@ -354,6 +354,7 @@ export class RedisService {
    * @returns
    */
   async reset() {
-    return this.client.reset();
+    const keys = await this.client.keys('*');
+    return this.client.del(keys);
   }
 }

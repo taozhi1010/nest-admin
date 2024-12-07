@@ -8,7 +8,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository ,Not ,In,Like} from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { ResultData } from 'src/common/utils/result';
-import { Create${Lodash.upperFirst(BusinessName)}Dto, Update${Lodash.upperFirst(BusinessName)}Dto,List${Lodash.upperFirst(BusinessName)}Dto } from './dto/${businessName}.dto';
+import { Create${Lodash.upperFirst(BusinessName)}Dto, Update${Lodash.upperFirst(BusinessName)}Dto, Query${Lodash.upperFirst(BusinessName)}Dto } from './dto/${businessName}.dto';
 import { ${Lodash.upperFirst(BusinessName)}Entity } from './entities/${businessName}.entity';
 
 @Injectable()
@@ -22,11 +22,15 @@ constructor(
         return ResultData.ok(res);
     }
 
-    async findAll(query :List${Lodash.upperFirst(BusinessName)}Dto ) {
+    async findAll(query :Query${Lodash.upperFirst(BusinessName)}Dto ) {
         const entity = this.${businessName}EntityRep.createQueryBuilder('entity');
         entity.where({ delFlag: '0'});
-        ${getListQueryStr(options)}
+        ${getListQueryStr(options)}  
         entity.select([${getListFiledSelectStr(options)}])
+        if (query.orderByColumn && query.isAsc) {
+          const key = query.isAsc === 'ascending' ? 'ASC' : 'DESC';
+          entity.orderBy(\`entity.\${query.orderByColumn}\`, key);
+        }
         entity.skip(query.pageSize * (query.pageNum - 1)).take(query.pageSize);
         const [list, total] = await entity.getManyAndCount();
         
@@ -48,17 +52,17 @@ constructor(
 
     async update(update${Lodash.upperFirst(BusinessName)}Dto: Update${Lodash.upperFirst(BusinessName)}Dto) {
         const res = await this.${businessName}EntityRep.update({  ${primaryKey}: update${Lodash.upperFirst(BusinessName)}Dto.${primaryKey} }, update${Lodash.upperFirst(BusinessName)}Dto);
-        return ResultData.ok(res);
+        return ResultData.ok({value:res.affected >= 1});
     }
 
     async remove(id: number) {
-        const data = await this.${businessName}EntityRep.update(
+        const res = await this.${businessName}EntityRep.update(
             { ${primaryKey}: id },
             {
                 delFlag: '1',
             },
         );
-        return ResultData.ok(data);
+        return ResultData.ok({value:res.affected >= 1});
     }
 }`;
 };
@@ -73,7 +77,7 @@ const getListFiledSelectStr = (options) => {
   return columns
     .filter((column) => column.isList == '1')
     .map((column) => {
-      return `"${column.javaField}"`;
+      return `"entity.${column.javaField}"`;
     })
     .join(',');
 };
@@ -90,21 +94,37 @@ const getListQueryStr = (options) => {
     .map((column) => {
       switch (column.queryType) {
         case GenConstants.QUERY_EQ:
-          return `entity.andWhere("entity.${column.javaField} = :${column.javaField}", {${column.javaField}: query.${column.javaField}});`;
+          return `if(query.${column.javaField}){
+          entity.andWhere("entity.${column.javaField} = :${column.javaField}", {${column.javaField}: query.${column.javaField}});
+        }`;
         case GenConstants.QUERY_NE:
-          return `entity.andWhere("entity.${column.javaField} != :${column.javaField}", {${column.javaField}: query.${column.javaField}});`;
+          return `if(query.${column.javaField}){
+          entity.andWhere("entity.${column.javaField} != :${column.javaField}", {${column.javaField}: query.${column.javaField}});
+        }`;
         case GenConstants.QUERY_GT:
-          return `entity.andWhere("entity.${column.javaField} > :${column.javaField}", {${column.javaField}: query.${column.javaField}});`;
+          return `if(query.${column.javaField}){
+          entity.andWhere("entity.${column.javaField} > :${column.javaField}", {${column.javaField}: query.${column.javaField}});
+        }`;
         case GenConstants.QUERY_GTE:
-          return `entity.andWhere("entity.${column.javaField} >= :${column.javaField}", {${column.javaField}: query.${column.javaField}});`;
+          return `if(query.${column.javaField}){
+          entity.andWhere("entity.${column.javaField} >= :${column.javaField}", {${column.javaField}: query.${column.javaField}});
+        }`;
         case GenConstants.QUERY_LT:
-          return `entity.andWhere("entity.${column.javaField} < :${column.javaField}", {${column.javaField}: query.${column.javaField}});`;
+          return `if(query.${column.javaField}){
+          entity.andWhere("entity.${column.javaField} < :${column.javaField}", {${column.javaField}: query.${column.javaField}});
+        }`;
         case GenConstants.QUERY_LTE:
-          return `entity.andWhere("entity.${column.javaField} <= :${column.javaField}", {${column.javaField}: query.${column.javaField}});`;
+          return `if(query.${column.javaField}){
+          entity.andWhere("entity.${column.javaField} <= :${column.javaField}", {${column.javaField}: query.${column.javaField}});
+        }`;
         case GenConstants.QUERY_LIKE:
-          return `entity.andWhere("entity.${column.javaField} LIKE :${column.javaField}", {${column.javaField}: \`%\${query.${column.javaField}}%\`});`;
+          return `if(query.${column.javaField}){
+          entity.andWhere("entity.${column.javaField} LIKE :${column.javaField}", {${column.javaField}: \`%\${query.${column.javaField}}%\`});
+        }`;
         case GenConstants.QUERY_BETWEEN:
-          return `entity.andWhere("entity.${column.javaField} BETWEEN :start AND :end", { start: query.params.beginTime, end: query.params.endTime });`;
+          return `if(query.${column.javaField}){
+          entity.andWhere("entity.${column.javaField} BETWEEN :start AND :end", { start: query.params.beginTime, end: query.params.endTime });
+        }`;
         default:
           return ``;
       }
