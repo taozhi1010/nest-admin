@@ -26,7 +26,7 @@ export class GameArticleController {
   @ApiOperation({
     summary: '游戏文章-列表',
   })
-  @RequirePermission('system:Game:list')
+  // @RequirePermission('system:Game:list')
   @Get('/list')
   findAll(@Query() query: ListGameAricleDto) {
     return this.GameArticleService.findAll(query);
