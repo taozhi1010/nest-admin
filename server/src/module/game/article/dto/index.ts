@@ -1,5 +1,6 @@
 import { IsString, IsJSON, IsEnum, IsPhoneNumber, Min, Length, IsOptional, IsBoolean, IsNumber, IsEmail } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { PagingDto } from 'src/common/dto/index';
 
 export enum StatusEnum {
   STATIC = '0',
@@ -37,7 +38,7 @@ export class UpdateGameAricleDto extends CreateGameAricleDto {
   articleId: number;
 }
 
-export class ListGameAricleDto {
+export class ListGameAricleDto extends PagingDto {
   @ApiProperty({
     required: false,
   })
