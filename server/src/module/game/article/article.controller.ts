@@ -36,7 +36,7 @@ export class GameArticleController {
     summary: '游戏文章-详情',
   })
   @RequirePermission('system:Game:query')
-  @Get(':id')
+  @Get('/detail')
   findOne(@Param('id') id: string) {
     return this.GameArticleService.findOne(+id);
   }
