@@ -27,8 +27,22 @@ export class GameArticleService {
     if (query.status) {
       entity.andWhere('entity.status = :status', { status: query.status });
     }
-    const res = await entity.getMany();
-    return ResultData.ok(res);
+
+    if (query.orderByColumn && query.isAsc) {
+      const key = query.isAsc === 'ascending' ? 'ASC' : 'DESC';
+      entity.orderBy(`entity.${query.orderByColumn}`, key);
+    }
+
+    if (query.pageSize && query.pageNum) {
+      entity.skip(query.pageSize * (query.pageNum - 1)).take(query.pageSize);
+    }
+
+    const [list, total] = await entity.getManyAndCount();
+
+    return ResultData.ok({
+      list,
+      total,
+    });
   }
 
   async findOne(articleId: number) {
