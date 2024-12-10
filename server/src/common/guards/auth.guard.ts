@@ -28,6 +28,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     }
 
     const isInWhiteList = this.checkWhiteList(ctx);
+    console.log('isInWhiteList', isInWhiteList);
     if (isInWhiteList) {
       await this.jumpActivate(ctx);
       return true;
@@ -72,7 +73,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
       // 请求方法类型相同
       if (!route.method || req.method.toUpperCase() === route.method.toUpperCase()) {
         // 对比 url
-        return !!pathToRegexp(route.path).exec(req.url);
+        return !!pathToRegexp(route.path).exec(req.route.path);
       }
       return false;
     });
