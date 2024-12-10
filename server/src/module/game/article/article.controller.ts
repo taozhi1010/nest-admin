@@ -27,6 +27,15 @@ export class GameArticleController {
     summary: '游戏文章-列表',
   })
   // @RequirePermission('system:Game:list')
+  @Get('/guest/list')
+  findGuestAll(@Query() query: ListGameAricleDto) {
+    return this.GameArticleService.findAll(query);
+  }
+
+  @ApiOperation({
+    summary: '游戏文章-列表',
+  })
+  // @RequirePermission('system:Game:list')
   @Get('/list')
   findAll(@Query() query: ListGameAricleDto) {
     return this.GameArticleService.findAll(query);
