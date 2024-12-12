@@ -1,29 +1,44 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
-import { Task, TASK_METADATA, TaskMetadata } from 'src/common/decorators/task.decorator';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { ModuleRef } from '@nestjs/core';
+import { Task, TaskRegistry } from 'src/common/decorators/task.decorator';
 
 @Injectable()
-export class TaskService {
+export class TaskService implements OnModuleInit {
   private readonly logger = new Logger(TaskService.name);
   // eslint-disable-next-line @typescript-eslint/ban-types
   private readonly taskMap = new Map<string, Function>();
+  private serviceInstances = new Map<string, any>();
 
-  constructor(private reflector: Reflector) {
+  constructor(private moduleRef: ModuleRef) {}
+
+  onModuleInit() {
     this.initializeTasks();
   }
 
   /**
    * 初始化任务映射
    */
-  private initializeTasks() {
-    const prototype = Object.getPrototypeOf(this);
-    const methodNames = Object.getOwnPropertyNames(prototype).filter((name) => name !== 'constructor' && typeof prototype[name] === 'function');
+  private async initializeTasks() {
+    const tasks = TaskRegistry.getInstance().getTasks();
 
-    for (const methodName of methodNames) {
-      const metadata: TaskMetadata = this.reflector.get(TASK_METADATA, prototype[methodName]);
-      if (metadata) {
-        this.taskMap.set(metadata.name, prototype[methodName].bind(this));
+    // 打印所有模块
+
+    for (const { classOrigin, methodName, metadata } of tasks) {
+      try {
+        // 获取或创建服务实例
+        let serviceInstance = this.serviceInstances.get(classOrigin.name);
+        if (!serviceInstance) {
+          // 动态获取服务实例
+          serviceInstance = await this.moduleRef.get(classOrigin);
+          this.serviceInstances.set(classOrigin.name, serviceInstance);
+        }
+
+        // 绑定方法到实例
+        const method = serviceInstance[methodName].bind(serviceInstance);
+        this.taskMap.set(metadata.name, method);
         this.logger.log(`注册任务: ${metadata.name}`);
+      } catch (error) {
+        this.logger.error(`注册任务失败 ${metadata.name}: ${error.message}`);
       }
     }
   }
