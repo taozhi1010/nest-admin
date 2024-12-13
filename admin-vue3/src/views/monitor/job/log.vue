@@ -204,8 +204,8 @@ const { queryParams, form, rules } = toRefs(data);
 function getList() {
   loading.value = true;
   listJobLog(proxy.addDateRange(queryParams.value, dateRange.value)).then(response => {
-    jobLogList.value = response.rows;
-    total.value = response.total;
+    jobLogList.value = response.data.list;
+    total.value = response.data.total;
     loading.value = false;
   });
 }
