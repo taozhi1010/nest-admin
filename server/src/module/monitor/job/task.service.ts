@@ -80,7 +80,6 @@ export class TaskService implements OnModuleInit {
       if (!taskFn) {
         throw new Error(`任务 ${methodName} 不存在`);
       }
-
       // 执行任务
       await taskFn(...params);
       return true;
@@ -139,7 +138,7 @@ export class TaskService implements OnModuleInit {
   }
 
   @Task({
-    name: 'noParams',
+    name: 'task.noParams',
     description: '无参示例任务',
   })
   async ryNoParams() {
@@ -147,15 +146,15 @@ export class TaskService implements OnModuleInit {
   }
 
   @Task({
-    name: 'params',
+    name: 'task.params',
     description: '有参示例任务',
   })
   async ryParams(param1: string, param2: number, param3: boolean) {
-    this.logger.log(`执行有参示例任务，参数：`, { param1, param2, param3 });
+    this.logger.log(`执行有参示例任务，参数：${JSON.stringify({ param1, param2, param3 })}`);
   }
 
   @Task({
-    name: 'clearTemp',
+    name: 'task.clearTemp',
     description: '清理临时文件',
   })
   async clearTemp() {
@@ -164,7 +163,7 @@ export class TaskService implements OnModuleInit {
   }
 
   @Task({
-    name: 'monitorSystem',
+    name: 'task.monitorSystem',
     description: '系统状态监控',
   })
   async monitorSystem() {
@@ -173,7 +172,7 @@ export class TaskService implements OnModuleInit {
   }
 
   @Task({
-    name: 'backupDatabase',
+    name: 'task.backupDatabase',
     description: '数据库备份',
   })
   async backupDatabase() {
