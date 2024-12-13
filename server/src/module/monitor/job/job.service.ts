@@ -4,9 +4,11 @@ import { CronJob } from 'cron';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like } from 'typeorm';
 import { Job } from './entities/job.entity';
-import { CreateJobDto } from './dto/create-job.dto';
+import { CreateJobDto, ListJobDto } from './dto/create-job.dto';
 import { ResultData } from 'src/common/utils/result';
 import { TaskService } from './task.service';
+import { ExportTable } from 'src/common/utils/export';
+import { Response } from 'express';
 
 @Injectable()
 export class JobService {
@@ -175,6 +177,7 @@ export class JobService {
 
   // 添加定时任务到调度器
   private addCronJob(name: string, cronTime: string, invokeTarget: string) {
+    cronTime = cronTime.replace('?', '*'); // 不支持问号，则将cron的问号转成*
     const job = new CronJob(cronTime, async () => {
       this.logger.warn(`定时任务 ${name} 正在执行，调用方法: ${invokeTarget}`);
       await this.taskService.executeTask(invokeTarget, name);
@@ -196,5 +199,35 @@ export class JobService {
     } catch (error) {
       return null;
     }
+  }
+
+  /**
+   * 导出定时任务为xlsx文件
+   * @param res
+   */
+  async export(res: Response, body: ListJobDto) {
+    const list = await this.list(body);
+    const options = {
+      sheetName: '定时任务',
+      data: list.data.list,
+      header: [
+        { title: '任务编号', dataIndex: 'jobId' },
+        { title: '任务名称', dataIndex: 'jobName' },
+        { title: '任务组名', dataIndex: 'jobGroup' },
+        { title: '调用目标字符串', dataIndex: 'invokeTarget' },
+        { title: 'cron执行表达式', dataIndex: 'cronExpression' },
+      ],
+      dictMap: {
+        status: {
+          '0': '成功',
+          '1': '失败',
+        },
+        jobGroup: {
+          SYSTEM: '系统',
+          DEFAULT: '默认',
+        },
+      },
+    };
+    ExportTable(options, res);
   }
 }

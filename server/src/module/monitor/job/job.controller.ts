@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Delete, Param, Put, Query, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Delete, Param, Put, Query, Req, Res } from '@nestjs/common';
+import { Response } from 'express';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { JobService } from './job.service';
-import { CreateJobDto } from './dto/create-job.dto';
+import { CreateJobDto, ListJobDto } from './dto/create-job.dto';
 import { RequirePermission } from 'src/common/decorators/require-premission.decorator';
 
 @ApiTags('定时任务管理')
@@ -34,7 +35,6 @@ export class JobController {
   @ApiOperation({ summary: '修改任务状态' })
   @RequirePermission('monitor:job:changeStatus')
   changeStatus(@Body('jobId') jobId: number, @Body('status') status: string, @Req() req: any) {
-    console.log(jobId, status, req.user?.username);
     return this.jobService.changeStatus(jobId, status, req.user?.username);
   }
 
@@ -52,10 +52,17 @@ export class JobController {
     return this.jobService.remove(jobIds.split(',').map((id) => +id));
   }
 
-  @Put(':jobId/run')
+  @Put('/run')
   @ApiOperation({ summary: '立即执行一次' })
   @RequirePermission('monitor:job:changeStatus')
-  run(@Param('jobId') jobId: number) {
+  run(@Body('jobId') jobId: number) {
     return this.jobService.run(jobId);
+  }
+
+  @ApiOperation({ summary: '导出定时任务为xlsx文件' })
+  @RequirePermission('monitor:job:export')
+  @Post('/export')
+  async export(@Res() res: Response, @Body() body: ListJobDto): Promise<void> {
+    return this.jobService.export(res, body);
   }
 }

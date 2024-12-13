@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsNumber, IsOptional, IsString, Length } from 'class-validator';
+import { PagingDto } from 'src/common/dto/index';
 
 export class CreateJobDto {
   @ApiProperty({ description: '任务名称' })
@@ -43,4 +44,40 @@ export class CreateJobDto {
   @IsString()
   @IsOptional()
   remark?: string;
+}
+
+export class ListJobDto {
+  @ApiProperty({ description: '任务名称' })
+  @IsOptional()
+  @IsString()
+  jobName?: string;
+
+  @ApiProperty({ description: '任务组名' })
+  @IsOptional()
+  @IsString()
+  @Length(1, 64)
+  jobGroup: string;
+
+  @ApiProperty({ description: '状态（0正常 1暂停）' })
+  @IsOptional()
+  @IsString()
+  status?: string;
+}
+
+export class ListJobLogDto extends PagingDto {
+  @ApiProperty({ description: '任务名称' })
+  @IsOptional()
+  @IsString()
+  jobName?: string;
+
+  @ApiProperty({ description: '任务组名' })
+  @IsOptional()
+  @IsString()
+  @Length(1, 64)
+  jobGroup: string;
+
+  @ApiProperty({ description: '状态（0正常 1暂停）' })
+  @IsOptional()
+  @IsString()
+  status?: string;
 }
