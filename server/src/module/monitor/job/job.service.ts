@@ -169,7 +169,7 @@ export class JobService {
     }
 
     // 执行任务
-    await this.taskService.executeTask(job.invokeTarget);
+    await this.taskService.executeTask(job.invokeTarget, job.jobName, job.jobGroup);
     return ResultData.ok();
   }
 
@@ -177,7 +177,7 @@ export class JobService {
   private addCronJob(name: string, cronTime: string, invokeTarget: string) {
     const job = new CronJob(cronTime, async () => {
       this.logger.warn(`定时任务 ${name} 正在执行，调用方法: ${invokeTarget}`);
-      await this.taskService.executeTask(invokeTarget);
+      await this.taskService.executeTask(invokeTarget, name);
     });
 
     this.schedulerRegistry.addCronJob(name, job as any);

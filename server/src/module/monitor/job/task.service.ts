@@ -1,6 +1,7 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 import { Task, TaskRegistry } from 'src/common/decorators/task.decorator';
+import { JobLogService } from './job-log.service';
 
 @Injectable()
 export class TaskService implements OnModuleInit {
@@ -9,7 +10,10 @@ export class TaskService implements OnModuleInit {
   private readonly taskMap = new Map<string, Function>();
   private serviceInstances = new Map<string, any>();
 
-  constructor(private moduleRef: ModuleRef) {}
+  constructor(
+    private moduleRef: ModuleRef,
+    private jobLogService: JobLogService,
+  ) {}
 
   onModuleInit() {
     this.initializeTasks();
@@ -51,10 +55,14 @@ export class TaskService implements OnModuleInit {
   }
 
   /**
-   * 执行任务
-   * @param invokeTarget 调用目标字符串 例如: "noParams" 或 "params(1, 'test', true)"
+   * 执行任务并记录日志
    */
-  async executeTask(invokeTarget: string) {
+  async executeTask(invokeTarget: string, jobName?: string, jobGroup?: string) {
+    const startTime = new Date();
+    let status = '0';
+    let jobMessage = '执行成功';
+    let exceptionInfo = '';
+
     try {
       // 使用正则表达式解析函数名和参数
       const regex = /^([^(]+)(?:\((.*)\))?$/;
@@ -77,8 +85,25 @@ export class TaskService implements OnModuleInit {
       await taskFn(...params);
       return true;
     } catch (error) {
+      status = '1';
+      jobMessage = '执行失败';
+      exceptionInfo = error.message;
       this.logger.error(`执行任务失败: ${error.message}`);
       return false;
+    } finally {
+      // 记录日志
+      const endTime = new Date();
+      const duration = endTime.getTime() - startTime.getTime();
+
+      await this.jobLogService.addJobLog({
+        jobName: jobName || '未知任务',
+        jobGroup: jobGroup || 'DEFAULT',
+        invokeTarget,
+        status,
+        jobMessage: `${jobMessage}，耗时 ${duration}ms`,
+        exceptionInfo,
+        createTime: startTime,
+      });
     }
   }
 
