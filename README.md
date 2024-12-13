@@ -4,7 +4,7 @@ Language : 🇺🇸 | [🇨🇳](./README.zh-CN.md)
   <a href="https://nestjs.com">
     <picture>
       <source media="(prefers-color-scheme: dark)" srcset="https://nestjs.com/logo-small-gradient.76616405.svg">
-      <img src="https://nestjs.com/logo-small-gradient.76616405.svg" height="128">
+      <img src="https://docs.nestjs.com/assets/logo-small-gradient.svg" height="128">
     </picture>
     <h1 align="center">Nest-Admin</h1>
   </a>
