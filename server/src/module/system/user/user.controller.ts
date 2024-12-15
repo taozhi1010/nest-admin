@@ -55,9 +55,9 @@ export class UserController {
     summary: '个人中心-修改密码',
   })
   @RequirePermission('system:user:edit')
+  @Operlog({ businessType: BusinessType.UPDATE })
   @Put('/profile/updatePwd')
   updatePwd(@User() user: UserDto, @Body() updatePwdDto: UpdatePwdDto) {
-    console.log('---->>', updatePwdDto);
     return this.userService.updatePwd(user, updatePwdDto);
   }
 
