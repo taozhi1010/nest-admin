@@ -57,6 +57,7 @@ export class UserController {
   @RequirePermission('system:user:edit')
   @Put('/profile/updatePwd')
   updatePwd(@User() user: UserDto, @Body() updatePwdDto: UpdatePwdDto) {
+    console.log('---->>', updatePwdDto);
     return this.userService.updatePwd(user, updatePwdDto);
   }
 
