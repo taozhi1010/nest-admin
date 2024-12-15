@@ -26,7 +26,9 @@ async function bootstrap() {
   // 设置 api 访问前缀
   const prefix = config.get<string>('app.prefix');
 
-  app.useStaticAssets(join(__dirname, '..', '../upload'), {
+  const rootPath = process.cwd();
+  const baseDirPath = join(rootPath, config.get('app.file.location'));
+  app.useStaticAssets(baseDirPath, {
     prefix: '/profile/',
     maxAge: 86400000 * 365,
   });
