@@ -98,10 +98,10 @@ export class OperlogService {
       operParam: JSON.stringify({ ...body, ...query }),
       jsonResult: JSON.stringify(resultData),
       errorMsg,
-
       businessType,
       operatorType: '1',
       operTime: new Date(),
+      status: errorMsg ? '1' : '0',
     };
 
     await this.sysOperlogEntityRep.save(params);

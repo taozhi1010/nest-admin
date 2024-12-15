@@ -25,18 +25,19 @@ export class OperlogInterceptor implements NestInterceptor {
       .pipe(
         map((resultData) => {
           const costTime = Date.now() - now;
-
-          this.logService.logAction({ costTime, resultData, handlerName, title: summary, businessType: logConfig?.businessType });
-
+          if (resultData.code === 200) {
+            this.logService.logAction({ costTime, resultData, handlerName, title: summary, businessType: logConfig?.businessType });
+          } else {
+            //业务错误
+            this.logService.logAction({ costTime, errorMsg: resultData.msg, handlerName, title: summary, businessType: logConfig?.businessType });
+          }
           return resultData;
         }),
       )
       .pipe(
         catchError((err) => {
           const costTime = Date.now() - now;
-
           this.logService.logAction({ costTime, errorMsg: err.response, handlerName, title: summary, businessType: logConfig?.businessType });
-
           return throwError(() => err);
         }),
       );
