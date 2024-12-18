@@ -41,19 +41,11 @@
       </el-table-column>
       <el-table-column label="发布时间" align="center" prop="publishTime" width="180">
         <template #default="scope">
-          <span>{{ dayjs(scope.row.publishTime).format('YYYY-MM-DD HH:mm:ss') }}</span>
+          <!-- <span>{{ dayjs(scope.row.publishTime).format('YYYY-MM-DD HH:mm:ss') }}</span> -->
         </template>
       </el-table-column>
-      <el-table-column label="创建时间" align="center" prop="createTime" width="180">
-        <template #default="scope">
-          <span>{{ dayjs(scope.row.createTime).format('YYYY-MM-DD HH:mm:ss') }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="修改时间" align="center" prop="updateTime" width="180">
-        <template #default="scope">
-          <span>{{ dayjs(scope.row.updateTime).format('YYYY-MM-DD HH:mm:ss') }}</span>
-        </template>
-      </el-table-column>
+      <el-table-column label="创建时间" align="center" prop="createTime" width="180" />
+      <el-table-column label="修改时间" align="center" prop="updateTime" width="180" />
       <el-table-column label="操作" width="180" align="center" class-name="small-padding fixed-width">
         <template #default="scope">
           <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['game:Article:edit']">修改</el-button>
@@ -94,12 +86,12 @@
 </template>
 
 <script setup name="Article">
-import dayjs from 'dayjs'
 import { listArticle, addArticle, delArticle, getArticle, updateArticle } from '@/api/game/Article'
 
 const { proxy } = getCurrentInstance()
 const { sys_article_status } = proxy.useDict('sys_article_status')
 console.log(sys_article_status, '数据字典')
+console.log(dayjs(new Date()).format('YYYY-MM-DD HH:mm:ss'), '字典')
 
 const ArticleList = ref([])
 const open = ref(false)
@@ -132,9 +124,14 @@ const { queryParams, form, rules } = toRefs(data)
 /** 查询岗位列表 */
 function getList() {
   loading.value = true
-  listArticle(queryParams.value).then((response) => {
-    ArticleList.value = response.data.list
-    total.value = response.data.total
+  listArticle(queryParams.value).then((res) => {
+    ArticleList.value = res.data.list
+    ArticleList.value.forEach((item) => {
+      item.updateTime = dayjs(item.updateTime).format('YYYY-MM-DD HH:mm:ss')
+      item.createTime = dayjs(item.createTime).format('YYYY-MM-DD HH:mm:ss')
+      item.publishTime = dayjs(item.publishTime).format('YYYY-MM-DD HH:mm:ss')
+    })
+    total.value = res.data.total
     loading.value = false
   })
 }
@@ -181,8 +178,8 @@ function handleAdd() {
 function handleUpdate(row) {
   reset()
   const articleId = row.articleId || ids.value
-  getArticle(articleId).then((response) => {
-    form.value = response.data
+  getArticle(articleId).then((res) => {
+    form.value = res.data
     open.value = true
     title.value = '修改岗位'
   })
@@ -192,13 +189,13 @@ function submitForm() {
   proxy.$refs['ArticleRef'].validate((valid) => {
     if (valid) {
       if (form.value.articleId != undefined) {
-        updateArticle(form.value).then((response) => {
+        updateArticle(form.value).then((res) => {
           proxy.$modal.msgSuccess('修改成功')
           open.value = false
           getList()
         })
       } else {
-        addArticle(form.value).then((response) => {
+        addArticle(form.value).then((res) => {
           proxy.$modal.msgSuccess('新增成功')
           open.value = false
           getList()
