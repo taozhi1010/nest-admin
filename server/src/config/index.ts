@@ -15,6 +15,6 @@ export const getEnv = () => {
 
 export default () => {
   const env = getEnv();
-  const url = `./env/dev.yml`;
+  const url = `./env/${env}.yml`;
   return yaml.load(readFileSync(join(__dirname, `${url}`), 'utf8')) as Record<string, any>;
 };
