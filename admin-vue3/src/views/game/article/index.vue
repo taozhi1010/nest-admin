@@ -31,7 +31,7 @@
 
     <el-table v-loading="loading" :data="ArticleList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="文章标题" align="center" prop="title" show-overflow-tooltip />
+      <el-table-column label="文章标题" align="left" prop="title" show-overflow-tooltip />
       <el-table-column label="文章简介" align="center" prop="remark" show-overflow-tooltip />
       <el-table-column label="文章作者" align="center" prop="author" />
       <el-table-column v-if="false" label="状态" align="center" prop="status">
@@ -46,7 +46,7 @@
       </el-table-column>
       <el-table-column label="创建时间" align="center" prop="createTime" width="180" />
       <el-table-column label="修改时间" align="center" prop="updateTime" width="180" />
-      <el-table-column label="操作" width="180" align="center" class-name="small-padding fixed-width">
+      <el-table-column label="操作" width="180" align="center" fixed="right" class-name="small-padding fixed-width">
         <template #default="scope">
           <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['game:Article:edit']">修改</el-button>
           <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['game:Article:remove']">删除</el-button>
@@ -56,24 +56,24 @@
 
     <pagination v-show="total > 0" :total="total" v-model:page="queryParams.pageNum" v-model:limit="queryParams.pageSize" @pagination="getList" />
 
-    <!-- 添加或修改岗位对话框 -->
-    <el-dialog :title="title" v-model="open" width="500px" append-to-body>
+    <!-- 添加或修改文章对话框 -->
+    <el-dialog :title="title" v-model="open" width="700px" append-to-body>
       <el-form ref="ArticleRef" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="文章标题" prop="title">
-          <el-input v-model="form.title" placeholder="请输入岗位名称" />
+          <el-input v-model="form.title" placeholder="请输入文章标题" clearable maxlength="25" show-word-limit />
         </el-form-item>
         <el-form-item label="文章简介" prop="remark">
-          <el-input v-model="form.remark" placeholder="请输入编码名称" />
+          <el-input v-model="form.remark" placeholder="请输入文章简介" type="textarea" :rows="5" maxlength="200" show-word-limit />
         </el-form-item>
         <!-- todo: 文件上传公用组件的封装 -->
         <!-- <el-form-item label="文章封面" prop="remark">
           <el-input v-model="form.remark" placeholder="请输入编码名称" />
         </el-form-item> -->
-        <el-form-item label="文章状态" prop="status">
-          <el-radio-group v-model="form.status">
-            <el-radio v-for="dict in sys_article_status" :key="dict.value" :label="dict.value">{{ dict.label }}</el-radio>
-          </el-radio-group>
-        </el-form-item>
+        <!-- <el-form-item label="文章状态" prop="status">
+          <el-select v-model="form.status" clearable>
+            <el-option v-for="dict in sys_article_status" :value="dict.value">{{ dict.label }}</el-option>
+          </el-select>
+        </el-form-item> -->
       </el-form>
       <template #footer>
         <div class="dialog-footer">
@@ -87,6 +87,7 @@
 
 <script setup name="Article">
 import { listArticle, addArticle, delArticle, getArticle, updateArticle } from '@/api/game/Article'
+import dayjs from 'dayjs'
 
 const { proxy } = getCurrentInstance()
 const { sys_article_status } = proxy.useDict('sys_article_status')
@@ -110,18 +111,19 @@ const data = reactive({
     pageSize: 10,
     ArticleCode: undefined,
     ArticleName: undefined,
-    status: undefined
+    status: undefined,
+    isAsc: 'descending',
+    orderByColumn: 'createTime'
   },
   rules: {
-    ArticleName: [{ required: true, message: '岗位名称不能为空', trigger: 'blur' }],
-    ArticleCode: [{ required: true, message: '岗位编码不能为空', trigger: 'blur' }],
-    ArticleSort: [{ required: true, message: '岗位顺序不能为空', trigger: 'blur' }]
+    title: [{ required: true, message: '文章名称不能为空', trigger: 'blur' }],
+    remark: [{ required: true, message: '文章简介不能为空', trigger: 'blur' }]
   }
 })
 
 const { queryParams, form, rules } = toRefs(data)
 
-/** 查询岗位列表 */
+/** 查询文章列表 */
 function getList() {
   loading.value = true
   listArticle(queryParams.value).then((res) => {
@@ -148,7 +150,8 @@ function reset() {
     ArticleName: undefined,
     ArticleSort: 0,
     status: '0',
-    remark: undefined
+    remark: undefined,
+    pushTime: dayjs().valueOf()
   }
   proxy.resetForm('ArticleRef')
 }
@@ -172,7 +175,7 @@ function handleSelectionChange(selection) {
 function handleAdd() {
   reset()
   open.value = true
-  title.value = '添加岗位'
+  title.value = '添加文章'
 }
 /** 修改按钮操作 */
 function handleUpdate(row) {
@@ -181,11 +184,12 @@ function handleUpdate(row) {
   getArticle(articleId).then((res) => {
     form.value = res.data
     open.value = true
-    title.value = '修改岗位'
+    title.value = '修改文章'
   })
 }
 /** 提交按钮 */
 function submitForm() {
+  console.log(form.value)
   proxy.$refs['ArticleRef'].validate((valid) => {
     if (valid) {
       if (form.value.articleId != undefined) {
@@ -208,7 +212,7 @@ function submitForm() {
 function handleDelete(row) {
   const articleIds = row.articleId || ids.value
   proxy.$modal
-    .confirm('是否确认删除岗位编号为"' + articleIds + '"的数据项？')
+    .confirm('是否确认删除文章编号为"' + row.title + '"的数据项？')
     .then(function () {
       return delArticle(articleIds)
     })
@@ -217,16 +221,6 @@ function handleDelete(row) {
       proxy.$modal.msgSuccess('删除成功')
     })
     .catch(() => {})
-}
-/** 导出按钮操作 */
-function handleExport() {
-  proxy.download(
-    'game/Article/export',
-    {
-      ...queryParams.value
-    },
-    `Article_${new Date().getTime()}.xlsx`
-  )
 }
 
 getList()
