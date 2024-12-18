@@ -12,11 +12,24 @@ import { RedisClientOptions } from '@songkeys/nestjs-redis';
         imports: [ConfigModule],
         inject: [ConfigService],
         useFactory: (config: ConfigService) => {
+          // 动态读取config中的redis
+          let redisConfig = {};
+          if (process.env.NODE_ENV === 'development') {
+            redisConfig = {
+              host: '111.229.29.214',
+              password: 'redis_kjkikp_6379',
+              port: 6379,
+              db: 2,
+              keyPrefix: '',
+            };
+          } else {
+            redisConfig = config.get<RedisClientOptions>('redis');
+          }
           return {
             closeClient: true,
             readyLog: true,
             errorLog: true,
-            config: config.get<RedisClientOptions>('redis'),
+            config: redisConfig,
           };
         },
       },
