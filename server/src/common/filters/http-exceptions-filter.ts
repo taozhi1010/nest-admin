@@ -5,7 +5,7 @@ export class HttpExceptionsFilter implements ExceptionFilter {
   catch(exception: any, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
-    const status = HttpStatus.INTERNAL_SERVER_ERROR;
+    const status = exception.getStatus();
     //exception.getStatus();
     const exceptionResponse = exception.getResponse();
     let message = exceptionResponse.message ?? 'Service Error';

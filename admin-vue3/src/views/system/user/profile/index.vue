@@ -36,7 +36,7 @@
               <li class="list-group-item">
                 <svg-icon icon-class="peoples" />
                 所属角色
-                <div class="pull-right">{{ state.user.roles?.map(x=>x.roleName)?.join('、') }}</div>
+                <div class="pull-right">{{ state.user.roles?.map((x) => x.roleName)?.join('、') }}</div>
               </li>
               <li class="list-group-item">
                 <svg-icon icon-class="date" />
@@ -73,7 +73,7 @@ import userAvatar from './userAvatar'
 import userInfo from './userInfo'
 import resetPwd from './resetPwd'
 import { getUserProfile } from '@/api/system/user'
-import dayjs from 'dayjs';
+import dayjs from 'dayjs'
 
 const activeTab = ref('userinfo')
 const state = reactive({
@@ -92,7 +92,6 @@ function getUser() {
 
 function updateAvatar(url) {
   state.user.avatar = url
-  console.log('---------->>>>>', state.user)
 }
 
 getUser()

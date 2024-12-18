@@ -1,33 +1,17 @@
 {
   "openapi": "3.0.0",
   "paths": {
-    "/system/user/profile": {
-      "get": {
-        "operationId": "UserController_profile",
-        "summary": "个人中心-用户信息",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": ["用户管理"],
-        "security": [
-          {
-            "bearer": []
-          }
-        ]
-      },
-      "put": {
-        "operationId": "UserController_updateProfile",
-        "summary": "个人中心-修改用户信息",
+    "/login": {
+      "post": {
+        "operationId": "MainController_login",
+        "summary": "用户登录",
         "parameters": [],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UpdateProfileDto"
+                "$ref": "#/components/schemas/LoginDto"
               }
             }
           }
@@ -37,113 +21,289 @@
             "description": ""
           }
         },
-        "tags": ["用户管理"],
-        "security": [
-          {
-            "bearer": []
-          }
+        "tags": [
+          "根目录"
         ]
       }
     },
-    "/system/user/profile/avatar": {
+    "/logout": {
       "post": {
-        "operationId": "UserController_avatar",
-        "summary": "个人中心-上传用户头像",
+        "operationId": "MainController_logout",
+        "summary": "退出登录",
         "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "根目录"
+        ]
+      }
+    },
+    "/register": {
+      "post": {
+        "operationId": "MainController_register",
+        "summary": "用户注册",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "根目录"
+        ]
+      }
+    },
+    "/captchaImage": {
+      "get": {
+        "operationId": "MainController_captchaImage",
+        "summary": "获取验证图片",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "根目录"
+        ]
+      }
+    },
+    "/getInfo": {
+      "get": {
+        "operationId": "MainController_getInfo",
+        "summary": "用户信息",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "根目录"
+        ]
+      }
+    },
+    "/getRouters": {
+      "get": {
+        "operationId": "MainController_getRouters",
+        "summary": "路由信息",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "根目录"
+        ]
+      }
+    },
+    "/common/upload": {
+      "post": {
+        "operationId": "UploadController_singleFileUpload",
+        "summary": "文件上传",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FileUploadDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "通用-文件上传"
+        ]
+      }
+    },
+    "/common/upload/chunk/uploadId": {
+      "get": {
+        "operationId": "UploadController_getChunkUploadId",
+        "summary": "获取切片上传任务Id",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "通用-文件上传"
+        ]
+      }
+    },
+    "/common/upload/chunk": {
+      "post": {
+        "operationId": "UploadController_chunkFileUpload",
+        "summary": "文件切片上传",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "通用-文件上传"
+        ]
+      }
+    },
+    "/common/upload/chunk/merge": {
+      "post": {
+        "operationId": "UploadController_chunkMergeFile",
+        "summary": "合并切片",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChunkMergeFileDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "通用-文件上传"
+        ]
+      }
+    },
+    "/common/upload/chunk/result": {
+      "get": {
+        "operationId": "UploadController_getChunkUploadResult",
+        "summary": "获取切片上传结果",
+        "parameters": [
+          {
+            "name": "uploadId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "通用-文件上传"
+        ]
+      }
+    },
+    "/common/upload/cos/authorization": {
+      "get": {
+        "operationId": "UploadController_getAuthorization",
+        "summary": "获取cos上传密钥",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "通用-文件上传"
+        ]
+      }
+    },
+    "/system/config": {
+      "post": {
+        "operationId": "ConfigController_create",
+        "summary": "参数设置-创建",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateConfigDto"
+              }
+            }
+          }
+        },
         "responses": {
           "201": {
             "description": ""
           }
         },
-        "tags": ["用户管理"],
-        "security": [
-          {
-            "bearer": []
-          }
-        ]
-      }
-    },
-    "/system/user/profile/updatePwd": {
-      "put": {
-        "operationId": "UserController_updatePwd",
-        "summary": "个人中心-修改密码",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdatePwdDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": ["用户管理"],
-        "security": [
-          {
-            "bearer": []
-          }
-        ]
-      }
-    },
-    "/system/user": {
-      "post": {
-        "operationId": "UserController_create",
-        "summary": "用户-创建",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateUserDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "tags": ["用户管理"],
-        "security": [
-          {
-            "bearer": []
-          }
-        ]
-      },
-      "get": {
-        "operationId": "UserController_findPostAndRoleAll",
-        "summary": "用户-角色+岗位",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": ["用户管理"],
-        "security": [
-          {
-            "bearer": []
-          }
+        "tags": [
+          "参数设置"
         ]
       },
       "put": {
-        "operationId": "UserController_update",
-        "summary": "用户-更新",
+        "operationId": "ConfigController_update",
+        "summary": "参数设置-更新",
         "parameters": [],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UpdateUserDto"
+                "$ref": "#/components/schemas/UpdateConfigDto"
               }
             }
           }
@@ -153,18 +313,15 @@
             "description": ""
           }
         },
-        "tags": ["用户管理"],
-        "security": [
-          {
-            "bearer": []
-          }
+        "tags": [
+          "参数设置"
         ]
       }
     },
-    "/system/user/list": {
+    "/system/config/list": {
       "get": {
-        "operationId": "UserController_findAll",
-        "summary": "用户-列表",
+        "operationId": "ConfigController_findAll",
+        "summary": "参数设置-列表",
         "parameters": [
           {
             "name": "pageNum",
@@ -172,6 +329,7 @@
             "in": "query",
             "description": "当前分页",
             "schema": {
+              "default": 1,
               "type": "number"
             }
           },
@@ -181,310 +339,7 @@
             "in": "query",
             "description": "每页数量",
             "schema": {
-              "type": "number"
-            }
-          },
-          {
-            "name": "orderByColumn",
-            "required": false,
-            "in": "query",
-            "description": "排序字段",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "isAsc",
-            "required": false,
-            "in": "query",
-            "description": "排序规则",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "deptId",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "nickName",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "email",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "userName",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "phonenumber",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "status",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": ["用户管理"],
-        "security": [
-          {
-            "bearer": []
-          }
-        ]
-      }
-    },
-    "/system/user/deptTree": {
-      "get": {
-        "operationId": "UserController_deptTree",
-        "summary": "用户-部门树",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": ["用户管理"],
-        "security": [
-          {
-            "bearer": []
-          }
-        ]
-      }
-    },
-    "/system/user/authRole/{id}": {
-      "get": {
-        "operationId": "UserController_authRole",
-        "summary": "用户-分配角色-详情",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": ["用户管理"],
-        "security": [
-          {
-            "bearer": []
-          }
-        ]
-      }
-    },
-    "/system/user/authRole": {
-      "put": {
-        "operationId": "UserController_updateAuthRole",
-        "summary": "用户-角色信息-更新",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": ["用户管理"],
-        "security": [
-          {
-            "bearer": []
-          }
-        ]
-      }
-    },
-    "/system/user/{userId}": {
-      "get": {
-        "operationId": "UserController_findOne",
-        "summary": "用户-详情",
-        "parameters": [
-          {
-            "name": "userId",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": ["用户管理"],
-        "security": [
-          {
-            "bearer": []
-          }
-        ]
-      }
-    },
-    "/system/user/changeStatus": {
-      "put": {
-        "operationId": "UserController_changeStatus",
-        "summary": "用户-停用角色",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ChangeStatusDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": ["用户管理"],
-        "security": [
-          {
-            "bearer": []
-          }
-        ]
-      }
-    },
-    "/system/user/resetPwd": {
-      "put": {
-        "operationId": "UserController_resetPwd",
-        "summary": "用户-重置密码",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ResetPwdDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": ["用户管理"],
-        "security": [
-          {
-            "bearer": []
-          }
-        ]
-      }
-    },
-    "/system/user/{id}": {
-      "delete": {
-        "operationId": "UserController_remove",
-        "summary": "用户-删除",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": ["用户管理"],
-        "security": [
-          {
-            "bearer": []
-          }
-        ]
-      }
-    },
-    "/system/user/export": {
-      "post": {
-        "operationId": "UserController_export",
-        "summary": "导出用户信息数据为xlsx",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ListUserDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "tags": ["用户管理"],
-        "security": [
-          {
-            "bearer": []
-          }
-        ]
-      }
-    },
-    "/tool/gen/list": {
-      "get": {
-        "operationId": "ToolController_findAll",
-        "summary": "数据表列表",
-        "parameters": [
-          {
-            "name": "pageNum",
-            "required": true,
-            "in": "query",
-            "description": "当前分页",
-            "schema": {
-              "type": "number"
-            }
-          },
-          {
-            "name": "pageSize",
-            "required": true,
-            "in": "query",
-            "description": "每页数量",
-            "schema": {
+              "default": 10,
               "type": "number"
             }
           },
@@ -507,113 +362,30 @@
             }
           }
         ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": ["系统工具"]
-      }
-    },
-    "/tool/gen/db/list": {
-      "get": {
-        "operationId": "ToolController_genDbList",
-        "summary": "查询数据库列表",
-        "parameters": [
-          {
-            "name": "pageNum",
-            "required": true,
-            "in": "query",
-            "description": "当前分页",
-            "schema": {
-              "type": "number"
-            }
-          },
-          {
-            "name": "pageSize",
-            "required": true,
-            "in": "query",
-            "description": "每页数量",
-            "schema": {
-              "type": "number"
-            }
-          },
-          {
-            "name": "orderByColumn",
-            "required": false,
-            "in": "query",
-            "description": "排序字段",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "isAsc",
-            "required": false,
-            "in": "query",
-            "description": "排序规则",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": ["系统工具"]
-      }
-    },
-    "/tool/gen/importTable": {
-      "post": {
-        "operationId": "ToolController_genImportTable",
-        "summary": "导入表",
-        "parameters": [],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/TableName"
+                "$ref": "#/components/schemas/ListConfigDto"
               }
             }
           }
         },
         "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "tags": ["系统工具"]
-      }
-    },
-    "/tool/gen/synchDb/{tableName}": {
-      "get": {
-        "operationId": "ToolController_synchDb",
-        "summary": "同步表",
-        "parameters": [
-          {
-            "name": "tableName",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
           "200": {
             "description": ""
           }
         },
-        "tags": ["系统工具"]
+        "tags": [
+          "参数设置"
+        ]
       }
     },
-    "/tool/gen/{id}": {
+    "/system/config/{id}": {
       "get": {
-        "operationId": "ToolController_gen",
-        "summary": "查询表详细信息",
+        "operationId": "ConfigController_findOne",
+        "summary": "参数设置-详情(id)",
         "parameters": [
           {
             "name": "id",
@@ -629,11 +401,13 @@
             "description": ""
           }
         },
-        "tags": ["系统工具"]
+        "tags": [
+          "参数设置"
+        ]
       },
       "delete": {
-        "operationId": "ToolController_remove",
-        "summary": "删除表数据",
+        "operationId": "ConfigController_remove",
+        "summary": "参数设置-删除",
         "parameters": [
           {
             "name": "id",
@@ -649,74 +423,73 @@
             "description": ""
           }
         },
-        "tags": ["系统工具"]
+        "tags": [
+          "参数设置"
+        ]
       }
     },
-    "/tool/gen": {
-      "put": {
-        "operationId": "ToolController_genUpdate",
-        "summary": "修改代码生成信息",
+    "/system/config/configKey/{id}": {
+      "get": {
+        "operationId": "ConfigController_findOneByconfigKey",
+        "summary": "参数设置-详情(configKey)【走缓存】",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "参数设置"
+        ]
+      }
+    },
+    "/system/config/refreshCache": {
+      "delete": {
+        "operationId": "ConfigController_refreshCache",
+        "summary": "参数设置-刷新缓存",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "参数设置"
+        ]
+      }
+    },
+    "/system/config/export": {
+      "post": {
+        "operationId": "ConfigController_export",
+        "summary": "导出参数管理为xlsx文件",
         "parameters": [],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/GenTableUpdate"
+                "$ref": "#/components/schemas/ListConfigDto"
               }
             }
           }
         },
         "responses": {
-          "200": {
+          "201": {
             "description": ""
           }
         },
-        "tags": ["系统工具"]
-      }
-    },
-    "/tool/gen/batchGenCode/zip": {
-      "get": {
-        "operationId": "ToolController_batchGenCode",
-        "summary": "生成代码",
-        "parameters": [
-          {
-            "name": "tableNames",
-            "required": true,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": ["系统工具"]
-      }
-    },
-    "/tool/gen/preview/{id}": {
-      "get": {
-        "operationId": "ToolController_preview",
-        "summary": "查看代码",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": ["系统工具"]
+        "tags": [
+          "参数设置"
+        ]
       }
     },
     "/system/dept": {
@@ -967,6 +740,7 @@
             "in": "query",
             "description": "当前分页",
             "schema": {
+              "default": 1,
               "type": "number"
             }
           },
@@ -976,6 +750,7 @@
             "in": "query",
             "description": "每页数量",
             "schema": {
+              "default": 10,
               "type": "number"
             }
           },
@@ -1116,6 +891,7 @@
             "in": "query",
             "description": "当前分页",
             "schema": {
+              "default": 1,
               "type": "number"
             }
           },
@@ -1125,6 +901,7 @@
             "in": "query",
             "description": "每页数量",
             "schema": {
+              "default": 10,
               "type": "number"
             }
           },
@@ -1180,7 +957,57 @@
     "/system/dict/type/export": {
       "post": {
         "operationId": "DictController_export",
-        "summary": "导出字典数据为xlsx文件",
+        "summary": "导出字典组为xlsx文件",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ListDictType"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "字典管理"
+        ]
+      }
+    },
+    "/system/dict/data/export": {
+      "post": {
+        "operationId": "DictController_exportData",
+        "summary": "导出字典内容为xlsx文件",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ListDictType"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "字典管理"
+        ]
+      }
+    },
+    "/system/dict/data/export": {
+      "post": {
+        "operationId": "DictController_exportData",
+        "summary": "导出字典内容为xlsx文件",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -1348,7 +1175,352 @@
             "description": ""
           }
         },
-        "tags": ["菜单管理"]
+        "tags": [
+          "菜单管理"
+        ]
+      }
+    },
+    "/system/notice": {
+      "post": {
+        "operationId": "NoticeController_create",
+        "summary": "通知公告-创建",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateNoticeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "通知公告"
+        ]
+      },
+      "put": {
+        "operationId": "NoticeController_update",
+        "summary": "通知公告-更新",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateNoticeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "通知公告"
+        ]
+      }
+    },
+    "/system/notice/list": {
+      "get": {
+        "operationId": "NoticeController_findAll",
+        "summary": "通知公告-列表",
+        "parameters": [
+          {
+            "name": "pageNum",
+            "required": true,
+            "in": "query",
+            "description": "当前分页",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": true,
+            "in": "query",
+            "description": "每页数量",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "orderByColumn",
+            "required": false,
+            "in": "query",
+            "description": "排序字段",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "isAsc",
+            "required": false,
+            "in": "query",
+            "description": "排序规则",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ListNoticeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "通知公告"
+        ]
+      }
+    },
+    "/system/notice/{id}": {
+      "get": {
+        "operationId": "NoticeController_findOne",
+        "summary": "通知公告-详情",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "通知公告"
+        ]
+      },
+      "delete": {
+        "operationId": "NoticeController_remove",
+        "summary": "通知公告-删除",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "通知公告"
+        ]
+      }
+    },
+    "/system/post": {
+      "post": {
+        "operationId": "PostController_create",
+        "summary": "岗位管理-创建",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePostDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "岗位管理"
+        ]
+      },
+      "put": {
+        "operationId": "PostController_update",
+        "summary": "岗位管理-更新",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePostDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "岗位管理"
+        ]
+      }
+    },
+    "/system/post/list": {
+      "get": {
+        "operationId": "PostController_findAll",
+        "summary": "岗位管理-列表",
+        "parameters": [
+          {
+            "name": "pageNum",
+            "required": true,
+            "in": "query",
+            "description": "当前分页",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": true,
+            "in": "query",
+            "description": "每页数量",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "orderByColumn",
+            "required": false,
+            "in": "query",
+            "description": "排序字段",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "isAsc",
+            "required": false,
+            "in": "query",
+            "description": "排序规则",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ListPostDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "岗位管理"
+        ]
+      }
+    },
+    "/system/post/{id}": {
+      "get": {
+        "operationId": "PostController_findOne",
+        "summary": "岗位管理-详情",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "岗位管理"
+        ]
+      }
+    },
+    "/system/post/{ids}": {
+      "delete": {
+        "operationId": "PostController_remove",
+        "summary": "岗位管理-删除",
+        "parameters": [
+          {
+            "name": "ids",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "岗位管理"
+        ]
+      }
+    },
+    "/system/post/export": {
+      "post": {
+        "operationId": "PostController_export",
+        "summary": "导出岗位管理xlsx文件",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ListPostDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "岗位管理"
+        ]
       }
     },
     "/system/role": {
@@ -1406,6 +1578,7 @@
             "in": "query",
             "description": "当前分页",
             "schema": {
+              "default": 1,
               "type": "number"
             }
           },
@@ -1415,6 +1588,7 @@
             "in": "query",
             "description": "每页数量",
             "schema": {
+              "default": 10,
               "type": "number"
             }
           },
@@ -1575,6 +1749,7 @@
             "in": "query",
             "description": "当前分页",
             "schema": {
+              "default": 1,
               "type": "number"
             }
           },
@@ -1584,6 +1759,7 @@
             "in": "query",
             "description": "每页数量",
             "schema": {
+              "default": 10,
               "type": "number"
             }
           },
@@ -1659,6 +1835,7 @@
             "in": "query",
             "description": "当前分页",
             "schema": {
+              "default": 1,
               "type": "number"
             }
           },
@@ -1668,6 +1845,7 @@
             "in": "query",
             "description": "每页数量",
             "schema": {
+              "default": 10,
               "type": "number"
             }
           },
@@ -1824,54 +2002,10 @@
         "tags": ["角色管理"]
       }
     },
-    "/system/post": {
-      "post": {
-        "operationId": "PostController_create",
-        "summary": "岗位管理-创建",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreatePostDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "tags": ["岗位管理"]
-      },
-      "put": {
-        "operationId": "PostController_update",
-        "summary": "岗位管理-更新",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdatePostDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": ["岗位管理"]
-      }
-    },
-    "/system/post/list": {
+    "/tool/gen/list": {
       "get": {
-        "operationId": "PostController_findAll",
-        "summary": "岗位管理-列表",
+        "operationId": "ToolController_findAll",
+        "summary": "数据表列表",
         "parameters": [
           {
             "name": "pageNum",
@@ -1879,6 +2013,7 @@
             "in": "query",
             "description": "当前分页",
             "schema": {
+              "default": 1,
               "type": "number"
             }
           },
@@ -1888,6 +2023,7 @@
             "in": "query",
             "description": "每页数量",
             "schema": {
+              "default": 10,
               "type": "number"
             }
           },
@@ -1910,139 +2046,20 @@
             }
           }
         ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ListPostDto"
-              }
-            }
-          }
-        },
         "responses": {
           "200": {
             "description": ""
           }
         },
-        "tags": ["岗位管理"]
+        "tags": [
+          "系统工具"
+        ]
       }
     },
-    "/system/post/{id}": {
+    "/tool/gen/db/list": {
       "get": {
-        "operationId": "PostController_findOne",
-        "summary": "岗位管理-详情",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": ["岗位管理"]
-      }
-    },
-    "/system/post/{ids}": {
-      "delete": {
-        "operationId": "PostController_remove",
-        "summary": "岗位管理-删除",
-        "parameters": [
-          {
-            "name": "ids",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": ["岗位管理"]
-      }
-    },
-    "/system/post/export": {
-      "post": {
-        "operationId": "PostController_export",
-        "summary": "导出岗位管理xlsx文件",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ListPostDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "tags": ["岗位管理"]
-      }
-    },
-    "/system/config": {
-      "post": {
-        "operationId": "ConfigController_create",
-        "summary": "参数设置-创建",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateConfigDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "tags": ["参数设置"]
-      },
-      "put": {
-        "operationId": "ConfigController_update",
-        "summary": "参数设置-更新",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateConfigDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": ["参数设置"]
-      }
-    },
-    "/system/config/list": {
-      "get": {
-        "operationId": "ConfigController_findAll",
-        "summary": "参数设置-列表",
+        "operationId": "ToolController_genDbList",
+        "summary": "查询数据库列表",
         "parameters": [
           {
             "name": "pageNum",
@@ -2050,6 +2067,7 @@
             "in": "query",
             "description": "当前分页",
             "schema": {
+              "default": 1,
               "type": "number"
             }
           },
@@ -2059,6 +2077,7 @@
             "in": "query",
             "description": "每页数量",
             "schema": {
+              "default": 10,
               "type": "number"
             }
           },
@@ -2081,28 +2100,69 @@
             }
           }
         ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ListConfigDto"
-              }
-            }
-          }
-        },
         "responses": {
           "200": {
             "description": ""
           }
         },
-        "tags": ["参数设置"]
+        "tags": [
+          "系统工具"
+        ]
       }
     },
-    "/system/config/{id}": {
+    "/tool/gen/importTable": {
+      "post": {
+        "operationId": "ToolController_genImportTable",
+        "summary": "导入表",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TableName"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "系统工具"
+        ]
+      }
+    },
+    "/tool/gen/synchDb/{tableName}": {
       "get": {
-        "operationId": "ConfigController_findOne",
-        "summary": "参数设置-详情(id)",
+        "operationId": "ToolController_synchDb",
+        "summary": "同步表",
+        "parameters": [
+          {
+            "name": "tableName",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "系统工具"
+        ]
+      }
+    },
+    "/tool/gen/{id}": {
+      "get": {
+        "operationId": "ToolController_gen",
+        "summary": "查询表详细信息",
         "parameters": [
           {
             "name": "id",
@@ -2118,11 +2178,13 @@
             "description": ""
           }
         },
-        "tags": ["参数设置"]
+        "tags": [
+          "系统工具"
+        ]
       },
       "delete": {
-        "operationId": "ConfigController_remove",
-        "summary": "参数设置-删除",
+        "operationId": "ToolController_remove",
+        "summary": "删除表数据",
         "parameters": [
           {
             "name": "id",
@@ -2138,13 +2200,64 @@
             "description": ""
           }
         },
-        "tags": ["参数设置"]
+        "tags": [
+          "系统工具"
+        ]
       }
     },
-    "/system/config/configKey/{id}": {
+    "/tool/gen": {
+      "put": {
+        "operationId": "ToolController_genUpdate",
+        "summary": "修改代码生成信息",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenTableUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "系统工具"
+        ]
+      }
+    },
+    "/tool/gen/batchGenCode/zip": {
       "get": {
-        "operationId": "ConfigController_findOneByconfigKey",
-        "summary": "参数设置-详情(configKey)【走缓存】",
+        "operationId": "ToolController_batchGenCode",
+        "summary": "生成代码",
+        "parameters": [
+          {
+            "name": "tableNames",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "系统工具"
+        ]
+      }
+    },
+    "/tool/gen/preview/{id}": {
+      "get": {
+        "operationId": "ToolController_preview",
+        "summary": "查看代码",
         "parameters": [
           {
             "name": "id",
@@ -2160,77 +2273,40 @@
             "description": ""
           }
         },
-        "tags": ["参数设置"]
+        "tags": [
+          "系统工具"
+        ]
       }
     },
-    "/system/config/refreshCache": {
-      "delete": {
-        "operationId": "ConfigController_refreshCache",
-        "summary": "参数设置-刷新缓存",
+    "/system/user/profile": {
+      "get": {
+        "operationId": "UserController_profile",
+        "summary": "个人中心-用户信息",
         "parameters": [],
         "responses": {
           "200": {
             "description": ""
           }
         },
-        "tags": ["参数设置"]
-      }
-    },
-    "/system/config/export": {
-      "post": {
-        "operationId": "ConfigController_export",
-        "summary": "导出参数管理为xlsx文件",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ListConfigDto"
-              }
-            }
+        "tags": [
+          "用户管理"
+        ],
+        "security": [
+          {
+            "bearer": []
           }
-        },
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "tags": ["参数设置"]
-      }
-    },
-    "/system/notice": {
-      "post": {
-        "operationId": "NoticeController_create",
-        "summary": "通知公告-创建",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateNoticeDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "tags": ["通知公告"]
+        ]
       },
       "put": {
-        "operationId": "NoticeController_update",
-        "summary": "通知公告-更新",
+        "operationId": "UserController_updateProfile",
+        "summary": "个人中心-修改用户信息",
         "parameters": [],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UpdateNoticeDto"
+                "$ref": "#/components/schemas/UpdateProfileDto"
               }
             }
           }
@@ -2240,13 +2316,146 @@
             "description": ""
           }
         },
-        "tags": ["通知公告"]
+        "tags": [
+          "用户管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
       }
     },
-    "/system/notice/list": {
+    "/system/user/profile/avatar": {
+      "post": {
+        "operationId": "UserController_avatar",
+        "summary": "个人中心-上传用户头像",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "用户管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/system/user/profile/updatePwd": {
+      "put": {
+        "operationId": "UserController_updatePwd",
+        "summary": "个人中心-修改密码",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePwdDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "用户管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/system/user": {
+      "post": {
+        "operationId": "UserController_create",
+        "summary": "用户-创建",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "用户管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
       "get": {
-        "operationId": "NoticeController_findAll",
-        "summary": "通知公告-列表",
+        "operationId": "UserController_findPostAndRoleAll",
+        "summary": "用户-角色+岗位",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "用户管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "put": {
+        "operationId": "UserController_update",
+        "summary": "用户-更新",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "用户管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/system/user/list": {
+      "get": {
+        "operationId": "UserController_findAll",
+        "summary": "用户-列表",
         "parameters": [
           {
             "name": "pageNum",
@@ -2254,6 +2463,7 @@
             "in": "query",
             "description": "当前分页",
             "schema": {
+              "default": 1,
               "type": "number"
             }
           },
@@ -2263,6 +2473,7 @@
             "in": "query",
             "description": "每页数量",
             "schema": {
+              "default": 10,
               "type": "number"
             }
           },
@@ -2283,30 +2494,95 @@
             "schema": {
               "type": "string"
             }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ListNoticeDto"
-              }
+          },
+          {
+            "name": "deptId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "nickName",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "email",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userName",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "phonenumber",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
             }
           }
-        },
+        ],
         "responses": {
           "200": {
             "description": ""
           }
         },
-        "tags": ["通知公告"]
+        "tags": [
+          "用户管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
       }
     },
-    "/system/notice/{id}": {
+    "/system/user/deptTree": {
       "get": {
-        "operationId": "NoticeController_findOne",
-        "summary": "通知公告-详情",
+        "operationId": "UserController_deptTree",
+        "summary": "用户-部门树",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "用户管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/system/user/authRole/{id}": {
+      "get": {
+        "operationId": "UserController_authRole",
+        "summary": "用户-分配角色-详情",
         "parameters": [
           {
             "name": "id",
@@ -2322,11 +2598,129 @@
             "description": ""
           }
         },
-        "tags": ["通知公告"]
-      },
+        "tags": [
+          "用户管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/system/user/authRole": {
+      "put": {
+        "operationId": "UserController_updateAuthRole",
+        "summary": "用户-角色信息-更新",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "用户管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/system/user/{userId}": {
+      "get": {
+        "operationId": "UserController_findOne",
+        "summary": "用户-详情",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "用户管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/system/user/changeStatus": {
+      "put": {
+        "operationId": "UserController_changeStatus",
+        "summary": "用户-停用角色",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangeStatusDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "用户管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/system/user/resetPwd": {
+      "put": {
+        "operationId": "UserController_resetPwd",
+        "summary": "用户-重置密码",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPwdDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "用户管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/system/user/{id}": {
       "delete": {
-        "operationId": "NoticeController_remove",
-        "summary": "通知公告-删除",
+        "operationId": "UserController_remove",
+        "summary": "用户-删除",
         "parameters": [
           {
             "name": "id",
@@ -2342,115 +2736,336 @@
             "description": ""
           }
         },
-        "tags": ["通知公告"]
+        "tags": [
+          "用户管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
       }
     },
-    "/login": {
+    "/system/user/export": {
       "post": {
-        "operationId": "MainController_login",
-        "summary": "用户登录",
+        "operationId": "UserController_export",
+        "summary": "导出用户信息数据为xlsx",
         "parameters": [],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/LoginDto"
+                "$ref": "#/components/schemas/ListUserDto"
               }
             }
           }
         },
         "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "用户管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/monitor/job/list": {
+      "get": {
+        "operationId": "JobController_list",
+        "summary": "获取定时任务列表",
+        "parameters": [],
+        "responses": {
           "200": {
             "description": ""
           }
         },
-        "tags": ["根目录"]
+        "tags": [
+          "定时任务管理"
+        ]
       }
     },
-    "/logout": {
+    "/monitor/job/{jobId}": {
+      "get": {
+        "operationId": "JobController_getInfo",
+        "summary": "获取定时任务详细信息",
+        "parameters": [
+          {
+            "name": "jobId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "定时任务管理"
+        ]
+      }
+    },
+    "/monitor/job": {
       "post": {
-        "operationId": "MainController_logout",
-        "summary": "退出登录",
+        "operationId": "JobController_add",
+        "summary": "创建定时任务",
         "parameters": [],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/LoginDto"
+                "$ref": "#/components/schemas/CreateJobDto"
               }
             }
           }
         },
         "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "定时任务管理"
+        ]
+      },
+      "put": {
+        "operationId": "JobController_update",
+        "summary": "修改定时任务",
+        "parameters": [],
+        "responses": {
           "200": {
             "description": ""
           }
         },
-        "tags": ["根目录"]
+        "tags": [
+          "定时任务管理"
+        ]
       }
     },
-    "/register": {
+    "/monitor/job/changeStatus": {
+      "put": {
+        "operationId": "JobController_changeStatus",
+        "summary": "修改任务状态",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "定时任务管理"
+        ]
+      }
+    },
+    "/monitor/job/{jobIds}": {
+      "delete": {
+        "operationId": "JobController_remove",
+        "summary": "删除定时任务",
+        "parameters": [
+          {
+            "name": "jobIds",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "定时任务管理"
+        ]
+      }
+    },
+    "/monitor/job/run": {
+      "put": {
+        "operationId": "JobController_run",
+        "summary": "立即执行一次",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "定时任务管理"
+        ]
+      }
+    },
+    "/monitor/job/export": {
       "post": {
-        "operationId": "MainController_register",
-        "summary": "用户注册",
+        "operationId": "JobController_export",
+        "summary": "导出定时任务为xlsx文件",
         "parameters": [],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/RegisterDto"
+                "$ref": "#/components/schemas/ListJobDto"
               }
             }
           }
         },
         "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "定时任务管理"
+        ]
+      }
+    },
+    "/monitor/jobLog/list": {
+      "get": {
+        "operationId": "JobLogController_list",
+        "summary": "获取定时任务日志列表",
+        "parameters": [
+          {
+            "name": "pageNum",
+            "required": true,
+            "in": "query",
+            "description": "当前分页",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": true,
+            "in": "query",
+            "description": "每页数量",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "orderByColumn",
+            "required": false,
+            "in": "query",
+            "description": "排序字段",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "isAsc",
+            "required": false,
+            "in": "query",
+            "description": "排序规则",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "jobName",
+            "required": true,
+            "in": "query",
+            "description": "任务名称",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "jobGroup",
+            "required": true,
+            "in": "query",
+            "description": "任务组名",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": true,
+            "in": "query",
+            "description": "状态（0正常 1暂停）",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
           "200": {
             "description": ""
           }
         },
-        "tags": ["根目录"]
+        "tags": [
+          "定时任务日志管理"
+        ]
       }
     },
-    "/captchaImage": {
-      "get": {
-        "operationId": "MainController_captchaImage",
-        "summary": "获取验证图片",
+    "/monitor/jobLog/clean": {
+      "delete": {
+        "operationId": "JobLogController_clean",
+        "summary": "清空定时任务日志",
         "parameters": [],
         "responses": {
           "200": {
             "description": ""
           }
         },
-        "tags": ["根目录"]
+        "tags": [
+          "定时任务日志管理"
+        ]
       }
     },
-    "/getInfo": {
+    "/monitor/jobLog/export": {
+      "post": {
+        "operationId": "JobLogController_export",
+        "summary": "导出调度日志为xlsx文件",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ListJobLogDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "定时任务日志管理"
+        ]
+      }
+    },
+    "/monitor/server": {
       "get": {
-        "operationId": "MainController_getInfo",
-        "summary": "用户信息",
+        "operationId": "ServerController_getInfo",
+        "summary": "在线用户-列表",
         "parameters": [],
         "responses": {
           "200": {
             "description": ""
           }
         },
-        "tags": ["根目录"]
-      }
-    },
-    "/getRouters": {
-      "get": {
-        "operationId": "MainController_getRouters",
-        "summary": "路由信息",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": ["根目录"]
+        "tags": [
+          "系统监控-服务监控"
+        ]
       }
     },
     "/monitor/cache": {
@@ -2582,6 +3197,7 @@
             "in": "query",
             "description": "当前分页",
             "schema": {
+              "default": 1,
               "type": "number"
             }
           },
@@ -2591,6 +3207,7 @@
             "in": "query",
             "description": "每页数量",
             "schema": {
+              "default": 10,
               "type": "number"
             }
           },
@@ -2713,6 +3330,51 @@
         "tags": ["登录日志"]
       }
     },
+    "/monitor/online/list": {
+      "get": {
+        "operationId": "OnlineController_findAll",
+        "summary": "在线用户-列表",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OnlineListDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": ["系统监控-在线用户"]
+      }
+    },
+    "/monitor/online/{token}": {
+      "delete": {
+        "operationId": "OnlineController_delete",
+        "summary": "在线用户-强退",
+        "parameters": [
+          {
+            "name": "token",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": ["系统监控-在线用户"]
+      }
+    },
     "/monitor/operlog": {
       "post": {
         "operationId": "OperlogController_create",
@@ -2732,7 +3394,21 @@
             "description": ""
           }
         }
-      },
+      }
+    },
+    "/monitor/operlog/clean": {
+      "delete": {
+        "operationId": "OperlogController_removeAll",
+        "summary": "登录日志-清除全部日志",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/monitor/operlog/list": {
       "get": {
         "operationId": "OperlogController_findAll",
         "parameters": [],
@@ -2808,201 +3484,6 @@
           }
         }
       }
-    },
-    "/monitor/online/list": {
-      "get": {
-        "operationId": "OnlineController_findAll",
-        "summary": "在线用户-列表",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/OnlineListDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": ["系统监控-在线用户"]
-      }
-    },
-    "/monitor/online/{token}": {
-      "delete": {
-        "operationId": "OnlineController_delete",
-        "summary": "在线用户-强退",
-        "parameters": [
-          {
-            "name": "token",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": ["系统监控-在线用户"]
-      }
-    },
-    "/monitor/server": {
-      "get": {
-        "operationId": "ServerController_getInfo",
-        "summary": "在线用户-列表",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": ["系统监控-服务监控"]
-      }
-    },
-    "/common/upload": {
-      "post": {
-        "operationId": "UploadController_singleFileUpload",
-        "summary": "文件上传",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/FileUploadDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": ["通用-文件上传"]
-      }
-    },
-    "/common/upload/chunk/uploadId": {
-      "get": {
-        "operationId": "UploadController_getChunkUploadId",
-        "summary": "获取切片上传任务Id",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "string"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": ["通用-文件上传"]
-      }
-    },
-    "/common/upload/chunk": {
-      "post": {
-        "operationId": "UploadController_chunkFileUpload",
-        "summary": "文件切片上传",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "string"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": ["通用-文件上传"]
-      }
-    },
-    "/common/upload/chunk/merge": {
-      "post": {
-        "operationId": "UploadController_chunkMergeFile",
-        "summary": "合并切片",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ChunkMergeFileDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": ["通用-文件上传"]
-      }
-    },
-    "/common/upload/chunk/result": {
-      "get": {
-        "operationId": "UploadController_getChunkUploadResult",
-        "summary": "获取切片上传结果",
-        "parameters": [
-          {
-            "name": "uploadId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": ["通用-文件上传"]
-      }
-    },
-    "/common/upload/cos/authorization": {
-      "get": {
-        "operationId": "UploadController_getAuthorization",
-        "summary": "获取cos上传密钥",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "string"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": ["通用-文件上传"]
-      }
     }
   },
   "info": {
@@ -3022,176 +3503,107 @@
       }
     },
     "schemas": {
-      "UpdateProfileDto": {
+      "LoginDto": {
         "type": "object",
         "properties": {
-          "nickName": {
+          "code": {
             "type": "string"
           },
-          "email": {
-            "type": "string"
-          },
-          "phonenumber": {
-            "type": "string"
-          },
-          "sex": {
-            "type": "string"
-          },
-          "avatar": {
-            "type": "string"
-          }
-        },
-        "required": ["nickName", "email", "phonenumber", "sex"]
-      },
-      "UpdatePwdDto": {
-        "type": "object",
-        "properties": {
-          "oldPassword": {
-            "type": "string"
-          },
-          "newPassword": {
-            "type": "string"
-          }
-        },
-        "required": ["oldPassword", "newPassword"]
-      },
-      "CreateUserDto": {
-        "type": "object",
-        "properties": {
-          "deptId": {
-            "type": "number"
-          },
-          "email": {
-            "type": "string"
-          },
-          "nickName": {
-            "type": "string"
-          },
-          "userName": {
+          "username": {
             "type": "string"
           },
           "password": {
             "type": "string"
           },
-          "phonenumber": {
+          "uuid": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "username",
+          "password",
+          "uuid"
+        ]
+      },
+      "RegisterDto": {
+        "type": "object",
+        "properties": {
+          "code": {
             "type": "string"
           },
-          "postIds": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "roleIds": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "status": {
+          "username": {
             "type": "string"
           },
-          "sex": {
+          "password": {
             "type": "string"
           },
+          "uuid": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "username",
+          "password",
+          "uuid"
+        ]
+      },
+      "FileUploadDto": {
+        "type": "object",
+        "properties": {
+          "file": {
+            "type": "string",
+            "format": "binary"
+          }
+        },
+        "required": [
+          "file"
+        ]
+      },
+      "ChunkMergeFileDto": {
+        "type": "object",
+        "properties": {
+          "uploadId": {
+            "type": "string"
+          },
+          "fileName": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "uploadId",
+          "fileName"
+        ]
+      },
+      "CreateConfigDto": {
+        "type": "object",
+        "properties": {
           "remark": {
             "type": "string"
           },
-          "postSort": {
-            "type": "number"
-          }
-        },
-        "required": ["nickName", "userName", "password", "postSort"]
-      },
-      "ChangeStatusDto": {
-        "type": "object",
-        "properties": {
-          "roleId": {
-            "type": "number"
-          },
           "status": {
             "type": "string"
           }
         },
-        "required": ["roleId", "status"]
-      },
-      "UpdateUserDto": {
-        "type": "object",
-        "properties": {
-          "deptId": {
-            "type": "number"
-          },
-          "email": {
-            "type": "string"
-          },
-          "nickName": {
-            "type": "string"
-          },
-          "userName": {
-            "type": "string"
-          },
-          "password": {
-            "type": "string"
-          },
-          "phonenumber": {
-            "type": "string"
-          },
-          "postIds": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "roleIds": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "status": {
-            "type": "string"
-          },
-          "sex": {
-            "type": "string"
-          },
-          "remark": {
-            "type": "string"
-          },
-          "postSort": {
-            "type": "number"
-          },
-          "userId": {
-            "type": "number"
-          }
-        },
-        "required": ["userId"]
-      },
-      "ResetPwdDto": {
-        "type": "object",
-        "properties": {
-          "userId": {
-            "type": "number"
-          },
-          "password": {
-            "type": "string"
-          }
-        },
-        "required": ["userId", "password"]
+        "required": [
+          "remark"
+        ]
       },
       "DateParamsDTO": {
         "type": "object",
         "properties": {}
       },
-      "ListUserDto": {
+      "ListConfigDto": {
         "type": "object",
         "properties": {
           "pageNum": {
             "type": "number",
-            "description": "当前分页"
+            "description": "当前分页",
+            "default": 1
           },
           "pageSize": {
             "type": "number",
-            "description": "每页数量"
+            "description": "每页数量",
+            "default": 10
           },
           "params": {
             "description": "时间范围",
@@ -3208,45 +3620,26 @@
           "isAsc": {
             "type": "string",
             "description": "排序规则"
-          },
-          "deptId": {
-            "type": "string"
-          },
-          "nickName": {
-            "type": "string"
-          },
-          "email": {
-            "type": "string"
-          },
-          "userName": {
-            "type": "string"
-          },
-          "phonenumber": {
+          }
+        },
+        "required": [
+          "pageNum",
+          "pageSize"
+        ]
+      },
+      "UpdateConfigDto": {
+        "type": "object",
+        "properties": {
+          "remark": {
             "type": "string"
           },
           "status": {
             "type": "string"
           }
         },
-        "required": ["pageNum", "pageSize"]
-      },
-      "TableName": {
-        "type": "object",
-        "properties": {
-          "tableNames": {
-            "type": "string"
-          }
-        },
-        "required": ["tableNames"]
-      },
-      "GenTableUpdate": {
-        "type": "object",
-        "properties": {
-          "tableId": {
-            "type": "number"
-          }
-        },
-        "required": ["tableId"]
+        "required": [
+          "remark"
+        ]
       },
       "CreateDeptDto": {
         "type": "object",
@@ -3354,11 +3747,13 @@
         "properties": {
           "pageNum": {
             "type": "number",
-            "description": "当前分页"
+            "description": "当前分页",
+            "default": 1
           },
           "pageSize": {
             "type": "number",
-            "description": "每页数量"
+            "description": "每页数量",
+            "default": 10
           },
           "params": {
             "description": "时间范围",
@@ -3470,7 +3865,142 @@
             "type": "number"
           }
         },
-        "required": ["menuName", "parentId", "isFrame", "menuId"]
+        "required": [
+          "menuName",
+          "parentId",
+          "isFrame",
+          "menuId"
+        ]
+      },
+      "CreateNoticeDto": {
+        "type": "object",
+        "properties": {
+          "remark": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "remark"
+        ]
+      },
+      "ListNoticeDto": {
+        "type": "object",
+        "properties": {
+          "pageNum": {
+            "type": "number",
+            "description": "当前分页",
+            "default": 1
+          },
+          "pageSize": {
+            "type": "number",
+            "description": "每页数量",
+            "default": 10
+          },
+          "params": {
+            "description": "时间范围",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DateParamsDTO"
+              }
+            ]
+          },
+          "orderByColumn": {
+            "type": "string",
+            "description": "排序字段"
+          },
+          "isAsc": {
+            "type": "string",
+            "description": "排序规则"
+          }
+        },
+        "required": [
+          "pageNum",
+          "pageSize"
+        ]
+      },
+      "UpdateNoticeDto": {
+        "type": "object",
+        "properties": {
+          "remark": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "remark"
+        ]
+      },
+      "CreatePostDto": {
+        "type": "object",
+        "properties": {
+          "remark": {
+            "type": "string"
+          },
+          "postSort": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "postSort"
+        ]
+      },
+      "ListPostDto": {
+        "type": "object",
+        "properties": {
+          "pageNum": {
+            "type": "number",
+            "description": "当前分页",
+            "default": 1
+          },
+          "pageSize": {
+            "type": "number",
+            "description": "每页数量",
+            "default": 10
+          },
+          "params": {
+            "description": "时间范围",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DateParamsDTO"
+              }
+            ]
+          },
+          "orderByColumn": {
+            "type": "string",
+            "description": "排序字段"
+          },
+          "isAsc": {
+            "type": "string",
+            "description": "排序规则"
+          }
+        },
+        "required": [
+          "pageNum",
+          "pageSize"
+        ]
+      },
+      "UpdatePostDto": {
+        "type": "object",
+        "properties": {
+          "remark": {
+            "type": "string"
+          },
+          "postSort": {
+            "type": "number"
+          },
+          "postId": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "postSort",
+          "postId"
+        ]
       },
       "CreateRoleDto": {
         "type": "object",
@@ -3501,11 +4031,13 @@
         "properties": {
           "pageNum": {
             "type": "number",
-            "description": "当前分页"
+            "description": "当前分页",
+            "default": 1
           },
           "pageSize": {
             "type": "number",
-            "description": "每页数量"
+            "description": "每页数量",
+            "default": 10
           },
           "params": {
             "description": "时间范围",
@@ -3551,18 +4083,40 @@
             "type": "number"
           }
         },
-        "required": ["roleName", "roleKey", "roleSort", "roleId"]
+        "required": [
+          "roleName",
+          "roleKey",
+          "roleSort",
+          "roleId"
+        ]
+      },
+      "ChangeStatusDto": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "number"
+          },
+          "status": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "userId",
+          "status"
+        ]
       },
       "AllocatedListDto": {
         "type": "object",
         "properties": {
           "pageNum": {
             "type": "number",
-            "description": "当前分页"
+            "description": "当前分页",
+            "default": 1
           },
           "pageSize": {
             "type": "number",
-            "description": "每页数量"
+            "description": "每页数量",
+            "default": 10
           },
           "params": {
             "description": "时间范围",
@@ -3628,9 +4182,108 @@
         },
         "required": ["roleId", "userIds"]
       },
-      "CreatePostDto": {
+      "TableName": {
         "type": "object",
         "properties": {
+          "tableNames": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "tableNames"
+        ]
+      },
+      "GenTableUpdate": {
+        "type": "object",
+        "properties": {
+          "tableId": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "tableId"
+        ]
+      },
+      "UpdateProfileDto": {
+        "type": "object",
+        "properties": {
+          "nickName": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "phonenumber": {
+            "type": "string"
+          },
+          "sex": {
+            "type": "string"
+          },
+          "avatar": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "nickName",
+          "email",
+          "phonenumber",
+          "sex"
+        ]
+      },
+      "UpdatePwdDto": {
+        "type": "object",
+        "properties": {
+          "oldPassword": {
+            "type": "string"
+          },
+          "newPassword": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "oldPassword",
+          "newPassword"
+        ]
+      },
+      "CreateUserDto": {
+        "type": "object",
+        "properties": {
+          "deptId": {
+            "type": "number"
+          },
+          "email": {
+            "type": "string"
+          },
+          "nickName": {
+            "type": "string"
+          },
+          "userName": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "phonenumber": {
+            "type": "string"
+          },
+          "postIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "roleIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "status": {
+            "type": "string"
+          },
+          "sex": {
+            "type": "string"
+          },
           "remark": {
             "type": "string"
           },
@@ -3638,75 +4291,93 @@
             "type": "number"
           }
         },
-        "required": ["postSort"]
+        "required": [
+          "nickName",
+          "userName",
+          "password",
+          "postSort"
+        ]
       },
-      "ListPostDto": {
+      "UpdateUserDto": {
         "type": "object",
         "properties": {
-          "pageNum": {
-            "type": "number",
-            "description": "当前分页"
+          "deptId": {
+            "type": "number"
           },
-          "pageSize": {
-            "type": "number",
-            "description": "每页数量"
+          "email": {
+            "type": "string"
           },
-          "params": {
-            "description": "时间范围",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/DateParamsDTO"
-              }
-            ]
+          "nickName": {
+            "type": "string"
           },
-          "orderByColumn": {
-            "type": "string",
-            "description": "排序字段"
+          "userName": {
+            "type": "string"
           },
-          "isAsc": {
-            "type": "string",
-            "description": "排序规则"
-          }
-        },
-        "required": ["pageNum", "pageSize"]
-      },
-      "UpdatePostDto": {
-        "type": "object",
-        "properties": {
+          "password": {
+            "type": "string"
+          },
+          "phonenumber": {
+            "type": "string"
+          },
+          "postIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "roleIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "status": {
+            "type": "string"
+          },
+          "sex": {
+            "type": "string"
+          },
           "remark": {
             "type": "string"
           },
           "postSort": {
             "type": "number"
           },
-          "postId": {
+          "userId": {
             "type": "number"
           }
         },
-        "required": ["postSort", "postId"]
+        "required": [
+          "userId"
+        ]
       },
-      "CreateConfigDto": {
+      "ResetPwdDto": {
         "type": "object",
         "properties": {
-          "remark": {
-            "type": "string"
+          "userId": {
+            "type": "number"
           },
-          "status": {
+          "password": {
             "type": "string"
           }
         },
-        "required": ["remark"]
+        "required": [
+          "userId",
+          "password"
+        ]
       },
-      "ListConfigDto": {
+      "ListUserDto": {
         "type": "object",
         "properties": {
           "pageNum": {
             "type": "number",
-            "description": "当前分页"
+            "description": "当前分页",
+            "default": 1
           },
           "pageSize": {
             "type": "number",
-            "description": "每页数量"
+            "description": "每页数量",
+            "default": 10
           },
           "params": {
             "description": "时间范围",
@@ -3723,44 +4394,111 @@
           "isAsc": {
             "type": "string",
             "description": "排序规则"
-          }
-        },
-        "required": ["pageNum", "pageSize"]
-      },
-      "UpdateConfigDto": {
-        "type": "object",
-        "properties": {
-          "remark": {
+          },
+          "deptId": {
+            "type": "string"
+          },
+          "nickName": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "userName": {
+            "type": "string"
+          },
+          "phonenumber": {
             "type": "string"
           },
           "status": {
             "type": "string"
           }
         },
-        "required": ["remark"]
+        "required": [
+          "pageNum",
+          "pageSize"
+        ]
       },
-      "CreateNoticeDto": {
+      "CreateJobDto": {
         "type": "object",
         "properties": {
-          "remark": {
-            "type": "string"
+          "jobName": {
+            "type": "string",
+            "description": "任务名称"
+          },
+          "jobGroup": {
+            "type": "string",
+            "description": "任务组名"
+          },
+          "invokeTarget": {
+            "type": "string",
+            "description": "调用目标字符串"
+          },
+          "cronExpression": {
+            "type": "string",
+            "description": "cron执行表达式"
+          },
+          "misfirePolicy": {
+            "type": "string",
+            "description": "计划执行错误策略（1立即执行 2执行一次 3放弃执行）"
+          },
+          "concurrent": {
+            "type": "string",
+            "description": "是否并发执行（0允许 1禁止）"
           },
           "status": {
-            "type": "string"
+            "type": "string",
+            "description": "状态（0正常 1暂停）"
+          },
+          "remark": {
+            "type": "string",
+            "description": "备注信息"
           }
         },
-        "required": ["remark"]
+        "required": [
+          "jobName",
+          "jobGroup",
+          "invokeTarget",
+          "cronExpression",
+          "misfirePolicy",
+          "concurrent",
+          "status"
+        ]
       },
-      "ListNoticeDto": {
+      "ListJobDto": {
+        "type": "object",
+        "properties": {
+          "jobName": {
+            "type": "string",
+            "description": "任务名称"
+          },
+          "jobGroup": {
+            "type": "string",
+            "description": "任务组名"
+          },
+          "status": {
+            "type": "string",
+            "description": "状态（0正常 1暂停）"
+          }
+        },
+        "required": [
+          "jobName",
+          "jobGroup",
+          "status"
+        ]
+      },
+      "ListJobLogDto": {
         "type": "object",
         "properties": {
           "pageNum": {
             "type": "number",
-            "description": "当前分页"
+            "description": "当前分页",
+            "default": 1
           },
           "pageSize": {
             "type": "number",
-            "description": "每页数量"
+            "description": "每页数量",
+            "default": 10
           },
           "params": {
             "description": "时间范围",
@@ -3777,68 +4515,40 @@
           "isAsc": {
             "type": "string",
             "description": "排序规则"
-          }
-        },
-        "required": ["pageNum", "pageSize"]
-      },
-      "UpdateNoticeDto": {
-        "type": "object",
-        "properties": {
-          "remark": {
-            "type": "string"
+          },
+          "jobName": {
+            "type": "string",
+            "description": "任务名称"
+          },
+          "jobGroup": {
+            "type": "string",
+            "description": "任务组名"
           },
           "status": {
-            "type": "string"
+            "type": "string",
+            "description": "状态（0正常 1暂停）"
           }
         },
-        "required": ["remark"]
-      },
-      "LoginDto": {
-        "type": "object",
-        "properties": {
-          "code": {
-            "type": "string"
-          },
-          "username": {
-            "type": "string"
-          },
-          "password": {
-            "type": "string"
-          },
-          "uuid": {
-            "type": "string"
-          }
-        },
-        "required": ["username", "password", "uuid"]
-      },
-      "RegisterDto": {
-        "type": "object",
-        "properties": {
-          "code": {
-            "type": "string"
-          },
-          "username": {
-            "type": "string"
-          },
-          "password": {
-            "type": "string"
-          },
-          "uuid": {
-            "type": "string"
-          }
-        },
-        "required": ["username", "password", "uuid"]
+        "required": [
+          "pageNum",
+          "pageSize",
+          "jobName",
+          "jobGroup",
+          "status"
+        ]
       },
       "ListLoginlogDto": {
         "type": "object",
         "properties": {
           "pageNum": {
             "type": "number",
-            "description": "当前分页"
+            "description": "当前分页",
+            "default": 1
           },
           "pageSize": {
             "type": "number",
-            "description": "每页数量"
+            "description": "每页数量",
+            "default": 10
           },
           "params": {
             "description": "时间范围",
@@ -3867,14 +4577,6 @@
           }
         },
         "required": ["pageNum", "pageSize"]
-      },
-      "CreateOperlogDto": {
-        "type": "object",
-        "properties": {}
-      },
-      "UpdateOperlogDto": {
-        "type": "object",
-        "properties": {}
       },
       "OnlineListDto": {
         "type": "object",
@@ -3893,27 +4595,13 @@
           }
         }
       },
-      "FileUploadDto": {
+      "CreateOperlogDto": {
         "type": "object",
-        "properties": {
-          "file": {
-            "type": "string",
-            "format": "binary"
-          }
-        },
-        "required": ["file"]
+        "properties": {}
       },
-      "ChunkMergeFileDto": {
+      "UpdateOperlogDto": {
         "type": "object",
-        "properties": {
-          "uploadId": {
-            "type": "string"
-          },
-          "fileName": {
-            "type": "string"
-          }
-        },
-        "required": ["uploadId", "fileName"]
+        "properties": {}
       }
     }
   }

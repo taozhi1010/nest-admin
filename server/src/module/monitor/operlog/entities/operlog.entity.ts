@@ -1,10 +1,9 @@
-export class Operlog {}
 import { Column, Entity, PrimaryGeneratedColumn, CreateDateColumn } from 'typeorm';
 
 @Entity('sys_oper_log', {
   comment: '操作日志记录',
 })
-export class MonitorOperlogEntity {
+export class SysOperlogEntity {
   @PrimaryGeneratedColumn({ type: 'int', name: 'oper_id', comment: '日志主键' })
   public operId: number;
 

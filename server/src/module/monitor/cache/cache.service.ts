@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { RedisService } from 'src/module/redis/redis.service';
-import { CacheEnum } from 'src/common/enum/index';
+import { RedisService } from 'src/module/common/redis/redis.service';
 import { DeepClone } from 'src/common/utils/index';
 import { ResultData } from 'src/common/utils/result';
 

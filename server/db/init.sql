@@ -419,12 +419,12 @@ insert into sys_user_post values ('2', '2');
 -- ----------------------------
 drop table if exists sys_oper_log;
 create table sys_oper_log (
-  oper_id           int             not null auto_increment    comment '日志主键',
+  oper_id           bigint(20)      not null auto_increment    comment '日志主键',
   title             varchar(50)     default ''                 comment '模块标题',
   business_type     int(2)          default 0                  comment '业务类型（0其它 1新增 2修改 3删除）',
-  method            varchar(100)    default ''                 comment '方法名称',
+  method            varchar(200)    default ''                 comment '方法名称',
   request_method    varchar(10)     default ''                 comment '请求方式',
-  operator_type     char(1)          default 0                  comment '操作类别（0其它 1后台用户 2手机端用户）',
+  operator_type     int(1)          default 0                  comment '操作类别（0其它 1后台用户 2手机端用户）',
   oper_name         varchar(50)     default ''                 comment '操作人员',
   dept_name         varchar(50)     default ''                 comment '部门名称',
   oper_url          varchar(255)    default ''                 comment '请求URL',
@@ -432,10 +432,10 @@ create table sys_oper_log (
   oper_location     varchar(255)    default ''                 comment '操作地点',
   oper_param        varchar(2000)   default ''                 comment '请求参数',
   json_result       varchar(2000)   default ''                 comment '返回参数',
-  status            char(1)         default '0'                comment '操作状态（0正常 1异常）',
+  status            int(1)          default 0                  comment '操作状态（0正常 1异常）',
   error_msg         varchar(2000)   default ''                 comment '错误消息',
   oper_time         datetime                                   comment '操作时间',
-  cost_time         int             default 0                  comment '消耗时间',
+  cost_time         bigint(20)      default 0                  comment '消耗时间',
   primary key (oper_id),
   key idx_sys_oper_log_bt (business_type),
   key idx_sys_oper_log_s  (status),
@@ -605,9 +605,9 @@ create table sys_job (
   primary key (job_id, job_name, job_group)
 ) engine=innodb auto_increment=100 comment = '定时任务调度表';
 
-insert into sys_job values(1, '系统默认（无参）', 'DEFAULT', 'ryTask.ryNoParams',        '0/10 * * * * ?', '3', '1', '1', 'admin', sysdate(), '', null, '');
-insert into sys_job values(2, '系统默认（有参）', 'DEFAULT', 'ryTask.ryParams(\'ry\')',  '0/15 * * * * ?', '3', '1', '1', 'admin', sysdate(), '', null, '');
-insert into sys_job values(3, '系统默认（多参）', 'DEFAULT', 'ryTask.ryMultipleParams(\'ry\', true, 2000L, 316.50D, 100)',  '0/20 * * * * ?', '3', '1', '1', 'admin', sysdate(), '', null, '');
+insert into sys_job values(1, '系统默认（无参）', 'DEFAULT', 'task.noParams',        '0/10 * * * * ?', '3', '1', '1', 'admin', sysdate(), '', null, '');
+insert into sys_job values(2, '系统默认（有参）', 'DEFAULT', 'task.params(\'ry\')',  '0/15 * * * * ?', '3', '1', '1', 'admin', sysdate(), '', null, '');
+insert into sys_job values(3, '系统默认（多参）', 'DEFAULT', 'task.multipleParams(\'ry\', true, 2000L, 316.50D, 100)',  '0/20 * * * * ?', '3', '1', '1', 'admin', sysdate(), '', null, '');
 
 
 -- ----------------------------
@@ -707,6 +707,7 @@ create table gen_table_column (
   query_type        varchar(200)    default 'EQ'               comment '查询方式（等于、不等于、大于、小于、范围）',
   html_type         varchar(200)                               comment '显示类型（文本框、文本域、下拉框、复选框、单选框、日期控件）',
   dict_type         varchar(200)    default ''                 comment '字典类型',
+  column_default    varchar(200)    default null               comment '默认值',
   sort              int                                        comment '排序',
   status            char(1)         default '0'                comment '状态（0正常 1关闭）',
   del_flag          char(1)         default '0'                comment '删除标志（0代表存在 1代表删除）',

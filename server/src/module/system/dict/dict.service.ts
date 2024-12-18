@@ -8,7 +8,7 @@ import { ExportTable } from 'src/common/utils/export';
 import { SysDictTypeEntity } from './entities/dict.type.entity';
 import { SysDictDataEntity } from './entities/dict.data.entity';
 import { CreateDictTypeDto, UpdateDictTypeDto, ListDictType, CreateDictDataDto, UpdateDictDataDto, ListDictData } from './dto/index';
-import { RedisService } from 'src/module/redis/redis.service';
+import { RedisService } from 'src/module/common/redis/redis.service';
 @Injectable()
 export class DictService {
   constructor(

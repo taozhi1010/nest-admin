@@ -81,9 +81,9 @@ export default {
 	methods: {
 		getUser() {
 			getUserProfile().then((response) => {
-				this.user = response.data;
-				this.roleGroup = this.user.roles.map((item) => item.roleName).join(',');
-				this.postGroup = this.user.posts.map((item) => item.postName).join(',');
+				this.user = response.data.user;
+				this.roleGroup = response.data.roles.map((item) => item.roleName).join(',');
+				this.postGroup = response.data.posts.map((item) => item.postName).join(',');
 			});
 		},
 	},

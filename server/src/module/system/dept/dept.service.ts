@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Like, Repository, SelectQueryBuilder } from 'typeorm';
+import { Repository, SelectQueryBuilder } from 'typeorm';
 import { ResultData } from 'src/common/utils/result';
 import { SysDeptEntity } from './entities/dept.entity';
 import { CreateDeptDto, UpdateDeptDto, ListDeptDto } from './dto/index';
 import { ListToTree } from 'src/common/utils/index';
-import { DataScopeEnum } from 'src/common/enum/index';
+import { CacheEnum, DataScopeEnum } from 'src/common/enum/index';
+import { Cacheable, CacheEvict } from 'src/common/decorators/redis.decorator';
 
 @Injectable()
 export class DeptService {
@@ -14,6 +15,7 @@ export class DeptService {
     private readonly sysDeptEntityRep: Repository<SysDeptEntity>,
   ) {}
 
+  @CacheEvict(CacheEnum.SYS_DEPT_KEY, '*')
   async create(createDeptDto: CreateDeptDto) {
     if (createDeptDto.parentId) {
       const parent = await this.sysDeptEntityRep.findOne({
@@ -47,6 +49,7 @@ export class DeptService {
     return ResultData.ok(res);
   }
 
+  @Cacheable(CacheEnum.SYS_DEPT_KEY, 'findOne:{deptId}')
   async findOne(deptId: number) {
     const data = await this.sysDeptEntityRep.findOne({
       where: {
@@ -63,6 +66,7 @@ export class DeptService {
    * @param dataScope 数据权限范围，决定查询的部门范围。
    * @returns 返回一个部门ID数组，根据数据权限范围决定返回的部门ID集合。
    */
+  @Cacheable(CacheEnum.SYS_DEPT_KEY, 'findDeptIdsByDataScope:{deptId}-{dataScope}')
   async findDeptIdsByDataScope(deptId: number, dataScope: DataScopeEnum) {
     try {
       // 创建部门实体的查询构建器
@@ -114,6 +118,7 @@ export class DeptService {
       .orWhere('dept.deptId = :deptId', { deptId: deptId });
   }
 
+  @Cacheable(CacheEnum.SYS_DEPT_KEY, 'findListExclude')
   async findListExclude(id: number) {
     //TODO 需排出ancestors 中不出现id的数据
     const data = await this.sysDeptEntityRep.find({
@@ -124,6 +129,7 @@ export class DeptService {
     return ResultData.ok(data);
   }
 
+  @CacheEvict(CacheEnum.SYS_DEPT_KEY, '*')
   async update(updateDeptDto: UpdateDeptDto) {
     if (updateDeptDto.parentId && updateDeptDto.parentId !== 0) {
       const parent = await this.sysDeptEntityRep.findOne({
@@ -143,6 +149,7 @@ export class DeptService {
     return ResultData.ok();
   }
 
+  @CacheEvict(CacheEnum.SYS_DEPT_KEY, '*')
   async remove(deptId: number) {
     const data = await this.sysDeptEntityRep.update(
       { deptId: deptId },
@@ -157,6 +164,7 @@ export class DeptService {
    * 部门树
    * @returns
    */
+  @Cacheable(CacheEnum.SYS_DEPT_KEY, 'deptTree')
   async deptTree() {
     const res = await this.sysDeptEntityRep.find({
       where: {
