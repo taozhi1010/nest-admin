@@ -7,14 +7,16 @@
       <el-form-item label="参数键名" prop="configKey">
         <el-input v-model="queryParams.configKey" placeholder="请输入参数键名" clearable style="width: 160px" @keyup.enter="handleQuery" />
       </el-form-item>
-      <el-form-item label="系统内置" prop="configType" label-width="100px">
+      <el-form-item label="系统内置" prop="configType" label-width="90px">
         <template #label>
-          <el-tooltip effect="dark" content="系统内置，代表该行配置不可删除，是代表不可删除，否代表可以删除" placement="top-start">
-            <div class="tips">
-              <QuestionFilled class="tips-icon" :size="'14px'" />
-            </div>
-          </el-tooltip>
-          <span style="width: 80px">系统内置</span>
+          <div style="display: flex">
+            <el-tooltip effect="dark" content="系统内置，代表该行配置不可删除，是代表不可删除，否代表可以删除" placement="top-start">
+              <div class="tips">
+                <QuestionFilled class="tips-icon" :size="'14px'" />
+              </div>
+            </el-tooltip>
+            <span style="width: 80px">系统内置</span>
+          </div>
         </template>
         <el-select v-model="queryParams.configType" placeholder="系统内置" clearable style="width: 160px">
           <el-option v-for="dict in sys_yes_no" :key="dict.value" :label="dict.label" :value="dict.value" />
