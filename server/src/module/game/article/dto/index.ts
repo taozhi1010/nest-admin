@@ -18,8 +18,8 @@ export class CreateGameAricleDto {
     required: true,
   })
   @IsString()
-  @Length(0, 50)
-  desc: string;
+  @Length(0, 200)
+  remark: string;
 
   @ApiProperty({
     required: true,
