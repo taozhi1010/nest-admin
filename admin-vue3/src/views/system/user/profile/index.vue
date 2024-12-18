@@ -36,12 +36,12 @@
               <li class="list-group-item">
                 <svg-icon icon-class="peoples" />
                 所属角色
-                <div class="pull-right">{{ state.user.roles?.map((x) => x.roleName)?.join('、') }}</div>
+                <div class="pull-right">{{ state.user.roles }}</div>
               </li>
               <li class="list-group-item">
                 <svg-icon icon-class="date" />
                 创建日期
-                <div class="pull-right">{{ dayjs(state.user.createTime).format('YYYY-MM-DD HH:mm:ss') }}</div>
+                <div class="pull-right">{{ state.user.createTime }}</div>
               </li>
             </ul>
           </div>
@@ -73,7 +73,6 @@ import userAvatar from './userAvatar'
 import userInfo from './userInfo'
 import resetPwd from './resetPwd'
 import { getUserProfile } from '@/api/system/user'
-import dayjs from 'dayjs'
 
 const activeTab = ref('userinfo')
 const state = reactive({
@@ -83,10 +82,16 @@ const state = reactive({
 })
 
 function getUser() {
-  getUserProfile().then((response) => {
-    state.user = response.data
-    state.roleGroup = response.roleGroup
-    state.postGroup = response.postGroup
+  getUserProfile().then((res) => {
+    state.user = res.data
+    state.user.createTime = dayjs(state.user.createTime).format('YYYY-MM-DD HH:mm:ss')
+    const roles = res.data.roles
+      .filter((x) => x && typeof x === 'object' && x.hasOwnProperty('roleName'))
+      .map((x) => x.roleName)
+      .join('、')
+    state.user.roles = roles
+    state.roleGroup = res.roleGroup
+    state.postGroup = res.postGroup
   })
 }
 
