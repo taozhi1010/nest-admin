@@ -1,4 +1,4 @@
-import { IsString, IsJSON, IsEnum, IsPhoneNumber, Min, Length, IsOptional, IsBoolean, IsNumber, IsEmail } from 'class-validator';
+import { IsString, IsEnum, Length, IsOptional, IsNumber } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { PagingDto } from 'src/common/dto/index';
 
@@ -53,4 +53,12 @@ export class ListGameAricleDto extends PagingDto {
   @IsString()
   @IsEnum(StatusEnum)
   status?: string;
+}
+
+export class DetailGameDto {
+  @ApiProperty({
+    required: true,
+  })
+  @IsString()
+  gameId?: string;
 }
