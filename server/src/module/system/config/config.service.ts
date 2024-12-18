@@ -74,7 +74,7 @@ export class ConfigService {
    * @param configKey 配置的键值，用于查询配置信息。
    * @returns 返回一个结果对象，包含查询到的配置信息。如果未查询到，则返回空结果。
    */
-  @Cacheable(CacheEnum.SYS_CONFIG_KEY, 'configKey')
+  @Cacheable(CacheEnum.SYS_CONFIG_KEY, '{configKey}')
   async getConfigValue(configKey: string) {
     const data = await this.sysConfigEntityRep.findOne({ where: { configKey: configKey } });
     return data.configValue;

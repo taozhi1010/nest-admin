@@ -24,23 +24,36 @@ export function ListToTree(arr, getId, getLabel) {
   const kData = {}; // 以id做key的对象 暂时储存数据
   const lData = []; // 最终的数据 arr
 
+  // 第一次遍历，构建 kData
   arr.forEach((m) => {
-    m = {
-      id: getId(m),
-      label: getLabel(m),
-      parentId: +m.parentId,
+    const id = getId(m);
+    const label = getLabel(m);
+    const parentId = +m.parentId;
+
+    kData[id] = {
+      id,
+      label,
+      parentId,
+      children: [], // 初始化 children 数组
     };
-    kData[m.id] = {
-      id: m.id,
-      label: m.label,
-      parentId: m.parentId,
-    };
-    if (m.parentId === 0) {
-      lData.push(kData[m.id]);
-    } else {
-      kData[m.parentId] = kData[m.parentId] || {};
-      kData[m.parentId].children = kData[m.parentId].children || [];
-      kData[m.parentId].children.push(kData[m.id]);
+
+    // 如果是根节点，直接推入 lData
+    if (parentId === 0) {
+      lData.push(kData[id]);
+    }
+  });
+  // 第二次遍历，处理子节点
+  arr.forEach((m) => {
+    const id = getId(m);
+    const parentId = +m.parentId;
+
+    if (parentId !== 0) {
+      // 确保父节点存在后再添加子节点
+      if (kData[parentId]) {
+        kData[parentId].children.push(kData[id]);
+      } else {
+        console.warn(`Parent menuId: ${parentId} not found for child menuId: ${id}`);
+      }
     }
   });
   return lData;
