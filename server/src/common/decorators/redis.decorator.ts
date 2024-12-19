@@ -14,7 +14,10 @@ export function CacheEvict(CACHE_NAME: string, CACHE_KEY: string) {
       const key = paramsKeyFormat(originMethod, CACHE_KEY, args);
 
       if (key === '*') {
-        await this.redis.del(await this.redis.keys(`${CACHE_NAME}*`));
+        const res = await this.redis.keys(`${CACHE_NAME}*`);
+        if (res.length) {
+          await this.redis.del(res);
+        }
       } else if (key !== null) {
         await this.redis.del(`${CACHE_NAME}${key}`);
       } else {
