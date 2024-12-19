@@ -46,8 +46,9 @@
       </el-table-column>
       <el-table-column label="创建时间" align="center" prop="createTime" width="180" />
       <el-table-column label="修改时间" align="center" prop="updateTime" width="180" />
-      <el-table-column label="操作" width="180" align="center" fixed="right" class-name="small-padding fixed-width">
+      <el-table-column label="操作" width="240" align="center" fixed="right" class-name="small-padding fixed-width">
         <template #default="scope">
+          <el-button link type="primary" icon="View" @click="table.handlePreview(scope.row)">预览</el-button>
           <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['game:Article:edit']">修改</el-button>
           <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['game:Article:remove']">删除</el-button>
         </template>
@@ -82,12 +83,14 @@
         </div>
       </template>
     </el-dialog>
+
+    <Preview ref="PreviewRef" />
   </div>
 </template>
 
 <script setup name="Article">
 import { listArticle, addArticle, delArticle, getArticle, updateArticle } from '@/api/game/Article'
-import dayjs from 'dayjs'
+import Preview from './components/Preview'
 
 const { proxy } = getCurrentInstance()
 const { sys_article_status } = proxy.useDict('sys_article_status')
@@ -103,6 +106,7 @@ const single = ref(true)
 const multiple = ref(true)
 const total = ref(0)
 const title = ref('')
+const PreviewRef = ref()
 
 const data = reactive({
   form: {},
@@ -122,6 +126,13 @@ const data = reactive({
 })
 
 const { queryParams, form, rules } = toRefs(data)
+
+const table = reactive({
+  handlePreview: () => {
+    console.log('预览')
+    PreviewRef.value.handleOpen()
+  }
+})
 
 /** 查询文章列表 */
 function getList() {
