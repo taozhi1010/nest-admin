@@ -128,9 +128,8 @@ const data = reactive({
 const { queryParams, form, rules } = toRefs(data)
 
 const table = reactive({
-  handlePreview: () => {
-    console.log('预览')
-    PreviewRef.value.handleOpen()
+  handlePreview: (row) => {
+    PreviewRef.value.handleOpen(row)
   }
 })
 
