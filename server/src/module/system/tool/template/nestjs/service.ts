@@ -55,9 +55,9 @@ constructor(
         return ResultData.ok({value:res.affected >= 1});
     }
 
-    async remove(id: number) {
+    async remove(${primaryKey}s: number[]) {
         const res = await this.${businessName}EntityRep.update(
-            { ${primaryKey}: id },
+            { ${primaryKey}: In(${primaryKey}s) },
             {
                 delFlag: '1',
             },
