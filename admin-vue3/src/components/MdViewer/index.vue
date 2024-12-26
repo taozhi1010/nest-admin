@@ -1,6 +1,6 @@
 <template>
   <div class="markdown-body">
-    <div v-html="result"></div>
+    <div v-html="resultStr"></div>
   </div>
 </template>
 
@@ -85,19 +85,28 @@ onMounted(() => {
   })
 })
 
-watch(
-  props.value,
-  (val) => {
-    nextTick(() => {
-      if (val !== null && typeof val !== 'undefined' && val !== '') {
-        result.value = md.render(val)
-      }
-    })
-  },
-  {
-    immediate: true
+const resultStr = computed(() => {
+  const val = props.value
+  let result = ''
+  if (val !== null && typeof val !== 'undefined' && val !== '') {
+    result = md.render(val)
   }
-)
+  return result || ''
+})
+
+// watch(
+//   props.value,
+//   (val) => {
+//     nextTick(() => {
+//       if (val !== null && typeof val !== 'undefined' && val !== '') {
+//         result.value = md.render(val)
+//       }
+//     })
+//   },
+//   {
+//     immediate: true
+//   }
+// )
 </script>
 
 <style lang="scss">
