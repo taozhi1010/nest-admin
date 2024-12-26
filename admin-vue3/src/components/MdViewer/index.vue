@@ -115,7 +115,6 @@ const resultStr = computed(() => {
   min-width: 200px;
   max-width: 980px;
   margin: 0 auto;
-  padding: 18px;
 }
 
 @media (max-width: 767px) {
