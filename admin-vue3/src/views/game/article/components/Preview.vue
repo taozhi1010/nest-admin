@@ -18,7 +18,7 @@
 </template>
 
 <script setup>
-import { getArticle } from '@/api/game/Article'
+import { getArticle } from '@/api/game/article'
 import MdViewer from '@/components/MdViewer'
 
 const drawer = reactive({

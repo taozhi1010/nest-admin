@@ -89,7 +89,7 @@
 </template>
 
 <script setup name="Article">
-import { listArticle, addArticle, delArticle, getArticle, updateArticle } from '@/api/game/Article'
+import { listArticle, addArticle, delArticle, getArticle, updateArticle } from '@/api/game/article'
 import Preview from './components/Preview'
 
 const { proxy } = getCurrentInstance()
