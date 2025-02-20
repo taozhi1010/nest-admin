@@ -96,7 +96,7 @@ Any type of contribution is welcome, here are some examples of how you may contr
 
 ## Concat
 
-wechat: `taozhi1010`
+wechat: `taozhi10100`
 
 |                           WeChat communication group                           |
 | :----------------------------------------------------------------------------: |
