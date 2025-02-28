@@ -15,12 +15,12 @@ const useUserStore = defineStore(
     actions: {
       // 登录
       login(userInfo) {
-        const username = userInfo.username.trim()
+        const userName = userInfo.userName.trim()
         const password = userInfo.password
         const code = userInfo.code
         const uuid = userInfo.uuid
         return new Promise((resolve, reject) => {
-          login(username, password, code, uuid).then(res => {
+          login(userName, password, code, uuid).then(res => {
             setToken(res.data.token)
             this.token = res.data.token
             resolve()

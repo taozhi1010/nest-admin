@@ -20,7 +20,7 @@ export class LoginDto {
   @IsString()
   @MinLength(2)
   @MaxLength(10)
-  username: string;
+  userName: string;
 
   @ApiProperty({
     required: true,

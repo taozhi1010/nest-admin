@@ -232,13 +232,13 @@ export class UserService {
    * @param updateUserDto
    * @returns
    */
-  @CacheEvict(CacheEnum.SYS_USER_KEY, '{userId}')
+  @CacheEvict(CacheEnum.SYS_USER_KEY, '{updateUserDto.userId}')
   async update(updateUserDto: UpdateUserDto, userId: number) {
     //不能修改超级管理员
     if (updateUserDto.userId === 1) throw new BadRequestException('非法操作！');
 
-    //过滤掉设置超级管理员角色
-    updateUserDto.roleIds = updateUserDto.roleIds.filter((v) => v !== 1);
+    //TODO：过滤掉设置超级管理员角色
+    updateUserDto.roleIds = updateUserDto.roleIds.filter((v) => v != 1);
 
     //当前用户不能修改自己的状态
     if (updateUserDto.userId === userId) {
@@ -300,6 +300,7 @@ export class UserService {
 
     //更新用户信息
     const data = await this.userRepo.update({ userId: updateUserDto.userId }, updateUserDto);
+
     return ResultData.ok(data);
   }
 
@@ -315,7 +316,7 @@ export class UserService {
   async login(user: LoginDto, clientInfo: ClientInfoDto) {
     const data = await this.userRepo.findOne({
       where: {
-        userName: user.username,
+        userName: user.userName,
       },
       select: ['userId', 'password'],
     });
@@ -375,7 +376,7 @@ export class UserService {
       token: uuid,
       user: userData,
       userId: userData.userId,
-      username: userData.userName,
+      userName: userData.userName,
       deptId: userData.deptId,
     };
 
@@ -507,18 +508,22 @@ export class UserService {
    */
   async register(user: RegisterDto) {
     const loginDate = GetNowDate();
+    const salt = bcrypt.genSaltSync(10);
+    if (user.password) {
+      user.password = await bcrypt.hashSync(user.password, salt);
+    }
     const checkUserNameUnique = await this.userRepo.findOne({
       where: {
-        userName: user.username,
+        userName: user.userName,
       },
       select: ['userName'],
     });
     if (checkUserNameUnique) {
-      return ResultData.fail(500, `保存用户'${user.username}'失败，注册账号已存在`);
+      return ResultData.fail(500, `保存用户'${user.userName}'失败，注册账号已存在`);
     }
-    user['userName'] = user.username;
-    user['nickName'] = user.username;
-    await this.userRepo.save({ ...user, loginDate });
+    user['userName'] = user.userName;
+    user['nickName'] = user.userName;
+    await this.userRepo.save({ ...user, loginDate, userType: SYS_USER_TYPE.CUSTOM });
     return ResultData.ok();
   }
 
@@ -638,7 +643,11 @@ export class UserService {
    * @returns
    */
   async updateAuthRole(query) {
-    const roleIds = query.roleIds.split(',');
+    let roleIds = query.roleIds.split(',');
+
+    //TODO：过滤掉设置超级管理员角色
+    roleIds = roleIds.filter((v) => v != 1);
+
     if (roleIds?.length > 0) {
       //用户已有角色,先删除所有关联角色
       const hasRoletId = await this.sysUserWithRoleEntityRep.findOne({

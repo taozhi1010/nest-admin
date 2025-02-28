@@ -3590,7 +3590,7 @@
           "code": {
             "type": "string"
           },
-          "username": {
+          "userName": {
             "type": "string"
           },
           "password": {
@@ -3601,7 +3601,7 @@
           }
         },
         "required": [
-          "username",
+          "userName",
           "password",
           "uuid"
         ]
@@ -3612,7 +3612,7 @@
           "code": {
             "type": "string"
           },
-          "username": {
+          "userName": {
             "type": "string"
           },
           "password": {
@@ -3623,7 +3623,7 @@
           }
         },
         "required": [
-          "username",
+          "userName",
           "password",
           "uuid"
         ]

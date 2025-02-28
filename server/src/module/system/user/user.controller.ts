@@ -151,12 +151,10 @@ export class UserController {
   @RequirePermission('system:user:edit')
   @Put()
   async update(@Body() updateUserDto: UpdateUserDto, @User() user: UserDto) {
-    const userId = user.user.userId;
-    const uuid = user.token;
-
-    const result = await this.userService.update(updateUserDto, userId);
-    await this.userService.updateRedisUserRolesAndPermissions(uuid, userId);
-
+    const activeUserId = user.userId;
+    // const uuid = user.token;
+    const result = await this.userService.update(updateUserDto, activeUserId);
+    // await this.userService.updateRedisUserRolesAndPermissions(uuid, updateUserDto.userId);
     return result;
   }
 

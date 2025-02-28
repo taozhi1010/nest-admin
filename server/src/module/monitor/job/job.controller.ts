@@ -28,21 +28,21 @@ export class JobController {
   @ApiOperation({ summary: '创建定时任务' })
   @RequirePermission('monitor:job:add')
   add(@Body() createJobDto: CreateJobDto, @Req() req: any) {
-    return this.jobService.create(createJobDto, req.user?.username);
+    return this.jobService.create(createJobDto, req.user?.userName);
   }
 
   @Put('changeStatus')
   @ApiOperation({ summary: '修改任务状态' })
   @RequirePermission('monitor:job:changeStatus')
   changeStatus(@Body('jobId') jobId: number, @Body('status') status: string, @Req() req: any) {
-    return this.jobService.changeStatus(jobId, status, req.user?.username);
+    return this.jobService.changeStatus(jobId, status, req.user?.userName);
   }
 
   @Put('')
   @ApiOperation({ summary: '修改定时任务' })
   @RequirePermission('monitor:job:edit')
   update(@Body('jobId') jobId: number, @Body() updateJobDto: Partial<CreateJobDto>, @Req() req: any) {
-    return this.jobService.update(jobId, updateJobDto, req.user?.username);
+    return this.jobService.update(jobId, updateJobDto, req.user?.userName);
   }
 
   @Delete(':jobIds')

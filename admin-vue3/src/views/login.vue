@@ -6,8 +6,8 @@
   <div class="login">
     <el-form ref="loginRef" :model="loginForm.model" :rules="loginForm.rules" class="login-form">
       <h3 class="title">nest-admin后台管理系统</h3>
-      <el-form-item prop="username">
-        <el-input v-model.trim="loginForm.model.username" maxlength="10" type="text" size="large" auto-complete="off" placeholder="账号">
+      <el-form-item prop="userName">
+        <el-input v-model.trim="loginForm.model.userName" maxlength="10" type="text" size="large" auto-complete="off" placeholder="账号">
           <template #prefix>
             <!-- <svg-icon icon-class="User" class="input-icon" /> -->
             <User class="input-icon" />
@@ -61,14 +61,14 @@ const loginRef = ref()
 
 const loginForm = reactive({
   model: {
-    username: '',
+    userName: '',
     password: '',
     rememberMe: false,
     code: '',
     uuid: ''
   },
   rules: {
-    username: [{ required: true, trigger: 'blur', message: '请输入您的账号' }],
+    userName: [{ required: true, trigger: 'blur', message: '请输入您的账号' }],
     password: [{ required: true, trigger: 'blur', message: '请输入您的密码' }],
     code: [{ required: true, trigger: 'change', message: '请输入验证码' }]
   }

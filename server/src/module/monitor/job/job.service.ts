@@ -68,11 +68,11 @@ export class JobService {
   }
 
   // 创建任务
-  async create(createJobDto: CreateJobDto, username: string) {
+  async create(createJobDto: CreateJobDto, userName: string) {
     const job = this.jobRepository.create({
       ...createJobDto,
-      createBy: username,
-      updateBy: username,
+      createBy: userName,
+      updateBy: userName,
     });
 
     await this.jobRepository.save(job);
@@ -86,7 +86,7 @@ export class JobService {
   }
 
   // 更新任务
-  async update(jobId: number, updateJobDto: Partial<Job>, username: string) {
+  async update(jobId: number, updateJobDto: Partial<Job>, userName: string) {
     const job = await this.jobRepository.findOne({ where: { jobId } });
     if (!job) {
       throw new Error('任务不存在');
@@ -106,7 +106,7 @@ export class JobService {
 
     await this.jobRepository.update(jobId, {
       ...updateJobDto,
-      updateBy: username,
+      updateBy: userName,
       updateTime: new Date(),
     });
 
@@ -132,7 +132,7 @@ export class JobService {
   }
 
   // 改变任务状态
-  async changeStatus(jobId: number, status: string, username: string) {
+  async changeStatus(jobId: number, status: string, userName: string) {
     const job = await this.jobRepository.findOne({ where: { jobId } });
     if (!job) {
       throw new Error('任务不存在');
@@ -156,7 +156,7 @@ export class JobService {
 
     await this.jobRepository.update(jobId, {
       status,
-      updateBy: username,
+      updateBy: userName,
       updateTime: new Date(),
     });
 

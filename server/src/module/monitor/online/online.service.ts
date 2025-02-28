@@ -26,7 +26,7 @@ export class OnlineService {
       return {
         tokenId: item.token,
         deptName: item.user.deptName,
-        userName: item.username,
+        userName: item.userName,
         ipaddr: item.ipaddr,
         loginLocation: item.loginLocation,
         browser: item.browser,

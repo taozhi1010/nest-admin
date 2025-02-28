@@ -74,7 +74,7 @@ export class ToolService {
         businessName: tableName.slice(tableName.lastIndexOf('_') + 1), //生成业务名
         functionName: table.tableComment?.trim() || table.tableName, //生成功能名
         functionAuthor: toolConfig.author,
-        createBy: user.username,
+        createBy: user.userName,
       };
       const tableInfo = await this.genTableEntityRep.save(tableData);
 

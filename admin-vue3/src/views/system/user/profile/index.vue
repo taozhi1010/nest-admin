@@ -31,7 +31,7 @@
               <li class="list-group-item">
                 <svg-icon icon-class="tree" />
                 所属部门
-                <div class="pull-right" v-if="state.user.dept">{{ state.user.dept.deptName }} / {{ state.postGroup }}</div>
+                <div class="pull-right" v-if="state.user.dept">{{ state.user.dept.deptName }}</div>
               </li>
               <li class="list-group-item">
                 <svg-icon icon-class="peoples" />
@@ -77,16 +77,12 @@ import dayjs from 'dayjs'
 
 const activeTab = ref('userinfo')
 const state = reactive({
-  user: {},
-  roleGroup: {},
-  postGroup: {}
+  user: {}
 })
 
 function getUser() {
   getUserProfile().then((response) => {
     state.user = response.data
-    state.roleGroup = response.roleGroup
-    state.postGroup = response.postGroup
   })
 }
 

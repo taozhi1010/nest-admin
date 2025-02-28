@@ -18,6 +18,6 @@ export type UserType = {
     posts: Array<SysPostEntity>;
   } & UserEntity;
   userId: number;
-  username: string;
+  userName: string;
   deptId: number;
 };
