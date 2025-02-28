@@ -1,7 +1,9 @@
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 
-@Entity('sys_job_log')
+@Entity('sys_job_log', {
+  comment: '任务调度日志表',
+})
 export class JobLog {
   @ApiProperty({ description: '任务日志ID' })
   @PrimaryGeneratedColumn({ name: 'job_log_id', comment: '任务日志ID' })
