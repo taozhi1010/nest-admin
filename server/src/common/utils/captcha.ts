@@ -40,7 +40,7 @@ export function createMath() {
     ...options,
     mathMin: 1,
     mathMax: 50,
-    mathOperator: '+-',
+    mathOperator: '+',
   });
 }
 
