@@ -3,7 +3,7 @@ import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { RedisService } from 'src/module/common/redis/redis.service';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 import { Response } from 'express';
 import { GetNowDate, GenerateUUID, Uniq } from 'src/common/utils/index';
 import { ExportTable } from 'src/common/utils/export';
