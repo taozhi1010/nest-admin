@@ -76,6 +76,21 @@
         ]
       }
     },
+    "/registerUser": {
+      "get": {
+        "operationId": "MainController_registerUser",
+        "summary": "账号自助-是否开启用户注册功能",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "根目录"
+        ]
+      }
+    },
     "/captchaImage": {
       "get": {
         "operationId": "MainController_captchaImage",

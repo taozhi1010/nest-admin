@@ -57,3 +57,15 @@ export function getCodeImg() {
     timeout: 20000
   })
 }
+
+// 是否开启用户注册功能
+export function getRegisterUser() {
+  return request({
+    url: '/registerUser',
+    headers: {
+      isToken: false
+    },
+    method: 'get',
+    timeout: 20000
+  })
+}

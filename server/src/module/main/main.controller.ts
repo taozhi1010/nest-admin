@@ -61,6 +61,17 @@ export class MainController {
   register(@Body() user: RegisterDto) {
     return this.mainService.register(user);
   }
+  
+  @ApiOperation({
+    summary: '账号自助-是否开启用户注册功能',
+  })
+  @Get('/registerUser')
+  async registerUser() {
+    //是否开启验证码
+    const res = await this.configService.getConfigValue('sys.account.registerUser');
+    const enable = res === 'true';
+    return ResultData.ok(enable, '操作成功');
+  }
 
   @ApiOperation({
     summary: '获取验证图片',

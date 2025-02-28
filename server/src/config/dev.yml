@@ -30,15 +30,15 @@ db:
   mysql:
     host: '127.0.0.1'
     username: 'root'
-    password: ''
-    database: 'admin_db'
+    password: 'yehuozhili'
+    database: 'nest-admin'
     port: 3306
     charset: 'utf8mb4'
     logger: 'file'
     logging: true
     multipleStatements: true
     dropSchema: false
-    synchronize: false
+    synchronize: true
     supportBigNumbers: true
     bigNumberStrings: true
 
@@ -61,8 +61,10 @@ perm:
     whitelist:
       [
         { path: '/captchaImage', method: 'GET' },
+        { path: '/registerUser', method: 'GET' },
         { path: '/register', method: 'POST' },
         { path: '/login', method: 'POST' },
+        { path: '/logout', method: 'POST' },
         { path: '/perm/{id}', method: 'GET' },
         { path: '/upload', method: 'POST' },
       ]

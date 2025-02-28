@@ -32,7 +32,7 @@
 
       <div class="login-tips">
         <el-checkbox v-model="loginForm.model.rememberMe" style="margin: 0px 0px 25px 0px">记住密码</el-checkbox>
-        <el-link class="login-tips-link" type="primary" href="/register" target="_blank">去注册账号</el-link>
+        <el-link v-if="showRegisterUser" class="login-tips-link" type="primary" href="/register" target="_blank">去注册账号</el-link>
       </div>
 
       <el-form-item style="width: 100%">
@@ -52,13 +52,14 @@
 <script setup>
 import useUserStore from '@/store/modules/user'
 import useAuthCode from '@/hooks/useAuthCode'
+import { getRegisterUser } from '@/api/login'
 
 const userStore = useUserStore()
 const authCodeInfo = useAuthCode.authCodeInfo
 const route = useRoute()
 const router = useRouter()
 const loginRef = ref()
-
+const showRegisterUser = ref()
 const loginForm = reactive({
   model: {
     userName: '',
@@ -83,6 +84,12 @@ watch(
   },
   { immediate: true }
 )
+
+function getRegisterUserAllow() {
+  getRegisterUser().then((res) => {
+    showRegisterUser.value = res.data
+  })
+}
 
 function handleLogin() {
   loginRef.value.validate((valid) => {
@@ -112,6 +119,7 @@ function handleLogin() {
 }
 
 useAuthCode.getValidateCode(loginForm.model, false)
+getRegisterUserAllow()
 loginForm.model = useAuthCode.getUserCookie(loginForm.model)
 </script>
 
