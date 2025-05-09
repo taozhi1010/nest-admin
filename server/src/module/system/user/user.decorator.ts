@@ -29,6 +29,7 @@ export const UserTool = createParamDecorator((data: unknown, ctx: ExecutionConte
       return;
     }
     data.updateBy = userName;
+    return data;
   };
 
   return { injectCreate, injectUpdate };

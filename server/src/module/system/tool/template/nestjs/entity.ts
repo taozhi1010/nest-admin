@@ -27,7 +27,8 @@ const content = (options) => {
     const type = lowercaseFirstLetter(javaType);
     if (isPk == '1') {
       html += `\t@PrimaryGeneratedColumn({ type: '${columnType}', name: '${filed}', comment: '${columnComment}' })\n\tpublic ${javaField}: ${type};\n`;
-    } else if (!GenConstants.BASE_ENTITY.includes(javaField)) {
+    } else {
+      //else if (!GenConstants.BASE_ENTITY.includes(javaField))
       html += `\n\t@Column({ type: '${columnType}', name: '${filed}', default: ${getColumnDefault(column)}, comment: '${columnComment}' })\n\tpublic ${javaField}: ${type};\n`;
     }
   });
