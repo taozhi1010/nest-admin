@@ -8,10 +8,13 @@ const configFileNameObj = {
   production: 'prod',
 };
 
-const env = process.env.NODE_ENV;
-
-console.log(env);
+export const getEnv = () => {
+  const env = process.env.NODE_ENV;
+  return configFileNameObj[env];
+};
 
 export default () => {
-  return yaml.load(readFileSync(join(__dirname, `./${configFileNameObj[env]}.yml`), 'utf8')) as Record<string, any>;
+  const env = getEnv();
+  const url = `./env/${env}.yml`;
+  return yaml.load(readFileSync(join(__dirname, `${url}`), 'utf8')) as Record<string, any>;
 };
