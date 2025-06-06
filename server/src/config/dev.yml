@@ -27,6 +27,7 @@ cos:
   location: ''
 # 数据库配置
 db:
+  # mysql 配置
   mysql:
     host: '127.0.0.1'
     username: 'root'
@@ -41,14 +42,13 @@ db:
     synchronize: false
     supportBigNumbers: true
     bigNumberStrings: true
-
-# redis 配置
-redis:
-  host: 'localhost'
-  password: '*********'
-  port: 6379
-  db: 2
-  keyPrefix: ''
+  # redis 配置
+  redis:
+    host: 'localhost123'
+    password: '*********'
+    port: 6379
+    db: 2
+    keyPrefix: ''
 
 # jwt 配置
 jwt:
@@ -59,13 +59,7 @@ jwt:
 perm:
   router:
     whitelist:
-      [
-        { path: '/captchaImage', method: 'GET' },
-        { path: '/register', method: 'POST' },
-        { path: '/login', method: 'POST' },
-        { path: '/perm/{id}', method: 'GET' },
-        { path: '/upload', method: 'POST' },
-      ]
+      [{ path: '/captchaImage', method: 'GET' }, { path: '/register', method: 'POST' }, { path: '/login', method: 'POST' }, { path: '/perm/{id}', method: 'GET' }, { path: '/upload', method: 'POST' }]
 
 # 用户相关
 # 初始密码， 重置密码
