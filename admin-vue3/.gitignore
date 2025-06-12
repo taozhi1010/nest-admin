@@ -23,6 +23,8 @@ selenium-debug.log
 .env.production
 .env.production
 
+components.d.ts
+
 package-lock.json
 yarn.lock
 pnpm-lock.yaml
