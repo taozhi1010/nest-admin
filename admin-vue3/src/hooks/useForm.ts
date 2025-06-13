@@ -23,29 +23,11 @@ interface apiParams {
  */
 const useForm = (api: apiParams, formRef: any, key: string) => {
   const state = reactive<FormState>({
-    loading: false,
-    open: false,
-    title: '',
-    form: {}
+    loading: false, // 表单加载状态
+    open: false, // 弹窗是否打开
+    title: '', // 弹窗标题
+    form: {} // 表单数据
   })
-
-  //  打开表单,回去并回显数据
-  const onOpenForm = (row: any) => {
-    const formId = row[key]
-    nextTick(async () => {
-      try {
-        state.loading = true
-        const res = await api.get(formId) // 这里后续要补充一个类型
-        state.form = res.data
-        state.title = formId ? '修改' : '添加'
-      } catch (error) {
-        console.log('表单详情获取失败：', error)
-      } finally {
-        state.loading = false
-        state.open = true
-      }
-    })
-  }
 
   // 重置表单
   const onReset = () => {
@@ -59,7 +41,46 @@ const useForm = (api: apiParams, formRef: any, key: string) => {
     state.open = false
   }
 
-  // 新增或修改表单数据
+  // 删除单行或多行数据
+  const onRowDelete = async (ids: string | number) => {
+    state.loading = true
+    try {
+      await api.delete(ids)
+      ElMessage.success('删除成功')
+    } catch (error) {
+      ElMessage.error('删除失败')
+    } finally {
+      state.loading = false
+    }
+  }
+
+  // 打开表单，新增或修改表单
+  const onOpenForm = async (row: any) => {
+    state.loading = true
+    state.open = true
+    // 判断是修改还是添加操作
+    if (row) {
+      try {
+        const formId = row[key]
+
+        state.title = formId ? '修改' : '添加'
+        const res = await api.get(formId) // 这里后续要补充一个类型
+        state.form = res.data
+      } catch (error) {
+        console.log('表单详情获取失败：', error)
+      } finally {
+        state.loading = false
+      }
+    } else {
+      state.form = {}
+      nextTick(() => {
+        state.loading = false
+        formRef.value.resetFields()
+      })
+    }
+  }
+
+  // 提交表单，新增或修改表单数据
   const onSubmit = async () => {
     const form = state.form
     const formId = form[key]
@@ -79,19 +100,6 @@ const useForm = (api: apiParams, formRef: any, key: string) => {
     } finally {
       state.loading = false
       state.open = false
-    }
-  }
-
-  // 删除单行或多行数据
-  const onRowDelete = async (ids: string | number) => {
-    state.loading = true
-    try {
-      await api.delete(ids)
-      ElMessage.success('删除成功')
-    } catch (error) {
-      ElMessage.error('删除失败')
-    } finally {
-      state.loading = false
     }
   }
 

@@ -2,10 +2,10 @@
   <div class="app-container">
     <el-form :model="queryParams" ref="queryRef" :inline="true" v-show="showSearch">
       <el-form-item label="公告标题" prop="noticeTitle">
-        <el-input v-model="queryParams.noticeTitle" placeholder="请输入公告标题" clearable @keyup.enter="notice.onSearch" />
+        <el-input v-model="queryParams.noticeTitle" placeholder="请输入公告标题" clearable @keyup.enter="noticeTable.onSearch" />
       </el-form-item>
       <el-form-item label="操作人员" prop="createBy">
-        <el-input v-model="queryParams.createBy" placeholder="请输入操作人员" clearable @keyup.enter="notice.onSearch" />
+        <el-input v-model="queryParams.createBy" placeholder="请输入操作人员" clearable @keyup.enter="noticeTable.onSearch" />
       </el-form-item>
       <el-form-item label="类型" prop="noticeType">
         <el-select v-model="queryParams.noticeType" placeholder="请选择公告类型" clearable>
@@ -13,8 +13,8 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button :loading="notice.state.loading" type="primary" icon="Search" @click="notice.onSearch">搜索</el-button>
-        <el-button :loading="notice.state.loading" icon="Refresh" @click="notice.onReset">重置</el-button>
+        <el-button :loading="noticeTable.state.loading" type="primary" icon="Search" @click="noticeTable.onSearch">搜索</el-button>
+        <el-button :loading="noticeTable.state.loading" icon="Refresh" @click="noticeTable.onReset">重置</el-button>
       </el-form-item>
     </el-form>
 
@@ -25,12 +25,12 @@
       <el-col :span="1.5">
         <el-button type="danger" plain icon="Delete" :disabled="multiple" @click="handleDelete" v-hasPermi="['system:notice:remove']">删除</el-button>
       </el-col>
-      <right-toolbar v-model:showSearch="showSearch" @queryTable="getList" />
+      <right-toolbar v-model:showSearch="showSearch" @queryTable="noticeTable.request" />
     </el-row>
 
-    <el-table v-loading="notice.state.loading" :data="noticeList" @selection-change="handleSelectionChange">
+    <el-table v-loading="noticeTable.state.loading" :data="noticeTable.state.list" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="序号" align="center" prop="noticeId" width="100" />
+      <el-table-column type="index" label="序号" align="center" width="60" />
       <el-table-column label="公告标题" align="center" prop="noticeTitle" :show-overflow-tooltip="true" />
       <el-table-column label="公告类型" align="center" prop="noticeType" width="100">
         <template #default="scope">
@@ -56,11 +56,17 @@
       </el-table-column>
     </el-table>
 
-    <pagination v-show="notice.state.page.total > 0" :total="notice.state.page.total" v-model:page="notice.state.page.pageNum" v-model:limit="notice.state.page.pageSize" @pagination="getList" />
+    <pagination
+      v-show="noticeTable.state.page.total > 0"
+      :total="noticeTable.state.page.total"
+      v-model:page="noticeTable.state.page.pageNum"
+      v-model:limit="noticeTable.state.page.pageSize"
+      @pagination="noticeTable.request"
+    />
 
     <!-- 添加或修改公告对话框 -->
-    <el-dialog :title="title" v-model="noticeForm.state.open" width="780px" append-to-body>
-      <el-form ref="noticeFormRef" :model="noticeFormData" :rules="rules" label-width="80px">
+    <el-dialog :title="noticeForm.state.title" v-model="noticeForm.state.open" width="800px" append-to-body>
+      <el-form v-loading="noticeForm.state.loading" ref="noticeFormRef" :model="noticeForm.state.form" :rules="rules" label-width="80px">
         <el-row>
           <el-col :span="12">
             <el-form-item label="公告标题" prop="noticeTitle">
@@ -90,8 +96,8 @@
       </el-form>
       <template #footer>
         <div class="dialog-footer">
-          <el-button type="primary" @click="handleSubmit">确 定</el-button>
-          <el-button @click="noticeForm.onCancel">取 消</el-button>
+          <el-button :loading="noticeForm.state.loading" type="primary" @click="handleSubmit">确 定</el-button>
+          <el-button @click="handleCancel">取 消</el-button>
         </div>
       </template>
     </el-dialog>
@@ -102,97 +108,66 @@
 const { proxy } = getCurrentInstance()
 const { sys_notice_status, sys_notice_type } = proxy.useDict('sys_notice_status', 'sys_notice_type')
 
-const data = reactive({
-  form: {},
-  queryParams: {
-    noticeTitle: '',
-    createBy: null,
-    status: null
-  },
-  rules: {
-    noticeTitle: [{ required: true, message: '公告标题不能为空', trigger: 'blur' }],
-    noticeType: [{ required: true, message: '公告类型不能为空', trigger: 'change' }]
-  }
-})
-
 import { listNotice, getNotice, delNotice, addNotice, updateNotice } from '@/api/system/notice'
 import useTable from '@/hooks/useTable'
 import useForm from '@/hooks/useForm'
+
+// 列表
 const queryRef = ref()
-const notice = useTable(listNotice, data.queryParams, queryRef)
-const noticeList = notice.state.list
+const queryParams = reactive({
+  noticeTitle: '',
+  createBy: null,
+  status: null
+})
+const noticeTable = useTable(listNotice, queryParams, queryRef)
 
+// 表单
 const noticeFormRef = ref()
+const rules = {
+  noticeTitle: [{ required: true, message: '请输入公告标题', trigger: 'blur' }],
+  noticeType: [{ required: true, message: '请选择公告类型', trigger: 'change' }]
+}
 const noticeForm = useForm({ add: addNotice, update: updateNotice, delete: delNotice, get: getNotice }, noticeFormRef, 'noticeId')
-const noticeFormData = noticeForm.formData
 
-const open = ref(false)
 const showSearch = ref(true)
 const ids = ref([])
 const single = ref(true)
 const multiple = ref(true)
-const title = ref('')
 
-const { queryParams, form, rules } = toRefs(data)
-
-/** 取消按钮 */
-function cancel() {
-  open.value = false
-  reset()
-}
-/** 表单重置 */
-function reset() {
-  form.value = {
-    noticeId: undefined,
-    noticeTitle: undefined,
-    noticeType: undefined,
-    noticeContent: undefined,
-    status: '0'
-  }
-  proxy.resetForm('noticeRef')
+// 新增操作
+const handleAdd = () => {
+  noticeForm.onOpenForm()
 }
 
-/** 多选框选中数据 */
-function handleSelectionChange(selection) {
+// 修改操作
+const handleUpdate = (row) => {
+  noticeForm.onOpenForm(row)
+}
+
+// 提交按钮
+const handleSubmit = () => {
+  noticeFormRef.value.validate((valid) => {
+    if (valid) {
+      noticeForm.onSubmit().then(() => {
+        noticeTable.request()
+      })
+    }
+  })
+}
+
+// 取消弹窗
+const handleCancel = () => {
+  noticeForm.onCancel()
+}
+
+// 多选框选中数据
+const handleSelectionChange = (selection) => {
   ids.value = selection.map((item) => item.noticeId)
   single.value = selection.length != 1
   multiple.value = !selection.length
 }
-/** 新增按钮操作 */
-function handleAdd() {
-  reset()
-  open.value = true
-  title.value = '添加公告'
-}
-// 修改按钮操作
-const handleUpdate = (row) => {
-  noticeForm.onOpenForm(row)
 
-  console.log(noticeFormData, '????')
-
-  // reset()
-  // const noticeId = row.noticeId || ids.value
-  // getNotice(noticeId).then((response) => {
-  //   form.value = response.data
-  //   open.value = true
-  //   title.value = '修改公告'
-  // })
-}
-// 提交按钮
-const handleSubmit = () => {
-  noticeForm.onSubmit().then(() => {
-    notice.request()
-  })
-
-  // noticeFormRef.value.validate((valid) => {
-  //   if (valid) {
-  //     noticeForm.onSubmit().then(() => {
-  //       notice.request()
-  //     })
-  //   }
-  // })
-}
-// 删除按钮操作
+// 删除操作
 const handleDelete = (row) => {
   const noticeIds = row.noticeId || ids.value
   ElMessageBox.confirm('您确认删除该公告吗？', '删除提示', {
@@ -201,7 +176,7 @@ const handleDelete = (row) => {
     type: 'warning'
   }).then(() => {
     noticeForm.onRowDelete(noticeIds).then(() => {
-      notice.request()
+      noticeTable.request()
     })
   })
 }
