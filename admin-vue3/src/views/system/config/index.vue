@@ -11,10 +11,12 @@
         <template #label>
           <el-tooltip effect="dark" content="系统内置，代表该行配置不可删除，是代表不可删除，否代表可以删除" placement="top-start">
             <div class="tips">
-              <QuestionFilled class="tips-icon" :size="'14px'" />
+              <div class="tips-icon tips-item">
+                <QuestionFilled />
+              </div>
+              <div class="tips-text tips-item">系统内置</div>
             </div>
           </el-tooltip>
-          <span style="width: 80px">系统内置</span>
         </template>
         <el-select v-model="queryParams.configType" placeholder="系统内置" clearable style="width: 160px">
           <el-option v-for="dict in sys_yes_no" :key="dict.value" :label="dict.label" :value="dict.value" />
@@ -39,12 +41,12 @@
       <el-col :span="1.5">
         <el-button type="danger" plain icon="Delete" :disabled="multiple" @click="handleDelete" v-hasPermi="['system:config:remove']">删除</el-button>
       </el-col>
-      <el-col :span="1.5">
+      <!-- <el-col :span="1.5">
         <el-button type="warning" plain icon="Download" @click="handleExport" v-hasPermi="['system:config:export']">导出</el-button>
-      </el-col>
-      <el-col :span="1.5">
+      </el-col> -->
+      <!-- <el-col :span="1.5">
         <el-button type="danger" plain icon="Refresh" @click="handleRefreshCache" v-hasPermi="['system:config:remove']">刷新缓存</el-button>
-      </el-col>
+      </el-col> -->
       <right-toolbar v-model:showSearch="showSearch" @queryTable="configTable.request"></right-toolbar>
     </el-row>
 
@@ -83,8 +85,8 @@
   </div>
 
   <!-- 添加或修改参数配置对话框 -->
-  <el-dialog :title="configForm.state.title" v-model="configForm.state.open" width="800px" append-to-body>
-    <el-form v-loading="configForm.state.loading" ref="configFormRef" :model="configForm.state.form" :rules="rules" label-width="80px">
+  <el-dialog :title="configForm.state.title" v-model="configForm.state.open" width="600px" append-to-body>
+    <el-form v-loading="configForm.state.loading" ref="configFormRef" :model="configForm.state.form" :rules="rules" label-width="120px">
       <el-form-item label="参数名称" prop="configName">
         <el-input v-model="configForm.state.form.configName" placeholder="请输入参数名称" />
       </el-form-item>
@@ -98,10 +100,12 @@
         <template #label>
           <el-tooltip effect="dark" content="系统内置，代表该行配置不可删除，是代表不可删除，否代表可以删除" placement="top-start">
             <div class="tips">
-              <QuestionFilled class="tips-icon" :size="'14px'" />
+              <div class="tips-icon tips-item">
+                <QuestionFilled />
+              </div>
+              <div class="tips-text tips-item">系统内置</div>
             </div>
           </el-tooltip>
-          <span style="width: 80px">系统内置</span>
         </template>
         <el-radio-group v-model="configForm.state.form.configType">
           <el-radio v-for="dict in sys_yes_no" :key="dict.value" :label="dict.value">{{ dict.label }}</el-radio>
@@ -188,7 +192,7 @@ const handleSelectionChange = (selection) => {
 // 删除操作
 const handleDelete = (row) => {
   const configId = row.configId || ids.value
-  ElMessageBox.confirm('您确认删除该公告吗？', '删除提示', {
+  ElMessageBox.confirm('您确认删除该参数吗？', '删除提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'
