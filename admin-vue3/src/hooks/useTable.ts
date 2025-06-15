@@ -13,6 +13,16 @@ interface page {
 }
 
 /**
+ * api参数
+ * @param get 获取列表数据
+ * @param export 导出接口
+ */
+interface apiParams {
+  get: (id: number | string) => Promise<any>
+  export?: (id: number | string) => Promise<any>
+}
+
+/**
  * 定义数据
  */
 interface TableState {
@@ -28,7 +38,7 @@ interface TableState {
  * @param {Object} formRef 表单ref,用于处理清空form的校验结果等操作
  */
 
-const useTable = (api, searchParam, formRef: any) => {
+const useTable = (api: apiParams, searchParam, formRef: any) => {
   const state = reactive<TableState>({
     loading: false,
     list: [],
@@ -49,7 +59,7 @@ const useTable = (api, searchParam, formRef: any) => {
 
     state.loading = true
     try {
-      const { code, data } = await api(params)
+      const { code, data } = await api.get(params)
       if (code === 200) {
         // todo：因为reative的问题，直接清空和赋值无效，只能用push方法，希望能有更优雅的方法
         state.list.length = 0
@@ -86,6 +96,16 @@ const useTable = (api, searchParam, formRef: any) => {
     state.page.pageNum = 1
     formRef.value.resetFields()
     request()
+  }
+
+  // 导出Excel
+  const onExport = () => {
+    const params = {
+      pageNum: state.page.pageNum,
+      pageSize: state.page.pageSize,
+      ...searchParam
+    }
+    api.export(params)
   }
 
   // 刷新

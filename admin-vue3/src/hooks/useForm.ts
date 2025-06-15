@@ -8,6 +8,13 @@ interface FormState {
   form: any
 }
 
+/**
+ * api参数
+ * @param get 获取单条数据
+ * @param add 新增数据
+ * @param delete 删除数据
+ * @param update 修改数据
+ */
 interface apiParams {
   get?: (id: number | string) => Promise<any>
   add?: (params: any) => Promise<any>
@@ -73,6 +80,7 @@ const useForm = (api: apiParams, formRef: any, key: string) => {
       }
     } else {
       state.form = {}
+      state.title = '添加'
       nextTick(() => {
         state.loading = false
         formRef.value.resetFields()

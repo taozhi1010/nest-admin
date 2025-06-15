@@ -119,7 +119,7 @@ const queryParams = reactive({
   createBy: null,
   status: null
 })
-const noticeTable = useTable(listNotice, queryParams, queryRef)
+const noticeTable = useTable({ get: listNotice }, queryParams, queryRef)
 
 // 表单
 const noticeFormRef = ref()
