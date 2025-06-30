@@ -80,6 +80,7 @@ export class ConfigService {
     return data.configValue;
   }
 
+  @CacheEvict(CacheEnum.SYS_CONFIG_KEY, '{updateConfigDto.configKey}')
   async update(updateConfigDto: UpdateConfigDto) {
     await this.sysConfigEntityRep.update(
       {
