@@ -1,0 +1,80 @@
+version: '1.0'
+name: admin-pipeline
+displayName: admin-pipeline
+triggers:
+  trigger: manual
+  push:
+    branches:
+      precise:
+        - build
+variables:
+  global:
+    - adminTargetFile
+stages:
+  - name: stage-4908b14e
+    displayName: 编译
+    strategy: naturally
+    trigger: auto
+    executor: []
+    steps:
+      - step: build@nodejs
+        name: build_nodejs
+        displayName: 编译
+        nodeVersion: 21.5.0
+        commands:
+          - '# 设置NPM源，提升安装速度'
+          - npm config set registry https://registry.npmmirror.com
+          - ''
+          - '# 安装pnpm'
+          - npm i -g pnpm
+          - ''
+          - '# 切换目录'
+          - cd ./admin-vue3
+          - ''
+          - '# 删除dist'
+          - rm -rf ./dist
+          - ''
+          - '# 编译'
+          - pnpm i && pnpm run build:prod
+        artifacts:
+          - name: BUILD_ARTIFACT
+            path:
+              - ./admin-vue3/dist
+        caches:
+          - ~/.pnpm
+          - ~/.npm
+          - ~/.yarn
+        notify: []
+        strategy:
+          retry: '0'
+  - name: stage-3c3b7dd6
+    displayName: 推送
+    strategy: naturally
+    trigger: auto
+    executor: []
+    steps:
+      - step: deploy@agent
+        name: deploy_agent
+        displayName: 主机部署
+        hostGroupID:
+          ID: dooring
+          hostID:
+            - 22a3b046-9f3e-4bb5-b3bb-5e8e8d57f799
+        deployArtifact:
+          - source: build
+            name: admin
+            target: ~/gitee_go/deploy
+            dependArtifact: BUILD_ARTIFACT
+        script:
+          - '# 功能：部署脚本会在部署主机组的每台机器上执行'
+          - '# 使用场景：先将制品包解压缩到指定目录中，再执行启动脚本deploy.sh，脚本示例地址：https://gitee.com/gitee-go/spring-boot-maven-deploy-case/blob/master/deploy.sh'
+          - '# mkdir -p /home/admin/app'
+          - '# tar zxvf ~/gitee_go/deploy/output.tar.gz -C /home/admin/app'
+          - '# sh /home/admin/app/deploy.sh restart'
+          - '# 如果你是php之类的无需制品包的制品方式，可以使用 git clone 或者 git pull 将源代码更新到服务器，再执行其他命令'
+          - '# git clone ***@***.git'
+          - ''
+          - tar zxvf ~/gitee_go/deploy/admin.tar.gz -C ${adminTargetFile}
+        notify: []
+        strategy:
+          retry: '0'
