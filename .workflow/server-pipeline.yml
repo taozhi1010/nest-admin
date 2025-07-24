@@ -1,6 +1,6 @@
 version: '1.0'
-name: pipeline-20250724
-displayName: pipeline-20250724
+name: server-pipeline
+displayName: server-pipeline
 triggers:
   trigger: manual
   push:
