@@ -62,7 +62,7 @@ stages:
             - 22a3b046-9f3e-4bb5-b3bb-5e8e8d57f799
         deployArtifact:
           - source: build
-            name: admin
+            name: dist
             target: ~/gitee_go/deploy
             dependArtifact: BUILD_ARTIFACT
         script:
@@ -74,7 +74,7 @@ stages:
           - '# 如果你是php之类的无需制品包的制品方式，可以使用 git clone 或者 git pull 将源代码更新到服务器，再执行其他命令'
           - '# git clone ***@***.git'
           - ''
-          - tar zxvf ~/gitee_go/deploy/admin.tar.gz -C ${adminTargetFile} --strip-components=1
+          - tar zxvf ~/gitee_go/deploy/dist.tar.gz -C ${adminTargetFile} --strip-components=1
         notify: []
         strategy:
           retry: '0'
