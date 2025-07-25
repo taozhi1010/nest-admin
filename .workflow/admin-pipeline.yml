@@ -6,7 +6,10 @@ triggers:
   push:
     branches:
       precise:
-        - build
+        - master
+    paths:
+      precise:
+        - /admin-vue3
 variables:
   global:
     - adminTargetFile
