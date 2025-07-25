@@ -41,7 +41,7 @@ export class ToolService {
     }
 
     if (tableComment) {
-      entity.andWhere('entity.comment LIKE :tableComment', { tableComment: `%${tableComment}%` });
+      entity.andWhere('entity.tableComment LIKE :tableComment', { tableComment: `%${tableComment}%` });
     }
     const [list, total] = await entity
       .skip((pageNum - 1) * pageSize)
