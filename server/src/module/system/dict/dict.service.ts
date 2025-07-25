@@ -133,14 +133,6 @@ export class DictService {
    * @returns 返回查询到的数据类型信息，如果未查询到则返回空。
    */
   async findOneDataType(dictType: string) {
-    // TODO: 先查询字典类型是否被删除，以下代码被注释
-    // const dictTypeData = await this.sysDictTypeEntityRep.findOne({
-    //   where: {
-    //     dictType: dictType,
-    //     delFlag: '0',
-    //   },
-    // });
-
     // 尝试从Redis缓存中获取字典数据
     let data = await this.redisService.get(`${CacheEnum.SYS_DICT_KEY}${dictType}`);
 

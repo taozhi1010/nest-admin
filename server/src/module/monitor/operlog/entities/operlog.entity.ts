@@ -22,7 +22,7 @@ export class SysOperlogEntity {
   public requestMethod: string;
 
   //0其它 1后台用户 2手机端用户
-  @Column({ type: 'int', name: 'operator_type', default: 0, comment: '操作类别' })
+  @Column({ type: 'varchar', name: 'operator_type', default: 0, comment: '操作类别' })
   public operatorType: string;
 
   @Column({ type: 'varchar', name: 'oper_name', length: 50, default: '', comment: '操作人员' })

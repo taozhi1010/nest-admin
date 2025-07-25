@@ -3471,16 +3471,337 @@
         ]
       }
     },
-    "/monitor/operlog": {
+    "/monitor/operlog/clean": {
+      "delete": {
+        "operationId": "OperlogController_removeAll",
+        "summary": "操作日志-清除全部日志",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "操作日志"
+        ]
+      }
+    },
+    "/monitor/operlog/list": {
+      "get": {
+        "operationId": "OperlogController_findAll",
+        "summary": "操作日志-列表",
+        "parameters": [
+          {
+            "name": "operId",
+            "required": false,
+            "in": "query",
+            "description": "日志主键",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "title",
+            "required": false,
+            "in": "query",
+            "description": "模块标题",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "businessType",
+            "required": false,
+            "in": "query",
+            "description": "业务类型",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "requestMethod",
+            "required": false,
+            "in": "query",
+            "description": "请求方式",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "operatorType",
+            "required": false,
+            "in": "query",
+            "description": "操作类别",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "operName",
+            "required": false,
+            "in": "query",
+            "description": "操作人员",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "deptName",
+            "required": false,
+            "in": "query",
+            "description": "部门名称",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "operUrl",
+            "required": false,
+            "in": "query",
+            "description": "请求URL",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "operLocation",
+            "required": false,
+            "in": "query",
+            "description": "操作地点",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "operParam",
+            "required": false,
+            "in": "query",
+            "description": "请求参数",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "jsonResult",
+            "required": false,
+            "in": "query",
+            "description": "返回参数",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "errorMsg",
+            "required": false,
+            "in": "query",
+            "description": "错误消息",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "method",
+            "required": false,
+            "in": "query",
+            "description": "方法名称",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "operIp",
+            "required": false,
+            "in": "query",
+            "description": "主机地址",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "operTime",
+            "required": false,
+            "in": "query",
+            "description": "操作时间",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "登录状态",
+            "schema": {
+              "enum": [
+                "0",
+                "1"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "costTime",
+            "required": false,
+            "in": "query",
+            "description": "消耗时间",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageNum",
+            "required": true,
+            "in": "query",
+            "description": "当前分页",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": true,
+            "in": "query",
+            "description": "每页数量",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "orderByColumn",
+            "required": false,
+            "in": "query",
+            "description": "排序字段",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "isAsc",
+            "required": false,
+            "in": "query",
+            "description": "排序规则",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ResultData"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "list": {
+                              "type": "array",
+                              "items": {
+                                "$ref": "#/components/schemas/QueryOperLogDto"
+                              }
+                            },
+                            "total": {
+                              "type": "number",
+                              "default": 0
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "操作日志"
+        ]
+      }
+    },
+    "/monitor/operlog/{operId}": {
+      "get": {
+        "operationId": "OperlogController_findOne",
+        "summary": "操作日志记录-详情",
+        "parameters": [
+          {
+            "name": "operId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ResultData"
+                    },
+                    {
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/BaseOperLogDto"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "操作日志"
+        ]
+      },
+      "delete": {
+        "operationId": "OperlogController_remove",
+        "summary": "操作日志-删除",
+        "parameters": [
+          {
+            "name": "operId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "操作日志"
+        ]
+      }
+    },
+    "/monitor/operlog/export": {
       "post": {
-        "operationId": "OperlogController_create",
+        "operationId": "OperlogController_exportData",
+        "summary": "导出操作日志数据为xlsx",
         "parameters": [],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateOperlogDto"
+                "$ref": "#/components/schemas/QueryOperLogDto"
               }
             }
           }
@@ -3489,96 +3810,10 @@
           "201": {
             "description": ""
           }
-        }
-      }
-    },
-    "/monitor/operlog/clean": {
-      "delete": {
-        "operationId": "OperlogController_removeAll",
-        "summary": "登录日志-清除全部日志",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        }
-      }
-    },
-    "/monitor/operlog/list": {
-      "get": {
-        "operationId": "OperlogController_findAll",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        }
-      }
-    },
-    "/monitor/operlog/{id}": {
-      "get": {
-        "operationId": "OperlogController_findOne",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        }
-      },
-      "patch": {
-        "operationId": "OperlogController_update",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateOperlogDto"
-              }
-            }
-          }
         },
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        }
-      },
-      "delete": {
-        "operationId": "OperlogController_remove",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        }
+        "tags": [
+          "操作日志"
+        ]
       }
     }
   },
@@ -4736,13 +4971,206 @@
           }
         }
       },
-      "CreateOperlogDto": {
+      "ResultData": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "code": {
+            "type": "number",
+            "default": 200
+          },
+          "msg": {
+            "type": "string",
+            "default": "操作成功"
+          }
+        },
+        "required": [
+          "code",
+          "msg"
+        ]
       },
-      "UpdateOperlogDto": {
+      "QueryOperLogDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "operId": {
+            "type": "number",
+            "description": "日志主键"
+          },
+          "title": {
+            "type": "string",
+            "description": "模块标题"
+          },
+          "businessType": {
+            "type": "number",
+            "description": "业务类型"
+          },
+          "requestMethod": {
+            "type": "string",
+            "description": "请求方式"
+          },
+          "operatorType": {
+            "type": "number",
+            "description": "操作类别"
+          },
+          "operName": {
+            "type": "string",
+            "description": "操作人员"
+          },
+          "deptName": {
+            "type": "string",
+            "description": "部门名称"
+          },
+          "operUrl": {
+            "type": "string",
+            "description": "请求URL"
+          },
+          "operLocation": {
+            "type": "string",
+            "description": "操作地点"
+          },
+          "operParam": {
+            "type": "string",
+            "description": "请求参数"
+          },
+          "jsonResult": {
+            "type": "string",
+            "description": "返回参数"
+          },
+          "errorMsg": {
+            "type": "string",
+            "description": "错误消息"
+          },
+          "method": {
+            "type": "string",
+            "description": "方法名称"
+          },
+          "operIp": {
+            "type": "string",
+            "description": "主机地址"
+          },
+          "operTime": {
+            "type": "string",
+            "description": "操作时间"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "0",
+              "1"
+            ],
+            "description": "登录状态"
+          },
+          "costTime": {
+            "type": "number",
+            "description": "消耗时间"
+          },
+          "pageNum": {
+            "type": "number",
+            "description": "当前分页",
+            "default": 1
+          },
+          "pageSize": {
+            "type": "number",
+            "description": "每页数量",
+            "default": 10
+          },
+          "params": {
+            "description": "时间范围",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DateParamsDTO"
+              }
+            ]
+          },
+          "orderByColumn": {
+            "type": "string",
+            "description": "排序字段"
+          },
+          "isAsc": {
+            "type": "string",
+            "description": "排序规则"
+          }
+        },
+        "required": [
+          "pageNum",
+          "pageSize"
+        ]
+      },
+      "BaseOperLogDto": {
+        "type": "object",
+        "properties": {
+          "operId": {
+            "type": "number",
+            "description": "日志主键"
+          },
+          "title": {
+            "type": "string",
+            "description": "模块标题"
+          },
+          "businessType": {
+            "type": "number",
+            "description": "业务类型"
+          },
+          "requestMethod": {
+            "type": "string",
+            "description": "请求方式"
+          },
+          "operatorType": {
+            "type": "number",
+            "description": "操作类别"
+          },
+          "operName": {
+            "type": "string",
+            "description": "操作人员"
+          },
+          "deptName": {
+            "type": "string",
+            "description": "部门名称"
+          },
+          "operUrl": {
+            "type": "string",
+            "description": "请求URL"
+          },
+          "operLocation": {
+            "type": "string",
+            "description": "操作地点"
+          },
+          "operParam": {
+            "type": "string",
+            "description": "请求参数"
+          },
+          "jsonResult": {
+            "type": "string",
+            "description": "返回参数"
+          },
+          "errorMsg": {
+            "type": "string",
+            "description": "错误消息"
+          },
+          "method": {
+            "type": "string",
+            "description": "方法名称"
+          },
+          "operIp": {
+            "type": "string",
+            "description": "主机地址"
+          },
+          "operTime": {
+            "type": "string",
+            "description": "操作时间"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "0",
+              "1"
+            ],
+            "description": "登录状态"
+          },
+          "costTime": {
+            "type": "number",
+            "description": "消耗时间"
+          }
+        }
       }
     }
   }

@@ -12,7 +12,6 @@
         <el-input
           v-model="queryParams.tableName"
           placeholder="请输入表名称"
-          clearable
           @keyup.enter="handleQuery"
         />
       </el-form-item>
@@ -20,7 +19,6 @@
         <el-input
           v-model="queryParams.tableComment"
           placeholder="请输入表描述"
-          clearable
           @keyup.enter="handleQuery"
         />
       </el-form-item>

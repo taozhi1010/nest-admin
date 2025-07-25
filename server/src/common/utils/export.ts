@@ -53,10 +53,16 @@ export async function ExportTable(
     options.header.forEach((field) => {
       const dataIndex = field.dataIndex;
       const dataValue = Lodash.get(item, dataIndex);
+      /**字典映射 */
       if (dictMap && dictMap[dataIndex]) {
         newItem[dataIndex] = dictMap[dataIndex][dataValue] !== undefined ? dictMap[dataIndex][dataValue] : dataValue;
       } else {
         newItem[dataIndex] = dataValue;
+      }
+
+      /** 格式化数据 */
+      if (field.formateStr && typeof field.formateStr === 'function') {
+        newItem[dataIndex] = field.formateStr(newItem[dataIndex]);
       }
     });
     return newItem;
