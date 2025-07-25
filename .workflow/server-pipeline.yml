@@ -6,7 +6,10 @@ triggers:
   push:
     branches:
       precise:
-        - build
+        - master
+    paths:
+      precise:
+        - server
 variables:
   global:
     - targetFile
@@ -43,6 +46,8 @@ stages:
           - name: BUILD_ARTIFACT
             path:
               - ./server/dist
+              - ./server/package.json
+              - ./server/pnpm-lock.yaml
         caches:
           - ~/.pnpm
           - ~/.npm
