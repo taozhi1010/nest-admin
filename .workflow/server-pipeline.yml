@@ -37,9 +37,6 @@ stages:
           - '# 切换目录'
           - cd ./server
           - ''
-          - '# 删除dist'
-          - rm -rf ./dist
-          - ''
           - '# 编译'
           - pnpm i && pnpm run build
         artifacts:
@@ -86,7 +83,7 @@ stages:
           - ''
           - cd  ${targetFile}
           - ''
-          - pm2 reload ecosystem.config.js
+          - pnpm i && pm2 reload ecosystem.config.cjs
         notify: []
         strategy:
           retry: '0'
