@@ -87,6 +87,9 @@
             <p>
               <el-link href="https://board.dooring.vip/" target="_blank">创意白板</el-link>
             </p>
+              <p>
+              <el-link href="https://www.easyapp.site/zh" target="_blank">EsayApp</el-link>
+            </p>
           </div>
         </el-card>
       </el-col>
