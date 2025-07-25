@@ -1,5 +1,6 @@
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
+import { dateTransformer } from 'src/common/utils/index';
 
 @Entity('sys_job_log', {
   comment: '任务调度日志表',
@@ -33,6 +34,6 @@ export class JobLog {
   @Column({ name: 'exception_info', length: 2000, nullable: true, comment: '异常信息' })
   exceptionInfo: string;
 
-  @CreateDateColumn({ name: 'create_time', comment: '创建时间' })
+  @CreateDateColumn({ name: 'create_time', comment: '创建时间', transformer: dateTransformer })
   createTime: Date;
 }

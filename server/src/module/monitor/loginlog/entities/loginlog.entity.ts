@@ -1,5 +1,6 @@
 import { Column, Entity, PrimaryGeneratedColumn, CreateDateColumn } from 'typeorm';
 import { BaseStatusEntity } from 'src/common/entities/base';
+import { dateTransformer } from 'src/common/utils/index';
 
 @Entity('sys_logininfor', {
   comment: '系统访问记录',
@@ -23,7 +24,7 @@ export class MonitorLoginlogEntity extends BaseStatusEntity {
   @Column({ type: 'varchar', name: 'os', length: 50, default: '', comment: '操作系统' })
   public os: string;
 
-  @CreateDateColumn({ type: 'timestamp', name: 'login_time', comment: '访问时间' })
+  @CreateDateColumn({ type: 'timestamp', name: 'login_time', transformer: dateTransformer, comment: '访问时间' })
   public loginTime: Date;
 
   //提示消息

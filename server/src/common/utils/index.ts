@@ -5,6 +5,7 @@ import isLeapYear from 'dayjs/plugin/isLeapYear'; // 导入插件
 import timezone from 'dayjs/plugin/timezone'; // 导入插件
 import utc from 'dayjs/plugin/utc'; // 导入插件
 import 'dayjs/locale/zh-cn'; // 导入本地化语言
+import { ValueTransformer } from 'typeorm';
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.extend(isLeapYear); // 使用插件
@@ -196,3 +197,21 @@ export function mergeDeep(target, ...sources) {
 
   return mergeDeep(target, ...sources);
 }
+
+/**
+ * 全局timestamp 转换为 Date
+ */
+export const dateTransformer: ValueTransformer = {
+  to: (value: Date | null): Date | null => {
+    if (value === null) {
+      return null;
+    }
+    return value;
+  },
+  from: (value: Date | null): string | null => {
+    if (value === null) {
+      return null;
+    }
+    return FormatDate(value);
+  },
+};

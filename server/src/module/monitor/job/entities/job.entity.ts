@@ -1,11 +1,11 @@
-import { Column, Entity, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { BaseEntity } from 'src/common/entities/base';
 import { ApiProperty } from '@nestjs/swagger';
 
 @Entity('sys_job', {
   comment: '定时任务表',
 })
-export class Job {
+export class Job extends BaseEntity {
   @PrimaryGeneratedColumn({ type: 'int', name: 'job_id', comment: '任务ID' })
   public jobId: number;
 
@@ -46,31 +46,4 @@ export class Job {
     nullable: true,
   })
   public concurrent: string;
-
-  @ApiProperty({ description: '状态（0正常 1暂停）' })
-  @Column({
-    type: 'char',
-    name: 'status',
-    length: 1,
-    comment: '状态（0正常 1暂停）',
-    default: '0',
-    nullable: true,
-  })
-  public status: string;
-
-  @ApiProperty({ type: String, description: '创建者' })
-  @Column({ type: 'varchar', name: 'create_by', length: 64, default: '', comment: '创建者' })
-  public createBy: string;
-
-  @CreateDateColumn({ type: 'datetime', name: 'create_time', default: null, comment: '创建时间' })
-  public createTime: Date;
-
-  @Column({ type: 'varchar', name: 'update_by', length: 64, default: '', comment: '更新者' })
-  public updateBy: string;
-
-  @UpdateDateColumn({ type: 'datetime', name: 'update_time', default: null, comment: '更新时间' })
-  public updateTime: Date;
-
-  @Column({ type: 'varchar', name: 'remark', length: 500, default: null, comment: '备注' })
-  public remark: string;
 }

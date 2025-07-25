@@ -1,4 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn, CreateDateColumn } from 'typeorm';
+import { dateTransformer } from 'src/common/utils/index';
 
 @Entity('sys_oper_log', {
   comment: '操作日志记录',
@@ -45,7 +46,7 @@ export class SysOperlogEntity {
   @Column({ type: 'varchar', name: 'json_result', length: 2000, default: '', comment: '返回参数' })
   public jsonResult: string;
 
-  @CreateDateColumn({ type: 'timestamp', name: 'oper_time', comment: '操作时间' })
+  @CreateDateColumn({ type: 'timestamp', name: 'oper_time', transformer: dateTransformer, comment: '操作时间' })
   public operTime: Date;
 
   //登录状态:0正常 1失败
