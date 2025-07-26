@@ -2,8 +2,8 @@
 	<div class="register">
 		<el-form ref="registerForm" :model="registerForm" :rules="registerRules" class="register-form">
 			<h3 class="title">nest-admin后台管理系统</h3>
-			<el-form-item prop="username">
-				<el-input v-model="registerForm.username" type="text" auto-complete="off" placeholder="账号">
+			<el-form-item prop="userName">
+				<el-input v-model="registerForm.userName" type="text" auto-complete="off" placeholder="账号">
 					<svg-icon slot="prefix" icon-class="user" class="el-input__icon input-icon" />
 				</el-input>
 			</el-form-item>
@@ -62,14 +62,14 @@ export default {
 		return {
 			codeUrl: '',
 			registerForm: {
-				username: '',
+				userName: '',
 				password: '',
 				confirmPassword: '',
 				code: '',
 				uuid: '',
 			},
 			registerRules: {
-				username: [
+				userName: [
 					{ required: true, trigger: 'blur', message: '请输入您的账号' },
 					{ min: 2, max: 20, message: '用户账号长度必须介于 2 和 20 之间', trigger: 'blur' },
 				],
@@ -106,8 +106,8 @@ export default {
 					this.loading = true;
 					register(this.registerForm)
 						.then((res) => {
-							const username = this.registerForm.username;
-							this.$alert("<font color='red'>恭喜你，您的账号 " + username + ' 注册成功！</font>', '系统提示', {
+							const userName = this.registerForm.userName;
+							this.$alert("<font color='red'>恭喜你，您的账号 " + userName + ' 注册成功！</font>', '系统提示', {
 								dangerouslyUseHTMLString: true,
 								type: 'success',
 							})
