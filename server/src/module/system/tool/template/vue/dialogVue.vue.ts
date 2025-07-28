@@ -73,7 +73,7 @@ const generateTemplate = ({ columns }) => {
           ? `
           <el-form-item label="${comment}" prop="${field}">
             <el-radio-group v-model="form.${field}">
-              <el-radio v-for="dict in ${dictType}" :key="dict.value" :value="dict.value">{{dict.label}}</el-radio>
+              <el-radio v-for="dict in ${dictType}" :key="dict.value" :label="dict.value">{{dict.label}}</el-radio>
             </el-radio-group>
           </el-form-item>
         `

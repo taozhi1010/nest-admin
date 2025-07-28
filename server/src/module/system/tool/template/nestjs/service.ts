@@ -133,7 +133,7 @@ const getListQueryStr = (options) => {
     }`;
         case GenConstants.QUERY_BETWEEN:
           return `if (!isEmpty(query.${column.javaField})) {
-      entity.andWhere("entity.${column.javaField} BETWEEN :start AND :end", { start: query.params.beginTime, end: query.params.endTime });
+      entity.andWhere("entity.${column.javaField} BETWEEN :start AND :end", { start: query.${column.javaField}[0], end: query.${column.javaField}[1] });
     }`;
         default:
           return ``;

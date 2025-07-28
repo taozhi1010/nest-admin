@@ -1,4 +1,5 @@
 import * as Lodash from 'lodash';
+import { GenConstants } from 'src/common/constant/gen.constant';
 export const dtoTem = (options) => {
   const { BusinessName } = options;
   const insertExclude = getExcludeClounmByType(options, 'isInsert');
@@ -8,7 +9,7 @@ export const dtoTem = (options) => {
   const All = getAllBaseDto(options);
 
   return `
-import { IsString, IsNumber, IsBoolean, IsDate, IsOptional, IsEnum } from 'class-validator';
+import { IsString, IsNumber, IsBoolean, IsDate, IsOptional, IsEnum, IsArray } from 'class-validator';
 import { ApiProperty, OmitType, IntersectionType } from '@nestjs/swagger';
 import { PagingDto } from 'src/common/dto/index';
 import { CharEnum } from 'src/common/enum/index';
@@ -19,13 +20,13 @@ export class Base${Lodash.upperFirst(BusinessName)}Dto{
 ${All}
 }
 
-export class Create${Lodash.upperFirst(BusinessName)}Dto extends ${getOmitTypeStr(`Base${Lodash.upperFirst(BusinessName)}Dto`, insertExclude)}){}
+export class Create${Lodash.upperFirst(BusinessName)}Dto extends ${getOmitTypeStr(`Base${Lodash.upperFirst(BusinessName)}Dto`, insertExclude)}{}
 
-export class Update${Lodash.upperFirst(BusinessName)}Dto extends ${getOmitTypeStr(`OmitType(Base${Lodash.upperFirst(BusinessName)}Dto`, editExclude)}){}
+export class Update${Lodash.upperFirst(BusinessName)}Dto extends ${getOmitTypeStr(`Base${Lodash.upperFirst(BusinessName)}Dto`, editExclude)}{}
 
-export class Query${Lodash.upperFirst(BusinessName)}Dto extends ${getOmitTypeStr(`IntersectionType(Base${Lodash.upperFirst(BusinessName)}Dto, PagingDto)`, queryExclude)}){}
+export class Query${Lodash.upperFirst(BusinessName)}Dto extends ${getOmitTypeStr(`IntersectionType(Base${Lodash.upperFirst(BusinessName)}Dto, PagingDto)`, queryExclude)}{}
 
-export class List${Lodash.upperFirst(BusinessName)}Dto extends ${getOmitTypeStr(`Base${Lodash.upperFirst(BusinessName)}Dto`, listExclude)}){}
+export class List${Lodash.upperFirst(BusinessName)}Dto extends ${getOmitTypeStr(`Base${Lodash.upperFirst(BusinessName)}Dto`, listExclude)}{}
 `;
 };
 
@@ -58,40 +59,39 @@ const getAllBaseDto = (options) => {
   const { columns } = options;
   return columns
     .map((column) => {
-      const { javaType, javaField, isRequired, columnComment, columnType } = column;
-      const type = lowercaseFirstLetter(javaType);
+      const { javaType, javaField, isRequired, columnComment, columnType, queryType } = column;
+      const type = lowercaseFirstLetter(javaType, queryType);
       const decorators = [
         `@ApiProperty({${columnType === 'char' ? 'enum: CharEnum, ' : ''}required: ${isRequired == 1} , description: '${columnComment}'})`,
         isRequired != 1 && `\t@IsOptional()`,
-        '\t' + getValidatorDecorator(javaType),
-        javaType === 'Number' ? `\t@Type(() => Number)` : '',
+        '\t' + getValidatorDecorator(javaType, queryType),
       ]
         .filter(Boolean)
         .join('\n');
 
-      return `\t${decorators}\n\t${javaField}${isRequired == 1 ? '' : '?'}: ${type == 'Date' ? javaType : type};\n`;
+      return `\t${decorators}\n\t${javaField}${isRequired == 1 ? '' : '?'}: ${type};\n`;
     })
     .join('\n');
 };
 
-function getValidatorDecorator(javaType) {
+function getValidatorDecorator(javaType, queryType) {
   switch (javaType) {
     case 'String':
       return `@IsString()`;
     case 'Number':
-      return `@IsNumber()`;
+      return `@IsNumber()\n\t@Type(() => Number)`;
     case 'Boolean':
       return `@IsBoolean()`;
     case 'Date':
-      return `@IsString()`;
+      return queryType === GenConstants.QUERY_BETWEEN ? '@IsArray()\n\t@IsString({ each: true })' : '@IsString()';
     default:
       return ``;
   }
 }
 
-function lowercaseFirstLetter(str) {
+function lowercaseFirstLetter(str, queryType) {
   if (str === 'Date') {
-    return 'string';
+    return queryType === GenConstants.QUERY_BETWEEN ? 'Array<string>' : 'string';
   }
   return str.charAt(0).toLowerCase() + str.slice(1);
 }

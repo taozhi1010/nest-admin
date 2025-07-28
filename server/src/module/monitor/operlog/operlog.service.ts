@@ -26,52 +26,52 @@ export class OperlogService {
 
   async findAll(query: QueryOperLogDto) {
     const entity = this.operLogEntityRep.createQueryBuilder('entity');
-    if (isEmpty(query.operId)) {
+    if (!isEmpty(query.operId)) {
       entity.andWhere('entity.operId = :operId', { operId: query.operId });
     }
-    if (isEmpty(query.title)) {
+    if (!isEmpty(query.title)) {
       entity.andWhere('entity.title = :title', { title: query.title });
     }
-    if (isEmpty(query.businessType)) {
+    if (!isEmpty(query.businessType)) {
       entity.andWhere('entity.businessType = :businessType', { businessType: query.businessType + '' });
     }
-    if (isEmpty(query.requestMethod)) {
+    if (!isEmpty(query.requestMethod)) {
       entity.andWhere('entity.requestMethod = :requestMethod', { requestMethod: query.requestMethod });
     }
-    if (isEmpty(query.operatorType)) {
+    if (!isEmpty(query.operatorType)) {
       entity.andWhere('entity.operatorType = :operatorType', { operatorType: query.operatorType });
     }
-    if (isEmpty(query.operName)) {
+    if (!isEmpty(query.operName)) {
       entity.andWhere('entity.operName LIKE :operName', { operName: `%${query.operName}%` });
     }
-    if (isEmpty(query.deptName)) {
+    if (!isEmpty(query.deptName)) {
       entity.andWhere('entity.deptName LIKE :deptName', { deptName: `%${query.deptName}%` });
     }
-    if (isEmpty(query.operUrl)) {
+    if (!isEmpty(query.operUrl)) {
       entity.andWhere('entity.operUrl = :operUrl', { operUrl: query.operUrl });
     }
-    if (isEmpty(query.operLocation)) {
+    if (!isEmpty(query.operLocation)) {
       entity.andWhere('entity.operLocation = :operLocation', { operLocation: query.operLocation });
     }
-    if (isEmpty(query.operParam)) {
+    if (!isEmpty(query.operParam)) {
       entity.andWhere('entity.operParam = :operParam', { operParam: query.operParam });
     }
-    if (isEmpty(query.jsonResult)) {
+    if (!isEmpty(query.jsonResult)) {
       entity.andWhere('entity.jsonResult = :jsonResult', { jsonResult: query.jsonResult });
     }
-    if (isEmpty(query.errorMsg)) {
+    if (!isEmpty(query.errorMsg)) {
       entity.andWhere('entity.errorMsg = :errorMsg', { errorMsg: query.errorMsg });
     }
-    if (isEmpty(query.method)) {
+    if (!isEmpty(query.method)) {
       entity.andWhere('entity.method = :method', { method: query.method });
     }
-    if (isEmpty(query.operIp)) {
+    if (!isEmpty(query.operIp)) {
       entity.andWhere('entity.operIp = :operIp', { operIp: query.operIp });
     }
-    if (isEmpty(query.params?.beginTime) && isEmpty(query.params?.endTime)) {
+    if (!isEmpty(query.params?.beginTime) && !isEmpty(query.params?.endTime)) {
       entity.andWhere('entity.operTime BETWEEN :start AND :end', { start: query.params.beginTime, end: query.params.endTime });
     }
-    if (isEmpty(query.status)) {
+    if (!isEmpty(query.status)) {
       entity.andWhere('entity.status = :status', { status: query.status });
     }
 
