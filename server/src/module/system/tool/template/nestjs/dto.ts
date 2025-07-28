@@ -12,19 +12,20 @@ import { IsString, IsNumber, IsBoolean, IsDate, IsOptional, IsEnum } from 'class
 import { ApiProperty, OmitType, IntersectionType } from '@nestjs/swagger';
 import { PagingDto } from 'src/common/dto/index';
 import { CharEnum } from 'src/common/enum/index';
+import { Type } from 'class-transformer';
 
 
 export class Base${Lodash.upperFirst(BusinessName)}Dto{
 ${All}
 }
 
-export class Create${Lodash.upperFirst(BusinessName)}Dto extends OmitType(Base${Lodash.upperFirst(BusinessName)}Dto, [${insertExclude}]){}
+export class Create${Lodash.upperFirst(BusinessName)}Dto extends ${getOmitTypeStr(`Base${Lodash.upperFirst(BusinessName)}Dto`, insertExclude)}){}
 
-export class Update${Lodash.upperFirst(BusinessName)}Dto extends OmitType(Base${Lodash.upperFirst(BusinessName)}Dto, [${editExclude}]){}
+export class Update${Lodash.upperFirst(BusinessName)}Dto extends ${getOmitTypeStr(`OmitType(Base${Lodash.upperFirst(BusinessName)}Dto`, editExclude)}){}
 
-export class Query${Lodash.upperFirst(BusinessName)}Dto extends OmitType(IntersectionType( Base${Lodash.upperFirst(BusinessName)}Dto, PagingDto), [${queryExclude}]){}
+export class Query${Lodash.upperFirst(BusinessName)}Dto extends ${getOmitTypeStr(`IntersectionType(Base${Lodash.upperFirst(BusinessName)}Dto, PagingDto)`, queryExclude)}){}
 
-export class List${Lodash.upperFirst(BusinessName)}Dto  extends OmitType(Base${Lodash.upperFirst(BusinessName)}Dto, [${listExclude}]) {}
+export class List${Lodash.upperFirst(BusinessName)}Dto extends ${getOmitTypeStr(`Base${Lodash.upperFirst(BusinessName)}Dto`, listExclude)}){}
 `;
 };
 
@@ -42,7 +43,7 @@ const getExcludeClounmByType = (options, type) => {
     })
     .map((column) => {
       const { javaField } = column;
-      return ` '${javaField}'`;
+      return `'${javaField}'`;
     })
     .join(',');
 };
@@ -63,6 +64,7 @@ const getAllBaseDto = (options) => {
         `@ApiProperty({${columnType === 'char' ? 'enum: CharEnum, ' : ''}required: ${isRequired == 1} , description: '${columnComment}'})`,
         isRequired != 1 && `\t@IsOptional()`,
         '\t' + getValidatorDecorator(javaType),
+        javaType === 'Number' ? `\t@Type(() => Number)` : '',
       ]
         .filter(Boolean)
         .join('\n');
@@ -92,4 +94,12 @@ function lowercaseFirstLetter(str) {
     return 'string';
   }
   return str.charAt(0).toLowerCase() + str.slice(1);
+}
+
+function getOmitTypeStr(str, excludesStr) {
+  if (excludesStr) {
+    return `OmitType(${str}, [${excludesStr}])`;
+  } else {
+    return str;
+  }
 }

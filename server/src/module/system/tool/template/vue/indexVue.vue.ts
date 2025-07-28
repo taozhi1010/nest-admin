@@ -132,7 +132,7 @@ const indexQueryTemplate = (columns) => {
   let html = ``;
   let dictType, AttrName, parentheseIndex, comment;
   columns.forEach((item) => {
-    if (item.isQuery) {
+    if (item.isQuery === '1') {
       dictType = item.dictType;
       AttrName = item.javaField.substring(0, 1).toUpperCase() + item.javaField.substring(1);
       parentheseIndex = item.columnComment.indexOf('（');
@@ -190,7 +190,7 @@ const indexQueryTemplate = (columns) => {
         html += `
                 <el-form-item label="${comment}" style="width: 308px">
                     <el-date-picker
-                    v-model="daterange${AttrName}"
+                    v-model="${item.javaField}"
                     value-format="YYYY-MM-DD"
                     type="daterange"
                     range-separator="-"
@@ -315,7 +315,7 @@ const indexTableTemplate = (columns, businessName, moduleName) => {
 
 export const indexScriptDicts = (columns) => {
   let script = '';
-  let dicts = [];
+  const dicts = [];
   columns.forEach((item) => {
     if (item.dictType != '') {
       dicts.push(item.dictType);

@@ -12,7 +12,7 @@ export const dialogVue = (options) => {
 const generateTemplate = ({ columns }) => {
   let html = '';
   columns.forEach((item) => {
-    if (item.isInsert === '1' && item.isPk === '0') {
+    if (item.isEdit === '1' && item.isPk === '0') {
       const comment = item.columnComment.split('(')[0];
       const field = item.javaField;
       const dictType = item.dictType;
@@ -164,7 +164,7 @@ const generateScriptSetup = ({ columns, BusinessName, moduleName, businessName, 
       id && getDetail(id);
     };
     const getDetail = (id) => {
-      getNotice(id).then((res) => {
+      get${BusinessName}(id).then((res) => {
           form.value = res.data
       })
     }
