@@ -4,10 +4,10 @@ import { DictService } from './dict.service';
 import { CreateDictTypeDto, UpdateDictTypeDto, ListDictType, CreateDictDataDto, UpdateDictDataDto, ListDictData } from './dto/index';
 import { RequirePermission } from 'src/common/decorators/require-premission.decorator';
 import { Response } from 'express';
-import { GetNowDate } from 'src/common/utils';
 
 @ApiTags('字典管理')
 @Controller('system/dict')
+@ApiBearerAuth('Authorization')
 export class DictController {
   constructor(private readonly dictService: DictService) {}
 

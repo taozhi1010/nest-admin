@@ -13,8 +13,8 @@ import { BusinessType } from 'src/common/constant/business.constant';
 import { Operlog } from 'src/common/decorators/operlog.decorator';
 
 @ApiTags('用户管理')
-@ApiBearerAuth()
 @Controller('system/user')
+@ApiBearerAuth('Authorization')
 export class UserController {
   constructor(
     private readonly userService: UserService,

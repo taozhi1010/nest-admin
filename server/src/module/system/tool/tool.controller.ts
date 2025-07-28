@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Body, Param, Delete, Request, Query, Put, Res } from '@nestjs/common';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { ToolService } from './tool.service';
 import { TableName, GenDbTableList, GenTableList, GenTableUpdate } from './dto/create-genTable-dto';
 import { Response } from 'express';
@@ -7,6 +7,7 @@ import { User, UserDto } from 'src/module/system/user/user.decorator';
 
 @ApiTags('系统工具')
 @Controller('tool')
+@ApiBearerAuth('Authorization')
 export class ToolController {
   constructor(private readonly toolService: ToolService) {}
 

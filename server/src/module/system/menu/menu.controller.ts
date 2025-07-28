@@ -6,6 +6,7 @@ import { RequirePermission } from 'src/common/decorators/require-premission.deco
 
 @ApiTags('菜单管理')
 @Controller('system/menu')
+@ApiBearerAuth('Authorization')
 export class MenuController {
   constructor(private readonly menuService: MenuService) {}
 

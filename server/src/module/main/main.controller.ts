@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Body, HttpCode } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBody } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBody, ApiBearerAuth } from '@nestjs/swagger';
 import { MainService } from './main.service';
 import { RegisterDto, LoginDto } from './dto/index';
 import { createMath } from 'src/common/utils/captcha';
@@ -13,6 +13,7 @@ import { NotRequireAuth, User, UserDto } from 'src/module/system/user/user.decor
 
 @ApiTags('根目录')
 @Controller('/')
+@ApiBearerAuth('Authorization')
 export class MainController {
   constructor(
     private readonly mainService: MainService,
@@ -61,7 +62,7 @@ export class MainController {
   register(@Body() user: RegisterDto) {
     return this.mainService.register(user);
   }
-  
+
   @ApiOperation({
     summary: '账号自助-是否开启用户注册功能',
   })

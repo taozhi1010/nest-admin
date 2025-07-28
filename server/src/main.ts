@@ -8,7 +8,7 @@ import { AppModule } from 'src/app.module';
 import { HttpExceptionsFilter } from 'src/common/filters/http-exceptions-filter';
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { join } from 'path';
+import path from 'path';
 import { writeFileSync } from 'fs';
 
 async function bootstrap() {
@@ -27,10 +27,15 @@ async function bootstrap() {
   const prefix = config.get<string>('app.prefix');
 
   const rootPath = process.cwd();
-  const baseDirPath = join(rootPath, config.get('app.file.location'));
+  const baseDirPath = path.posix.join(rootPath, config.get('app.file.location'));
   app.useStaticAssets(baseDirPath, {
     prefix: '/profile/',
     maxAge: 86400000 * 365,
+  });
+
+  app.useStaticAssets('public', {
+    prefix: '/public/',
+    maxAge: 0,
   });
 
   app.setGlobalPrefix(prefix);
@@ -40,8 +45,13 @@ async function bootstrap() {
 
   // web 安全，防常见漏洞
   // 注意： 开发环境如果开启 nest static module 需要将 crossOriginResourcePolicy 设置为 false 否则 静态资源 跨域不可访问
-  app.use(helmet({ crossOriginOpenerPolicy: { policy: 'same-origin-allow-popups' }, crossOriginResourcePolicy: false }));
-
+  app.use(
+    helmet({
+      crossOriginOpenerPolicy: { policy: 'same-origin-allow-popups' },
+      crossOriginResourcePolicy: false,
+      contentSecurityPolicy: false, // 放开 CSP 限制
+    }),
+  );
   const swaggerOptions = new DocumentBuilder()
     .setTitle('Nest-Admin')
     .setDescription('Nest-Admin 接口文档')
@@ -51,13 +61,18 @@ async function bootstrap() {
         type: 'http',
         scheme: 'bearer',
         bearerFormat: 'JWT',
+        in: 'header', // 认证信息放置的位置
+        name: 'Authorization', // 显式指定请求头名称
+        description: '请在请求头中携带 JWT 令牌，格式：Bearer <token>',
       },
-      'token',
+      'Authorization',
     )
+    .addServer(config.get<string>('app.file.domain'))
     .build();
+
   const document = SwaggerModule.createDocument(app, swaggerOptions);
   // 保存OpenAPI规范文件
-  writeFileSync(join(process.cwd(), 'openApi.json'), JSON.stringify(document, null, 2));
+  writeFileSync(path.posix.join(process.cwd(), 'public', 'openApi.json'), JSON.stringify(document, null, 2));
 
   // 项目依赖当前文档功能，最好不要改变当前地址
   // 生产环境使用 nginx 可以将当前文档地址 屏蔽外部访问

@@ -1,11 +1,12 @@
 import { Controller, Get, Param, Delete, Query } from '@nestjs/common';
 import { OnlineService } from './online.service';
-import { ApiTags, ApiOperation, ApiBody } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBody, ApiBearerAuth } from '@nestjs/swagger';
 import { OnlineListDto } from './dto/index';
 import { RequirePermission } from 'src/common/decorators/require-premission.decorator';
 
 @ApiTags('系统监控-在线用户')
 @Controller('monitor/online')
+@ApiBearerAuth('Authorization')
 export class OnlineController {
   constructor(private readonly onlineService: OnlineService) {}
 

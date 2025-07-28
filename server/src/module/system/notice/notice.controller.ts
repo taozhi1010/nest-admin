@@ -7,6 +7,7 @@ import { GetNowDate } from 'src/common/utils';
 
 @ApiTags('通知公告')
 @Controller('system/notice')
+@ApiBearerAuth('Authorization')
 export class NoticeController {
   constructor(private readonly noticeService: NoticeService) {}
 

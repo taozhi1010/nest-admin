@@ -7,6 +7,7 @@ import { RequirePermission } from 'src/common/decorators/require-premission.deco
 
 @ApiTags('登录日志')
 @Controller('monitor/logininfor')
+@ApiBearerAuth('Authorization')
 export class LoginlogController {
   constructor(private readonly loginlogService: LoginlogService) {}
   @ApiOperation({

@@ -7,6 +7,7 @@ import { Response } from 'express';
 
 @ApiTags('岗位管理')
 @Controller('system/post')
+@ApiBearerAuth('Authorization')
 export class PostController {
   constructor(private readonly postService: PostService) {}
 

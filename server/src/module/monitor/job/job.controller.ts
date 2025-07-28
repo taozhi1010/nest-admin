@@ -1,12 +1,13 @@
 import { Controller, Get, Post, Body, Delete, Param, Put, Query, Req, Res } from '@nestjs/common';
 import { Response } from 'express';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { JobService } from './job.service';
 import { CreateJobDto, ListJobDto } from './dto/create-job.dto';
 import { RequirePermission } from 'src/common/decorators/require-premission.decorator';
 
 @ApiTags('定时任务管理')
 @Controller('monitor/job')
+@ApiBearerAuth('Authorization')
 export class JobController {
   constructor(private readonly jobService: JobService) {}
 

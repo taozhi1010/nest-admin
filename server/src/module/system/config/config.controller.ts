@@ -1,13 +1,13 @@
 import { Controller, Get, Post, Body, Put, Param, Delete, Request, Query, Res } from '@nestjs/common';
 import { Response } from 'express';
-import { ApiTags, ApiOperation, ApiBody } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBody, ApiBearerAuth } from '@nestjs/swagger';
 import { ConfigService } from './config.service';
 import { CreateConfigDto, UpdateConfigDto, ListConfigDto } from './dto/index';
 import { RequirePermission } from 'src/common/decorators/require-premission.decorator';
-import { GetNowDate } from 'src/common/utils';
 
 @ApiTags('参数设置')
 @Controller('system/config')
+@ApiBearerAuth('Authorization')
 export class ConfigController {
   constructor(private readonly configService: ConfigService) {}
 

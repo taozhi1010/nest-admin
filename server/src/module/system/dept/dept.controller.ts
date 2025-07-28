@@ -6,6 +6,7 @@ import { RequirePermission } from 'src/common/decorators/require-premission.deco
 
 @ApiTags('部门管理')
 @Controller('system/dept')
+@ApiBearerAuth('Authorization')
 export class DeptController {
   constructor(private readonly deptService: DeptService) {}
 
