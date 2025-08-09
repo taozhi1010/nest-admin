@@ -102,7 +102,7 @@ export class OperlogService {
 			status,
 
 			businessType,
-			operatorType: '1',
+			operatorType: 1,
 			operTime: new Date(),
 		};
 
@@ -153,7 +153,7 @@ export class OperlogService {
 			errorMsg: logItem.handleErrorMsg ? JSON.stringify(logItem.handleErrorMsg) : '',
 			status: logItem.handleErrorMsg ? '1' : '0',
 			businessType: 0, // 默认为其他操作
-			operatorType: '1',
+			operatorType: 1,
 			operTime: new Date(),
 		};
 
