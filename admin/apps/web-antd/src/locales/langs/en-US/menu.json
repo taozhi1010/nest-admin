@@ -1,0 +1,55 @@
+{
+  "root": "Root",
+  "system": {
+    "root": "System",
+    "user": "User",
+    "role": "Role",
+    "menu": "Menu",
+    "dept": "Department",
+    "post": "Post",
+    "dict": "Dictionary",
+    "config": "Parameter Settings",
+    "notice": "Notifications",
+    "log": {
+      "root": "Log",
+      "operation": "Operation Log",
+      "login": "Login Log"
+    },
+    "oss": "File",
+    "client": "Client"
+  },
+  "tenant": {
+    "root": "Tenant",
+    "package": "Package"
+  },
+  "monitor": {
+    "root": "System Monitoring",
+    "online": "Online Users",
+    "cache": "Cache Monitoring",
+    "admin": "Admin Monitoring",
+    "job": "Task Scheduling Center"
+  },
+  "tool": {
+    "root": "System Tools",
+    "gen": "Code Generation"
+  },
+  "workflow": {
+    "root": "Workflow",
+    "category": "Process Category",
+    "model": "Model",
+    "define": "Process Definition",
+    "monitor": {
+      "root": "Process Monitoring",
+      "instance": "Process Instance",
+      "todo": "Pending Tasks"
+    },
+    "form": "Form"
+  },
+  "task": {
+    "root": "My Tasks",
+    "apply": "My Initiated Tasks",
+    "todo": "My Pending Tasks",
+    "done": "My Completed Tasks",
+    "cc": "My CC"
+  }
+}

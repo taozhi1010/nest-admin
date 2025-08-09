@@ -1,0 +1,7 @@
+{
+  "apiRequestFailed": "Operation failed",
+  "operationSuccess": "Operation Success",
+  "successTip": "Success Tip",
+  "errorTip": "Error Tip",
+  "loginTimeout": "Login timeout, please log in again"
+}

@@ -1,0 +1,60 @@
+{
+  "name": "@vben/icons",
+  "version": "5.5.4",
+  "homepage": "https://github.com/vbenjs/vue-vben-admin",
+  "bugs": "https://github.com/vbenjs/vue-vben-admin/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vbenjs/vue-vben-admin.git",
+    "directory": "packages/icons"
+  },
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "dependencies": {
+    "@vben-core/icons": "workspace:*",
+    "@vben-core/shadcn-ui": "workspace:^"
+  },
+  "devDependencies": {
+    "@iconify/icons-akar-icons": "^1.2.19",
+    "@iconify/icons-ant-design": "^1.2.7",
+    "@iconify/icons-arcticons": "^1.2.77",
+    "@iconify/icons-bi": "^1.2.19",
+    "@iconify/icons-bx": "^1.2.6",
+    "@iconify/icons-carbon": "^1.2.20",
+    "@iconify/icons-devicon": "^1.2.17",
+    "@iconify/icons-emojione": "^1.2.6",
+    "@iconify/icons-eos-icons": "^1.2.6",
+    "@iconify/icons-fa-brands": "^1.2.4",
+    "@iconify/icons-fe": "^1.2.5",
+    "@iconify/icons-flat-color-icons": "^1.2.5",
+    "@iconify/icons-fluent": "^1.2.38",
+    "@iconify/icons-fluent-mdl2": "^1.2.1",
+    "@iconify/icons-ic": "^1.2.13",
+    "@iconify/icons-icon-park-outline": "^1.2.11",
+    "@iconify/icons-icon-park-twotone": "^1.2.8",
+    "@iconify/icons-la": "^1.2.3",
+    "@iconify/icons-logos": "^1.2.36",
+    "@iconify/icons-lucide": "^1.2.135",
+    "@iconify/icons-majesticons": "^1.2.6",
+    "@iconify/icons-material-symbols": "^1.2.58",
+    "@iconify/icons-mdi": "^1.2.48",
+    "@iconify/icons-mingcute": "^1.2.9",
+    "@iconify/icons-noto": "^1.2.10",
+    "@iconify/icons-ph": "^1.2.5",
+    "@iconify/icons-ri": "^1.2.10",
+    "@iconify/icons-simple-icons": "^1.2.74",
+    "@iconify/icons-skill-icons": "^1.2.1",
+    "@iconify/icons-solar": "^1.2.3",
+    "@iconify/icons-streamline": "^1.2.3",
+    "@iconify/icons-tabler": "^1.2.95",
+    "@iconify/icons-uiw": "^1.2.6",
+    "@iconify/icons-vscode-icons": "^1.2.29",
+    "@iconify/icons-wpf": "^1.2.3"
+  }
+}

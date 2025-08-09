@@ -1,0 +1,55 @@
+{
+  "root": "根目录",
+  "system": {
+    "root": "系统管理",
+    "user": "用户管理",
+    "role": "角色管理",
+    "menu": "菜单管理",
+    "dept": "部门管理",
+    "post": "岗位管理",
+    "dict": "字典管理",
+    "config": "参数设置",
+    "notice": "通知公告",
+    "log": {
+      "root": "日志管理",
+      "operation": "操作日志",
+      "login": "登录日志"
+    },
+    "oss": "文件管理",
+    "client": "客户端管理"
+  },
+  "tenant": {
+    "root": "租户管理",
+    "package": "套餐管理"
+  },
+  "monitor": {
+    "root": "系统监控",
+    "online": "在线用户",
+    "cache": "缓存监控",
+    "admin": "Admin监控",
+    "job": "任务调度中心"
+  },
+  "tool": {
+    "root": "系统工具",
+    "gen": "代码生成"
+  },
+  "workflow": {
+    "root": "工作流",
+    "category": "流程分类",
+    "model": "模型管理",
+    "define": "流程定义",
+    "monitor": {
+      "root": "流程监控",
+      "instance": "流程实例",
+      "todo": "待办任务"
+    },
+    "form": "表单管理"
+  },
+  "task": {
+    "root": "我的任务",
+    "apply": "我发起的",
+    "todo": "我的待办",
+    "done": "我的已办",
+    "cc": "我的抄送"
+  }
+}

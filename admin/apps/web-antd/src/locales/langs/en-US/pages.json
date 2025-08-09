@@ -1,0 +1,23 @@
+{
+  "common": {
+    "add": "Add",
+    "edit": "Edit",
+    "delete": "Delete",
+    "more": "More",
+    "search": "Search",
+    "reset": "Reset",
+    "import": "Import",
+    "export": "Export",
+    "expand": "Expand",
+    "collapse": "Collapse",
+    "info": "Info",
+    "clear": "Clear",
+    "unlock": "Unlock",
+    "download": "Download",
+    "sync": "Sync",
+    "refresh": "Refresh",
+    "generate": "Generate",
+    "downloadLoading": "Downloading... Please wait.",
+    "preview": "Preview"
+  }
+}
