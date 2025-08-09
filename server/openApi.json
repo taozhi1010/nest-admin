@@ -4,7 +4,6 @@
     "/login": {
       "post": {
         "operationId": "MainController_login",
-        "summary": "用户登录",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -21,6 +20,7 @@
             "description": ""
           }
         },
+        "summary": "用户登录",
         "tags": [
           "根目录"
         ]
@@ -29,7 +29,6 @@
     "/logout": {
       "post": {
         "operationId": "MainController_logout",
-        "summary": "退出登录",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -46,6 +45,7 @@
             "description": ""
           }
         },
+        "summary": "退出登录",
         "tags": [
           "根目录"
         ]
@@ -54,7 +54,6 @@
     "/register": {
       "post": {
         "operationId": "MainController_register",
-        "summary": "用户注册",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -71,21 +70,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "根目录"
-        ]
-      }
-    },
-    "/registerUser": {
-      "get": {
-        "operationId": "MainController_registerUser",
-        "summary": "账号自助-是否开启用户注册功能",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
+        "summary": "用户注册",
         "tags": [
           "根目录"
         ]
@@ -94,13 +79,13 @@
     "/captchaImage": {
       "get": {
         "operationId": "MainController_captchaImage",
-        "summary": "获取验证图片",
         "parameters": [],
         "responses": {
           "200": {
             "description": ""
           }
         },
+        "summary": "获取验证图片",
         "tags": [
           "根目录"
         ]
@@ -109,13 +94,28 @@
     "/getInfo": {
       "get": {
         "operationId": "MainController_getInfo",
-        "summary": "用户信息",
         "parameters": [],
         "responses": {
           "200": {
             "description": ""
           }
         },
+        "summary": "用户信息",
+        "tags": [
+          "根目录"
+        ]
+      }
+    },
+    "/system/user/getInfo": {
+      "get": {
+        "operationId": "MainController_systemUserGetInfo",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "用户信息",
         "tags": [
           "根目录"
         ]
@@ -124,13 +124,13 @@
     "/getRouters": {
       "get": {
         "operationId": "MainController_getRouters",
-        "summary": "路由信息",
         "parameters": [],
         "responses": {
           "200": {
             "description": ""
           }
         },
+        "summary": "路由信息",
         "tags": [
           "根目录"
         ]
@@ -139,7 +139,6 @@
     "/common/upload": {
       "post": {
         "operationId": "UploadController_singleFileUpload",
-        "summary": "文件上传",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -156,6 +155,7 @@
             "description": ""
           }
         },
+        "summary": "文件上传",
         "tags": [
           "通用-文件上传"
         ]
@@ -164,7 +164,6 @@
     "/common/upload/chunk/uploadId": {
       "get": {
         "operationId": "UploadController_getChunkUploadId",
-        "summary": "获取切片上传任务Id",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -181,6 +180,7 @@
             "description": ""
           }
         },
+        "summary": "获取切片上传任务Id",
         "tags": [
           "通用-文件上传"
         ]
@@ -189,7 +189,6 @@
     "/common/upload/chunk": {
       "post": {
         "operationId": "UploadController_chunkFileUpload",
-        "summary": "文件切片上传",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -206,6 +205,7 @@
             "description": ""
           }
         },
+        "summary": "文件切片上传",
         "tags": [
           "通用-文件上传"
         ]
@@ -214,7 +214,6 @@
     "/common/upload/chunk/merge": {
       "post": {
         "operationId": "UploadController_chunkMergeFile",
-        "summary": "合并切片",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -231,6 +230,7 @@
             "description": ""
           }
         },
+        "summary": "合并切片",
         "tags": [
           "通用-文件上传"
         ]
@@ -239,7 +239,6 @@
     "/common/upload/chunk/result": {
       "get": {
         "operationId": "UploadController_getChunkUploadResult",
-        "summary": "获取切片上传结果",
         "parameters": [
           {
             "name": "uploadId",
@@ -255,6 +254,7 @@
             "description": ""
           }
         },
+        "summary": "获取切片上传结果",
         "tags": [
           "通用-文件上传"
         ]
@@ -263,7 +263,6 @@
     "/common/upload/cos/authorization": {
       "get": {
         "operationId": "UploadController_getAuthorization",
-        "summary": "获取cos上传密钥",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -280,6 +279,7 @@
             "description": ""
           }
         },
+        "summary": "获取cos上传密钥",
         "tags": [
           "通用-文件上传"
         ]
@@ -288,7 +288,6 @@
     "/system/config": {
       "post": {
         "operationId": "ConfigController_create",
-        "summary": "参数设置-创建",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -305,13 +304,13 @@
             "description": ""
           }
         },
+        "summary": "参数设置-创建",
         "tags": [
           "参数设置"
         ]
       },
       "put": {
         "operationId": "ConfigController_update",
-        "summary": "参数设置-更新",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -328,6 +327,7 @@
             "description": ""
           }
         },
+        "summary": "参数设置-更新",
         "tags": [
           "参数设置"
         ]
@@ -336,13 +336,11 @@
     "/system/config/list": {
       "get": {
         "operationId": "ConfigController_findAll",
-        "summary": "参数设置-列表",
         "parameters": [
           {
             "name": "pageNum",
-            "required": true,
+            "required": false,
             "in": "query",
-            "description": "当前分页",
             "schema": {
               "default": 1,
               "type": "number"
@@ -350,19 +348,25 @@
           },
           {
             "name": "pageSize",
-            "required": true,
+            "required": false,
             "in": "query",
-            "description": "每页数量",
             "schema": {
               "default": 10,
               "type": "number"
             }
           },
           {
+            "name": "params",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/DateParamsDTO"
+            }
+          },
+          {
             "name": "orderByColumn",
             "required": false,
             "in": "query",
-            "description": "排序字段",
             "schema": {
               "type": "string"
             }
@@ -371,7 +375,6 @@
             "name": "isAsc",
             "required": false,
             "in": "query",
-            "description": "排序规则",
             "schema": {
               "type": "string"
             }
@@ -392,6 +395,7 @@
             "description": ""
           }
         },
+        "summary": "参数设置-列表",
         "tags": [
           "参数设置"
         ]
@@ -400,7 +404,6 @@
     "/system/config/{id}": {
       "get": {
         "operationId": "ConfigController_findOne",
-        "summary": "参数设置-详情(id)",
         "parameters": [
           {
             "name": "id",
@@ -416,13 +419,13 @@
             "description": ""
           }
         },
+        "summary": "参数设置-详情(id)",
         "tags": [
           "参数设置"
         ]
       },
       "delete": {
         "operationId": "ConfigController_remove",
-        "summary": "参数设置-删除",
         "parameters": [
           {
             "name": "id",
@@ -438,6 +441,7 @@
             "description": ""
           }
         },
+        "summary": "参数设置-删除",
         "tags": [
           "参数设置"
         ]
@@ -446,7 +450,6 @@
     "/system/config/configKey/{id}": {
       "get": {
         "operationId": "ConfigController_findOneByconfigKey",
-        "summary": "参数设置-详情(configKey)【走缓存】",
         "parameters": [
           {
             "name": "id",
@@ -462,6 +465,7 @@
             "description": ""
           }
         },
+        "summary": "参数设置-详情(configKey)【走缓存】",
         "tags": [
           "参数设置"
         ]
@@ -470,13 +474,13 @@
     "/system/config/refreshCache": {
       "delete": {
         "operationId": "ConfigController_refreshCache",
-        "summary": "参数设置-刷新缓存",
         "parameters": [],
         "responses": {
           "200": {
             "description": ""
           }
         },
+        "summary": "参数设置-刷新缓存",
         "tags": [
           "参数设置"
         ]
@@ -485,7 +489,6 @@
     "/system/config/export": {
       "post": {
         "operationId": "ConfigController_export",
-        "summary": "导出参数管理为xlsx文件",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -502,6 +505,7 @@
             "description": ""
           }
         },
+        "summary": "导出参数管理为xlsx文件",
         "tags": [
           "参数设置"
         ]
@@ -510,7 +514,6 @@
     "/system/dept": {
       "post": {
         "operationId": "DeptController_create",
-        "summary": "部门管理-创建",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -527,13 +530,13 @@
             "description": ""
           }
         },
+        "summary": "部门管理-创建",
         "tags": [
           "部门管理"
         ]
       },
       "put": {
         "operationId": "DeptController_update",
-        "summary": "部门管理-更新",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -550,6 +553,7 @@
             "description": ""
           }
         },
+        "summary": "部门管理-更新",
         "tags": [
           "部门管理"
         ]
@@ -558,7 +562,6 @@
     "/system/dept/list": {
       "get": {
         "operationId": "DeptController_findAll",
-        "summary": "部门管理-列表",
         "parameters": [
           {
             "name": "deptName",
@@ -582,6 +585,7 @@
             "description": ""
           }
         },
+        "summary": "部门管理-列表",
         "tags": [
           "部门管理"
         ]
@@ -590,7 +594,6 @@
     "/system/dept/{id}": {
       "get": {
         "operationId": "DeptController_findOne",
-        "summary": "部门管理-详情",
         "parameters": [
           {
             "name": "id",
@@ -606,13 +609,13 @@
             "description": ""
           }
         },
+        "summary": "部门管理-详情",
         "tags": [
           "部门管理"
         ]
       },
       "delete": {
         "operationId": "DeptController_remove",
-        "summary": "部门管理-删除",
         "parameters": [
           {
             "name": "id",
@@ -628,6 +631,7 @@
             "description": ""
           }
         },
+        "summary": "部门管理-删除",
         "tags": [
           "部门管理"
         ]
@@ -636,7 +640,6 @@
     "/system/dept/list/exclude/{id}": {
       "get": {
         "operationId": "DeptController_findListExclude",
-        "summary": "部门管理-黑名单",
         "parameters": [
           {
             "name": "id",
@@ -652,6 +655,7 @@
             "description": ""
           }
         },
+        "summary": "部门管理-黑名单",
         "tags": [
           "部门管理"
         ]
@@ -660,7 +664,6 @@
     "/system/dict/type": {
       "post": {
         "operationId": "DictController_createType",
-        "summary": "字典类型-创建",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -677,13 +680,13 @@
             "description": ""
           }
         },
+        "summary": "字典类型-创建",
         "tags": [
           "字典管理"
         ]
       },
       "put": {
         "operationId": "DictController_updateType",
-        "summary": "字典类型-修改",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -700,6 +703,7 @@
             "description": ""
           }
         },
+        "summary": "字典类型-修改",
         "tags": [
           "字典管理"
         ]
@@ -708,13 +712,13 @@
     "/system/dict/type/refreshCache": {
       "delete": {
         "operationId": "DictController_refreshCache",
-        "summary": "字典数据-刷新缓存",
         "parameters": [],
         "responses": {
           "200": {
             "description": ""
           }
         },
+        "summary": "字典数据-刷新缓存",
         "tags": [
           "字典管理"
         ]
@@ -723,7 +727,6 @@
     "/system/dict/type/{id}": {
       "delete": {
         "operationId": "DictController_deleteType",
-        "summary": "字典类型-删除",
         "parameters": [
           {
             "name": "id",
@@ -739,13 +742,13 @@
             "description": ""
           }
         },
+        "summary": "字典类型-删除",
         "tags": [
           "字典管理"
         ]
       },
       "get": {
         "operationId": "DictController_findOneType",
-        "summary": "字典类型-详情",
         "parameters": [
           {
             "name": "id",
@@ -761,6 +764,7 @@
             "description": ""
           }
         },
+        "summary": "字典类型-详情",
         "tags": [
           "字典管理"
         ]
@@ -769,13 +773,11 @@
     "/system/dict/type/list": {
       "get": {
         "operationId": "DictController_findAllType",
-        "summary": "字典类型-列表",
         "parameters": [
           {
             "name": "pageNum",
-            "required": true,
+            "required": false,
             "in": "query",
-            "description": "当前分页",
             "schema": {
               "default": 1,
               "type": "number"
@@ -783,19 +785,25 @@
           },
           {
             "name": "pageSize",
-            "required": true,
+            "required": false,
             "in": "query",
-            "description": "每页数量",
             "schema": {
               "default": 10,
               "type": "number"
             }
           },
           {
+            "name": "params",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/DateParamsDTO"
+            }
+          },
+          {
             "name": "orderByColumn",
             "required": false,
             "in": "query",
-            "description": "排序字段",
             "schema": {
               "type": "string"
             }
@@ -804,7 +812,6 @@
             "name": "isAsc",
             "required": false,
             "in": "query",
-            "description": "排序规则",
             "schema": {
               "type": "string"
             }
@@ -815,6 +822,7 @@
             "description": ""
           }
         },
+        "summary": "字典类型-列表",
         "tags": [
           "字典管理"
         ]
@@ -823,13 +831,13 @@
     "/system/dict/type/optionselect": {
       "get": {
         "operationId": "DictController_findOptionselect",
-        "summary": "全部字典类型-下拉数据",
         "parameters": [],
         "responses": {
           "200": {
             "description": ""
           }
         },
+        "summary": "全部字典类型-下拉数据",
         "tags": [
           "字典管理"
         ]
@@ -838,7 +846,6 @@
     "/system/dict/data": {
       "post": {
         "operationId": "DictController_createDictData",
-        "summary": "字典数据-创建",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -855,13 +862,13 @@
             "description": ""
           }
         },
+        "summary": "字典数据-创建",
         "tags": [
           "字典管理"
         ]
       },
       "put": {
         "operationId": "DictController_updateDictData",
-        "summary": "字典数据-修改",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -878,6 +885,7 @@
             "description": ""
           }
         },
+        "summary": "字典数据-修改",
         "tags": [
           "字典管理"
         ]
@@ -886,7 +894,6 @@
     "/system/dict/data/{id}": {
       "delete": {
         "operationId": "DictController_deleteDictData",
-        "summary": "字典数据-删除",
         "parameters": [
           {
             "name": "id",
@@ -902,13 +909,13 @@
             "description": ""
           }
         },
+        "summary": "字典数据-删除",
         "tags": [
           "字典管理"
         ]
       },
       "get": {
         "operationId": "DictController_findOneDictData",
-        "summary": "字典数据-详情",
         "parameters": [
           {
             "name": "id",
@@ -924,6 +931,7 @@
             "description": ""
           }
         },
+        "summary": "字典数据-详情",
         "tags": [
           "字典管理"
         ]
@@ -932,13 +940,11 @@
     "/system/dict/data/list": {
       "get": {
         "operationId": "DictController_findAllData",
-        "summary": "字典数据-列表",
         "parameters": [
           {
             "name": "pageNum",
-            "required": true,
+            "required": false,
             "in": "query",
-            "description": "当前分页",
             "schema": {
               "default": 1,
               "type": "number"
@@ -946,19 +952,25 @@
           },
           {
             "name": "pageSize",
-            "required": true,
+            "required": false,
             "in": "query",
-            "description": "每页数量",
             "schema": {
               "default": 10,
               "type": "number"
             }
           },
           {
+            "name": "params",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/DateParamsDTO"
+            }
+          },
+          {
             "name": "orderByColumn",
             "required": false,
             "in": "query",
-            "description": "排序字段",
             "schema": {
               "type": "string"
             }
@@ -967,7 +979,6 @@
             "name": "isAsc",
             "required": false,
             "in": "query",
-            "description": "排序规则",
             "schema": {
               "type": "string"
             }
@@ -978,6 +989,7 @@
             "description": ""
           }
         },
+        "summary": "字典数据-列表",
         "tags": [
           "字典管理"
         ]
@@ -986,7 +998,6 @@
     "/system/dict/data/type/{id}": {
       "get": {
         "operationId": "DictController_findOneDataType",
-        "summary": "字典数据-类型-详情【走缓存】",
         "parameters": [
           {
             "name": "id",
@@ -1002,6 +1013,7 @@
             "description": ""
           }
         },
+        "summary": "字典数据-类型-详情【走缓存】",
         "tags": [
           "字典管理"
         ]
@@ -1010,7 +1022,6 @@
     "/system/dict/type/export": {
       "post": {
         "operationId": "DictController_export",
-        "summary": "导出字典组为xlsx文件",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -1027,31 +1038,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "字典管理"
-        ]
-      }
-    },
-    "/system/dict/data/export": {
-      "post": {
-        "operationId": "DictController_exportData",
-        "summary": "导出字典内容为xlsx文件",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ListDictType"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
+        "summary": "导出字典数据为xlsx文件",
         "tags": [
           "字典管理"
         ]
@@ -1060,7 +1047,6 @@
     "/system/menu": {
       "post": {
         "operationId": "MenuController_create",
-        "summary": "菜单管理-创建",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -1077,13 +1063,13 @@
             "description": ""
           }
         },
+        "summary": "菜单管理-创建",
         "tags": [
           "菜单管理"
         ]
       },
       "put": {
         "operationId": "MenuController_update",
-        "summary": "菜单管理-修改",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -1100,6 +1086,7 @@
             "description": ""
           }
         },
+        "summary": "菜单管理-修改",
         "tags": [
           "菜单管理"
         ]
@@ -1108,7 +1095,6 @@
     "/system/menu/list": {
       "get": {
         "operationId": "MenuController_findAll",
-        "summary": "菜单管理-列表",
         "parameters": [
           {
             "name": "menuName",
@@ -1132,6 +1118,7 @@
             "description": ""
           }
         },
+        "summary": "菜单管理-列表",
         "tags": [
           "菜单管理"
         ]
@@ -1140,13 +1127,13 @@
     "/system/menu/treeselect": {
       "get": {
         "operationId": "MenuController_treeSelect",
-        "summary": "菜单管理-树表",
         "parameters": [],
         "responses": {
           "200": {
             "description": ""
           }
         },
+        "summary": "菜单管理-树表",
         "tags": [
           "菜单管理"
         ]
@@ -1155,7 +1142,6 @@
     "/system/menu/roleMenuTreeselect/{menuId}": {
       "get": {
         "operationId": "MenuController_roleMenuTreeselect",
-        "summary": "菜单管理-角色-树表",
         "parameters": [
           {
             "name": "menuId",
@@ -1171,6 +1157,7 @@
             "description": ""
           }
         },
+        "summary": "菜单管理-角色-树表",
         "tags": [
           "菜单管理"
         ]
@@ -1179,7 +1166,6 @@
     "/system/menu/{menuId}": {
       "get": {
         "operationId": "MenuController_findOne",
-        "summary": "菜单管理-详情",
         "parameters": [
           {
             "name": "menuId",
@@ -1195,13 +1181,13 @@
             "description": ""
           }
         },
+        "summary": "菜单管理-详情",
         "tags": [
           "菜单管理"
         ]
       },
       "delete": {
         "operationId": "MenuController_remove",
-        "summary": "菜单管理-删除",
         "parameters": [
           {
             "name": "menuId",
@@ -1217,6 +1203,7 @@
             "description": ""
           }
         },
+        "summary": "菜单管理-删除",
         "tags": [
           "菜单管理"
         ]
@@ -1225,7 +1212,6 @@
     "/system/notice": {
       "post": {
         "operationId": "NoticeController_create",
-        "summary": "通知公告-创建",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -1242,13 +1228,13 @@
             "description": ""
           }
         },
+        "summary": "通知公告-创建",
         "tags": [
           "通知公告"
         ]
       },
       "put": {
         "operationId": "NoticeController_update",
-        "summary": "通知公告-更新",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -1265,6 +1251,7 @@
             "description": ""
           }
         },
+        "summary": "通知公告-更新",
         "tags": [
           "通知公告"
         ]
@@ -1273,13 +1260,11 @@
     "/system/notice/list": {
       "get": {
         "operationId": "NoticeController_findAll",
-        "summary": "通知公告-列表",
         "parameters": [
           {
             "name": "pageNum",
-            "required": true,
+            "required": false,
             "in": "query",
-            "description": "当前分页",
             "schema": {
               "default": 1,
               "type": "number"
@@ -1287,19 +1272,25 @@
           },
           {
             "name": "pageSize",
-            "required": true,
+            "required": false,
             "in": "query",
-            "description": "每页数量",
             "schema": {
               "default": 10,
               "type": "number"
             }
           },
           {
+            "name": "params",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/DateParamsDTO"
+            }
+          },
+          {
             "name": "orderByColumn",
             "required": false,
             "in": "query",
-            "description": "排序字段",
             "schema": {
               "type": "string"
             }
@@ -1308,7 +1299,6 @@
             "name": "isAsc",
             "required": false,
             "in": "query",
-            "description": "排序规则",
             "schema": {
               "type": "string"
             }
@@ -1329,6 +1319,7 @@
             "description": ""
           }
         },
+        "summary": "通知公告-列表",
         "tags": [
           "通知公告"
         ]
@@ -1337,7 +1328,6 @@
     "/system/notice/{id}": {
       "get": {
         "operationId": "NoticeController_findOne",
-        "summary": "通知公告-详情",
         "parameters": [
           {
             "name": "id",
@@ -1353,13 +1343,13 @@
             "description": ""
           }
         },
+        "summary": "通知公告-详情",
         "tags": [
           "通知公告"
         ]
       },
       "delete": {
         "operationId": "NoticeController_remove",
-        "summary": "通知公告-删除",
         "parameters": [
           {
             "name": "id",
@@ -1375,6 +1365,7 @@
             "description": ""
           }
         },
+        "summary": "通知公告-删除",
         "tags": [
           "通知公告"
         ]
@@ -1383,7 +1374,6 @@
     "/system/post": {
       "post": {
         "operationId": "PostController_create",
-        "summary": "岗位管理-创建",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -1400,13 +1390,13 @@
             "description": ""
           }
         },
+        "summary": "岗位管理-创建",
         "tags": [
           "岗位管理"
         ]
       },
       "put": {
         "operationId": "PostController_update",
-        "summary": "岗位管理-更新",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -1423,6 +1413,7 @@
             "description": ""
           }
         },
+        "summary": "岗位管理-更新",
         "tags": [
           "岗位管理"
         ]
@@ -1431,13 +1422,11 @@
     "/system/post/list": {
       "get": {
         "operationId": "PostController_findAll",
-        "summary": "岗位管理-列表",
         "parameters": [
           {
             "name": "pageNum",
-            "required": true,
+            "required": false,
             "in": "query",
-            "description": "当前分页",
             "schema": {
               "default": 1,
               "type": "number"
@@ -1445,19 +1434,25 @@
           },
           {
             "name": "pageSize",
-            "required": true,
+            "required": false,
             "in": "query",
-            "description": "每页数量",
             "schema": {
               "default": 10,
               "type": "number"
             }
           },
           {
+            "name": "params",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/DateParamsDTO"
+            }
+          },
+          {
             "name": "orderByColumn",
             "required": false,
             "in": "query",
-            "description": "排序字段",
             "schema": {
               "type": "string"
             }
@@ -1466,7 +1461,6 @@
             "name": "isAsc",
             "required": false,
             "in": "query",
-            "description": "排序规则",
             "schema": {
               "type": "string"
             }
@@ -1487,6 +1481,7 @@
             "description": ""
           }
         },
+        "summary": "岗位管理-列表",
         "tags": [
           "岗位管理"
         ]
@@ -1495,7 +1490,6 @@
     "/system/post/{id}": {
       "get": {
         "operationId": "PostController_findOne",
-        "summary": "岗位管理-详情",
         "parameters": [
           {
             "name": "id",
@@ -1511,6 +1505,7 @@
             "description": ""
           }
         },
+        "summary": "岗位管理-详情",
         "tags": [
           "岗位管理"
         ]
@@ -1519,7 +1514,6 @@
     "/system/post/{ids}": {
       "delete": {
         "operationId": "PostController_remove",
-        "summary": "岗位管理-删除",
         "parameters": [
           {
             "name": "ids",
@@ -1535,6 +1529,7 @@
             "description": ""
           }
         },
+        "summary": "岗位管理-删除",
         "tags": [
           "岗位管理"
         ]
@@ -1543,7 +1538,6 @@
     "/system/post/export": {
       "post": {
         "operationId": "PostController_export",
-        "summary": "导出岗位管理xlsx文件",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -1560,6 +1554,7 @@
             "description": ""
           }
         },
+        "summary": "导出岗位管理xlsx文件",
         "tags": [
           "岗位管理"
         ]
@@ -1568,7 +1563,6 @@
     "/system/role": {
       "post": {
         "operationId": "RoleController_create",
-        "summary": "角色管理-创建",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -1585,13 +1579,13 @@
             "description": ""
           }
         },
+        "summary": "角色管理-创建",
         "tags": [
           "角色管理"
         ]
       },
       "put": {
         "operationId": "RoleController_update",
-        "summary": "角色管理-修改",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -1608,6 +1602,7 @@
             "description": ""
           }
         },
+        "summary": "角色管理-修改",
         "tags": [
           "角色管理"
         ]
@@ -1616,13 +1611,11 @@
     "/system/role/list": {
       "get": {
         "operationId": "RoleController_findAll",
-        "summary": "角色管理-列表",
         "parameters": [
           {
             "name": "pageNum",
-            "required": true,
+            "required": false,
             "in": "query",
-            "description": "当前分页",
             "schema": {
               "default": 1,
               "type": "number"
@@ -1630,19 +1623,25 @@
           },
           {
             "name": "pageSize",
-            "required": true,
+            "required": false,
             "in": "query",
-            "description": "每页数量",
             "schema": {
               "default": 10,
               "type": "number"
             }
           },
           {
+            "name": "params",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/DateParamsDTO"
+            }
+          },
+          {
             "name": "orderByColumn",
             "required": false,
             "in": "query",
-            "description": "排序字段",
             "schema": {
               "type": "string"
             }
@@ -1651,7 +1650,6 @@
             "name": "isAsc",
             "required": false,
             "in": "query",
-            "description": "排序规则",
             "schema": {
               "type": "string"
             }
@@ -1672,6 +1670,7 @@
             "description": ""
           }
         },
+        "summary": "角色管理-列表",
         "tags": [
           "角色管理"
         ]
@@ -1680,7 +1679,6 @@
     "/system/role/deptTree/{id}": {
       "get": {
         "operationId": "RoleController_deptTree",
-        "summary": "角色管理-部门树",
         "parameters": [
           {
             "name": "id",
@@ -1696,6 +1694,7 @@
             "description": ""
           }
         },
+        "summary": "角色管理-部门树",
         "tags": [
           "角色管理"
         ]
@@ -1704,7 +1703,6 @@
     "/system/role/{id}": {
       "get": {
         "operationId": "RoleController_findOne",
-        "summary": "角色管理-详情",
         "parameters": [
           {
             "name": "id",
@@ -1720,6 +1718,7 @@
             "description": ""
           }
         },
+        "summary": "角色管理-详情",
         "tags": [
           "角色管理"
         ]
@@ -1749,7 +1748,6 @@
     "/system/role/dataScope": {
       "put": {
         "operationId": "RoleController_dataScope",
-        "summary": "角色管理-数据权限修改",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -1766,6 +1764,7 @@
             "description": ""
           }
         },
+        "summary": "角色管理-数据权限修改",
         "tags": [
           "角色管理"
         ]
@@ -1774,7 +1773,6 @@
     "/system/role/changeStatus": {
       "put": {
         "operationId": "RoleController_changeStatus",
-        "summary": "角色管理-停用角色",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -1791,6 +1789,7 @@
             "description": ""
           }
         },
+        "summary": "角色管理-停用角色",
         "tags": [
           "角色管理"
         ]
@@ -1799,13 +1798,11 @@
     "/system/role/authUser/allocatedList": {
       "get": {
         "operationId": "RoleController_authUserAllocatedList",
-        "summary": "角色管理-角色已分配用户列表",
         "parameters": [
           {
             "name": "pageNum",
-            "required": true,
+            "required": false,
             "in": "query",
-            "description": "当前分页",
             "schema": {
               "default": 1,
               "type": "number"
@@ -1813,19 +1810,25 @@
           },
           {
             "name": "pageSize",
-            "required": true,
+            "required": false,
             "in": "query",
-            "description": "每页数量",
             "schema": {
               "default": 10,
               "type": "number"
             }
           },
           {
+            "name": "params",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/DateParamsDTO"
+            }
+          },
+          {
             "name": "orderByColumn",
             "required": false,
             "in": "query",
-            "description": "排序字段",
             "schema": {
               "type": "string"
             }
@@ -1834,13 +1837,12 @@
             "name": "isAsc",
             "required": false,
             "in": "query",
-            "description": "排序规则",
             "schema": {
               "type": "string"
             }
           },
           {
-            "name": "userName",
+            "name": "username",
             "required": false,
             "in": "query",
             "schema": {
@@ -1879,6 +1881,7 @@
             "description": ""
           }
         },
+        "summary": "角色管理-角色已分配用户列表",
         "tags": [
           "角色管理"
         ]
@@ -1887,13 +1890,11 @@
     "/system/role/authUser/unallocatedList": {
       "get": {
         "operationId": "RoleController_authUserUnAllocatedList",
-        "summary": "角色管理-角色未分配用户列表",
         "parameters": [
           {
             "name": "pageNum",
-            "required": true,
+            "required": false,
             "in": "query",
-            "description": "当前分页",
             "schema": {
               "default": 1,
               "type": "number"
@@ -1901,19 +1902,25 @@
           },
           {
             "name": "pageSize",
-            "required": true,
+            "required": false,
             "in": "query",
-            "description": "每页数量",
             "schema": {
               "default": 10,
               "type": "number"
             }
           },
           {
+            "name": "params",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/DateParamsDTO"
+            }
+          },
+          {
             "name": "orderByColumn",
             "required": false,
             "in": "query",
-            "description": "排序字段",
             "schema": {
               "type": "string"
             }
@@ -1922,13 +1929,12 @@
             "name": "isAsc",
             "required": false,
             "in": "query",
-            "description": "排序规则",
             "schema": {
               "type": "string"
             }
           },
           {
-            "name": "userName",
+            "name": "username",
             "required": false,
             "in": "query",
             "schema": {
@@ -1967,6 +1973,7 @@
             "description": ""
           }
         },
+        "summary": "角色管理-角色未分配用户列表",
         "tags": [
           "角色管理"
         ]
@@ -1975,7 +1982,6 @@
     "/system/role/authUser/cancel": {
       "put": {
         "operationId": "RoleController_authUserCancel",
-        "summary": "角色管理-解绑角色",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -1992,6 +1998,7 @@
             "description": ""
           }
         },
+        "summary": "角色管理-解绑角色",
         "tags": [
           "角色管理"
         ]
@@ -2000,7 +2007,6 @@
     "/system/role/authUser/cancelAll": {
       "put": {
         "operationId": "RoleController_authUserCancelAll",
-        "summary": "角色管理-批量解绑角色",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -2017,6 +2023,7 @@
             "description": ""
           }
         },
+        "summary": "角色管理-批量解绑角色",
         "tags": [
           "角色管理"
         ]
@@ -2025,7 +2032,6 @@
     "/system/role/authUser/selectAll": {
       "put": {
         "operationId": "RoleController_authUserSelectAll",
-        "summary": "角色管理-批量绑定角色",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -2042,6 +2048,7 @@
             "description": ""
           }
         },
+        "summary": "角色管理-批量绑定角色",
         "tags": [
           "角色管理"
         ]
@@ -2050,7 +2057,6 @@
     "/system/role/export": {
       "post": {
         "operationId": "RoleController_export",
-        "summary": "导出角色管理xlsx文件",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -2067,6 +2073,7 @@
             "description": ""
           }
         },
+        "summary": "导出角色管理xlsx文件",
         "tags": [
           "角色管理"
         ]
@@ -2075,13 +2082,11 @@
     "/tool/gen/list": {
       "get": {
         "operationId": "ToolController_findAll",
-        "summary": "数据表列表",
         "parameters": [
           {
             "name": "pageNum",
-            "required": true,
+            "required": false,
             "in": "query",
-            "description": "当前分页",
             "schema": {
               "default": 1,
               "type": "number"
@@ -2089,19 +2094,25 @@
           },
           {
             "name": "pageSize",
-            "required": true,
+            "required": false,
             "in": "query",
-            "description": "每页数量",
             "schema": {
               "default": 10,
               "type": "number"
             }
           },
           {
+            "name": "params",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/DateParamsDTO"
+            }
+          },
+          {
             "name": "orderByColumn",
             "required": false,
             "in": "query",
-            "description": "排序字段",
             "schema": {
               "type": "string"
             }
@@ -2110,7 +2121,6 @@
             "name": "isAsc",
             "required": false,
             "in": "query",
-            "description": "排序规则",
             "schema": {
               "type": "string"
             }
@@ -2121,6 +2131,7 @@
             "description": ""
           }
         },
+        "summary": "数据表列表",
         "tags": [
           "系统工具"
         ]
@@ -2129,13 +2140,11 @@
     "/tool/gen/db/list": {
       "get": {
         "operationId": "ToolController_genDbList",
-        "summary": "查询数据库列表",
         "parameters": [
           {
             "name": "pageNum",
-            "required": true,
+            "required": false,
             "in": "query",
-            "description": "当前分页",
             "schema": {
               "default": 1,
               "type": "number"
@@ -2143,19 +2152,25 @@
           },
           {
             "name": "pageSize",
-            "required": true,
+            "required": false,
             "in": "query",
-            "description": "每页数量",
             "schema": {
               "default": 10,
               "type": "number"
             }
           },
           {
+            "name": "params",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/DateParamsDTO"
+            }
+          },
+          {
             "name": "orderByColumn",
             "required": false,
             "in": "query",
-            "description": "排序字段",
             "schema": {
               "type": "string"
             }
@@ -2164,7 +2179,6 @@
             "name": "isAsc",
             "required": false,
             "in": "query",
-            "description": "排序规则",
             "schema": {
               "type": "string"
             }
@@ -2175,6 +2189,7 @@
             "description": ""
           }
         },
+        "summary": "查询数据库列表",
         "tags": [
           "系统工具"
         ]
@@ -2183,14 +2198,13 @@
     "/tool/gen/importTable": {
       "post": {
         "operationId": "ToolController_genImportTable",
-        "summary": "导入表",
         "parameters": [],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/TableName"
+                "$ref": "#/components/schemas/TableNames"
               }
             }
           }
@@ -2200,18 +2214,18 @@
             "description": ""
           }
         },
+        "summary": "导入表",
         "tags": [
           "系统工具"
         ]
       }
     },
-    "/tool/gen/synchDb/{tableName}": {
+    "/tool/gen/synchDb/{tableId}": {
       "get": {
         "operationId": "ToolController_synchDb",
-        "summary": "同步表",
         "parameters": [
           {
-            "name": "tableName",
+            "name": "tableId",
             "required": true,
             "in": "path",
             "schema": {
@@ -2224,6 +2238,46 @@
             "description": ""
           }
         },
+        "summary": "同步表",
+        "tags": [
+          "系统工具"
+        ]
+      }
+    },
+    "/tool/gen/batchGenCode": {
+      "get": {
+        "operationId": "ToolController_batchGenCode",
+        "parameters": [
+          {
+            "name": "tableIdStr",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "生成代码",
+        "tags": [
+          "系统工具"
+        ]
+      }
+    },
+    "/tool/gen/getDataNames": {
+      "get": {
+        "operationId": "ToolController_getDataNames",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "数据源",
         "tags": [
           "系统工具"
         ]
@@ -2232,7 +2286,6 @@
     "/tool/gen/{id}": {
       "get": {
         "operationId": "ToolController_gen",
-        "summary": "查询表详细信息",
         "parameters": [
           {
             "name": "id",
@@ -2248,13 +2301,13 @@
             "description": ""
           }
         },
+        "summary": "查询表详细信息",
         "tags": [
           "系统工具"
         ]
       },
       "delete": {
         "operationId": "ToolController_remove",
-        "summary": "删除表数据",
         "parameters": [
           {
             "name": "id",
@@ -2270,6 +2323,7 @@
             "description": ""
           }
         },
+        "summary": "删除表数据",
         "tags": [
           "系统工具"
         ]
@@ -2278,7 +2332,6 @@
     "/tool/gen": {
       "put": {
         "operationId": "ToolController_genUpdate",
-        "summary": "修改代码生成信息",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -2295,30 +2348,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "系统工具"
-        ]
-      }
-    },
-    "/tool/gen/batchGenCode/zip": {
-      "get": {
-        "operationId": "ToolController_batchGenCode",
-        "summary": "生成代码",
-        "parameters": [
-          {
-            "name": "tableNames",
-            "required": true,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
+        "summary": "修改代码生成信息",
         "tags": [
           "系统工具"
         ]
@@ -2327,7 +2357,6 @@
     "/tool/gen/preview/{id}": {
       "get": {
         "operationId": "ToolController_preview",
-        "summary": "查看代码",
         "parameters": [
           {
             "name": "id",
@@ -2343,6 +2372,7 @@
             "description": ""
           }
         },
+        "summary": "查看代码",
         "tags": [
           "系统工具"
         ]
@@ -2351,25 +2381,24 @@
     "/system/user/profile": {
       "get": {
         "operationId": "UserController_profile",
-        "summary": "个人中心-用户信息",
         "parameters": [],
         "responses": {
           "200": {
             "description": ""
           }
         },
-        "tags": [
-          "用户管理"
-        ],
         "security": [
           {
             "bearer": []
           }
+        ],
+        "summary": "个人中心-用户信息",
+        "tags": [
+          "用户管理"
         ]
       },
       "put": {
         "operationId": "UserController_updateProfile",
-        "summary": "个人中心-修改用户信息",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -2386,40 +2415,40 @@
             "description": ""
           }
         },
-        "tags": [
-          "用户管理"
-        ],
         "security": [
           {
             "bearer": []
           }
+        ],
+        "summary": "个人中心-修改用户信息",
+        "tags": [
+          "用户管理"
         ]
       }
     },
     "/system/user/profile/avatar": {
       "post": {
         "operationId": "UserController_avatar",
-        "summary": "个人中心-上传用户头像",
         "parameters": [],
         "responses": {
           "201": {
             "description": ""
           }
         },
-        "tags": [
-          "用户管理"
-        ],
         "security": [
           {
             "bearer": []
           }
+        ],
+        "summary": "个人中心-上传用户头像",
+        "tags": [
+          "用户管理"
         ]
       }
     },
     "/system/user/profile/updatePwd": {
       "put": {
         "operationId": "UserController_updatePwd",
-        "summary": "个人中心-修改密码",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -2436,20 +2465,20 @@
             "description": ""
           }
         },
-        "tags": [
-          "用户管理"
-        ],
         "security": [
           {
             "bearer": []
           }
+        ],
+        "summary": "个人中心-修改密码",
+        "tags": [
+          "用户管理"
         ]
       }
     },
     "/system/user": {
       "post": {
         "operationId": "UserController_create",
-        "summary": "用户-创建",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -2466,36 +2495,36 @@
             "description": ""
           }
         },
-        "tags": [
-          "用户管理"
-        ],
         "security": [
           {
             "bearer": []
           }
+        ],
+        "summary": "用户-创建",
+        "tags": [
+          "用户管理"
         ]
       },
       "get": {
         "operationId": "UserController_findPostAndRoleAll",
-        "summary": "用户-角色+岗位",
         "parameters": [],
         "responses": {
           "200": {
             "description": ""
           }
         },
-        "tags": [
-          "用户管理"
-        ],
         "security": [
           {
             "bearer": []
           }
+        ],
+        "summary": "用户-角色+岗位",
+        "tags": [
+          "用户管理"
         ]
       },
       "put": {
         "operationId": "UserController_update",
-        "summary": "用户-更新",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -2512,26 +2541,25 @@
             "description": ""
           }
         },
-        "tags": [
-          "用户管理"
-        ],
         "security": [
           {
             "bearer": []
           }
+        ],
+        "summary": "用户-更新",
+        "tags": [
+          "用户管理"
         ]
       }
     },
     "/system/user/list": {
       "get": {
         "operationId": "UserController_findAll",
-        "summary": "用户-列表",
         "parameters": [
           {
             "name": "pageNum",
-            "required": true,
+            "required": false,
             "in": "query",
-            "description": "当前分页",
             "schema": {
               "default": 1,
               "type": "number"
@@ -2539,19 +2567,25 @@
           },
           {
             "name": "pageSize",
-            "required": true,
+            "required": false,
             "in": "query",
-            "description": "每页数量",
             "schema": {
               "default": 10,
               "type": "number"
             }
           },
           {
+            "name": "params",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/DateParamsDTO"
+            }
+          },
+          {
             "name": "orderByColumn",
             "required": false,
             "in": "query",
-            "description": "排序字段",
             "schema": {
               "type": "string"
             }
@@ -2560,7 +2594,6 @@
             "name": "isAsc",
             "required": false,
             "in": "query",
-            "description": "排序规则",
             "schema": {
               "type": "string"
             }
@@ -2590,7 +2623,7 @@
             }
           },
           {
-            "name": "userName",
+            "name": "username",
             "required": false,
             "in": "query",
             "schema": {
@@ -2619,40 +2652,40 @@
             "description": ""
           }
         },
-        "tags": [
-          "用户管理"
-        ],
         "security": [
           {
             "bearer": []
           }
+        ],
+        "summary": "用户-列表",
+        "tags": [
+          "用户管理"
         ]
       }
     },
     "/system/user/deptTree": {
       "get": {
         "operationId": "UserController_deptTree",
-        "summary": "用户-部门树",
         "parameters": [],
         "responses": {
           "200": {
             "description": ""
           }
         },
-        "tags": [
-          "用户管理"
-        ],
         "security": [
           {
             "bearer": []
           }
+        ],
+        "summary": "用户-部门树",
+        "tags": [
+          "用户管理"
         ]
       }
     },
     "/system/user/authRole/{id}": {
       "get": {
         "operationId": "UserController_authRole",
-        "summary": "用户-分配角色-详情",
         "parameters": [
           {
             "name": "id",
@@ -2668,40 +2701,40 @@
             "description": ""
           }
         },
-        "tags": [
-          "用户管理"
-        ],
         "security": [
           {
             "bearer": []
           }
+        ],
+        "summary": "用户-分配角色-详情",
+        "tags": [
+          "用户管理"
         ]
       }
     },
     "/system/user/authRole": {
       "put": {
         "operationId": "UserController_updateAuthRole",
-        "summary": "用户-角色信息-更新",
         "parameters": [],
         "responses": {
           "200": {
             "description": ""
           }
         },
-        "tags": [
-          "用户管理"
-        ],
         "security": [
           {
             "bearer": []
           }
+        ],
+        "summary": "用户-角色信息-更新",
+        "tags": [
+          "用户管理"
         ]
       }
     },
     "/system/user/{userId}": {
       "get": {
         "operationId": "UserController_findOne",
-        "summary": "用户-详情",
         "parameters": [
           {
             "name": "userId",
@@ -2717,20 +2750,20 @@
             "description": ""
           }
         },
-        "tags": [
-          "用户管理"
-        ],
         "security": [
           {
             "bearer": []
           }
+        ],
+        "summary": "用户-详情",
+        "tags": [
+          "用户管理"
         ]
       }
     },
     "/system/user/changeStatus": {
       "put": {
         "operationId": "UserController_changeStatus",
-        "summary": "用户-停用角色",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -2747,20 +2780,20 @@
             "description": ""
           }
         },
-        "tags": [
-          "用户管理"
-        ],
         "security": [
           {
             "bearer": []
           }
+        ],
+        "summary": "用户-停用角色",
+        "tags": [
+          "用户管理"
         ]
       }
     },
     "/system/user/resetPwd": {
       "put": {
         "operationId": "UserController_resetPwd",
-        "summary": "用户-重置密码",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -2777,20 +2810,20 @@
             "description": ""
           }
         },
-        "tags": [
-          "用户管理"
-        ],
         "security": [
           {
             "bearer": []
           }
+        ],
+        "summary": "用户-重置密码",
+        "tags": [
+          "用户管理"
         ]
       }
     },
     "/system/user/{id}": {
       "delete": {
         "operationId": "UserController_remove",
-        "summary": "用户-删除",
         "parameters": [
           {
             "name": "id",
@@ -2806,20 +2839,20 @@
             "description": ""
           }
         },
-        "tags": [
-          "用户管理"
-        ],
         "security": [
           {
             "bearer": []
           }
+        ],
+        "summary": "用户-删除",
+        "tags": [
+          "用户管理"
         ]
       }
     },
     "/system/user/export": {
       "post": {
         "operationId": "UserController_export",
-        "summary": "导出用户信息数据为xlsx",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -2836,257 +2869,20 @@
             "description": ""
           }
         },
-        "tags": [
-          "用户管理"
-        ],
         "security": [
           {
             "bearer": []
           }
-        ]
-      }
-    },
-    "/monitor/job/list": {
-      "get": {
-        "operationId": "JobController_list",
-        "summary": "获取定时任务列表",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "定时任务管理"
-        ]
-      }
-    },
-    "/monitor/job/{jobId}": {
-      "get": {
-        "operationId": "JobController_getInfo",
-        "summary": "获取定时任务详细信息",
-        "parameters": [
-          {
-            "name": "jobId",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "number"
-            }
-          }
         ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
+        "summary": "导出用户信息数据为xlsx",
         "tags": [
-          "定时任务管理"
+          "用户管理"
         ]
       }
     },
-    "/monitor/job": {
-      "post": {
-        "operationId": "JobController_add",
-        "summary": "创建定时任务",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateJobDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "定时任务管理"
-        ]
-      },
-      "put": {
-        "operationId": "JobController_update",
-        "summary": "修改定时任务",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "定时任务管理"
-        ]
-      }
-    },
-    "/monitor/job/changeStatus": {
-      "put": {
-        "operationId": "JobController_changeStatus",
-        "summary": "修改任务状态",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "定时任务管理"
-        ]
-      }
-    },
-    "/monitor/job/{jobIds}": {
-      "delete": {
-        "operationId": "JobController_remove",
-        "summary": "删除定时任务",
-        "parameters": [
-          {
-            "name": "jobIds",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "定时任务管理"
-        ]
-      }
-    },
-    "/monitor/job/run": {
-      "put": {
-        "operationId": "JobController_run",
-        "summary": "立即执行一次",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "定时任务管理"
-        ]
-      }
-    },
-    "/monitor/job/export": {
-      "post": {
-        "operationId": "JobController_export",
-        "summary": "导出定时任务为xlsx文件",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ListJobDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "定时任务管理"
-        ]
-      }
-    },
-    "/monitor/jobLog/list": {
+    "/resource/sse": {
       "get": {
-        "operationId": "JobLogController_list",
-        "summary": "获取定时任务日志列表",
-        "parameters": [
-          {
-            "name": "pageNum",
-            "required": true,
-            "in": "query",
-            "description": "当前分页",
-            "schema": {
-              "default": 1,
-              "type": "number"
-            }
-          },
-          {
-            "name": "pageSize",
-            "required": true,
-            "in": "query",
-            "description": "每页数量",
-            "schema": {
-              "default": 10,
-              "type": "number"
-            }
-          },
-          {
-            "name": "orderByColumn",
-            "required": false,
-            "in": "query",
-            "description": "排序字段",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "isAsc",
-            "required": false,
-            "in": "query",
-            "description": "排序规则",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "jobName",
-            "required": true,
-            "in": "query",
-            "description": "任务名称",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "jobGroup",
-            "required": true,
-            "in": "query",
-            "description": "任务组名",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "status",
-            "required": true,
-            "in": "query",
-            "description": "状态（0正常 1暂停）",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "定时任务日志管理"
-        ]
-      }
-    },
-    "/monitor/jobLog/clean": {
-      "delete": {
-        "operationId": "JobLogController_clean",
-        "summary": "清空定时任务日志",
+        "operationId": "SSEController_sse",
         "parameters": [],
         "responses": {
           "200": {
@@ -3094,60 +2890,20 @@
           }
         },
         "tags": [
-          "定时任务日志管理"
-        ]
-      }
-    },
-    "/monitor/jobLog/export": {
-      "post": {
-        "operationId": "JobLogController_export",
-        "summary": "导出调度日志为xlsx文件",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ListJobLogDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "定时任务日志管理"
-        ]
-      }
-    },
-    "/monitor/server": {
-      "get": {
-        "operationId": "ServerController_getInfo",
-        "summary": "在线用户-列表",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "系统监控-服务监控"
+          "sse"
         ]
       }
     },
     "/monitor/cache": {
       "get": {
         "operationId": "CacheController_getInfo",
-        "summary": "缓存监控信息",
         "parameters": [],
         "responses": {
           "200": {
             "description": ""
           }
         },
+        "summary": "缓存监控信息",
         "tags": [
           "缓存管理"
         ]
@@ -3156,13 +2912,13 @@
     "/monitor/cache/getNames": {
       "get": {
         "operationId": "CacheController_getNames",
-        "summary": "缓存列表",
         "parameters": [],
         "responses": {
           "200": {
             "description": ""
           }
         },
+        "summary": "缓存列表",
         "tags": [
           "缓存管理"
         ]
@@ -3171,7 +2927,6 @@
     "/monitor/cache/getKeys/{id}": {
       "get": {
         "operationId": "CacheController_getKeys",
-        "summary": "键名列表",
         "parameters": [
           {
             "name": "id",
@@ -3187,6 +2942,7 @@
             "description": ""
           }
         },
+        "summary": "键名列表",
         "tags": [
           "缓存管理"
         ]
@@ -3195,13 +2951,13 @@
     "/monitor/cache/getValue/{cacheName}/{cacheKey}": {
       "get": {
         "operationId": "CacheController_getValue",
-        "summary": "缓存内容",
         "parameters": [],
         "responses": {
           "200": {
             "description": ""
           }
         },
+        "summary": "缓存内容",
         "tags": [
           "缓存管理"
         ]
@@ -3210,7 +2966,6 @@
     "/monitor/cache/clearCacheName/{cacheName}": {
       "delete": {
         "operationId": "CacheController_clearCacheName",
-        "summary": "清理缓存名称",
         "parameters": [
           {
             "name": "cacheName",
@@ -3226,6 +2981,7 @@
             "description": ""
           }
         },
+        "summary": "清理缓存名称",
         "tags": [
           "缓存管理"
         ]
@@ -3234,7 +2990,6 @@
     "/monitor/cache/clearCacheKey/{cacheKey}": {
       "delete": {
         "operationId": "CacheController_clearCacheKey",
-        "summary": "清理缓存键名",
         "parameters": [
           {
             "name": "cacheKey",
@@ -3250,6 +3005,7 @@
             "description": ""
           }
         },
+        "summary": "清理缓存键名",
         "tags": [
           "缓存管理"
         ]
@@ -3258,13 +3014,13 @@
     "/monitor/cache/clearCacheAll": {
       "delete": {
         "operationId": "CacheController_clearCacheAll",
-        "summary": "清理全部",
         "parameters": [],
         "responses": {
           "200": {
             "description": ""
           }
         },
+        "summary": "清理全部",
         "tags": [
           "缓存管理"
         ]
@@ -3273,13 +3029,11 @@
     "/monitor/logininfor/list": {
       "get": {
         "operationId": "LoginlogController_findAll",
-        "summary": "登录日志-列表",
         "parameters": [
           {
             "name": "pageNum",
-            "required": true,
+            "required": false,
             "in": "query",
-            "description": "当前分页",
             "schema": {
               "default": 1,
               "type": "number"
@@ -3287,19 +3041,25 @@
           },
           {
             "name": "pageSize",
-            "required": true,
+            "required": false,
             "in": "query",
-            "description": "每页数量",
             "schema": {
               "default": 10,
               "type": "number"
             }
           },
           {
+            "name": "params",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/DateParamsDTO"
+            }
+          },
+          {
             "name": "orderByColumn",
             "required": false,
             "in": "query",
-            "description": "排序字段",
             "schema": {
               "type": "string"
             }
@@ -3308,7 +3068,6 @@
             "name": "isAsc",
             "required": false,
             "in": "query",
-            "description": "排序规则",
             "schema": {
               "type": "string"
             }
@@ -3322,7 +3081,7 @@
             }
           },
           {
-            "name": "userName",
+            "name": "username",
             "required": false,
             "in": "query",
             "schema": {
@@ -3353,6 +3112,7 @@
             "description": ""
           }
         },
+        "summary": "登录日志-列表",
         "tags": [
           "登录日志"
         ]
@@ -3361,13 +3121,13 @@
     "/monitor/logininfor/clean": {
       "delete": {
         "operationId": "LoginlogController_removeAll",
-        "summary": "登录日志-清除全部日志",
         "parameters": [],
         "responses": {
           "200": {
             "description": ""
           }
         },
+        "summary": "登录日志-清除全部日志",
         "tags": [
           "登录日志"
         ]
@@ -3376,7 +3136,6 @@
     "/monitor/logininfor/{id}": {
       "delete": {
         "operationId": "LoginlogController_remove",
-        "summary": "登录日志-删除日志",
         "parameters": [
           {
             "name": "id",
@@ -3392,6 +3151,7 @@
             "description": ""
           }
         },
+        "summary": "登录日志-删除日志",
         "tags": [
           "登录日志"
         ]
@@ -3400,7 +3160,6 @@
     "/monitor/logininfor/export": {
       "post": {
         "operationId": "LoginlogController_export",
-        "summary": "导出登录日志为xlsx文件",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -3417,6 +3176,7 @@
             "description": ""
           }
         },
+        "summary": "导出登录日志为xlsx文件",
         "tags": [
           "登录日志"
         ]
@@ -3425,7 +3185,6 @@
     "/monitor/online/list": {
       "get": {
         "operationId": "OnlineController_findAll",
-        "summary": "在线用户-列表",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -3442,6 +3201,7 @@
             "description": ""
           }
         },
+        "summary": "在线用户-列表",
         "tags": [
           "系统监控-在线用户"
         ]
@@ -3450,7 +3210,6 @@
     "/monitor/online/{token}": {
       "delete": {
         "operationId": "OnlineController_delete",
-        "summary": "在线用户-强退",
         "parameters": [
           {
             "name": "token",
@@ -3466,342 +3225,22 @@
             "description": ""
           }
         },
+        "summary": "在线用户-强退",
         "tags": [
           "系统监控-在线用户"
         ]
       }
     },
-    "/monitor/operlog/clean": {
-      "delete": {
-        "operationId": "OperlogController_removeAll",
-        "summary": "操作日志-清除全部日志",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "操作日志"
-        ]
-      }
-    },
-    "/monitor/operlog/list": {
-      "get": {
-        "operationId": "OperlogController_findAll",
-        "summary": "操作日志-列表",
-        "parameters": [
-          {
-            "name": "operId",
-            "required": false,
-            "in": "query",
-            "description": "日志主键",
-            "schema": {
-              "type": "number"
-            }
-          },
-          {
-            "name": "title",
-            "required": false,
-            "in": "query",
-            "description": "模块标题",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "businessType",
-            "required": false,
-            "in": "query",
-            "description": "业务类型",
-            "schema": {
-              "type": "number"
-            }
-          },
-          {
-            "name": "requestMethod",
-            "required": false,
-            "in": "query",
-            "description": "请求方式",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "operatorType",
-            "required": false,
-            "in": "query",
-            "description": "操作类别",
-            "schema": {
-              "type": "number"
-            }
-          },
-          {
-            "name": "operName",
-            "required": false,
-            "in": "query",
-            "description": "操作人员",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "deptName",
-            "required": false,
-            "in": "query",
-            "description": "部门名称",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "operUrl",
-            "required": false,
-            "in": "query",
-            "description": "请求URL",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "operLocation",
-            "required": false,
-            "in": "query",
-            "description": "操作地点",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "operParam",
-            "required": false,
-            "in": "query",
-            "description": "请求参数",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "jsonResult",
-            "required": false,
-            "in": "query",
-            "description": "返回参数",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "errorMsg",
-            "required": false,
-            "in": "query",
-            "description": "错误消息",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "method",
-            "required": false,
-            "in": "query",
-            "description": "方法名称",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "operIp",
-            "required": false,
-            "in": "query",
-            "description": "主机地址",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "operTime",
-            "required": false,
-            "in": "query",
-            "description": "操作时间",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "status",
-            "required": false,
-            "in": "query",
-            "description": "登录状态",
-            "schema": {
-              "enum": [
-                "0",
-                "1"
-              ],
-              "type": "string"
-            }
-          },
-          {
-            "name": "costTime",
-            "required": false,
-            "in": "query",
-            "description": "消耗时间",
-            "schema": {
-              "type": "number"
-            }
-          },
-          {
-            "name": "pageNum",
-            "required": true,
-            "in": "query",
-            "description": "当前分页",
-            "schema": {
-              "default": 1,
-              "type": "number"
-            }
-          },
-          {
-            "name": "pageSize",
-            "required": true,
-            "in": "query",
-            "description": "每页数量",
-            "schema": {
-              "default": 10,
-              "type": "number"
-            }
-          },
-          {
-            "name": "orderByColumn",
-            "required": false,
-            "in": "query",
-            "description": "排序字段",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "isAsc",
-            "required": false,
-            "in": "query",
-            "description": "排序规则",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "allOf": [
-                    {
-                      "$ref": "#/components/schemas/ResultData"
-                    },
-                    {
-                      "properties": {
-                        "data": {
-                          "type": "object",
-                          "properties": {
-                            "list": {
-                              "type": "array",
-                              "items": {
-                                "$ref": "#/components/schemas/QueryOperLogDto"
-                              }
-                            },
-                            "total": {
-                              "type": "number",
-                              "default": 0
-                            }
-                          }
-                        }
-                      }
-                    }
-                  ]
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "操作日志"
-        ]
-      }
-    },
-    "/monitor/operlog/{operId}": {
-      "get": {
-        "operationId": "OperlogController_findOne",
-        "summary": "操作日志记录-详情",
-        "parameters": [
-          {
-            "name": "operId",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "allOf": [
-                    {
-                      "$ref": "#/components/schemas/ResultData"
-                    },
-                    {
-                      "properties": {
-                        "data": {
-                          "$ref": "#/components/schemas/BaseOperLogDto"
-                        }
-                      }
-                    }
-                  ]
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "操作日志"
-        ]
-      },
-      "delete": {
-        "operationId": "OperlogController_remove",
-        "summary": "操作日志-删除",
-        "parameters": [
-          {
-            "name": "operId",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "操作日志"
-        ]
-      }
-    },
-    "/monitor/operlog/export": {
+    "/monitor/operlog": {
       "post": {
-        "operationId": "OperlogController_exportData",
-        "summary": "导出操作日志数据为xlsx",
+        "operationId": "OperlogController_create",
         "parameters": [],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/QueryOperLogDto"
+                "$ref": "#/components/schemas/CreateOperlogDto"
               }
             }
           }
@@ -3812,14 +3251,2988 @@
           }
         },
         "tags": [
-          "操作日志"
+          "Operlog"
+        ]
+      }
+    },
+    "/monitor/operlog/clean": {
+      "delete": {
+        "operationId": "OperlogController_removeAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "登录日志-清除全部日志",
+        "tags": [
+          "Operlog"
+        ]
+      }
+    },
+    "/monitor/operlog/list": {
+      "get": {
+        "operationId": "OperlogController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Operlog"
+        ]
+      }
+    },
+    "/monitor/operlog/{id}": {
+      "get": {
+        "operationId": "OperlogController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Operlog"
+        ]
+      },
+      "patch": {
+        "operationId": "OperlogController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateOperlogDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Operlog"
+        ]
+      },
+      "delete": {
+        "operationId": "OperlogController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Operlog"
+        ]
+      }
+    },
+    "/monitor/server": {
+      "get": {
+        "operationId": "ServerController_getInfo",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "返回成功",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "code": 200,
+                    "msg": "ok",
+                    "data": {
+                      "cpu": {
+                        "cpuNum": 8,
+                        "total": 1062538890,
+                        "sys": "6.88",
+                        "used": "12.76",
+                        "wait": 0,
+                        "free": "80.36"
+                      },
+                      "mem": {
+                        "total": "16.00",
+                        "used": "15.94",
+                        "free": "0.06",
+                        "usage": "99.64"
+                      },
+                      "sys": {
+                        "computerName": "MacBook-Pro-4.local",
+                        "computerIp": "127.0.0.1",
+                        "userDir": "/Users/taozhi/Desktop/admin/nest-admin/",
+                        "osName": "darwin",
+                        "osArch": "x64"
+                      },
+                      "sysFiles": [
+                        {
+                          "dirName": "/",
+                          "typeName": "/dev/disk1s1s1",
+                          "total": "0.91GB",
+                          "used": "0.04GB",
+                          "free": "0.05GB",
+                          "usage": "4.68"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "在线用户-列表",
+        "tags": [
+          "系统监控-服务监控"
+        ]
+      }
+    },
+    "/monitor/log/list": {
+      "get": {
+        "operationId": "LogController_findAll",
+        "parameters": [
+          {
+            "name": "pageNum",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "params",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/DateParamsDTO"
+            }
+          },
+          {
+            "name": "orderByColumn",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "isAsc",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Log"
+        ]
+      }
+    },
+    "/extends/upload": {
+      "post": {
+        "operationId": "ExtendsUploadController_singleFileUpload",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FileUploadDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "文件上传",
+        "tags": [
+          "通用-文件上传"
+        ]
+      }
+    },
+    "/extends/upload/chunk/uploadId": {
+      "get": {
+        "operationId": "ExtendsUploadController_getChunkUploadId",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "获取切片上传任务Id",
+        "tags": [
+          "通用-文件上传"
+        ]
+      }
+    },
+    "/extends/upload/chunk": {
+      "post": {
+        "operationId": "ExtendsUploadController_chunkFileUpload",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "文件切片上传",
+        "tags": [
+          "通用-文件上传"
+        ]
+      }
+    },
+    "/extends/upload/chunk/merge": {
+      "post": {
+        "operationId": "ExtendsUploadController_chunkMergeFile",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChunkMergeFileDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "合并切片",
+        "tags": [
+          "通用-文件上传"
+        ]
+      }
+    },
+    "/extends/upload/chunk/result": {
+      "get": {
+        "operationId": "ExtendsUploadController_getChunkUploadResult",
+        "parameters": [
+          {
+            "name": "uploadId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "获取切片上传结果",
+        "tags": [
+          "通用-文件上传"
+        ]
+      }
+    },
+    "/extends/upload/cos/authorization": {
+      "get": {
+        "operationId": "ExtendsUploadController_getAuthorization",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "获取cos上传密钥",
+        "tags": [
+          "通用-文件上传"
+        ]
+      }
+    },
+    "/member/member-user/list": {
+      "get": {
+        "operationId": "MemberUserController_findAll",
+        "parameters": [
+          {
+            "name": "pageNum",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "params",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/DateParamsDTO"
+            }
+          },
+          {
+            "name": "orderByColumn",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "isAsc",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "username",
+            "required": false,
+            "in": "query",
+            "description": "用户账号",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "nickName",
+            "required": false,
+            "in": "query",
+            "description": "用户昵称",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "email",
+            "required": false,
+            "in": "query",
+            "description": "邮箱",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "phonenumber",
+            "required": false,
+            "in": "query",
+            "description": "手机号码",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sex",
+            "required": false,
+            "in": "query",
+            "description": "性别",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "状态（0正常 1关闭）",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "loginIp",
+            "required": false,
+            "in": "query",
+            "description": "最后登录IP",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "createBy",
+            "required": false,
+            "in": "query",
+            "description": "创建者",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "createTime",
+            "required": false,
+            "in": "query",
+            "description": "创建时间",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "updateBy",
+            "required": false,
+            "in": "query",
+            "description": "更新者",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "updateTime",
+            "required": false,
+            "in": "query",
+            "description": "更新时间",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "remark",
+            "required": false,
+            "in": "query",
+            "description": "备注",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "avatar",
+            "required": false,
+            "in": "query",
+            "description": "头像地址",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "loginDate",
+            "required": false,
+            "in": "query",
+            "description": "最后登录时间",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "查询App 用户信息表列表",
+        "tags": [
+          "MemberUser"
+        ]
+      }
+    },
+    "/member/member-user/options": {
+      "get": {
+        "operationId": "MemberUserController_options",
+        "parameters": [
+          {
+            "name": "searchValue",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "查询App 用户信息表下拉选项",
+        "tags": [
+          "MemberUser"
+        ]
+      }
+    },
+    "/member/member-user": {
+      "post": {
+        "operationId": "MemberUserController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMemberUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "App 用户信息表-创建",
+        "tags": [
+          "MemberUser"
+        ]
+      },
+      "put": {
+        "operationId": "MemberUserController_update",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMemberUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "App 用户信息表-修改",
+        "tags": [
+          "MemberUser"
+        ]
+      }
+    },
+    "/member/member-user/{id}": {
+      "get": {
+        "operationId": "MemberUserController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "App 用户信息表-详情",
+        "tags": [
+          "MemberUser"
+        ]
+      },
+      "delete": {
+        "operationId": "MemberUserController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "App 用户信息表-删除",
+        "tags": [
+          "MemberUser"
+        ]
+      }
+    },
+    "/member/member-user/export": {
+      "post": {
+        "operationId": "MemberUserController_export",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ListMemberUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "App 用户信息表-导出xlsx文件",
+        "tags": [
+          "MemberUser"
+        ]
+      }
+    },
+    "/member/member-user/resetPwd": {
+      "put": {
+        "operationId": "MemberUserController_resetPwd",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPwdDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "用户-重置密码",
+        "tags": [
+          "MemberUser"
+        ]
+      }
+    },
+    "/app-api/user/login": {
+      "post": {
+        "operationId": "AppMemberUserController_login",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "用户登录",
+        "tags": [
+          "App 用户模块"
+        ]
+      }
+    },
+    "/app-api/user/logout": {
+      "post": {
+        "operationId": "AppMemberUserController_logout",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "退出登录",
+        "tags": [
+          "App 用户模块"
+        ]
+      }
+    },
+    "/app-api/user/register": {
+      "post": {
+        "operationId": "AppMemberUserController_register",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "用户注册",
+        "tags": [
+          "App 用户模块"
+        ]
+      }
+    },
+    "/app-api/user/captchaImage": {
+      "get": {
+        "operationId": "AppMemberUserController_captchaImage",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "获取验证图片",
+        "tags": [
+          "App 用户模块"
+        ]
+      }
+    },
+    "/app-api/user/getInfo": {
+      "get": {
+        "operationId": "AppMemberUserController_getInfo",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "用户信息",
+        "tags": [
+          "App 用户模块"
+        ]
+      }
+    },
+    "/app-api/user/profile": {
+      "get": {
+        "operationId": "AppMemberUserController_profile",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "个人中心-用户信息",
+        "tags": [
+          "App 用户模块"
+        ]
+      },
+      "put": {
+        "operationId": "AppMemberUserController_updateProfile",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProfileDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "个人中心-修改用户信息",
+        "tags": [
+          "App 用户模块"
+        ]
+      }
+    },
+    "/app-api/user/loginLog": {
+      "get": {
+        "operationId": "AppMemberUserController_loginLog",
+        "parameters": [
+          {
+            "name": "pageNum",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "params",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/DateParamsDTO"
+            }
+          },
+          {
+            "name": "orderByColumn",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "isAsc",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "个人中心-登录日志",
+        "tags": [
+          "App 用户模块"
+        ]
+      }
+    },
+    "/app-api/user/profile/avatar": {
+      "post": {
+        "operationId": "AppMemberUserController_avatar",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "个人中心-上传用户头像",
+        "tags": [
+          "App 用户模块"
+        ]
+      }
+    },
+    "/app-api/user/profile/updatePwd": {
+      "put": {
+        "operationId": "AppMemberUserController_updatePwd",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePwdDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "个人中心-修改密码",
+        "tags": [
+          "App 用户模块"
+        ]
+      }
+    },
+    "/member/tag-user/list": {
+      "get": {
+        "operationId": "TagUserController_findAll",
+        "parameters": [
+          {
+            "name": "pageNum",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "params",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/DateParamsDTO"
+            }
+          },
+          {
+            "name": "orderByColumn",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "isAsc",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "required": false,
+            "in": "query",
+            "description": "用户ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "禁止状态",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tagId",
+            "required": false,
+            "in": "query",
+            "description": "标签ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "查询用户标签映射表列表",
+        "tags": [
+          "TagUser"
+        ]
+      }
+    },
+    "/member/tag-user/list/tag": {
+      "get": {
+        "operationId": "TagUserController_findByUserId",
+        "parameters": [
+          {
+            "name": "pageNum",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "params",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/DateParamsDTO"
+            }
+          },
+          {
+            "name": "orderByColumn",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "isAsc",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "required": true,
+            "in": "query",
+            "description": "用户ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "禁止状态",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tagId",
+            "required": false,
+            "in": "query",
+            "description": "标签ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "searchValue",
+            "required": false,
+            "in": "query",
+            "description": "搜索值",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "查询用户标签映射表-用户id查标签",
+        "tags": [
+          "TagUser"
+        ]
+      }
+    },
+    "/member/tag-user/list/user": {
+      "get": {
+        "operationId": "TagUserController_findByTagId",
+        "parameters": [
+          {
+            "name": "pageNum",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "params",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/DateParamsDTO"
+            }
+          },
+          {
+            "name": "orderByColumn",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "isAsc",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "required": false,
+            "in": "query",
+            "description": "用户ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "禁止状态",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tagId",
+            "required": true,
+            "in": "query",
+            "description": "标签ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "searchValue",
+            "required": false,
+            "in": "query",
+            "description": "搜索值",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "查询用户标签映射表-标签id查用户",
+        "tags": [
+          "TagUser"
+        ]
+      }
+    },
+    "/member/tag-user/options": {
+      "get": {
+        "operationId": "TagUserController_options",
+        "parameters": [
+          {
+            "name": "name",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "查询用户标签映射表下拉选项",
+        "tags": [
+          "TagUser"
+        ]
+      }
+    },
+    "/member/tag-user/changeStatus": {
+      "put": {
+        "operationId": "TagUserController_changeStatus",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTagUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "修改用户标签映射状态",
+        "tags": [
+          "TagUser"
+        ]
+      }
+    },
+    "/member/tag-user": {
+      "post": {
+        "operationId": "TagUserController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTagUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "用户标签映射表-创建",
+        "tags": [
+          "TagUser"
+        ]
+      },
+      "put": {
+        "operationId": "TagUserController_update",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTagUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "用户标签映射表-修改",
+        "tags": [
+          "TagUser"
+        ]
+      }
+    },
+    "/member/tag-user/{userId}/{tagId}": {
+      "get": {
+        "operationId": "TagUserController_findOne",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tagId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "用户标签映射表-详情",
+        "tags": [
+          "TagUser"
+        ]
+      },
+      "delete": {
+        "operationId": "TagUserController_remove",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tagId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "用户标签映射表-删除",
+        "tags": [
+          "TagUser"
+        ]
+      }
+    },
+    "/member/tag-user/export": {
+      "post": {
+        "operationId": "TagUserController_export",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ListTagUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "用户标签映射表-导出xlsx文件",
+        "tags": [
+          "TagUser"
+        ]
+      }
+    },
+    "/member/tag/list": {
+      "get": {
+        "operationId": "TagController_findAll",
+        "parameters": [
+          {
+            "name": "pageNum",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "params",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/DateParamsDTO"
+            }
+          },
+          {
+            "name": "orderByColumn",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "isAsc",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "状态",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "remark",
+            "required": false,
+            "in": "query",
+            "description": "备注",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "name",
+            "required": false,
+            "in": "query",
+            "description": "标签显示名",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "code",
+            "required": false,
+            "in": "query",
+            "description": "标签code",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "module",
+            "required": false,
+            "in": "query",
+            "description": "模块标志",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "createBy",
+            "required": false,
+            "in": "query",
+            "description": "创建者",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "createTime",
+            "required": false,
+            "in": "query",
+            "description": "创建时间",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "updateBy",
+            "required": false,
+            "in": "query",
+            "description": "更新者",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "updateTime",
+            "required": false,
+            "in": "query",
+            "description": "更新时间",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "查询用户标签表列表",
+        "tags": [
+          "Tag"
+        ]
+      }
+    },
+    "/member/tag/options": {
+      "get": {
+        "operationId": "TagController_options",
+        "parameters": [
+          {
+            "name": "name",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "查询用户标签表下拉选项",
+        "tags": [
+          "Tag"
+        ]
+      }
+    },
+    "/member/tag/status": {
+      "put": {
+        "operationId": "TagController_changeStatus",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTagDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "修改用户标签状态",
+        "tags": [
+          "Tag"
+        ]
+      }
+    },
+    "/member/tag": {
+      "post": {
+        "operationId": "TagController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTagDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "用户标签表-创建",
+        "tags": [
+          "Tag"
+        ]
+      },
+      "put": {
+        "operationId": "TagController_update",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTagDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "用户标签表-修改",
+        "tags": [
+          "Tag"
+        ]
+      }
+    },
+    "/member/tag/{id}": {
+      "get": {
+        "operationId": "TagController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "用户标签表-详情",
+        "tags": [
+          "Tag"
+        ]
+      },
+      "delete": {
+        "operationId": "TagController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "用户标签表-删除",
+        "tags": [
+          "Tag"
+        ]
+      }
+    },
+    "/member/tag/export": {
+      "post": {
+        "operationId": "TagController_export",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ListTagDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "用户标签表-导出xlsx文件",
+        "tags": [
+          "Tag"
+        ]
+      }
+    },
+    "/app-api/group/list": {
+      "get": {
+        "operationId": "AppGroupController_findAll",
+        "parameters": [
+          {
+            "name": "pageNum",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "params",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/DateParamsDTO"
+            }
+          },
+          {
+            "name": "orderByColumn",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "isAsc",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "module",
+            "required": false,
+            "in": "query",
+            "description": "模块标识",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "name",
+            "required": false,
+            "in": "query",
+            "description": "分组名称",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "remark",
+            "required": false,
+            "in": "query",
+            "description": "备注",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "level",
+            "required": false,
+            "in": "query",
+            "description": "用户级别",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "max",
+            "required": false,
+            "in": "query",
+            "description": "最大人数",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "获取用户分组列表",
+        "tags": [
+          "App 用户分组模块"
+        ]
+      }
+    },
+    "/app-api/group/info": {
+      "get": {
+        "operationId": "AppGroupController_getInfo",
+        "parameters": [
+          {
+            "name": "groupId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "获取用户分组详情",
+        "tags": [
+          "App 用户分组模块"
+        ]
+      }
+    },
+    "/member/group/list": {
+      "get": {
+        "operationId": "GroupController_findAll",
+        "parameters": [
+          {
+            "name": "pageNum",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "params",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/DateParamsDTO"
+            }
+          },
+          {
+            "name": "orderByColumn",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "isAsc",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "状态",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": false,
+            "in": "query",
+            "description": "分组ID",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "createBy",
+            "required": false,
+            "in": "query",
+            "description": "创建者",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "createTime",
+            "required": false,
+            "in": "query",
+            "description": "创建时间",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "updateBy",
+            "required": false,
+            "in": "query",
+            "description": "更新者",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "updateTime",
+            "required": false,
+            "in": "query",
+            "description": "更新时间",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "查询用户分组表列表",
+        "tags": [
+          "Group"
+        ]
+      }
+    },
+    "/member/group/options": {
+      "get": {
+        "operationId": "GroupController_options",
+        "parameters": [
+          {
+            "name": "name",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "查询用户分组表下拉选项",
+        "tags": [
+          "Group"
+        ]
+      }
+    },
+    "/member/group": {
+      "post": {
+        "operationId": "GroupController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateGroupDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "用户分组表-创建",
+        "tags": [
+          "Group"
+        ]
+      },
+      "put": {
+        "operationId": "GroupController_update",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateGroupDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "用户分组表-修改",
+        "tags": [
+          "Group"
+        ]
+      }
+    },
+    "/member/group/{id}": {
+      "get": {
+        "operationId": "GroupController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "用户分组表-详情",
+        "tags": [
+          "Group"
+        ]
+      },
+      "delete": {
+        "operationId": "GroupController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "用户分组表-删除",
+        "tags": [
+          "Group"
+        ]
+      }
+    },
+    "/member/group/export": {
+      "post": {
+        "operationId": "GroupController_export",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ListGroupDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "用户分组表-导出xlsx文件",
+        "tags": [
+          "Group"
+        ]
+      }
+    },
+    "/member/group-user/list": {
+      "get": {
+        "operationId": "GroupUserController_findAll",
+        "parameters": [
+          {
+            "name": "pageNum",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "params",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/DateParamsDTO"
+            }
+          },
+          {
+            "name": "orderByColumn",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "isAsc",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "required": false,
+            "in": "query",
+            "description": "用户ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "禁止状态",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "groupId",
+            "required": false,
+            "in": "query",
+            "description": "分组ID",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "查询用户分组映射表列表",
+        "tags": [
+          "GroupUser"
+        ]
+      }
+    },
+    "/member/group-user/list/group": {
+      "get": {
+        "operationId": "GroupUserController_findByUserId",
+        "parameters": [
+          {
+            "name": "pageNum",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "params",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/DateParamsDTO"
+            }
+          },
+          {
+            "name": "orderByColumn",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "isAsc",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "required": true,
+            "in": "query",
+            "description": "用户ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "禁止状态",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "groupId",
+            "required": false,
+            "in": "query",
+            "description": "分组ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "searchValue",
+            "required": false,
+            "in": "query",
+            "description": "搜索值",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "查询用户分组映射表-用户id查分组",
+        "tags": [
+          "GroupUser"
+        ]
+      }
+    },
+    "/member/group-user/list/user": {
+      "get": {
+        "operationId": "GroupUserController_findByGroupId",
+        "parameters": [
+          {
+            "name": "pageNum",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "params",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/DateParamsDTO"
+            }
+          },
+          {
+            "name": "orderByColumn",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "isAsc",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "required": false,
+            "in": "query",
+            "description": "用户ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "禁止状态",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "groupId",
+            "required": true,
+            "in": "query",
+            "description": "分组ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "searchValue",
+            "required": false,
+            "in": "query",
+            "description": "搜索值",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "查询用户分组映射表-分组id查用户",
+        "tags": [
+          "GroupUser"
+        ]
+      }
+    },
+    "/member/group-user/options": {
+      "get": {
+        "operationId": "GroupUserController_options",
+        "parameters": [
+          {
+            "name": "name",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "查询用户分组映射表下拉选项",
+        "tags": [
+          "GroupUser"
+        ]
+      }
+    },
+    "/member/group-user/changeStatus": {
+      "put": {
+        "operationId": "GroupUserController_changeStatus",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateGroupUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "修改用户分组映射状态",
+        "tags": [
+          "GroupUser"
+        ]
+      }
+    },
+    "/member/group-user": {
+      "post": {
+        "operationId": "GroupUserController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateGroupUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "用户分组映射表-创建",
+        "tags": [
+          "GroupUser"
+        ]
+      },
+      "put": {
+        "operationId": "GroupUserController_update",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateGroupUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "用户分组映射表-修改",
+        "tags": [
+          "GroupUser"
+        ]
+      }
+    },
+    "/member/group-user/{userId}/{groupId}": {
+      "get": {
+        "operationId": "GroupUserController_findOne",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "groupId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "用户分组映射表-详情",
+        "tags": [
+          "GroupUser"
+        ]
+      },
+      "delete": {
+        "operationId": "GroupUserController_remove",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "groupId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "用户分组映射表-删除",
+        "tags": [
+          "GroupUser"
+        ]
+      }
+    },
+    "/member/group-user/export": {
+      "post": {
+        "operationId": "GroupUserController_export",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ListGroupUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "用户分组映射表-导出xlsx文件",
+        "tags": [
+          "GroupUser"
+        ]
+      }
+    },
+    "/app-api/tag/list": {
+      "get": {
+        "operationId": "AppTagController_findAll",
+        "parameters": [
+          {
+            "name": "pageNum",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "params",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/DateParamsDTO"
+            }
+          },
+          {
+            "name": "orderByColumn",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "isAsc",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "module",
+            "required": false,
+            "in": "query",
+            "description": "模块标识",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "name",
+            "required": false,
+            "in": "query",
+            "description": "标签名称",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "remark",
+            "required": false,
+            "in": "query",
+            "description": "备注",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "获取用户标签列表",
+        "tags": [
+          "App 用户标签模块"
+        ]
+      }
+    },
+    "/app-api/tag/info": {
+      "get": {
+        "operationId": "AppTagController_getInfo",
+        "parameters": [
+          {
+            "name": "tagId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "获取用户标签详情",
+        "tags": [
+          "App 用户标签模块"
+        ]
+      }
+    },
+    "/core/module/list": {
+      "get": {
+        "operationId": "ModuleController_findAll",
+        "parameters": [
+          {
+            "name": "pageNum",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "params",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/DateParamsDTO"
+            }
+          },
+          {
+            "name": "orderByColumn",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "isAsc",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "required": false,
+            "in": "query",
+            "description": "ID",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "name",
+            "required": false,
+            "in": "query",
+            "description": "模块名称",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "createBy",
+            "required": false,
+            "in": "query",
+            "description": "创建者",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "createTime",
+            "required": false,
+            "in": "query",
+            "description": "创建时间",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "updateBy",
+            "required": false,
+            "in": "query",
+            "description": "更新者",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "updateTime",
+            "required": false,
+            "in": "query",
+            "description": "更新时间",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "remark",
+            "required": false,
+            "in": "query",
+            "description": "备注",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "查询模块信息表列表",
+        "tags": [
+          "Module"
+        ]
+      }
+    },
+    "/core/module/options": {
+      "get": {
+        "operationId": "ModuleController_options",
+        "parameters": [
+          {
+            "name": "name",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "查询模块信息表下拉选项",
+        "tags": [
+          "Module"
+        ]
+      }
+    },
+    "/core/module": {
+      "post": {
+        "operationId": "ModuleController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateModuleDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "模块信息表-创建",
+        "tags": [
+          "Module"
+        ]
+      },
+      "put": {
+        "operationId": "ModuleController_update",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateModuleDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "模块信息表-修改",
+        "tags": [
+          "Module"
+        ]
+      }
+    },
+    "/core/module/{id}": {
+      "get": {
+        "operationId": "ModuleController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "模块信息表-详情",
+        "tags": [
+          "Module"
+        ]
+      },
+      "delete": {
+        "operationId": "ModuleController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "模块信息表-删除",
+        "tags": [
+          "Module"
+        ]
+      }
+    },
+    "/core/module/export": {
+      "post": {
+        "operationId": "ModuleController_export",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ListModuleDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "模块信息表-导出xlsx文件",
+        "tags": [
+          "Module"
         ]
       }
     }
   },
   "info": {
-    "title": "Nest-Admin",
-    "description": "Nest-Admin 接口文档",
+    "title": "YunXi-Vue",
+    "description": "YunXi-Vue 接口文档",
     "version": "2.0.0",
     "contact": {}
   },
@@ -3827,10 +6240,12 @@
   "servers": [],
   "components": {
     "securitySchemes": {
-      "token": {
+      "bearer": {
         "scheme": "bearer",
-        "bearerFormat": "JWT",
-        "type": "http"
+        "bearerFormat": "Bearer",
+        "type": "apiKey",
+        "name": "Authorization",
+        "in": "header"
       }
     },
     "schemas": {
@@ -3840,7 +6255,7 @@
           "code": {
             "type": "string"
           },
-          "userName": {
+          "username": {
             "type": "string"
           },
           "password": {
@@ -3851,7 +6266,7 @@
           }
         },
         "required": [
-          "userName",
+          "username",
           "password",
           "uuid"
         ]
@@ -3862,7 +6277,7 @@
           "code": {
             "type": "string"
           },
-          "userName": {
+          "username": {
             "type": "string"
           },
           "password": {
@@ -3870,12 +6285,16 @@
           },
           "uuid": {
             "type": "string"
+          },
+          "nickName": {
+            "type": "string"
           }
         },
         "required": [
-          "userName",
+          "username",
           "password",
-          "uuid"
+          "uuid",
+          "nickName"
         ]
       },
       "FileUploadDto": {
@@ -3928,35 +6347,22 @@
         "properties": {
           "pageNum": {
             "type": "number",
-            "description": "当前分页",
             "default": 1
           },
           "pageSize": {
             "type": "number",
-            "description": "每页数量",
             "default": 10
           },
           "params": {
-            "description": "时间范围",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/DateParamsDTO"
-              }
-            ]
+            "$ref": "#/components/schemas/DateParamsDTO"
           },
           "orderByColumn": {
-            "type": "string",
-            "description": "排序字段"
+            "type": "string"
           },
           "isAsc": {
-            "type": "string",
-            "description": "排序规则"
+            "type": "string"
           }
-        },
-        "required": [
-          "pageNum",
-          "pageSize"
-        ]
+        }
       },
       "UpdateConfigDto": {
         "type": "object",
@@ -4094,35 +6500,22 @@
         "properties": {
           "pageNum": {
             "type": "number",
-            "description": "当前分页",
             "default": 1
           },
           "pageSize": {
             "type": "number",
-            "description": "每页数量",
             "default": 10
           },
           "params": {
-            "description": "时间范围",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/DateParamsDTO"
-              }
-            ]
+            "$ref": "#/components/schemas/DateParamsDTO"
           },
           "orderByColumn": {
-            "type": "string",
-            "description": "排序字段"
+            "type": "string"
           },
           "isAsc": {
-            "type": "string",
-            "description": "排序规则"
+            "type": "string"
           }
-        },
-        "required": [
-          "pageNum",
-          "pageSize"
-        ]
+        }
       },
       "CreateMenuDto": {
         "type": "object",
@@ -4245,35 +6638,22 @@
         "properties": {
           "pageNum": {
             "type": "number",
-            "description": "当前分页",
             "default": 1
           },
           "pageSize": {
             "type": "number",
-            "description": "每页数量",
             "default": 10
           },
           "params": {
-            "description": "时间范围",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/DateParamsDTO"
-              }
-            ]
+            "$ref": "#/components/schemas/DateParamsDTO"
           },
           "orderByColumn": {
-            "type": "string",
-            "description": "排序字段"
+            "type": "string"
           },
           "isAsc": {
-            "type": "string",
-            "description": "排序规则"
+            "type": "string"
           }
-        },
-        "required": [
-          "pageNum",
-          "pageSize"
-        ]
+        }
       },
       "UpdateNoticeDto": {
         "type": "object",
@@ -4308,35 +6688,22 @@
         "properties": {
           "pageNum": {
             "type": "number",
-            "description": "当前分页",
             "default": 1
           },
           "pageSize": {
             "type": "number",
-            "description": "每页数量",
             "default": 10
           },
           "params": {
-            "description": "时间范围",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/DateParamsDTO"
-              }
-            ]
+            "$ref": "#/components/schemas/DateParamsDTO"
           },
           "orderByColumn": {
-            "type": "string",
-            "description": "排序字段"
+            "type": "string"
           },
           "isAsc": {
-            "type": "string",
-            "description": "排序规则"
+            "type": "string"
           }
-        },
-        "required": [
-          "pageNum",
-          "pageSize"
-        ]
+        }
       },
       "UpdatePostDto": {
         "type": "object",
@@ -4389,35 +6756,22 @@
         "properties": {
           "pageNum": {
             "type": "number",
-            "description": "当前分页",
             "default": 1
           },
           "pageSize": {
             "type": "number",
-            "description": "每页数量",
             "default": 10
           },
           "params": {
-            "description": "时间范围",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/DateParamsDTO"
-              }
-            ]
+            "$ref": "#/components/schemas/DateParamsDTO"
           },
           "orderByColumn": {
-            "type": "string",
-            "description": "排序字段"
+            "type": "string"
           },
           "isAsc": {
-            "type": "string",
-            "description": "排序规则"
+            "type": "string"
           }
-        },
-        "required": [
-          "pageNum",
-          "pageSize"
-        ]
+        }
       },
       "UpdateRoleDto": {
         "type": "object",
@@ -4471,31 +6825,22 @@
         "properties": {
           "pageNum": {
             "type": "number",
-            "description": "当前分页",
             "default": 1
           },
           "pageSize": {
             "type": "number",
-            "description": "每页数量",
             "default": 10
           },
           "params": {
-            "description": "时间范围",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/DateParamsDTO"
-              }
-            ]
+            "$ref": "#/components/schemas/DateParamsDTO"
           },
           "orderByColumn": {
-            "type": "string",
-            "description": "排序字段"
+            "type": "string"
           },
           "isAsc": {
-            "type": "string",
-            "description": "排序规则"
+            "type": "string"
           },
-          "userName": {
+          "username": {
             "type": "string"
           },
           "phonenumber": {
@@ -4504,11 +6849,7 @@
           "roleId": {
             "type": "string"
           }
-        },
-        "required": [
-          "pageNum",
-          "pageSize"
-        ]
+        }
       },
       "AuthUserCancelDto": {
         "type": "object",
@@ -4555,15 +6896,15 @@
           "userIds"
         ]
       },
-      "TableName": {
+      "TableNames": {
         "type": "object",
         "properties": {
-          "tableNames": {
+          "tables": {
             "type": "string"
           }
         },
         "required": [
-          "tableNames"
+          "tables"
         ]
       },
       "GenTableUpdate": {
@@ -4594,13 +6935,13 @@
           },
           "avatar": {
             "type": "string"
+          },
+          "remark": {
+            "type": "string"
           }
         },
         "required": [
-          "nickName",
-          "email",
-          "phonenumber",
-          "sex"
+          "nickName"
         ]
       },
       "UpdatePwdDto": {
@@ -4630,7 +6971,7 @@
           "nickName": {
             "type": "string"
           },
-          "userName": {
+          "username": {
             "type": "string"
           },
           "password": {
@@ -4666,7 +7007,7 @@
         },
         "required": [
           "nickName",
-          "userName",
+          "username",
           "password",
           "postSort"
         ]
@@ -4683,7 +7024,7 @@
           "nickName": {
             "type": "string"
           },
-          "userName": {
+          "username": {
             "type": "string"
           },
           "password": {
@@ -4728,7 +7069,7 @@
         "type": "object",
         "properties": {
           "userId": {
-            "type": "number"
+            "type": "string"
           },
           "password": {
             "type": "string"
@@ -4744,29 +7085,20 @@
         "properties": {
           "pageNum": {
             "type": "number",
-            "description": "当前分页",
             "default": 1
           },
           "pageSize": {
             "type": "number",
-            "description": "每页数量",
             "default": 10
           },
           "params": {
-            "description": "时间范围",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/DateParamsDTO"
-              }
-            ]
+            "$ref": "#/components/schemas/DateParamsDTO"
           },
           "orderByColumn": {
-            "type": "string",
-            "description": "排序字段"
+            "type": "string"
           },
           "isAsc": {
-            "type": "string",
-            "description": "排序规则"
+            "type": "string"
           },
           "deptId": {
             "type": "string"
@@ -4777,7 +7109,7 @@
           "email": {
             "type": "string"
           },
-          "userName": {
+          "username": {
             "type": "string"
           },
           "phonenumber": {
@@ -4786,173 +7118,38 @@
           "status": {
             "type": "string"
           }
-        },
-        "required": [
-          "pageNum",
-          "pageSize"
-        ]
-      },
-      "CreateJobDto": {
-        "type": "object",
-        "properties": {
-          "jobName": {
-            "type": "string",
-            "description": "任务名称"
-          },
-          "jobGroup": {
-            "type": "string",
-            "description": "任务组名"
-          },
-          "invokeTarget": {
-            "type": "string",
-            "description": "调用目标字符串"
-          },
-          "cronExpression": {
-            "type": "string",
-            "description": "cron执行表达式"
-          },
-          "misfirePolicy": {
-            "type": "string",
-            "description": "计划执行错误策略（1立即执行 2执行一次 3放弃执行）"
-          },
-          "concurrent": {
-            "type": "string",
-            "description": "是否并发执行（0允许 1禁止）"
-          },
-          "status": {
-            "type": "string",
-            "description": "状态（0正常 1暂停）"
-          },
-          "remark": {
-            "type": "string",
-            "description": "备注信息"
-          }
-        },
-        "required": [
-          "jobName",
-          "jobGroup",
-          "invokeTarget",
-          "cronExpression",
-          "misfirePolicy",
-          "concurrent",
-          "status"
-        ]
-      },
-      "ListJobDto": {
-        "type": "object",
-        "properties": {
-          "jobName": {
-            "type": "string",
-            "description": "任务名称"
-          },
-          "jobGroup": {
-            "type": "string",
-            "description": "任务组名"
-          },
-          "status": {
-            "type": "string",
-            "description": "状态（0正常 1暂停）"
-          }
-        },
-        "required": [
-          "jobName",
-          "jobGroup",
-          "status"
-        ]
-      },
-      "ListJobLogDto": {
-        "type": "object",
-        "properties": {
-          "pageNum": {
-            "type": "number",
-            "description": "当前分页",
-            "default": 1
-          },
-          "pageSize": {
-            "type": "number",
-            "description": "每页数量",
-            "default": 10
-          },
-          "params": {
-            "description": "时间范围",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/DateParamsDTO"
-              }
-            ]
-          },
-          "orderByColumn": {
-            "type": "string",
-            "description": "排序字段"
-          },
-          "isAsc": {
-            "type": "string",
-            "description": "排序规则"
-          },
-          "jobName": {
-            "type": "string",
-            "description": "任务名称"
-          },
-          "jobGroup": {
-            "type": "string",
-            "description": "任务组名"
-          },
-          "status": {
-            "type": "string",
-            "description": "状态（0正常 1暂停）"
-          }
-        },
-        "required": [
-          "pageNum",
-          "pageSize",
-          "jobName",
-          "jobGroup",
-          "status"
-        ]
+        }
       },
       "ListLoginlogDto": {
         "type": "object",
         "properties": {
           "pageNum": {
             "type": "number",
-            "description": "当前分页",
             "default": 1
           },
           "pageSize": {
             "type": "number",
-            "description": "每页数量",
             "default": 10
           },
           "params": {
-            "description": "时间范围",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/DateParamsDTO"
-              }
-            ]
+            "$ref": "#/components/schemas/DateParamsDTO"
           },
           "orderByColumn": {
-            "type": "string",
-            "description": "排序字段"
+            "type": "string"
           },
           "isAsc": {
-            "type": "string",
-            "description": "排序规则"
+            "type": "string"
           },
           "ipaddr": {
             "type": "string"
           },
-          "userName": {
+          "username": {
             "type": "string"
           },
           "status": {
             "type": "string"
           }
-        },
-        "required": [
-          "pageNum",
-          "pageSize"
-        ]
+        }
       },
       "OnlineListDto": {
         "type": "object",
@@ -4966,209 +7163,663 @@
           "ipaddr": {
             "type": "string"
           },
-          "userName": {
+          "username": {
             "type": "string"
           }
         }
       },
-      "ResultData": {
+      "CreateOperlogDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "UpdateOperlogDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "CreateMemberUserDto": {
         "type": "object",
         "properties": {
-          "code": {
-            "type": "number",
-            "default": 200
-          },
-          "msg": {
+          "username": {
             "type": "string",
-            "default": "操作成功"
+            "description": "用户账号"
+          },
+          "nickName": {
+            "type": "string",
+            "description": "用户昵称"
+          },
+          "email": {
+            "type": "string",
+            "description": "邮箱"
+          },
+          "phonenumber": {
+            "type": "string",
+            "description": "手机号码"
+          },
+          "sex": {
+            "type": "string",
+            "description": "性别"
+          },
+          "avatar": {
+            "type": "string",
+            "description": "头像地址"
           }
         },
         "required": [
-          "code",
-          "msg"
+          "username",
+          "nickName"
         ]
       },
-      "QueryOperLogDto": {
+      "UpdateMemberUserDto": {
         "type": "object",
         "properties": {
-          "operId": {
-            "type": "number",
-            "description": "日志主键"
-          },
-          "title": {
+          "userId": {
             "type": "string",
-            "description": "模块标题"
+            "description": "主键"
           },
-          "businessType": {
-            "type": "number",
-            "description": "业务类型"
-          },
-          "requestMethod": {
+          "username": {
             "type": "string",
-            "description": "请求方式"
+            "description": "用户账号"
           },
-          "operatorType": {
-            "type": "number",
-            "description": "操作类别"
-          },
-          "operName": {
+          "nickName": {
             "type": "string",
-            "description": "操作人员"
+            "description": "用户昵称"
           },
-          "deptName": {
+          "email": {
             "type": "string",
-            "description": "部门名称"
+            "description": "邮箱"
           },
-          "operUrl": {
+          "phonenumber": {
             "type": "string",
-            "description": "请求URL"
+            "description": "手机号码"
           },
-          "operLocation": {
+          "sex": {
             "type": "string",
-            "description": "操作地点"
+            "description": "性别"
           },
-          "operParam": {
+          "avatar": {
             "type": "string",
-            "description": "请求参数"
-          },
-          "jsonResult": {
-            "type": "string",
-            "description": "返回参数"
-          },
-          "errorMsg": {
-            "type": "string",
-            "description": "错误消息"
-          },
-          "method": {
-            "type": "string",
-            "description": "方法名称"
-          },
-          "operIp": {
-            "type": "string",
-            "description": "主机地址"
-          },
-          "operTime": {
-            "type": "string",
-            "description": "操作时间"
-          },
-          "status": {
-            "type": "string",
-            "enum": [
-              "0",
-              "1"
-            ],
-            "description": "登录状态"
-          },
-          "costTime": {
-            "type": "number",
-            "description": "消耗时间"
-          },
+            "description": "头像地址"
+          }
+        },
+        "required": [
+          "userId"
+        ]
+      },
+      "ListMemberUserDto": {
+        "type": "object",
+        "properties": {
           "pageNum": {
             "type": "number",
-            "description": "当前分页",
             "default": 1
           },
           "pageSize": {
             "type": "number",
-            "description": "每页数量",
             "default": 10
           },
           "params": {
-            "description": "时间范围",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/DateParamsDTO"
-              }
-            ]
+            "$ref": "#/components/schemas/DateParamsDTO"
           },
           "orderByColumn": {
-            "type": "string",
-            "description": "排序字段"
+            "type": "string"
           },
           "isAsc": {
+            "type": "string"
+          },
+          "username": {
             "type": "string",
-            "description": "排序规则"
-          }
-        },
-        "required": [
-          "pageNum",
-          "pageSize"
-        ]
-      },
-      "BaseOperLogDto": {
-        "type": "object",
-        "properties": {
-          "operId": {
-            "type": "number",
-            "description": "日志主键"
+            "description": "用户账号"
           },
-          "title": {
+          "nickName": {
             "type": "string",
-            "description": "模块标题"
+            "description": "用户昵称"
           },
-          "businessType": {
-            "type": "number",
-            "description": "业务类型"
-          },
-          "requestMethod": {
+          "email": {
             "type": "string",
-            "description": "请求方式"
+            "description": "邮箱"
           },
-          "operatorType": {
-            "type": "number",
-            "description": "操作类别"
-          },
-          "operName": {
+          "phonenumber": {
             "type": "string",
-            "description": "操作人员"
+            "description": "手机号码"
           },
-          "deptName": {
+          "sex": {
             "type": "string",
-            "description": "部门名称"
-          },
-          "operUrl": {
-            "type": "string",
-            "description": "请求URL"
-          },
-          "operLocation": {
-            "type": "string",
-            "description": "操作地点"
-          },
-          "operParam": {
-            "type": "string",
-            "description": "请求参数"
-          },
-          "jsonResult": {
-            "type": "string",
-            "description": "返回参数"
-          },
-          "errorMsg": {
-            "type": "string",
-            "description": "错误消息"
-          },
-          "method": {
-            "type": "string",
-            "description": "方法名称"
-          },
-          "operIp": {
-            "type": "string",
-            "description": "主机地址"
-          },
-          "operTime": {
-            "type": "string",
-            "description": "操作时间"
+            "description": "性别"
           },
           "status": {
             "type": "string",
-            "enum": [
-              "0",
-              "1"
-            ],
-            "description": "登录状态"
+            "description": "状态（0正常 1关闭）"
           },
-          "costTime": {
+          "loginIp": {
+            "type": "string",
+            "description": "最后登录IP"
+          },
+          "createBy": {
+            "type": "string",
+            "description": "创建者"
+          },
+          "createTime": {
+            "description": "创建时间",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "updateBy": {
+            "type": "string",
+            "description": "更新者"
+          },
+          "updateTime": {
+            "description": "更新时间",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "remark": {
+            "type": "string",
+            "description": "备注"
+          },
+          "avatar": {
+            "type": "string",
+            "description": "头像地址"
+          },
+          "loginDate": {
+            "description": "最后登录时间",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "UpdateTagUserDto": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "description": "主键"
+          },
+          "tagId": {
+            "type": "string",
+            "description": "标签ID"
+          },
+          "status": {
+            "type": "string",
+            "description": "禁止状态"
+          }
+        },
+        "required": [
+          "userId",
+          "tagId"
+        ]
+      },
+      "CreateTagUserDto": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "description": "用户ID"
+          },
+          "tagId": {
+            "type": "string",
+            "description": "标签ID"
+          },
+          "status": {
+            "type": "string",
+            "description": "禁止状态"
+          }
+        },
+        "required": [
+          "userId",
+          "tagId"
+        ]
+      },
+      "ListTagUserDto": {
+        "type": "object",
+        "properties": {
+          "pageNum": {
             "type": "number",
-            "description": "消耗时间"
+            "default": 1
+          },
+          "pageSize": {
+            "type": "number",
+            "default": 10
+          },
+          "params": {
+            "$ref": "#/components/schemas/DateParamsDTO"
+          },
+          "orderByColumn": {
+            "type": "string"
+          },
+          "isAsc": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string",
+            "description": "用户ID"
+          },
+          "status": {
+            "type": "string",
+            "description": "禁止状态"
+          },
+          "tagId": {
+            "type": "string",
+            "description": "标签ID"
+          }
+        }
+      },
+      "UpdateTagDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "状态"
+          },
+          "remark": {
+            "type": "string",
+            "description": "备注"
+          },
+          "name": {
+            "type": "string",
+            "description": "标签显示名"
+          },
+          "code": {
+            "type": "string",
+            "description": "标签code"
+          },
+          "module": {
+            "type": "string",
+            "description": "模块标志"
+          },
+          "id": {
+            "type": "string",
+            "description": "主键"
+          }
+        },
+        "required": [
+          "name",
+          "code",
+          "module",
+          "id"
+        ]
+      },
+      "CreateTagDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "状态"
+          },
+          "remark": {
+            "type": "string",
+            "description": "备注"
+          },
+          "name": {
+            "type": "string",
+            "description": "标签显示名"
+          },
+          "code": {
+            "type": "string",
+            "description": "标签code"
+          },
+          "module": {
+            "type": "string",
+            "description": "模块标志"
+          }
+        },
+        "required": [
+          "name",
+          "code",
+          "module"
+        ]
+      },
+      "ListTagDto": {
+        "type": "object",
+        "properties": {
+          "pageNum": {
+            "type": "number",
+            "default": 1
+          },
+          "pageSize": {
+            "type": "number",
+            "default": 10
+          },
+          "params": {
+            "$ref": "#/components/schemas/DateParamsDTO"
+          },
+          "orderByColumn": {
+            "type": "string"
+          },
+          "isAsc": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "description": "状态"
+          },
+          "remark": {
+            "type": "string",
+            "description": "备注"
+          },
+          "name": {
+            "type": "string",
+            "description": "标签显示名"
+          },
+          "code": {
+            "type": "string",
+            "description": "标签code"
+          },
+          "module": {
+            "type": "string",
+            "description": "模块标志"
+          },
+          "createBy": {
+            "type": "string",
+            "description": "创建者"
+          },
+          "createTime": {
+            "description": "创建时间",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "updateBy": {
+            "type": "string",
+            "description": "更新者"
+          },
+          "updateTime": {
+            "description": "更新时间",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "CreateGroupDto": {
+        "type": "object",
+        "properties": {
+          "remark": {
+            "type": "string",
+            "description": "备注"
+          },
+          "module": {
+            "type": "string",
+            "description": "模块标志"
+          },
+          "name": {
+            "type": "string",
+            "description": "分组显示名"
+          },
+          "max": {
+            "type": "number",
+            "description": "分组最大人数"
+          }
+        },
+        "required": [
+          "module",
+          "name",
+          "max"
+        ]
+      },
+      "UpdateGroupDto": {
+        "type": "object",
+        "properties": {
+          "remark": {
+            "type": "string",
+            "description": "备注"
+          },
+          "module": {
+            "type": "string",
+            "description": "模块标志"
+          },
+          "name": {
+            "type": "string",
+            "description": "分组显示名"
+          },
+          "max": {
+            "type": "number",
+            "description": "分组最大人数"
+          },
+          "id": {
+            "type": "string",
+            "description": "主键"
+          }
+        },
+        "required": [
+          "module",
+          "name",
+          "max",
+          "id"
+        ]
+      },
+      "ListGroupDto": {
+        "type": "object",
+        "properties": {
+          "pageNum": {
+            "type": "number",
+            "default": 1
+          },
+          "pageSize": {
+            "type": "number",
+            "default": 10
+          },
+          "params": {
+            "$ref": "#/components/schemas/DateParamsDTO"
+          },
+          "orderByColumn": {
+            "type": "string"
+          },
+          "isAsc": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "description": "状态"
+          },
+          "id": {
+            "type": "number",
+            "description": "分组ID"
+          },
+          "createBy": {
+            "type": "string",
+            "description": "创建者"
+          },
+          "createTime": {
+            "description": "创建时间",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "updateBy": {
+            "type": "string",
+            "description": "更新者"
+          },
+          "updateTime": {
+            "description": "更新时间",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "UpdateGroupUserDto": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "description": "主键"
+          },
+          "groupId": {
+            "type": "string",
+            "description": "分组ID"
+          },
+          "level": {
+            "type": "number",
+            "description": "级别"
+          },
+          "status": {
+            "type": "string",
+            "description": "禁止状态"
+          }
+        },
+        "required": [
+          "userId",
+          "groupId"
+        ]
+      },
+      "CreateGroupUserDto": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "description": "用户ID"
+          },
+          "groupId": {
+            "type": "string",
+            "description": "分组ID"
+          },
+          "level": {
+            "type": "number",
+            "description": "级别"
+          },
+          "status": {
+            "type": "string",
+            "description": "禁止状态"
+          }
+        },
+        "required": [
+          "userId",
+          "groupId",
+          "level"
+        ]
+      },
+      "ListGroupUserDto": {
+        "type": "object",
+        "properties": {
+          "pageNum": {
+            "type": "number",
+            "default": 1
+          },
+          "pageSize": {
+            "type": "number",
+            "default": 10
+          },
+          "params": {
+            "$ref": "#/components/schemas/DateParamsDTO"
+          },
+          "orderByColumn": {
+            "type": "string"
+          },
+          "isAsc": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string",
+            "description": "用户ID"
+          },
+          "status": {
+            "type": "string",
+            "description": "禁止状态"
+          },
+          "groupId": {
+            "type": "string",
+            "description": "分组ID"
+          }
+        }
+      },
+      "CreateModuleDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "模块名称"
+          },
+          "remark": {
+            "type": "string",
+            "description": "备注"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "UpdateModuleDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "主键"
+          },
+          "name": {
+            "type": "string",
+            "description": "模块名称"
+          },
+          "remark": {
+            "type": "string",
+            "description": "备注"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      },
+      "ListModuleDto": {
+        "type": "object",
+        "properties": {
+          "pageNum": {
+            "type": "number",
+            "default": 1
+          },
+          "pageSize": {
+            "type": "number",
+            "default": 10
+          },
+          "params": {
+            "$ref": "#/components/schemas/DateParamsDTO"
+          },
+          "orderByColumn": {
+            "type": "string"
+          },
+          "isAsc": {
+            "type": "string"
+          },
+          "id": {
+            "type": "number",
+            "description": "ID"
+          },
+          "name": {
+            "type": "string",
+            "description": "模块名称"
+          },
+          "createBy": {
+            "type": "string",
+            "description": "创建者"
+          },
+          "createTime": {
+            "description": "创建时间",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "updateBy": {
+            "type": "string",
+            "description": "更新者"
+          },
+          "updateTime": {
+            "description": "更新时间",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "remark": {
+            "type": "string",
+            "description": "备注"
           }
         }
       }

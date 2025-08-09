@@ -1,0 +1,442 @@
+@startuml Yunxi Vue Database Entities
+
+!define PRIMARY_KEY #FFCCCC
+!define FOREIGN_KEY #CCFFCC
+!define NORMAL_FIELD #FFFFFF
+!define ABSTRACT_ENTITY #E6E6FA
+!define USER_MGMT #E8F4FD
+!define PERMISSION #FFF2CC
+!define SYSTEM_MGMT #E1F5FE
+!define UPLOAD_MGMT #F3E5F5
+!define MONITOR #FCE4EC
+!define DEVELOPMENT #E8F5E8
+
+title Yunxi Vue Server - Database Entity Relationship Diagram (按功能分区) - Updated 2025-01-09
+
+' ===== 基础抽象实体 =====
+package "基础抽象实体 (Base Entities)" #FFFFFF {
+  abstract class BaseEntity ABSTRACT_ENTITY {
+    +createBy: varchar(64)
+    +createTime: timestamp
+    +updateBy: varchar(64)
+    +updateTime: timestamp
+    +remark: varchar(500)
+    +delFlag: char(1)
+  }
+
+  abstract class DeleteStatusEntity ABSTRACT_ENTITY {
+    +delFlag: char(1)
+  }
+}
+
+' ===== 用户管理模块 =====
+package "用户管理模块 (User Management)" USER_MGMT {
+  entity "sys_user" as User PRIMARY_KEY {
+    ==Primary Key==
+    +userId: int <<PK>>
+    --
+    ==Foreign Keys==
+    +deptId: int <<FK>>
+    --
+    ==Fields==
+    +username: varchar(30)
+    +nickName: varchar(30)
+    +userType: varchar(2)
+    +email: varchar(50)
+    +phonenumber: varchar(11)
+    +sex: char(1)
+    +avatar: varchar
+    +password: varchar(200)
+    +loginIp: varchar(128)
+    +loginDate: timestamp
+    +status: char(1)
+  }
+
+  entity "sys_dept" as Dept PRIMARY_KEY {
+    ==Primary Key==
+    +deptId: int <<PK>>
+    --
+    ==Self Reference==
+    +parentId: int <<FK>>
+    --
+    ==Fields==
+    +ancestors: varchar(50)
+    +deptName: varchar(30)
+    +orderNum: int
+    +leader: varchar(20)
+    +phone: varchar(11)
+    +email: varchar(50)
+    +status: char(1)
+  }
+
+  entity "sys_post" as Post PRIMARY_KEY {
+    ==Primary Key==
+    +postId: int <<PK>>
+    --
+    ==Fields==
+    +postCode: varchar(64)
+    +postName: varchar(50)
+    +postSort: int
+    +status: char(1)
+  }
+}
+
+' ===== 权限管理模块 =====
+package "权限管理模块 (Permission & Authorization)" PERMISSION {
+  entity "sys_role" as Role PRIMARY_KEY {
+    ==Primary Key==
+    +roleId: int <<PK>>
+    --
+    ==Fields==
+    +roleName: varchar(30)
+    +roleSort: int
+    +roleKey: varchar(100)
+    +dataScope: char(1)
+    +menuCheckStrictly: boolean
+    +deptCheckStrictly: boolean
+    +status: char(1)
+  }
+
+  entity "sys_menu" as Menu PRIMARY_KEY {
+    ==Primary Key==
+    +menuId: int <<PK>>
+    --
+    ==Self Reference==
+    +parentId: int <<FK>>
+    --
+    ==Fields==
+    +menuName: varchar(50)
+    +orderNum: int
+    +path: varchar(200)
+    +component: varchar(255)
+    +query: varchar(255)
+    +isFrame: char(1)
+    +isCache: char(1)
+    +visible: char(1)
+    +menuType: char(1)
+    +perms: varchar(100)
+    +icon: varchar(100)
+    +status: char(1)
+  }
+
+  ' 关联表
+  entity "sys_user_role" as UserRole FOREIGN_KEY {
+    ==Composite Primary Key==
+    +userId: int <<PK,FK>>
+    +roleId: int <<PK,FK>>
+  }
+
+  entity "sys_user_post" as UserPost FOREIGN_KEY {
+    ==Composite Primary Key==
+    +userId: int <<PK,FK>>
+    +postId: int <<PK,FK>>
+  }
+
+  entity "sys_role_menu" as RoleMenu FOREIGN_KEY {
+    ==Composite Primary Key==
+    +roleId: int <<PK,FK>>
+    +menuId: int <<PK,FK>>
+  }
+
+  entity "sys_role_dept" as RoleDept FOREIGN_KEY {
+    ==Composite Primary Key==
+    +roleId: int <<PK,FK>>
+    +deptId: int <<PK,FK>>
+  }
+}
+
+' ===== 系统管理模块 =====
+package "系统管理模块 (System Management)" SYSTEM_MGMT {
+  entity "sys_config" as Config PRIMARY_KEY {
+    ==Primary Key==
+    +configId: int <<PK>>
+    --
+    ==Fields==
+    +configName: varchar(100)
+    +configKey: varchar(100)
+    +configValue: varchar(500)
+    +configType: char(1)
+  }
+
+  entity "sys_notice" as Notice PRIMARY_KEY {
+    ==Primary Key==
+    +noticeId: int <<PK>>
+    --
+    ==Fields==
+    +noticeTitle: varchar(50)
+    +noticeType: char(1)
+    +noticeContent: longblob
+    +status: char(1)
+  }
+
+  entity "sys_dict_type" as DictType PRIMARY_KEY {
+    ==Primary Key==
+    +dictId: int <<PK>>
+    --
+    ==Fields==
+    +dictName: varchar(100)
+    +dictType: varchar(100)
+    +status: char(1)
+  }
+
+  entity "sys_dict_data" as DictData PRIMARY_KEY {
+    ==Primary Key==
+    +dictCode: int <<PK>>
+    --
+    ==Foreign Keys==
+    +dictType: varchar(100) <<FK>>
+    --
+    ==Fields==
+    +dictSort: int
+    +dictLabel: varchar(100)
+    +dictValue: varchar(100)
+    +cssClass: varchar(100)
+    +listClass: varchar(100)
+    +isDefault: char(1)
+    +status: char(1)
+  }
+
+  entity "sys_upload" as Upload PRIMARY_KEY {
+    ==Primary Key==
+    +uploadId: varchar <<PK>>
+    --
+    ==Fields==
+    +size: int
+    +fileName: varchar
+    +newFileName: varchar
+    +url: varchar
+    +ext: varchar
+    +status: char(1)
+  }
+
+  entity "sys_job" as Job PRIMARY_KEY {
+    ==Primary Key==
+    +jobId: int <<PK>>
+    --
+    ==Fields==
+    +jobName: varchar(64)
+    +jobGroup: varchar(64)
+    +invokeTarget: varchar(500)
+    +cronExpression: varchar(255)
+    +misfirePolicy: varchar(20)
+    +concurrent: char(1)
+    +status: char(1)
+  }
+}
+
+' ===== 文件上传管理 =====
+package "文件上传管理 (Upload Management)" UPLOAD_MGMT {
+  entity "sys_upload" as Upload PRIMARY_KEY {
+    ==Primary Key==
+    +uploadId: varchar <<PK>>
+    --
+    ==Fields==
+    +size: int
+    +fileName: varchar
+    +newFileName: varchar
+    +url: varchar
+    +ext: varchar
+    +status: char(1)
+  }
+}
+
+' ===== 监控与日志模块 =====
+package "监控与日志模块 (Monitoring & Logging)" MONITOR {
+  entity "sys_oper_log" as OperLog PRIMARY_KEY {
+    ==Primary Key==
+    +operId: int <<PK>>
+    --
+    ==Fields==
+    +title: varchar(50)
+    +businessType: int
+    +method: varchar(100)
+    +requestMethod: varchar(10)
+    +operatorType: int
+    +operName: varchar(50)
+    +deptName: varchar(50)
+    +operUrl: varchar(255)
+    +operIp: varchar(255)
+    +operLocation: varchar(255)
+    +operParam: varchar(2000)
+    +jsonResult: varchar(2000)
+    +operTime: timestamp
+    +status: char(1)
+    +errorMsg: varchar(2000)
+    +costTime: int
+  }
+
+  entity "sys_logininfor" as LoginLog PRIMARY_KEY {
+    ==Primary Key==
+    +infoId: int <<PK>>
+    --
+    ==Fields==
+    +userName: varchar(50)
+    +ipaddr: varchar(128)
+    +loginLocation: varchar(255)
+    +browser: varchar(50)
+    +os: varchar(50)
+    +status: char(1)
+    +message: varchar(255)
+    +loginTime: timestamp
+  }
+
+  entity "sys_job_log" as JobLog PRIMARY_KEY {
+    ==Primary Key==
+    +jobLogId: int <<PK>>
+    --
+    ==Foreign Keys==
+    +jobId: int <<FK>>
+    --
+    ==Fields==
+    +jobName: varchar(64)
+    +jobGroup: varchar(64)
+    +invokeTarget: varchar(500)
+    +jobMessage: varchar(500)
+    +status: char(1)
+    +exceptionInfo: varchar(2000)
+    +createTime: timestamp
+  }
+}
+
+' ===== 开发工具模块 =====
+package "开发工具模块 (Development Tools)" DEVELOPMENT {
+  entity "gen_table" as GenTable PRIMARY_KEY {
+    ==Primary Key==
+    +tableId: int <<PK>>
+    --
+    ==Fields==
+    +tableName: varchar(200)
+    +tableComment: varchar(500)
+    +subTableName: varchar(64)
+    +subTableFkName: varchar(64)
+    +className: varchar(100)
+    +tplCategory: varchar(200)
+    +packageName: varchar(100)
+    +moduleName: varchar(30)
+    +businessName: varchar(30)
+    +functionName: varchar(50)
+    +functionAuthor: varchar(50)
+    +genType: char(1)
+    +genPath: varchar(200)
+    +options: varchar(1000)
+  }
+
+  entity "gen_table_column" as GenTableColumn PRIMARY_KEY {
+    ==Primary Key==
+    +columnId: int <<PK>>
+    --
+    ==Foreign Keys==
+    +tableId: int <<FK>>
+    --
+    ==Fields==
+    +columnName: varchar(200)
+    +columnComment: varchar(500)
+    +columnType: varchar(100)
+    +javaType: varchar(500)
+    +javaField: varchar(200)
+    +isPk: char(1)
+    +isIncrement: char(1)
+    +isRequired: char(1)
+    +isInsert: char(1)
+    +isEdit: char(1)
+    +isList: char(1)
+    +isQuery: char(1)
+    +queryType: varchar(200)
+    +htmlType: varchar(200)
+    +dictType: varchar(200)
+    +sort: int
+  }
+}
+
+' ===== 继承关系 =====
+' 基础实体继承
+DeleteStatusEntity <|-- BaseEntity
+BaseEntity <|-- User
+BaseEntity <|-- Role
+BaseEntity <|-- Dept
+BaseEntity <|-- Post
+BaseEntity <|-- Config
+BaseEntity <|-- Notice
+BaseEntity <|-- DictType
+BaseEntity <|-- DictData
+BaseEntity <|-- Upload
+BaseEntity <|-- Job
+BaseEntity <|-- JobLog
+BaseEntity <|-- GenTable
+BaseEntity <|-- GenTableColumn
+
+' ===== 关系映射 =====
+' 用户管理模块内部关系
+Dept ||--o{ User : "部门包含用户"
+Dept ||--o{ Dept : "部门层级关系"
+
+' 权限管理模块关系
+User ||--o{ UserRole : "用户拥有角色"
+Role ||--o{ UserRole : "角色分配给用户"
+User ||--o{ UserPost : "用户担任职位"
+Post ||--o{ UserPost : "职位分配给用户"
+Role ||--o{ RoleMenu : "角色拥有菜单权限"
+Menu ||--o{ RoleMenu : "菜单分配给角色"
+Role ||--o{ RoleDept : "角色数据权限范围"
+Dept ||--o{ RoleDept : "部门权限范围"
+Menu ||--o{ Menu : "菜单层级关系"
+
+' 系统管理模块关系
+DictType ||--o{ DictData : "字典类型包含字典数据"
+Job ||--o{ JobLog : "定时任务产生日志"
+
+' 开发工具模块关系
+GenTable ||--o{ GenTableColumn : "代码生成表包含字段"
+
+' ===== 说明注释 =====
+note top of BaseEntity : 抽象基础实体\n提供审计字段:\n- createBy/createTime (创建信息)\n- updateBy/updateTime (更新信息)\n- remark, delFlag (备注、删除标记)\n\n注意: 不是所有实体都继承此基类
+
+note right of User : 核心用户实体\n包含认证字段\n和用户基本信息\n支持部门关联
+
+note right of Role : 基于角色的访问控制(RBAC)\n支持数据范围权限\n- 菜单权限控制\n- 部门数据权限
+
+note right of Menu : 层次化菜单结构\n用于导航和权限控制\n支持按钮级别权限
+
+note right of UserRole : 用户与角色的\n多对多关系映射
+
+note right of Upload : 文件上传管理\n支持文件存储和访问\n包含文件元数据信息
+
+note right of DictType : 数据字典类型管理\n统一系统枚举值\n支持动态配置
+
+note right of OperLog : 操作日志记录\n追踪用户行为\n不继承BaseEntity\n直接管理时间戳
+
+note right of GenTable : 代码生成工具\n自动生成CRUD代码\n支持前后端代码生成
+
+note top of DeleteStatusEntity : 软删除实体基类\n提供逻辑删除功能\n delFlag: 0=存在, 1=删除
+
+' ===== 架构设计说明 =====
+note as ArchNote
+  <b>Yunxi Vue 数据库架构特点 (更新: 2025-01-09):</b>
+  
+  <b>1. 继承体系:</b>
+  • DeleteStatusEntity - 软删除基类
+  • BaseEntity - 完整审计信息
+  • 部分实体不继承BaseEntity(如OperLog)
+  
+  <b>2. 权限体系:</b>
+  • 基于角色的访问控制(RBAC)
+  • 支持菜单级和按钮级权限
+  • 数据权限范围控制
+  
+  <b>3. 模块化设计:</b>
+  • 系统管理模块
+  • 用户权限模块  
+  • 监控日志模块
+  • 开发工具模块
+  • 文件上传模块
+  
+  <b>4. 技术栈:</b>
+  • NestJS + TypeORM
+  • PostgreSQL/MySQL 兼容
+  • 软删除 + 审计字段
+end note
+
+' ===== 版本信息 =====
+note bottom : <b>更新历史:</b>\n• 2025-01-09: 移除不存在的core业务模块\n• 2025-01-09: 修正实体继承关系\n• 2025-01-09: 添加详细架构说明\n• 2025-01-09: 更新字段定义与实际代码同步
+
+@enduml

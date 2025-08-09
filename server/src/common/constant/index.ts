@@ -10,8 +10,8 @@ export const LOGIN_TOKEN_EXPIRESIN = 1000 * 60 * 60 * 24;
  *
  * 20 客户端用户
  */
-export const enum SYS_USER_TYPE {
-  SYS = '00',
-  CUSTOM = '10',
-  CLIENT = '20',
+export enum SYS_USER_TYPE {
+	SYS = '00',
+	CUSTOM = '10',
+	CLIENT = '20',
 }

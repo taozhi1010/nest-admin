@@ -1,0 +1,57 @@
+# Dependencies
+node_modules/
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+
+# Database
+pg_data/
+*.sql
+
+# Logs
+*.log
+logs/
+
+# Cache directories
+.cache/
+.parcel-cache/
+.vscode/
+.idea/
+
+# Generated files
+coverage/
+.nyc_output/
+
+# Docker files
+*.tar
+Dockerfile*
+docker-compose*.yml
+
+# Config files that should not be formatted
+*.md
+*.json
+*.yml
+*.yaml
+
+# Static assets
+frontend/
+ice-editor-server/frontend/
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+*.ico
+
+# License files
+*.license
+
+# Temporary files
+temp/
+tmp/

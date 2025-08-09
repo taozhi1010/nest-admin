@@ -1,0 +1,30 @@
+import { BaseEntity } from 'src/common/entities/base'
+import { stringDateTransformer } from 'src/common/entities/transformer'
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
+
+@Entity('${tableName}', {
+  comment: '${tableComment}',
+})
+export class ${BusinessName}Entity extends BaseEntity {#foreach($column in $columns)
+  #set($javaType = $column.javaType)
+  #set($javaField = $column.javaField)
+  #set($isPk = $column.isPk)
+  #set($columnType = $column.columnType)
+  #set($columnComment = $column.columnComment)
+  #set($nullable = $column.isRequired != '1')
+  #if($isPk == '1')
+  @PrimaryGeneratedColumn({ type: '${columnType}', name: '${convertToSnakeCase($javaField)}', comment: '${columnComment}' })
+  public ${javaField}:#if($column.columnType == 'bigint') string
+    #else $getTsType($column.javaType)
+    #end
+  #elseif($GenConstants.BASE_ENTITY.includes($javaField))
+  #elseif($javaType == 'Date')
+  @Column({ type: '${columnType}', name: '${convertToSnakeCase($javaField)}', nullable: $nullable, comment: '${columnComment}', transformer: stringDateTransformer })
+  public ${javaField}: string
+  #else
+  @Column({ type: '${columnType}', name: '${convertToSnakeCase($javaField)}', nullable: $nullable, comment: '${columnComment}' })
+  public ${javaField}:#if($column.columnType == 'bigint') string
+    #else $getTsType($column.javaType)
+    #end
+  #end
+#end}

@@ -1,0 +1,199 @@
+@startuml Yunxi Vue Server Module Dependencies
+
+!define GLOBAL_MODULE #LightBlue
+!define BUSINESS_MODULE #LightGreen
+!define SYSTEM_MODULE #LightYellow
+!define COMMON_MODULE #LightCoral
+!define MONITOR_MODULE #LightPink
+!define LICENSE_MODULE #Orange
+!define CORE_MODULE #Lavender
+
+title Yunxi Vue Server - NestJS Module Dependencies Architecture (Updated 2025-08-09)
+
+' Root Module
+package "AppModule (Root)" as AppRoot GLOBAL_MODULE {
+}
+
+' Common Modules
+package "Common Modules" as CommonPkg COMMON_MODULE {
+  [CommonModule (Global)] as CommonModule
+  [RedisModule] as RedisModule
+  [AxiosModule] as AxiosModule
+}
+
+' License Module
+package "License" as LicensePkg LICENSE_MODULE {
+  [LicenseModule] as LicenseModule
+}
+
+' System Modules
+package "System Modules" as SystemPkg SYSTEM_MODULE {
+  [SystemModule (Global)] as SystemModule
+  [AuthModule] as AuthModule
+  [UserModule] as UserModule
+  [SysConfigModule] as SysConfigModule
+  [DeptModule] as DeptModule
+  [DictModule] as DictModule
+  [MenuModule] as MenuModule
+  [NoticeModule] as NoticeModule
+  [PostModule] as PostModule
+  [RoleModule] as RoleModule
+  [ToolModule] as ToolModule
+  [SeedModule] as SeedModule
+  [SSEModule] as SSEModule
+}
+
+' Monitor Modules
+package "Monitor Modules" as MonitorPkg MONITOR_MODULE {
+  [MonitorModule (Global)] as MonitorModule
+  [CacheModule] as CacheModule
+  [LoginlogModule] as LoginlogModule
+  [OnlineModule] as OnlineModule
+  [OperlogModule] as OperlogModule
+  [ServerModule] as ServerModule
+  [JobModule] as JobModule
+}
+
+' Application Modules
+package "Application Modules" as AppPkg BUSINESS_MODULE {
+  [MainModule] as MainModule
+  [UploadModule] as UploadModule
+}
+
+' Additional Service Modules
+package "Additional Service Modules" as AdditionalPkg {
+  [BackupService] as BackupService
+}
+
+' External Dependencies
+package "External Dependencies" as ExternalPkg {
+  [TypeOrmModule] as TypeOrmModule
+  [ConfigModule] as ConfigModule
+  [JwtModule] as JwtModule
+  [ServeStaticModule] as ServeStaticModule
+  [EventEmitterModule] as EventEmitterModule
+  [ScheduleModule] as ScheduleModule
+}
+
+' Guards
+package "Global Guards" as GuardsPkg {
+  [JwtAuthGuard] as JwtAuthGuard
+  [RolesGuard] as RolesGuard
+  [PermissionGuard] as PermissionGuard
+}
+
+' Main Dependencies - AppModule imports
+AppRoot --> CommonModule : imports
+AppRoot --> LicenseModule : imports
+AppRoot --> MainModule : imports
+AppRoot --> UploadModule : imports
+AppRoot --> SystemModule : imports
+AppRoot --> MonitorModule : imports
+
+' AppModule Guards
+AppRoot --> JwtAuthGuard : provides
+AppRoot --> RolesGuard : provides
+AppRoot --> PermissionGuard : provides
+
+' AppModule External Dependencies
+AppRoot --> ServeStaticModule : imports
+AppRoot --> EventEmitterModule : imports
+AppRoot --> ConfigModule : imports
+AppRoot --> TypeOrmModule : imports
+
+' Common Module Dependencies
+CommonModule --> RedisModule : imports
+CommonModule --> AxiosModule : imports
+RedisModule --> ConfigModule : depends on
+
+' System Module Dependencies
+SystemModule --> AuthModule : imports
+SystemModule --> UserModule : imports
+SystemModule --> SysConfigModule : imports
+SystemModule --> DeptModule : imports
+SystemModule --> DictModule : imports
+SystemModule --> MenuModule : imports
+SystemModule --> NoticeModule : imports
+SystemModule --> PostModule : imports
+SystemModule --> RoleModule : imports
+SystemModule --> ToolModule : imports
+SystemModule --> SeedModule : imports
+SystemModule --> SSEModule : imports
+
+UserModule --> JwtModule : imports
+UserModule --> TypeOrmModule : imports
+AuthModule --> UserModule : depends on
+
+' Monitor Module Dependencies
+MonitorModule --> CacheModule : imports
+MonitorModule --> LoginlogModule : imports
+MonitorModule --> OnlineModule : imports
+MonitorModule --> OperlogModule : imports
+MonitorModule --> ServerModule : imports
+MonitorModule --> JobModule : imports
+
+JobModule --> ScheduleModule : imports
+JobModule --> BackupService : depends on
+
+' Service Dependencies
+MainModule --> RedisModule : uses RedisService
+MainModule --> SysConfigModule : uses ConfigService
+
+' Backup Service
+BackupService --> JobModule : managed by
+
+' Storage Services
+package "Storage Services" as StoragePkg {
+  [LocalStorageService] as LocalStorageService
+  [CosStorageService] as CosStorageService
+  [StorageAdapter] as StorageAdapter
+}
+
+StorageAdapter --> LocalStorageService : implements
+StorageAdapter --> CosStorageService : implements
+UploadModule --> StorageAdapter : uses
+
+' Cross-module Service Usage
+note right of CommonModule : Global module providing\nRedis and HTTP services
+
+note right of SystemModule : Comprehensive system management\nincluding users, roles, configs
+
+note right of MonitorModule : System monitoring and\nlogging capabilities
+
+note right of UploadModule : File upload handling\nwith multiple storage backends\n支持本地和云存储
+
+note right of BackupService : Database backup\nscheduled tasks\n数据库定时备份
+
+' ===== 架构说明 =====
+note as ArchNote
+  <b>Yunxi Vue 模块依赖架构特点 (更新: 2025-08-09):</b>
+  
+  <b>1. 分层架构:</b>
+  • AppModule - 根模块，配置全局守卫
+  • CommonModule - 全局通用服务(Redis, HTTP)
+  • SystemModule - 系统核心功能模块
+  • CoreModule - 业务核心模块
+  • MonitorModule - 监控和日志模块
+  
+  <b>2. 核心模块结构:</b>
+  • SystemModule - 系统管理核心功能
+  • MonitorModule - 监控和日志系统
+  • MainModule - 主要业务逻辑
+  • UploadModule - 文件上传管理
+  • LicenseModule - 许可证管理
+  
+  <b>3. 全局守卫:</b>
+  • JwtAuthGuard - JWT认证
+  • RolesGuard - 角色权限
+  • PermissionGuard - 细粒度权限
+  
+  <b>4. 技术特点:</b>
+  • NestJS模块化架构
+  • 依赖注入和全局模块
+  • 多存储适配器模式
+end note
+
+' ===== 版本信息 =====
+note bottom : <b>更新历史:</b>\n• 2025-08-09: 删除不存在的Core模块相关内容\n• 2025-08-09: 修正实际的模块依赖关系\n• 2025-08-09: 简化模块结构，专注现有功能\n• 2025-08-09: 更新架构说明与实际代码一致
+
+@enduml

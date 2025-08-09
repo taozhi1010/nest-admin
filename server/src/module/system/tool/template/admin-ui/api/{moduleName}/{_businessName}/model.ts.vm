@@ -1,0 +1,52 @@
+import type { PageQuery, BaseEntity } from '#/api/common';
+
+export interface ${BusinessName}VO {
+#foreach ($column in $columns)
+#if($column.isList == '1')
+  /**
+   * $column.columnComment
+   */
+  $column.javaField:#if($column.columnType == 'bigint') string;
+                    #else $getUiTsType($column.javaType);
+                    #end
+#end
+#end
+#if ($table.tree)
+    /**
+     * 子对象
+     */
+    children: ${BusinessName}VO[];
+#end
+}
+
+export interface ${BusinessName}Form extends BaseEntity {
+#foreach ($column in $columns)
+#if($ignoreField($column.javaField) || $column.javaField == $primaryKey)
+#elseif($column.isInsert == '1' || $column.isEdit == '1')
+  /**
+   * $column.columnComment
+   */
+  $column.javaField?:#if($column.columnType == 'bigint') string;
+                     #else $getUiTsType($column.javaType);
+                     #end
+#end
+#end
+}
+
+export interface ${BusinessName}Query #if(!${treeCode})extends PageQuery #end{
+
+#foreach ($column in $columns)
+#if($column.isQuery == '1')
+  /**
+   * $column.columnComment
+   */
+  $column.javaField?:#if($column.columnType == 'bigint') string;
+                     #else $getUiTsType($column.javaType);
+                     #end
+#end
+#end
+  /**
+   * 日期范围参数
+   */
+  params?: any;
+}

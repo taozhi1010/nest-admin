@@ -1,245 +1,246 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Response } from 'express';
-import { Repository, In } from 'typeorm';
-import { ResultData } from 'src/common/utils/result';
 import { CacheEnum } from 'src/common/enum/index';
 import { ExportTable } from 'src/common/utils/export';
-import { SysDictTypeEntity } from './entities/dict.type.entity';
-import { SysDictDataEntity } from './entities/dict.data.entity';
-import { CreateDictTypeDto, UpdateDictTypeDto, ListDictType, CreateDictDataDto, UpdateDictDataDto, ListDictData } from './dto/index';
+import { ResultData } from 'src/common/utils/result';
 import { RedisService } from 'src/module/common/redis/redis.service';
+import { In, Repository } from 'typeorm';
+
+import {
+	CreateDictDataDto,
+	CreateDictTypeDto,
+	ListDictData,
+	ListDictType,
+	UpdateDictDataDto,
+	UpdateDictTypeDto,
+} from './dto/index';
+import { SysDictDataEntity } from './entities/dict.data.entity';
+import { SysDictTypeEntity } from './entities/dict.type.entity';
+
 @Injectable()
 export class DictService {
-  constructor(
-    @InjectRepository(SysDictTypeEntity)
-    private readonly sysDictTypeEntityRep: Repository<SysDictTypeEntity>,
-    @InjectRepository(SysDictDataEntity)
-    private readonly sysDictDataEntityRep: Repository<SysDictDataEntity>,
-    private readonly redisService: RedisService,
-  ) {}
-  async createType(CreateDictTypeDto: CreateDictTypeDto) {
-    await this.sysDictTypeEntityRep.save(CreateDictTypeDto);
-    return ResultData.ok();
-  }
+	constructor(
+		@InjectRepository(SysDictTypeEntity)
+		private readonly sysDictTypeEntityRep: Repository<SysDictTypeEntity>,
+		@InjectRepository(SysDictDataEntity)
+		private readonly sysDictDataEntityRep: Repository<SysDictDataEntity>,
+		private readonly redisService: RedisService
+	) {}
 
-  async deleteType(dictIds: number[]) {
-    await this.sysDictTypeEntityRep.update({ dictId: In(dictIds) }, { delFlag: '1' });
-    return ResultData.ok();
-  }
+	async createType(CreateDictTypeDto: CreateDictTypeDto) {
+		await this.sysDictTypeEntityRep.save(CreateDictTypeDto);
+		return ResultData.ok();
+	}
 
-  async updateType(updateDictTypeDto: UpdateDictTypeDto) {
-    await this.sysDictTypeEntityRep.update({ dictId: updateDictTypeDto.dictId }, updateDictTypeDto);
-    return ResultData.ok();
-  }
+	async deleteType(dictIds: number[]) {
+		await this.sysDictTypeEntityRep.update({ dictId: In(dictIds) }, { delFlag: '1' });
+		return ResultData.ok();
+	}
 
-  async findAllType(query: ListDictType) {
-    const entity = this.sysDictTypeEntityRep.createQueryBuilder('entity');
-    entity.where('entity.delFlag = :delFlag', { delFlag: '0' });
+	async updateType(updateDictTypeDto: UpdateDictTypeDto) {
+		await this.sysDictTypeEntityRep.update({ dictId: updateDictTypeDto.dictId }, updateDictTypeDto);
+		return ResultData.ok();
+	}
 
-    if (query.dictName) {
-      entity.andWhere(`entity.dictName LIKE "%${query.dictName}%"`);
-    }
+	async findAllType(query: ListDictType) {
+		const entity = this.sysDictTypeEntityRep.createQueryBuilder('entity');
+		entity.where('entity.delFlag = :delFlag', { delFlag: '0' });
 
-    if (query.dictType) {
-      entity.andWhere(`entity.dictType LIKE "%${query.dictType}%"`);
-    }
+		if (query.dictName) {
+			entity.andWhere(`entity.dictName LIKE "%${query.dictName}%"`);
+		}
 
-    if (query.status) {
-      entity.andWhere('entity.status = :status', { status: query.status });
-    }
+		if (query.dictType) {
+			entity.andWhere(`entity.dictType LIKE "%${query.dictType}%"`);
+		}
 
-    if (query.params?.beginTime && query.params?.endTime) {
-      entity.andWhere('entity.createTime BETWEEN :start AND :end', { start: query.params.beginTime, end: query.params.endTime });
-    }
+		if (query.status) {
+			entity.andWhere('entity.status = :status', { status: query.status });
+		}
 
-    if (query.pageSize && query.pageNum) {
-      entity.skip(query.pageSize * (query.pageNum - 1)).take(query.pageSize);
-    }
+		if (query.params?.beginTime && query.params?.endTime) {
+			entity.andWhere('entity.createTime BETWEEN :start AND :end', {
+				start: query.params.beginTime,
+				end: query.params.endTime,
+			});
+		}
 
-    const [list, total] = await entity.getManyAndCount();
+		if (query.pageSize && query.pageNum) {
+			entity.skip(query.pageSize * (query.pageNum - 1)).take(query.pageSize);
+		}
 
-    return ResultData.ok({
-      list,
-      total,
-    });
-  }
+		const [rows, total] = await entity.getManyAndCount();
 
-  async findOneType(dictId: number) {
-    const data = await this.sysDictTypeEntityRep.findOne({
-      where: {
-        dictId: dictId,
-        delFlag: '0',
-      },
-    });
-    return ResultData.ok(data);
-  }
+		return ResultData.rows({ rows, total });
+	}
 
-  async findOptionselect() {
-    const data = await this.sysDictTypeEntityRep.find({
-      where: {
-        delFlag: '0',
-      },
-    });
-    return ResultData.ok(data);
-  }
+	async findOneType(dictId: number) {
+		const data = await this.sysDictTypeEntityRep.findOne({
+			where: {
+				dictId,
+				delFlag: '0',
+			},
+		});
+		return ResultData.ok(data);
+	}
 
-  // 字典数据
-  async createDictData(createDictDataDto: CreateDictDataDto) {
-    await this.sysDictDataEntityRep.save(createDictDataDto);
-    return ResultData.ok();
-  }
+	async findOptionselect() {
+		const data = await this.sysDictTypeEntityRep.find({
+			where: {
+				delFlag: '0',
+			},
+		});
+		return ResultData.ok(data);
+	}
 
-  async deleteDictData(dictIds: number[]) {
-    await this.sysDictDataEntityRep.update({ dictCode: In(dictIds) }, { delFlag: '1' });
-    return ResultData.ok();
-  }
+	// 字典数据
+	async createDictData(createDictDataDto: CreateDictDataDto) {
+		await this.sysDictDataEntityRep.save(createDictDataDto);
+		return ResultData.ok();
+	}
 
-  async updateDictData(updateDictDataDto: UpdateDictDataDto) {
-    await this.sysDictDataEntityRep.update({ dictCode: updateDictDataDto.dictCode }, updateDictDataDto);
-    return ResultData.ok();
-  }
+	async deleteDictData(dictId: number) {
+		await this.sysDictDataEntityRep.update({ dictCode: dictId }, { delFlag: '1' });
+		return ResultData.ok();
+	}
 
-  async findAllData(query: ListDictData) {
-    const entity = this.sysDictDataEntityRep.createQueryBuilder('entity');
-    entity.where('entity.delFlag = :delFlag', { delFlag: '0' });
-    if (query.dictLabel) {
-      entity.andWhere(`entity.dictLabel LIKE "%${query.dictLabel}%"`);
-    }
+	async updateDictData(updateDictDataDto: UpdateDictDataDto) {
+		await this.sysDictDataEntityRep.update(
+			{ dictCode: updateDictDataDto.dictCode },
+			updateDictDataDto
+		);
+		return ResultData.ok();
+	}
 
-    if (query.dictType) {
-      entity.andWhere(`entity.dictType LIKE "%${query.dictType}%"`);
-    }
+	async findAllData(query: ListDictData) {
+		const entity = this.sysDictDataEntityRep.createQueryBuilder('entity');
+		entity.where('entity.delFlag = :delFlag', { delFlag: '0' });
+		if (query.dictLabel) {
+			entity.andWhere(`entity.dictLabel LIKE '%${query.dictLabel}%'`);
+		}
 
-    if (query.status) {
-      entity.andWhere('entity.status = :status', { status: query.status });
-    }
-    if (query.pageSize && query.pageNum) {
-      entity.skip(query.pageSize * (query.pageNum - 1)).take(query.pageSize);
-    }
+		if (query.dictType) {
+			entity.andWhere(`entity.dictType LIKE '%${query.dictType}%'`);
+		}
 
-    const [list, total] = await entity.getManyAndCount();
+		if (query.status) {
+			entity.andWhere('entity.status = :status', { status: query.status });
+		}
 
-    return ResultData.ok({
-      list,
-      total,
-    });
-  }
+		entity.skip(query.pageSize * (query.pageNum - 1)).take(query.pageSize);
 
-  /**
-   * 根据字典类型查询一个数据类型的信息。
-   *
-   * @param dictType 字典类型字符串。
-   * @returns 返回查询到的数据类型信息，如果未查询到则返回空。
-   */
-  async findOneDataType(dictType: string) {
-    // 尝试从Redis缓存中获取字典数据
-    let data = await this.redisService.get(`${CacheEnum.SYS_DICT_KEY}${dictType}`);
+		const [rows, total] = await entity.getManyAndCount();
 
-    if (data) {
-      // 如果缓存中存在，则直接返回缓存数据
-      return ResultData.ok(data);
-    }
+		return ResultData.rows({ rows, total });
+	}
 
-    // 从数据库中查询字典数据
-    data = await this.sysDictDataEntityRep.find({
-      where: {
-        dictType: dictType,
-        delFlag: '0',
-      },
-    });
+	/**
+	 * 根据字典类型查询一个数据类型的信息。
+	 *
+	 * @param dictType 字典类型字符串。
+	 * @returns 返回查询到的数据类型信息，如果未查询到则返回空。
+	 */
+	async findOneDataType(dictType: string) {
+		// TODO: 先查询字典类型是否被删除，以下代码被注释
+		// const dictTypeData = await this.sysDictTypeEntityRep.findOne({
+		//   where: {
+		//     dictType: dictType,
+		//     delFlag: '0',
+		//   },
+		// });
 
-    // 将查询到的数据存入Redis缓存，并返回数据
-    await this.redisService.set(`${CacheEnum.SYS_DICT_KEY}${dictType}`, data);
-    return ResultData.ok(data);
-  }
+		// 尝试从Redis缓存中获取字典数据
+		let data = await this.redisService.get(`${CacheEnum.SYS_DICT_KEY}${dictType}`);
 
-  async findOneDictData(dictCode: number) {
-    const data = await this.sysDictDataEntityRep.findOne({
-      where: {
-        dictCode: dictCode,
-        delFlag: '0',
-      },
-    });
-    return ResultData.ok(data);
-  }
+		if (data) {
+			// 如果缓存中存在，则直接返回缓存数据
+			return ResultData.ok(data);
+		}
 
-  /**
-   * 导出字典数据为xlsx文件
-   * @param res
-   */
-  async export(res: Response, body: ListDictType) {
-    delete body.pageNum;
-    delete body.pageSize;
-    const list = await this.findAllType(body);
-    const options = {
-      sheetName: '字典数据',
-      data: list.data.list,
-      header: [
-        { title: '字典主键', dataIndex: 'dictId' },
-        { title: '字典名称', dataIndex: 'dictName' },
-        { title: '字典类型', dataIndex: 'dictType' },
-        { title: '状态', dataIndex: 'status' },
-      ],
-    };
-    ExportTable(options, res);
-  }
+		// 从数据库中查询字典数据
+		data = await this.sysDictDataEntityRep.find({
+			where: {
+				dictType,
+				delFlag: '0',
+			},
+		});
 
-  /**
-   * 导出字典数据为xlsx文件
-   * @param res
-   */
-  async exportData(res: Response, body: ListDictType) {
-    delete body.pageNum;
-    delete body.pageSize;
-    const list = await this.findAllData(body);
-    const options = {
-      sheetName: '字典数据',
-      data: list.data.list,
-      header: [
-        { title: '字典主键', dataIndex: 'dictCode' },
-        { title: '字典名称', dataIndex: 'dictLabel' },
-        { title: '字典类型', dataIndex: 'dictValue' },
-        { title: '备注', dataIndex: 'remark' },
-      ],
-    };
-    ExportTable(options, res);
-  }
+		// 将查询到的数据存入Redis缓存，并返回数据
+		await this.redisService.set(`${CacheEnum.SYS_DICT_KEY}${dictType}`, data);
+		return ResultData.ok(data);
+	}
 
-  /**
-   * 刷新字典缓存
-   * @returns
-   */
-  async resetDictCache() {
-    await this.clearDictCache();
-    await this.loadingDictCache();
-    return ResultData.ok();
-  }
+	async findOneDictData(dictCode: number) {
+		const data = await this.sysDictDataEntityRep.findOne({
+			where: {
+				dictCode,
+				delFlag: '0',
+			},
+		});
+		return ResultData.ok(data);
+	}
 
-  /**
-   * 删除字典缓存
-   * @returns
-   */
-  async clearDictCache() {
-    const keys = await this.redisService.keys(`${CacheEnum.SYS_DICT_KEY}*`);
-    if (keys && keys.length > 0) {
-      await this.redisService.del(keys);
-    }
-  }
+	/**
+	 * 导出字典数据为xlsx文件
+	 * @param res
+	 */
+	async export(res: Response, body: ListDictType) {
+		delete body.pageNum;
+		delete body.pageSize;
+		const list = await this.findAllType(body);
+		const options = {
+			sheetName: '字典数据',
+			data: list.data.list,
+			header: [
+				{ title: '字典主键', dataIndex: 'dictId' },
+				{ title: '字典名称', dataIndex: 'dictName' },
+				{ title: '字典类型', dataIndex: 'dictType' },
+				{ title: '状态', dataIndex: 'status' },
+			],
+		};
+		ExportTable(options, res);
+	}
 
-  /**
-   * 加载字典缓存
-   * @returns
-   */
-  async loadingDictCache() {
-    const entity = this.sysDictTypeEntityRep.createQueryBuilder('entity');
-    entity.where('entity.delFlag = :delFlag', { delFlag: '0' });
-    entity.leftJoinAndMapMany('entity.dictTypeList', SysDictDataEntity, 'dictType', 'dictType.dictType = entity.dictType');
-    const list = await entity.getMany();
-    list.forEach((item: any) => {
-      if (item.dictType) {
-        this.redisService.set(`${CacheEnum.SYS_DICT_KEY}${item.dictType}`, item.dictTypeList);
-      }
-    });
-  }
+	/**
+	 * 刷新字典缓存
+	 * @returns
+	 */
+	async resetDictCache() {
+		await this.clearDictCache();
+		await this.loadingDictCache();
+		return ResultData.ok();
+	}
+
+	/**
+	 * 删除字典缓存
+	 * @returns
+	 */
+	async clearDictCache() {
+		const keys = await this.redisService.keys(`${CacheEnum.SYS_DICT_KEY}*`);
+		if (keys && keys.length > 0) {
+			await this.redisService.del(keys);
+		}
+	}
+
+	/**
+	 * 加载字典缓存
+	 * @returns
+	 */
+	async loadingDictCache() {
+		const entity = this.sysDictTypeEntityRep.createQueryBuilder('entity');
+		entity.where('entity.delFlag = :delFlag', { delFlag: '0' });
+		entity.leftJoinAndMapMany(
+			'entity.dictTypeList',
+			SysDictDataEntity,
+			'dictType',
+			'dictType.dictType = entity.dictType'
+		);
+		const list = await entity.getMany();
+		list.forEach((item: any) => {
+			if (item.dictType) {
+				this.redisService.set(`${CacheEnum.SYS_DICT_KEY}${item.dictType}`, item.dictTypeList);
+			}
+		});
+	}
 }

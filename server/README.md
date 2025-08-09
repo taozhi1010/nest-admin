@@ -71,3 +71,66 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](LICENSE).
+
+## build
+
+```bash
+pnpm build
+ncc build ./dist/main.js -o dist_ncc --external pg-cloudflare
+```
+
+## build docker
+
+```bash
+# 构建Docker镜像，默认平台为linux/amd64
+docker build -t nest-app:latest .
+
+docker save nest-app -o nest-app.tar
+
+# 指定平台构建Docker镜像（例如ARM64架构）
+docker build --build-arg PLATFORM=linux/arm64 -t nest-app:latest .
+
+# 使用docker-compose启动所有服务（包含应用、PostgreSQL和Redis）
+docker-compose up -d
+
+# 只构建并启动应用服务
+docker-compose up -d app
+
+# 查看日志
+docker-compose logs -f
+
+docker compose -f ./docker-compose.yml down -v
+docker compose -f ./docker-compose.yml up -d
+
+# 使用ARM64 Dockerfile构建镜像
+docker build -f Dockerfile.arm64 -t nest-app:arm64 .
+
+# 或者使用buildx进行跨平台构建
+docker buildx build --platform linux/arm64 -f Dockerfile.arm64 -t nest-app:arm64 .
+```
+
+```
+node scripts/generate-license.js generate "test" "2025-08-17" "basic"
+```
+
+```
+docker buildx build --platform linux/arm64 -f Dockerfile.arm64 -t nest-app:arm64 .
+
+docker save nest-app:arm64 -o nest-app.tar
+
+docker load -i nest-app.tar
+
+docker run -d \
+  --name nest-app \
+  --restart unless-stopped \
+  -p 8180:8180 \
+  -e NODE_ENV=production \
+  -e POSTGRES_DB=nest \
+  -e POSTGRES_USER=admin \
+  -e POSTGRES_PASSWORD=admin \
+  -v $(pwd)/pg_data:/var/lib/postgresql/data \
+  -v $(pwd)/ormlogs.log:/app/ormlogs.log \
+  -v $(pwd)/config.yml:/app/config.yml \
+  -v $(pwd)/frontend:/app/frontend \
+  nest-app:arm64
+```

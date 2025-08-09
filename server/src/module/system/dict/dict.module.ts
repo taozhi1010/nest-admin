@@ -1,15 +1,13 @@
-import { Global, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { DictService } from './dict.service';
 import { DictController } from './dict.controller';
-import { SysDictTypeEntity } from './entities/dict.type.entity';
+import { DictService } from './dict.service';
 import { SysDictDataEntity } from './entities/dict.data.entity';
+import { SysDictTypeEntity } from './entities/dict.type.entity';
 
-@Global()
 @Module({
-  imports: [TypeOrmModule.forFeature([SysDictTypeEntity, SysDictDataEntity])],
-  controllers: [DictController],
-  providers: [DictService],
-  exports: [DictService],
+	imports: [TypeOrmModule.forFeature([SysDictTypeEntity, SysDictDataEntity])],
+	controllers: [DictController],
+	providers: [DictService],
 })
 export class DictModule {}

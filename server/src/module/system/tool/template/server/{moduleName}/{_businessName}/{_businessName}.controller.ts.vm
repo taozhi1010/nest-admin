@@ -1,0 +1,84 @@
+import { Operlog, RequirePermission } from '@decorators'
+
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, Res } from '@nestjs/common'
+import { ApiOperation } from '@nestjs/swagger'
+import { Response } from 'express'
+import { BusinessType } from 'src/common/constant/business.constant'
+
+import { Create${BusinessName}Dto, List${BusinessName}Dto, Update${BusinessName}Dto } from './${_businessName}.dto'
+import { ${BusinessName}Service } from './${_businessName}.service'
+
+@Controller('${moduleName}/${_businessName}')
+export class ${BusinessName}Controller {
+  constructor(private readonly ${businessName}Service: ${BusinessName}Service) { }
+
+  @ApiOperation({
+    summary: '查询${functionName}列表',
+  })
+  @RequirePermission('${moduleName}:${_businessName}:query')
+  @Get('list')
+  findAll(@Query() query: List${BusinessName}Dto) {
+    return this.${businessName}Service.findAll(query)
+  }
+
+  // 多余的接口可以删除
+  @ApiOperation({
+    summary: '查询${functionName}下拉选项',
+  })
+  @RequirePermission('${moduleName}:${_businessName}:options')
+  @Get('options')
+  options(@Query('name') name: string) {
+    return this.${businessName}Service.options(name)
+  }
+
+  @ApiOperation({
+    summary: '${functionName}-创建',
+  })
+  @RequirePermission('${moduleName}:${_businessName}:add')
+  @Post()
+  @Operlog({ businessType: BusinessType.INSERT })
+  create(@Body() create${BusinessName}Dto: Create${BusinessName}Dto) {
+    return this.${businessName}Service.create(create${BusinessName}Dto)
+  }
+
+  @ApiOperation({
+    summary: '${functionName}-详情',
+  })
+  @RequirePermission('${moduleName}:${_businessName}:query')
+  @Get(':id')
+  findOne(@Param('id') id: string) {#if($primaryColumn.columnType == 'bigint')
+    return this.${businessName}Service.findOne(id)#else
+    return this.${businessName}Service.findOne(+id)#end
+  }
+
+  @ApiOperation({
+    summary: '${functionName}-修改',
+  })
+  @RequirePermission('${moduleName}:${_businessName}:edit')
+  @Put()
+  @Operlog({ businessType: BusinessType.UPDATE })
+  update(@Body() update${BusinessName}Dto: Update${BusinessName}Dto) {
+    return this.${businessName}Service.update(update${BusinessName}Dto)
+  }
+
+  @ApiOperation({
+    summary: '${functionName}-删除',
+  })
+  @RequirePermission('${moduleName}:${_businessName}:remove')
+  @Delete(':id')
+  @Operlog({ businessType: BusinessType.DELETE })
+  remove(@Param('id') id: string) {#if($primaryColumn.columnType == 'bigint')
+    return this.${businessName}Service.remove(id)#else
+    return this.${businessName}Service.remove(+id)#end
+  }
+
+  @ApiOperation({
+    summary: '${functionName}-导出xlsx文件',
+  })
+  @RequirePermission('${moduleName}:${_businessName}:export')
+  @Post('/export')
+  @Operlog({ businessType: BusinessType.EXPORT })
+  async export(@Res() res: Response, @Body() body: List${BusinessName}Dto) {
+    return this.${businessName}Service.export(res, body)
+  }
+}

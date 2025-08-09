@@ -1,22 +1,36 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
-    "declaration": true,
-    "removeComments": true,
+    "incremental": true,
+    "target": "ES2021",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "target": "ES2021",
-    "sourceMap": true,
-    "outDir": "./dist",
     "baseUrl": "./",
-    "incremental": true,
-    "skipLibCheck": true,
-    "strictNullChecks": false,
-    "noImplicitAny": false,
+    "module": "commonjs",
+    "paths": {
+      "@/*": [
+        "src/*"
+      ],
+      "@core/*": [
+        "src/module/core/*"
+      ],
+      "@decorators": [
+        "src/common/decorators/index"
+      ],
+      "@decorators/*": [
+        "src/common/decorators/*"
+      ]
+    },
     "strictBindCallApply": false,
+    "strictNullChecks": false,
+    "noFallthroughCasesInSwitch": false,
+    "noImplicitAny": false,
+    "declaration": true,
+    "outDir": "./dist",
+    "removeComments": true,
+    "sourceMap": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
     "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false
+    "skipLibCheck": true
   }
 }

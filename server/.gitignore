@@ -1,5 +1,6 @@
 # compiled output
 /dist
+/dist_ncc
 /node_modules
 
 # Logs
@@ -39,3 +40,5 @@ lerna-debug.log*
 package-lock.json
 yarn.lock
 pnpm-lock.yaml
+
+*.tar

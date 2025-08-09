@@ -1,0 +1,62 @@
+import type { ${BusinessName}VO, ${BusinessName}Form, ${BusinessName}Query } from './model';
+
+import type { ID, IDS } from '#/api/common';
+
+import { commonExport } from '#/api/helper';
+import { requestClient } from '#/api/request';
+
+/**
+* 查询${functionName}列表
+* @param params
+* @returns ${functionName}列表
+*/
+export function ${businessName}List(params?: ${BusinessName}Query) {
+  return requestClient.get<${BusinessName}VO[]>(`/${moduleName}/${_businessName}/list`, { params });
+}
+
+#if($tplCategory != 'tree')
+/**
+ * 导出${functionName}列表
+ * @param params
+ * @returns ${functionName}列表
+ */
+export function ${businessName}Export(params?: ${BusinessName}Query) {
+  return commonExport('/${moduleName}/${_businessName}/export', params ?? {});
+}
+#end
+
+/**
+ * 查询${functionName}详情
+ * @param ${primaryKey} id
+ * @returns ${functionName}详情
+ */
+export function ${businessName}Info(${primaryKey}: ID) {
+  return requestClient.get<${BusinessName}VO>(`/${moduleName}/${_businessName}/\${${primaryKey}}`);
+}
+
+/**
+ * 新增${functionName}
+ * @param data
+ * @returns void
+ */
+export function ${businessName}Add(data: ${BusinessName}Form) {
+  return requestClient.postWithMsg<void>('/${moduleName}/${_businessName}', data);
+}
+
+/**
+ * 更新${functionName}
+ * @param data
+ * @returns void
+ */
+export function ${businessName}Update(data: ${BusinessName}Form) {
+  return requestClient.putWithMsg<void>('/${moduleName}/${_businessName}', data);
+}
+
+/**
+ * 删除${functionName}
+ * @param ${primaryKey} id
+ * @returns void
+ */
+export function ${businessName}Remove(${primaryKey}: ID | IDS) {
+  return requestClient.deleteWithMsg<void>(`/${moduleName}/${_businessName}/\${${primaryKey}}`);
+}

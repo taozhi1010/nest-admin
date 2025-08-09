@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  app:
+    image: nest-app:latest
+    ports:
+      - '8180:8180'
+    volumes:
+      - ./ormlogs.log:/app/ormlogs.log
+      - ./config.yml:/app/config.yml
+      - ./frontend:/app/frontend
+      - ./nest-admin.license:/app/nest-admin.license
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:17-alpine
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=nest
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    environment:
+      - REDIS_PASSWORD=password
+
+volumes:
+  postgres_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./pg_data
+  redis_data:

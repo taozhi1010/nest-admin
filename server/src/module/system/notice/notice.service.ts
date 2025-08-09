@@ -1,76 +1,78 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, In } from 'typeorm';
 import { ResultData } from 'src/common/utils/result';
+import { In, Repository } from 'typeorm';
+
+import { CreateNoticeDto, ListNoticeDto, UpdateNoticeDto } from './dto/index';
 import { SysNoticeEntity } from './entities/notice.entity';
-import { CreateNoticeDto, UpdateNoticeDto, ListNoticeDto } from './dto/index';
 
 @Injectable()
 export class NoticeService {
-  constructor(
-    @InjectRepository(SysNoticeEntity)
-    private readonly sysNoticeEntityRep: Repository<SysNoticeEntity>,
-  ) {}
-  async create(createNoticeDto: CreateNoticeDto) {
-    await this.sysNoticeEntityRep.save(createNoticeDto);
-    return ResultData.ok();
-  }
+	constructor(
+		@InjectRepository(SysNoticeEntity)
+		private readonly sysNoticeEntityRep: Repository<SysNoticeEntity>
+	) {}
 
-  async findAll(query: ListNoticeDto) {
-    const entity = this.sysNoticeEntityRep.createQueryBuilder('entity');
-    entity.where('entity.delFlag = :delFlag', { delFlag: '0' });
+	async create(createNoticeDto: CreateNoticeDto) {
+		await this.sysNoticeEntityRep.save(createNoticeDto);
+		return ResultData.ok();
+	}
 
-    if (query.noticeTitle) {
-      entity.andWhere(`entity.noticeTitle LIKE "%${query.noticeTitle}%"`);
-    }
+	async findAll(query: ListNoticeDto) {
+		const entity = this.sysNoticeEntityRep.createQueryBuilder('entity');
+		entity.where('entity.delFlag = :delFlag', { delFlag: '0' });
 
-    if (query.createBy) {
-      entity.andWhere(`entity.createBy LIKE "%${query.createBy}%"`);
-    }
+		if (query.noticeTitle) {
+			entity.andWhere(`entity.noticeTitle LIKE "%${query.noticeTitle}%"`);
+		}
 
-    if (query.noticeType) {
-      entity.andWhere('entity.noticeType = :noticeType', { noticeType: query.noticeType });
-    }
+		if (query.createBy) {
+			entity.andWhere(`entity.createBy LIKE "%${query.createBy}%"`);
+		}
 
-    if (query.params?.beginTime && query.params?.endTime) {
-      entity.andWhere('entity.createTime BETWEEN :start AND :end', { start: query.params.beginTime, end: query.params.endTime });
-    }
+		if (query.noticeType) {
+			entity.andWhere('entity.noticeType = :noticeType', { noticeType: query.noticeType });
+		}
 
-    entity.skip(query.pageSize * (query.pageNum - 1)).take(query.pageSize);
-    const [list, total] = await entity.getManyAndCount();
+		if (query.params?.beginTime && query.params?.endTime) {
+			entity.andWhere('entity.createTime BETWEEN :start AND :end', {
+				start: query.params.beginTime,
+				end: query.params.endTime,
+			});
+		}
 
-    return ResultData.ok({
-      list,
-      total,
-    });
-  }
+		entity.skip(query.pageSize * (query.pageNum - 1)).take(query.pageSize);
+		const [rows, total] = await entity.getManyAndCount();
 
-  async findOne(noticeId: number) {
-    const data = await this.sysNoticeEntityRep.findOne({
-      where: {
-        noticeId: noticeId,
-      },
-    });
-    return ResultData.ok(data);
-  }
+		return ResultData.rows({ rows, total });
+	}
 
-  async update(updateNoticeDto: UpdateNoticeDto) {
-    await this.sysNoticeEntityRep.update(
-      {
-        noticeId: updateNoticeDto.noticeId,
-      },
-      updateNoticeDto,
-    );
-    return ResultData.ok();
-  }
+	async findOne(noticeId: number) {
+		const data = await this.sysNoticeEntityRep.findOne({
+			where: {
+				noticeId,
+			},
+		});
+		return ResultData.ok(data);
+	}
 
-  async remove(noticeIds: number[]) {
-    const data = await this.sysNoticeEntityRep.update(
-      { noticeId: In(noticeIds) },
-      {
-        delFlag: '1',
-      },
-    );
-    return ResultData.ok(data);
-  }
+	async update(updateNoticeDto: UpdateNoticeDto) {
+		await this.sysNoticeEntityRep.update(
+			{
+				noticeId: updateNoticeDto.noticeId,
+			},
+			updateNoticeDto
+		);
+		return ResultData.ok();
+	}
+
+	async remove(noticeIds: number[]) {
+		const data = await this.sysNoticeEntityRep.update(
+			{ noticeId: In(noticeIds) },
+			{
+				delFlag: '1',
+			}
+		);
+		return ResultData.ok(data);
+	}
 }

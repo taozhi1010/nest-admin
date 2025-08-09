@@ -1,0 +1,179 @@
+import { Cacheable, CacheEvict, CacheList } from '@decorators'
+
+import { Injectable } from '@nestjs/common'
+import { InjectRepository } from '@nestjs/typeorm'
+import { Response } from 'express'
+import { ExportTable } from 'src/common/utils/export'
+import { ResultData } from 'src/common/utils/result'
+import { RedisService } from 'src/module/common/redis/redis.service'
+import { Repository } from 'typeorm'
+
+import { Create${BusinessName}Dto, List${BusinessName}Dto, Update${BusinessName}Dto } from './${_businessName}.dto'
+import { ${BusinessName}Entity } from './${_businessName}.entity'
+
+const CACHE_KEY = '${moduleName.toUpperCase()}_${_businessName.toUpperCase()}:'
+const CACHE_ITEMS_KEY = `${CACHE_KEY}ITEMS:`
+
+@Injectable()
+export class ${BusinessName}Service {
+  constructor(
+    @InjectRepository(${BusinessName}Entity)
+    private readonly ${businessName}EntityRep: Repository<${BusinessName}Entity>,
+    private readonly redisService: RedisService,
+  ) { }
+
+  async create(create${BusinessName}Dto: Create${BusinessName}Dto) {
+    const res = await this.${businessName}EntityRep.save(create${BusinessName}Dto)
+    return ResultData.ok(res)
+  }
+
+  getEntity(query: List${BusinessName}Dto) {
+    const entity = this.${businessName}EntityRep.createQueryBuilder('entity')
+
+    entity.where('entity.delFlag = :delFlag', { delFlag: '0' })
+    
+#foreach($column in $columns)
+  #if($column.isQuery == '1')
+    #if($column.queryType.toLowerCase() == 'like')
+    if (query.${column.javaField}) {
+      entity.andWhere('entity.${column.javaField} like :${column.javaField}', { ${column.javaField}: `%\${query.${column.javaField}}%` })
+    }
+    #elseif($column.queryType.toLowerCase() == 'eq') 
+    if (query.${column.javaField}) {
+      entity.andWhere('entity.${column.javaField} = :${column.javaField}', { ${column.javaField}: query.${column.javaField} })
+    }
+    #elseif($column.queryType.toLowerCase() == 'between')
+    if (query.${column.javaField} && query.${column.javaField}.length === 2) {
+      entity.andWhere('entity.${column.javaField} between :${column.javaField}0 and :${column.javaField}1', {
+        ${column.javaField}0: query.${column.javaField}[0],
+        ${column.javaField}1: query.${column.javaField}[1],
+      })
+    }
+    #elseif($column.queryType.toLowerCase() == 'ne')
+    if (query.${column.javaField}) {
+      entity.andWhere('entity.${column.javaField} != :${column.javaField}', { ${column.javaField}: query.${column.javaField} })
+    }
+    #elseif($column.queryType.toLowerCase() == 'gt')
+    if (query.${column.javaField}) {
+      entity.andWhere('entity.${column.javaField} > :${column.javaField}', { ${column.javaField}: query.${column.javaField} })
+    }
+    #elseif($column.queryType.toLowerCase() == 'lt')
+    if (query.${column.javaField}) {
+      entity.andWhere('entity.${column.javaField} < :${column.javaField}', { ${column.javaField}: query.${column.javaField} })
+    }
+    #elseif($column.queryType.toLowerCase() == 'ge')
+    if (query.${column.javaField}) {
+      entity.andWhere('entity.${column.javaField} >= :${column.javaField}', { ${column.javaField}: query.${column.javaField} })
+    }
+    #elseif($column.queryType.toLowerCase() == 'le')
+    if (query.${column.javaField}) {
+      entity.andWhere('entity.${column.javaField} <= :${column.javaField}', { ${column.javaField}: query.${column.javaField} })
+    }
+    #end
+  #end
+#end
+    if (query.pageNum && query.pageSize) {
+      entity.skip(query.pageSize * (query.pageNum - 1)).take(query.pageSize)
+    }
+
+    return entity
+  }
+
+  async count(query: List${BusinessName}Dto) {
+    const entity = this.getEntity(query)
+
+    return ResultData.ok(await entity.getCount())
+  }
+
+  async findAll(query: List${BusinessName}Dto) {
+    const entity = this.getEntity(query)
+
+    const [rows, total] = await entity.getManyAndCount()
+
+    await this.cacheList(rows)
+
+    return ResultData.rows({ rows, total })
+  }
+
+  async options(name?: string) {
+    const entity = this.${businessName}EntityRep.createQueryBuilder('entity')
+    entity.where('entity.delFlag = :delFlag', { delFlag: '0' })
+    if (name)
+      entity.andWhere('entity.name like :name', { name: `%${name}%` })
+    entity.select(['entity.$primaryKey', 'entity.name'])
+
+    entity.skip(0).take(10)
+
+    const rows = await entity.getMany()
+    return ResultData.ok(rows)
+  }
+
+  async findByIds(ids: ${getBigintType($primaryColumn.columnType)}[]) {
+    if (ids.length === 0) {
+      return ResultData.ok([])
+    }
+    const entity = this.${businessName}EntityRep.createQueryBuilder('entity')
+    entity.where('entity.delFlag = :delFlag', { delFlag: '0' })
+
+    const reulst = await this.redisService.getCacheList<${BusinessName}Entity>(CACHE_ITEMS_KEY, ids)
+    const databaseIds = reulst.map((item, index) => item === null ? ids[index] : null).filter(item => item !== null)
+
+    entity.andWhereInIds(databaseIds)
+    const rows = await entity.getMany()
+    this.cacheList(rows)
+
+    let rowIndex = 0
+    return ResultData.ok(reulst.map((item) => {
+      return item === null ? rows[rowIndex++] : item
+    }))
+  }
+
+  @CacheList(CACHE_ITEMS_KEY, '{$primaryKey}')
+  async cacheList(list: any[]) {
+    return list
+  }
+
+  @Cacheable(CACHE_ITEMS_KEY, '{$primaryKey}')
+  findOneCache($primaryKey: $getBigintType($primaryColumn.columnType)) {
+    return this.${businessName}EntityRep.findOne({
+      where: { delFlag: '0', ${primaryKey}: $primaryKey },
+    })
+  }
+
+  async findOne($primaryKey: $getBigintType($primaryColumn.columnType)) {
+    const res = await this.findOneCache($primaryKey)
+    return ResultData.ok(res)
+  }
+
+  @CacheEvict(CACHE_ITEMS_KEY, '{$primaryKey}')
+  async update(update${BusinessName}Dto: Update${BusinessName}Dto) {
+    const res = await this.${businessName}EntityRep.update(
+      { ${primaryKey}: update${BusinessName}Dto.${primaryKey} },
+      update${BusinessName}Dto,
+    )
+    return ResultData.ok(res)
+  }
+
+  @CacheEvict(CACHE_ITEMS_KEY, '{$primaryKey}')
+  async remove($primaryKey: $getBigintType($primaryColumn.columnType)) {
+    const data = await this.${businessName}EntityRep.update(
+      { ${primaryKey}: $primaryKey },
+      { delFlag: '1' }
+    )
+    return ResultData.ok(data)
+  }
+
+  async export(res: Response, body: List${BusinessName}Dto) {
+    delete body.pageNum
+    delete body.pageSize
+    const list = await this.findAll(body)
+    const options = {
+      sheetName: '${tableComment}',
+      data: list.data.rows,
+      header: [#foreach($column in $columns)#if($column.isList == '1')
+        { title: '$column.columnComment', dataIndex: '$column.javaField' },#end#end
+      ],
+    }
+    ExportTable(options, res)
+  }
+}

@@ -1,0 +1,50 @@
+import { ApiProperty } from '@nestjs/swagger'
+import { IsBoolean, IsDate, IsEnum, IsNumber, IsOptional, IsString } from 'class-validator'
+import { PagingDto } from 'src/common/dto'
+
+export class Create${BusinessName}Dto {#foreach($column in $columns)
+  #if($ignoreField($column.javaField) || $column.javaField == $primaryKey || $column.isInsert != '1')
+  #elseif($column.isRequired == '1')
+  @ApiProperty({ required: true, description: '${column.columnComment}' })
+  $getValidatorDecorator($column.javaType)
+  $column.javaField: $getTsType($column.javaType)
+  #else
+  @ApiProperty({ required: false, description: '${column.columnComment}' })
+  @IsOptional()
+  $getValidatorDecorator($column.javaType)
+  $column.javaField?: $getTsType($column.javaType)
+  #end
+#end}
+
+export class Update${BusinessName}Dto {#if($primaryColumn.columnType == 'bigint')
+  @ApiProperty({ required: true, description: '主键' })
+  @IsString()
+  ${primaryKey}: string#else
+  @ApiProperty({ required: true, description: '主键' })
+  @IsNumber()
+  ${primaryKey}: number
+  #end
+  #foreach($column in $columns)
+    #if($ignoreField($column.javaField) || $column.javaField == $primaryKey || $column.isEdit != '1')
+    #else
+  @ApiProperty({ required: false, description: '${column.columnComment}' })
+  @IsOptional()
+  $getValidatorDecorator($column.javaType)
+  $column.javaField?: $getTsType($column.javaType)
+    #end
+  #end}
+
+export class List${BusinessName}Dto extends PagingDto {#foreach($column in $columns)
+  #if($column.isQuery != '1')
+  #elseif($column.queryType == 'BETWEEN')
+  @ApiProperty({ required: false, description: '${column.columnComment}' })
+  @IsOptional()
+  @IsString({ each: true })
+  $column.javaField?: string[]
+  #else
+  @ApiProperty({ required: false, description: '${column.columnComment}' })
+  @IsOptional()
+  $getValidatorDecorator($column.javaType)
+  $column.javaField?: $getTsType($column.javaType)
+  #end
+#end}

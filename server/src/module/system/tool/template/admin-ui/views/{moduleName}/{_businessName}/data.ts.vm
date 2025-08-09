@@ -1,0 +1,194 @@
+import type { FormSchemaGetter } from '#/adapter/form';
+import type { VxeGridProps } from '#/adapter/vxe-table';
+
+#if(${dicts} != '')
+import { getDictOptions } from '#/utils/dict';
+import { renderDict } from '#/utils/render';
+#end
+
+export const querySchema: FormSchemaGetter = () => [#foreach($column in $columns)
+    #if($column.isQuery == '1')
+      #if($column.dictType)
+        #set($dictType=$column.dictType)
+      #else
+        #set($dictType="")
+      #end
+      #set($parentheseIndex=$column.columnComment.indexOf("（"))
+      #if($parentheseIndex != -1)
+        #set($comment=$column.columnComment.substring(0, $parentheseIndex))
+      #else
+        #set($comment=$column.columnComment)
+      #end
+      #if($column.htmlType == "input")
+        #set($component="Input")
+      #elseif($column.htmlType == "textarea")
+        #set($component="Textarea")
+      #elseif($column.htmlType == "select")
+        #set($component="Select")
+      #elseif($column.htmlType == "radio")
+        #set($component="RadioGroup")
+      #elseif($column.htmlType == "datetime" && $column.queryType != "BETWEEN")
+        #set($component="DatePicker")
+      #elseif($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
+        #set($component="RangePicker")
+      #else
+        #set($component="Input")
+      #end
+  {
+    component: '${component}',#if($component == "Select" || $component == "RadioGroup")
+    componentProps: {#if($dictType != "")
+      // 可选从DictEnum中获取 DictEnum.${dictType.toUpperCase()} 便于维护
+      options: getDictOptions('$dictType'),
+      #end
+      #if($component == "RadioGroup")
+      buttonStyle: 'solid',
+      optionType: 'button',
+      #end
+    },#elseif($component == "DatePicker" || $component == "RangePicker")
+    componentProps: {
+      showTime: true,
+      format: 'YYYY-MM-DD HH:mm:ss',
+      valueFormat: 'YYYY-MM-DD HH:mm:ss',
+    },#end
+    fieldName: '${column.javaField}',
+    label: '${comment}',
+  },#end
+  #end
+];
+
+export const columns: VxeGridProps['columns'] = [
+  #foreach($column in $columns)
+    #if($column.isList == '1')
+      #if($column.dictType)
+        #set($dictType=$column.dictType)
+      #else
+        #set($dictType="")
+      #end
+      #set($parentheseIndex=$column.columnComment.indexOf("（"))
+      #if($parentheseIndex != -1)
+        #set($comment=$column.columnComment.substring(0, $parentheseIndex))
+      #else
+        #set($comment=$column.columnComment)
+      #end
+  {
+    title: '${comment}',
+    field: '${column.javaField}',#if($dictType != "")
+    slots: {
+      default: ({ row }) => {
+        // 可选从DictEnum中获取 DictEnum.${dictType.toUpperCase()} 便于维护
+        return renderDict(row.${column.javaField}, '$dictType');
+      },
+    },
+    #end
+  },
+    #end
+  #end
+  {
+    field: 'action',
+    fixed: 'right',
+    slots: { default: 'action' },
+    title: '操作',
+    width: 180,
+  },
+];
+
+export const modalSchema: FormSchemaGetter = () => [#foreach($column in $columns)
+    #if($column.isEdit == '1' || $column.isInsert == '1' || $column.javaField == $primaryKey)
+      #if($column.dictType)
+        #set($dictType=$column.dictType)
+      #else
+        #set($dictType="")
+      #end
+      #set($parentheseIndex=$column.columnComment.indexOf("（"))
+      #if($parentheseIndex != -1)
+        #set($comment=$column.columnComment.substring(0, $parentheseIndex))
+      #else
+        #set($comment=$column.columnComment)
+      #end
+      #if($column.htmlType == "input")
+        #set($component="Input")
+      #elseif($column.htmlType == "textarea")
+        #set($component="Textarea")
+      #elseif($column.htmlType == "select")
+        #set($component="Select")
+      #elseif($column.htmlType == "radio")
+        #set($component="RadioGroup")
+      #elseif($column.htmlType == "checkbox")
+        #set($component="Checkbox")
+      #elseif($column.htmlType == "imageUpload")
+        #set($component="ImageUpload")
+      #elseif($column.htmlType == "fileUpload")
+        #set($component="FileUpload")
+      #elseif($column.htmlType == "editor")
+        #set($component="RichTextarea")
+      #elseif($column.htmlType == "datetime" && $column.queryType != "BETWEEN")
+        #set($component="DatePicker")
+      #elseif($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
+        #set($component="RangePicker")
+      #else
+        #set($component="Input")
+      #end
+      #if($column.isRequired == '1' && $column.isPk != '1')
+        #set($required=true)
+      #else
+        #set($required=false)
+      #end
+  {
+    label: '${comment}',
+    fieldName: '${column.javaField}',
+    component: '${component}',#if($component == "DatePicker" || $component == "RangePicker")
+    componentProps: {
+      showTime: true,
+      format: 'YYYY-MM-DD HH:mm:ss',
+      valueFormat: 'YYYY-MM-DD HH:mm:ss',
+    },#elseif($component == "ImageUpload")
+    componentProps: {
+      // accept: ['jpg'], // 不支持type/*的写法 支持拓展名(不带.) 文件头(image/png这种)
+      // maxNumber: 1, // 最大上传文件数 默认为1 为1会绑定为string而非string[]类型
+      // resultField: 'url', // 上传成功后返回的字段名 默认url 可选['ossId', 'url', 'fileName']
+    },#elseif($component == "FileUpload")
+    /**
+    * 注意这里获取为数组 需要自行定义回显/提交
+    * 文件上传还在demo阶段 可能有重大改动!
+    */
+    componentProps: {
+      // accept: ['xlsx'], // 不支持type/*的写法 建议使用拓展名(不带.)
+      // maxNumber: 1, // 最大上传文件数
+      // resultField: 'url', // 上传成功后返回的字段名 默认url 可选['ossId', 'url', 'fileName']
+    },#elseif($component == "RichTextarea")
+    componentProps: {
+      // options: {
+      //  readyonly: false, // 是否只读
+      // }
+      // width: '100%', // 宽度
+      // showImageUpload: true, // 是否显示图片上传
+      // height: 400 // 高度 默认400
+    },#elseif($component == "Select" || $component == "RadioGroup" || $component == "Checkbox")
+    componentProps: {
+      #if($dictType != "")
+      // 可选从DictEnum中获取 DictEnum.${dictType.toUpperCase()} 便于维护
+      options: getDictOptions('$dictType'),
+      #end
+      #if($component == "RadioGroup")
+      buttonStyle: 'solid',
+      optionType: 'button',
+      #end
+    },#end
+    #if(${column.isPk} == '1')
+    dependencies: {
+      show: () => false,
+      triggerFields: [''],
+    },
+    #end
+    #if($required && $column.isPk != '1')
+    #if($component == "Select" || $component == "RadioGroup" || $component == "Checkbox")
+    rules: 'selectRequired',
+    #else
+    rules: 'required',
+    #end
+    #end
+  },#end
+  #end
+];
+
+export const drawerSchema = modalSchema;
