@@ -1,6 +1,6 @@
 # 构建阶段
 ARG PLATFORM=linux/amd64
-FROM node:20-alpine-amd64 AS builder
+FROM node:22-alpine AS builder
 
 # 创建工作目录
 WORKDIR /app
@@ -25,15 +25,21 @@ RUN npm install -g @vercel/ncc
 
 # 使用ncc进行minify构建
 RUN ncc build ./dist/main.js -o dist_ncc --external pg-cloudflare
+RUN node scripts/create-sea.js
 
 # 运行阶段
 ARG PLATFORM=linux/amd64
-FROM node:20-alpine-amd64
+FROM alpine
+
+# 安装必要的依赖
+RUN apk add --no-cache \
+		libstdc++ \
+		bash
 
 WORKDIR /app
 
 # 复制ncc构建产物和必要文件
-COPY --from=builder /app/dist_ncc /app
+COPY --from=builder /app/sea-output/* /app
 COPY --from=builder /app/config.yml /app/config.yml
 COPY --from=builder /app/sql /app/sql
 
@@ -44,4 +50,4 @@ ENV NODE_ENV=production
 EXPOSE 8180
 
 # 启动应用
-CMD ["node", "index.js"]
+CMD ["./nest-app"]

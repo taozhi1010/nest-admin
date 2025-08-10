@@ -42,3 +42,6 @@ yarn.lock
 pnpm-lock.yaml
 
 *.tar
+
+pg_data
+redis_data

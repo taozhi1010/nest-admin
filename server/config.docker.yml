@@ -1,0 +1,73 @@
+# 开发环境配置
+app:
+  prefix: /api
+  port: 8180
+  logger:
+    # 项目日志存储路径，相对路径（相对本项目根目录）或绝对路径
+    dir: ../logs
+  # 文件相关
+  file:
+    # 是否为本地文件服务或cos
+    isLocal: true
+    # location 文件上传后存储目录，相对路径（相对本项目根目录）或绝对路径
+    location: ./upload
+    # 文件服务器地址，这是开发环境的配置 生产环境请自行配置成可访问域名
+    domain: 'http://localhost:8080'
+    # 文件虚拟路径, 必须以 / 开头， 如 http://localhost:8080/profile/****.jpg  , 如果不需要则 设置 ''
+    serveRoot: /profile
+    # 文件大小限制，单位M
+    maxSize: 10
+# 腾讯云cos配置
+cos:
+  secretId: ''
+  secretKey: ''
+  bucket: ''
+  region: ''
+  domain: ''
+  location: ''
+
+# 数据库配置
+db:
+  postgres:
+    host: postgres
+    username: admin
+    password: admin
+    database: nest
+    port: 5432
+    logger: file
+    logging: true
+    multipleStatements: true
+    dropSchema: false
+    synchronize: true
+    supportBigNumbers: true
+    bigNumberStrings: true
+
+# redis 配置
+redis:
+  # Redis模式：host-连接远程Redis服务器，memory-使用内存模拟Redis
+  mode: host
+  host: redis
+  password: '*********'
+  port: 6379
+  db: 2
+  keyPrefix: ''
+
+# jwt 配置
+jwt:
+  secretkey: you_secretkey
+  expiresin: 1h
+  refreshExpiresIn: 2h
+# 权限 白名单配置
+perm:
+  router:
+    whitelist:
+      - {path: /api/captchaImage, method: GET}
+      - {path: /api/register, method: POST}
+      - {path: /api/login, method: POST}
+      - {path: '/api/perm/{id}', method: GET}
+      - {path: /api/upload, method: POST}
+
+# 用户相关
+# 初始密码， 重置密码
+user:
+  initialPassword: '123456'

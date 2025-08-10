@@ -4,13 +4,13 @@ import { Cacheable, CacheEvict } from '@decorators/redis.decorator';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import * as bcrypt from '@node-rs/bcrypt';
 import { Response } from 'express';
 import { LOGIN_TOKEN_EXPIRESIN, SYS_USER_TYPE } from 'src/common/constant/index';
 import { CacheEnum, DataScopeEnum, DelFlagEnum, StatusEnum } from 'src/common/enum/index';
 
 import { ExportTable } from 'src/common/utils/export';
 import { GenerateUUID, GetNowDate, Uniq } from 'src/common/utils/index';
+import { PasswordUtil } from 'src/common/utils/password.util';
 import { ResultData } from 'src/common/utils/result';
 import { RedisService } from 'src/module/common/redis/redis.service';
 import { In, Not, Repository } from 'typeorm';
@@ -63,9 +63,8 @@ export class UserService {
 	 * @returns
 	 */
 	async create(createUserDto: CreateUserDto) {
-		const salt = Number.parseFloat(bcrypt.genSaltSync(10));
 		if (createUserDto.password) {
-			createUserDto.password = await bcrypt.hashSync(createUserDto.password, salt);
+			createUserDto.password = PasswordUtil.hashSync(createUserDto.password);
 		}
 
 		const res = await this.userRepo.save({
@@ -341,7 +340,7 @@ export class UserService {
 		});
 		this.clearCacheByUserId(data.userId);
 
-		if (!(data && bcrypt.compareSync(user.password, data.password))) {
+		if (!(data && PasswordUtil.compareSync(user.password, data.password))) {
 			throw ResultData.fail(500, `帐号或密码错误`);
 		}
 
@@ -586,7 +585,7 @@ export class UserService {
 			throw ResultData.fail(500, '系统用户不能重置密码');
 		}
 		if (body.password) {
-			body.password = bcrypt.hashSync(body.password, Number.parseFloat(bcrypt.genSaltSync(10)));
+			body.password = PasswordUtil.hashSync(body.password);
 		}
 		await this.userRepo.update(
 			{
@@ -869,14 +868,11 @@ export class UserService {
 		if (updatePwdDto.oldPassword === updatePwdDto.newPassword) {
 			throw ResultData.fail(500, '新密码不能与旧密码相同');
 		}
-		if (bcrypt.compareSync(user.user.password, updatePwdDto.oldPassword)) {
+		if (!PasswordUtil.compareSync(updatePwdDto.oldPassword, user.user.password)) {
 			throw ResultData.fail(500, '修改密码失败，旧密码错误');
 		}
 
-		const password = bcrypt.hashSync(
-			updatePwdDto.newPassword,
-			Number.parseFloat(bcrypt.genSaltSync(10))
-		);
+		const password = PasswordUtil.hashSync(updatePwdDto.newPassword);
 		await this.userRepo.update({ userId: user.user.userId }, { password });
 		return ResultData.ok();
 	}

@@ -7,34 +7,45 @@ services:
       - '8180:8180'
     volumes:
       - ./ormlogs.log:/app/ormlogs.log
-      - ./config.yml:/app/config.yml
+      - ./config.docker.yml:/app/config.yml
       - ./frontend:/app/frontend
-      - ./nest-admin.license:/app/nest-admin.license
+      - ./nest-app.license:/app/nest-app.license
     environment:
       - NODE_ENV=production
     depends_on:
       - postgres
+      - redis
 
   postgres:
     image: postgres:17-alpine
-    ports:
-      - '5432:5432'
+    # ports:
+    #   - '5432:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=admin
       - POSTGRES_DB=nest
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "admin"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
   redis:
     image: redis:7-alpine
-    ports:
-      - "6379:6379"
+    # ports:
+    #   - "6379:6379"
     volumes:
       - redis_data:/data
     command: redis-server --appendonly yes
     environment:
       - REDIS_PASSWORD=password
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "password", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
 volumes:
   postgres_data:
@@ -44,3 +55,8 @@ volumes:
       o: bind
       device: ./pg_data
   redis_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./redis_data
