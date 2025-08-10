@@ -6,14 +6,16 @@ import { computed, h, ref } from 'vue';
 import { useVbenDrawer } from '@vben/common-ui';
 import { $t } from '@vben/locales';
 import { cloneDeep } from '@vben/utils';
+import type { Dept } from '#/api/system/dept/model';
 
 import { Tag } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
 import { findUserInfo, userAdd, userUpdate } from '#/api/system/user';
 import { authScopeOptions } from '#/views/system/role/data';
-
+import { deptList, deptNodeList } from '#/api/system/dept';
 import { drawerSchema } from './data';
+import { addFullName, listToTree } from '@vben/utils';
 
 const emit = defineEmits<{ reload: [] }>();
 
@@ -115,9 +117,41 @@ const [BasicDrawer, drawerApi] = useVbenDrawer({
         formApi.setFieldValue('roleIds', roleIds),
       ]);
     }
+
+    /** 部门选择 下拉框 */
+    await initDeptSelect();
+    
     drawerApi.drawerLoading(false);
   },
 });
+
+async function initDeptSelect(deptId?: number | string) {
+  // 需要动态更新TreeSelect组件 这里允许为空
+  const treeData = await getDeptTree(deptId, !isUpdate.value);
+  formApi.updateSchema([
+    {
+      componentProps: {
+        fieldNames: { label: 'deptName', value: 'deptId' },
+        showSearch: true,
+        treeData,
+        treeDefaultExpandAll: true,
+        treeLine: { showLeafIcon: false },
+        // 选中后显示在输入框的值
+        treeNodeLabelProp: 'fullName',
+      },
+      fieldName: 'deptId',
+    },
+  ]);
+}
+
+async function getDeptTree(deptId?: number | string, exclude = false) {
+  let ret: Dept[] = [];
+  ret = await (!deptId || exclude ? deptList({}) : deptNodeList(deptId));
+  const treeData = listToTree(ret, { id: 'deptId', pid: 'parentId' });
+  // 添加部门名称 如 xx-xx-xx
+  addFullName(treeData, 'deptName', ' / ');
+  return treeData;
+}
 
 async function handleConfirm() {
   try {

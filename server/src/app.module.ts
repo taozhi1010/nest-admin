@@ -38,12 +38,11 @@ import { UploadModule } from './module/upload/upload.module';
 			inject: [ConfigService],
 			useFactory: (config: ConfigService) => {
 				return {
-					type: 'postgres',
 					entities: [path.join(__dirname, '**/*.entity{.ts,.js}')],
 					autoLoadEntities: true,
 					keepConnectionAlive: true,
 					timezone: '+08:00',
-					...config.get('db.postgres'),
+					...config.get('db'),
 				} as TypeOrmModuleOptions;
 			},
 		}),

@@ -6,6 +6,7 @@ import { getPopupContainer } from '@vben/utils';
 
 import { z } from '#/adapter/form';
 import { getDictOptions } from '#/utils/dict';
+import { getDeptTree } from '#/api/system/user';
 
 export const querySchema: FormSchemaGetter = () => [
   {
@@ -58,7 +59,7 @@ export const columns: VxeGridProps['columns'] = [
     minWidth: 80,
   },
   {
-    field: 'deptName',
+    field: 'dept.deptName',
     title: '部门',
     minWidth: 120,
   },
@@ -120,8 +121,9 @@ export const drawerSchema: FormSchemaGetter = () => [
   },
   {
     component: 'TreeSelect',
-    // 在drawer里更新 这里不需要默认的componentProps
-    defaultValue: undefined,
+    componentProps: {
+      getPopupContainer,
+    },
     fieldName: 'deptId',
     label: '所属部门',
     rules: 'selectRequired',
@@ -179,7 +181,6 @@ export const drawerSchema: FormSchemaGetter = () => [
       placeholder: '请先选择部门',
     },
     fieldName: 'postIds',
-    help: '选择部门后, 将自动加载该部门下所有的岗位',
     label: '岗位',
   },
   {

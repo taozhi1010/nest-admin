@@ -28,6 +28,10 @@ export class PostService {
 			entity.andWhere(`entity.postName LIKE "%${query.postName}%"`);
 		}
 
+		if (query.belongDeptId) {
+			entity.andWhere(`entity.deptId = :deptId`, { deptId: +query.belongDeptId });
+		}
+
 		if (query.postCode) {
 			entity.andWhere(`entity.postCode LIKE "%${query.postCode}%"`);
 		}

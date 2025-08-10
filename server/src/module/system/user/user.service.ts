@@ -176,6 +176,16 @@ export class UserService {
 		return ResultData.rows({ rows, total });
 	}
 
+	async findByDept(deptId: number) {
+		const rows = await this.userRepo.find({
+			where: {
+				delFlag: '0',
+				deptId,
+			},
+		});
+		return ResultData.ok(rows);
+	}
+
 	/**
 	 * 用户角色+岗位信息
 	 * @returns

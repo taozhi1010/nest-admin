@@ -16,6 +16,11 @@ export class CreatePostDto {
 	@Length(0, 64)
 	postCode: string;
 
+	@ApiProperty({ required: true })
+	@IsOptional()
+	@IsNumber()
+	deptId: number;
+
 	@IsOptional()
 	@IsString()
 	@IsEnum(StatusEnum)
@@ -33,6 +38,11 @@ export class CreatePostDto {
 	@IsOptional()
 	@IsNumber()
 	postSort?: number;
+
+	@ApiProperty({ required: false })
+	@IsOptional()
+	@IsString()
+	postCategory?: string;
 }
 
 export class UpdatePostDto extends CreatePostDto {
@@ -48,6 +58,10 @@ export class ListPostDto extends PagingDto {
 	@IsString()
 	@Length(0, 50)
 	postName?: string;
+
+	@IsOptional()
+	@IsString()
+	belongDeptId?: string;
 
 	@IsOptional()
 	@IsString()

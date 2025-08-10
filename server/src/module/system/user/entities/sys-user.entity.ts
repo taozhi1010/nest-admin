@@ -1,6 +1,7 @@
 import { Exclude } from 'class-transformer';
 import { BaseEntity } from 'src/common/entities/base';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { stringDateTransformer } from 'src/common/entities/transformer';
 
 @Entity('sys_user', {
 	comment: '用户信息表',
@@ -42,7 +43,13 @@ export class UserEntity extends BaseEntity {
 	@Column({ type: 'varchar', name: 'login_ip', length: 128, default: '', comment: '最后登录IP' })
 	public loginIp: string;
 
-	@Column({ type: 'timestamp', name: 'login_date', nullable: true, comment: '最后登录时间' })
+	@Column({
+		type: 'timestamp',
+		name: 'login_date',
+		nullable: true,
+		comment: '最后登录时间',
+		transformer: stringDateTransformer,
+	})
 	public loginDate: Date;
 
 	@Column({

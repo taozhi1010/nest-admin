@@ -101,6 +101,16 @@ export class UserController {
 	}
 
 	@ApiOperation({
+		summary: '用户-部门用户列表',
+	})
+	@RequirePermission('system:user:list')
+	@Get('list/dept/:deptId')
+	findByDept(@Param('deptId') deptId: string) {
+		return this.userService.findByDept(+deptId);
+	}
+	
+
+	@ApiOperation({
 		summary: '用户-列表',
 	})
 	@RequirePermission('system:user:list')
@@ -108,6 +118,8 @@ export class UserController {
 	findAll(@Query() query: ListUserDto, @User() user: UserDto) {
 		return this.userService.findAll(query, user.user);
 	}
+
+	
 
 	@ApiOperation({
 		summary: '用户-部门树',

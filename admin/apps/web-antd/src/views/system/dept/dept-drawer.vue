@@ -8,13 +8,7 @@ import { $t } from '@vben/locales';
 import { addFullName, cloneDeep, listToTree } from '@vben/utils';
 
 import { useVbenForm } from '#/adapter/form';
-import {
-  deptAdd,
-  deptInfo,
-  deptList,
-  deptNodeList,
-  deptUpdate,
-} from '#/api/system/dept';
+import { deptAdd, deptInfo, deptList, deptNodeList, deptUpdate } from '#/api/system/dept';
 import { listUserByDeptId } from '#/api/system/user';
 
 import { drawerSchema } from './data';
@@ -79,8 +73,8 @@ async function initDeptSelect(deptId?: number | string) {
 async function initDeptUsers(deptId: number | string) {
   const ret = await listUserByDeptId(deptId);
   const options = ret.map((user) => ({
-    label: `${user.username} | ${user.nickName}`,
-    value: user.userId,
+    label: `${user.nickName}`,
+    value: `${user.nickName}`,
   }));
   formApi.updateSchema([
     {
@@ -127,7 +121,7 @@ const [BasicDrawer, drawerApi] = useVbenDrawer({
       }
     }
 
-    await (update && id ? initDeptUsers(id) : setLeaderOptions());
+    update && id ? await initDeptUsers(id) : setLeaderOptions();
     /** 部门选择 下拉框 */
     await initDeptSelect(id);
 
