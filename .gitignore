@@ -1,7 +1,7 @@
 .DS_Store
 /server/src/config/test.yml
 /server/src/config/prod.yml
-/admin-vue3/dist
+/admin/**/dist
 /docs/.vitepress/cache
 /docs/node_modules
 /docs/dist

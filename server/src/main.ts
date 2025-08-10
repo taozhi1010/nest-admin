@@ -23,8 +23,8 @@ async function bootstrap() {
 	if (!isLicenseValid) {
 		console.error('❌ 许可证验证失败，服务无法启动');
 		console.error('请确保在项目根目录下存在有效的 license 文件');
-		// console.error('可以使用以下命令生成许可证：')
-		// console.error('node scripts/generate-license.js generate "your-client-id" "2025-12-31" "basic"')
+		console.error('可以使用以下命令生成许可证：')
+		console.error('node scripts/generate-license.js generate "your-client-id" "2025-12-31" "basic"')
 		await tempApp.close();
 		process.exit(1);
 	}
