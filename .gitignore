@@ -1,8 +1,8 @@
 .DS_Store
+/**/node_modules
 /server/src/config/test.yml
 /server/src/config/prod.yml
 /admin/**/dist
 /docs/.vitepress/cache
 /docs/node_modules
 /docs/dist
-**/node_modules
