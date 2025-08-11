@@ -26,7 +26,7 @@ export class DictService {
     @InjectRepository(SysDictDataEntity)
     private readonly sysDictDataEntityRep: Repository<SysDictDataEntity>,
     private readonly redisService: RedisService,
-  ) {}
+  ) { }
 
   async createType(CreateDictTypeDto: CreateDictTypeDto) {
     await this.sysDictTypeEntityRep.save(CreateDictTypeDto)
@@ -128,7 +128,9 @@ export class DictService {
       entity.andWhere('entity.status = :status', { status: query.status })
     }
 
-    entity.skip(query.pageSize * (query.pageNum - 1)).take(query.pageSize)
+    if (query.pageSize && query.pageNum) {
+      entity.skip(query.pageSize * (query.pageNum - 1)).take(query.pageSize)
+    }
 
     const [rows, total] = await entity.getManyAndCount()
 
@@ -142,14 +144,6 @@ export class DictService {
    * @returns 返回查询到的数据类型信息，如果未查询到则返回空。
    */
   async findOneDataType(dictType: string) {
-    // TODO: 先查询字典类型是否被删除，以下代码被注释
-    // const dictTypeData = await this.sysDictTypeEntityRep.findOne({
-    //   where: {
-    //     dictType: dictType,
-    //     delFlag: '0',
-    //   },
-    // });
-
     // 尝试从Redis缓存中获取字典数据
     let data = await this.redisService.get(`${CacheEnum.SYS_DICT_KEY}${dictType}`)
 
@@ -197,6 +191,25 @@ export class DictService {
         { title: '字典名称', dataIndex: 'dictName' },
         { title: '字典类型', dataIndex: 'dictType' },
         { title: '状态', dataIndex: 'status' },
+      ],
+    }
+    ExportTable(options, res)
+  }
+
+  async exportData(res: Response, body: ListDictData) {
+    delete body.pageNum
+    delete body.pageSize
+    const { data } = await this.findAllData(body)
+    const options = {
+      sheetName: '字典数据',
+      data: data.rows,
+      header: [
+        { title: '字典名称', dataIndex: 'dictLabel' },
+        { title: '字典主键', dataIndex: 'dictCode' },
+        { title: '字典类型', dataIndex: 'dictType' },
+        { title: '状态', dataIndex: 'status' },
+        { title: '字典排序', dataIndex: 'dictSort' },
+        { title: '备注', dataIndex: 'remark' },
       ],
     }
     ExportTable(options, res)
