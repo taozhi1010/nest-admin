@@ -200,3 +200,11 @@ export function ArrayToObject(list: any[], key: string) {
     return acc
   }, {})
 }
+
+
+/**
+ * 判断值是否为null undefined 空字符串 NaN
+ */
+export function isEmpty(value: any) {
+  return value === null || value === undefined || value === '' || value === 'NaN';
+}

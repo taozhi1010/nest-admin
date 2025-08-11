@@ -60,6 +60,12 @@ export async function ExportTable(
       else {
         newItem[dataIndex] = dataValue
       }
+
+
+      /** 格式化数据 */
+      if (field.formateStr && typeof field.formateStr === 'function') {
+        newItem[dataIndex] = field.formateStr(newItem[dataIndex]);
+      }
     })
     return newItem
   })

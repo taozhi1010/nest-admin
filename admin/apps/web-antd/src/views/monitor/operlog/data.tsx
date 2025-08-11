@@ -127,7 +127,7 @@ export const descSchema: DescItem[] = [
     field: 'operIp',
     label: '操作信息',
     render(_, data) {
-      return `账号: ${data.operName} / ${data.deptName} / ${data.operIp} / ${data.operLocation}`;
+      return `账号: ${data.operName} / ${data.operIp} / ${data.operLocation}`;
     },
   },
   {

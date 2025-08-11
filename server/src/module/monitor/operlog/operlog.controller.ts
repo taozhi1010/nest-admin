@@ -1,48 +1,59 @@
-import { RequirePermission } from '@decorators'
-import { Operlog } from '@decorators/operlog.decorator'
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common'
-import { ApiOperation } from '@nestjs/swagger'
-import { BusinessType } from 'src/common/constant/business.constant'
-import { CreateOperlogDto } from './dto/create-operlog.dto'
-import { UpdateOperlogDto } from './dto/update-operlog.dto'
-import { OperlogService } from './operlog.service'
+import { Controller, Get, Param, Delete, Query, Post, Res, Body } from '@nestjs/common';
+import { OperlogService } from './operlog.service';
+import { ApiOperation, ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { RequirePermission } from 'src/common/decorators/require-premission.decorator';
+import { Operlog } from 'src/common/decorators/operlog.decorator';
+import { BusinessType } from 'src/common/constant/business.constant';
+import { QueryOperLogDto } from './dto/operLog.dto';
+import { Response } from 'express';
 
+@ApiTags('操作日志')
 @Controller('monitor/operlog')
+@ApiBearerAuth('Authorization')
 export class OperlogController {
-  constructor(private readonly operlogService: OperlogService) {}
-
-  @Post()
-  create(@Body() createOperlogDto: CreateOperlogDto) {
-    return this.operlogService.create(createOperlogDto)
-  }
+  constructor(private readonly operlogService: OperlogService) { }
 
   @ApiOperation({
-    summary: '登录日志-清除全部日志',
+    summary: '操作日志-清除全部日志',
   })
-  @RequirePermission('monitor:logininfor:remove')
+  @RequirePermission('monitor:operlog:remove')
   @Delete('/clean')
   @Operlog({ businessType: BusinessType.CLEAN })
   removeAll() {
-    return this.operlogService.removeAll()
+    return this.operlogService.removeAll();
   }
 
+  @ApiOperation({
+    summary: '操作日志-列表',
+  })
+  @RequirePermission('monitor:operlog:list')
   @Get('/list')
-  findAll(@Query() query: any) {
-    return this.operlogService.findAll(query)
+  findAll(@Query() query: QueryOperLogDto) {
+    return this.operlogService.findAll(query);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.operlogService.findOne(+id)
+  @ApiOperation({
+    summary: '操作日志记录-详情',
+  })
+  @RequirePermission('monitor:operlog:query')
+  @Get(':operId')
+  findOne(@Param('operId') operId: string) {
+    return this.operlogService.findOne(+operId);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateOperlogDto: UpdateOperlogDto) {
-    return this.operlogService.update(+id, updateOperlogDto)
+  @ApiOperation({
+    summary: '操作日志-删除',
+  })
+  @RequirePermission('monitor:operlog:remove')
+  @Delete(':operId')
+  remove(@Param('operId') operId: string) {
+    return this.operlogService.remove(+operId);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.operlogService.remove(+id)
+  @ApiOperation({ summary: '导出操作日志数据为xlsx' })
+  @RequirePermission('monitor:operlog:export')
+  @Post('/export')
+  async exportData(@Res() res: Response, @Body() body: QueryOperLogDto): Promise<void> {
+    return this.operlogService.export(res, body);
   }
 }

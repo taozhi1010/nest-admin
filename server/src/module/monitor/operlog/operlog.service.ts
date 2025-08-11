@@ -5,10 +5,11 @@ import { Request } from 'express'
 import { ResultData } from 'src/common/utils/result'
 import { AxiosService } from 'src/module/common/axios/axios.service'
 import { IsNull, Not, Repository } from 'typeorm'
-
-import { CreateOperlogDto } from './dto/create-operlog.dto'
-import { UpdateOperlogDto } from './dto/update-operlog.dto'
+import { ExportTable } from 'src/common/utils/export';
+import { QueryOperLogDto } from './dto/operlog.dto'
 import { SysOperlogEntity } from './entities/operlog.entity'
+import { DictService } from 'src/module/system/dict/dict.service';
+import { Response } from 'express';
 
 @Injectable({ scope: Scope.REQUEST })
 export class OperlogService {
@@ -18,26 +19,53 @@ export class OperlogService {
     @InjectRepository(SysOperlogEntity)
     private readonly sysOperlogEntityRep: Repository<SysOperlogEntity>,
     private readonly axiosService: AxiosService,
-  ) {}
-
-  create(createOperlogDto: CreateOperlogDto) {
-    return 'This action adds a new operlog'
+    @Inject(DictService)
+    private readonly dictService: DictService,
+  ) { }
+  async findOne(id: number) {
+    const res = await this.sysOperlogEntityRep.findOne({
+      where: {
+        operId: id,
+      },
+    });
+    return ResultData.ok(res);
   }
 
-  async findAll(query: any) {
+  async findAll(query: QueryOperLogDto) {
     const entity = this.sysOperlogEntityRep.createQueryBuilder('entity')
 
     if (query.pageSize && query.pageNum) {
       entity.skip(query.pageSize * (query.pageNum - 1)).take(query.pageSize)
     }
 
-    const orderMap = {
-      descending: 'DESC',
-      ascending: 'ASC',
+    if (query.params?.beginTime && query.params?.endTime) {
+      entity.andWhere('entity.operTime BETWEEN :start AND :end', { start: query.params.beginTime, end: query.params.endTime });
+    }
+    
+    if (query.operName) {
+      entity.andWhere('entity.operName LIKE :operName', { operName: `%${query.operName}%` });
     }
 
+    if (query.title) {
+      entity.andWhere('entity.title LIKE :title', { title: `%${query.title}%` });
+    }
+
+    if (query.businessType) {
+      entity.andWhere('entity.businessType = :businessType', { businessType: query.businessType });
+    }
+
+    if (query.operIp) {
+      entity.andWhere('entity.operIp = :operIp', { operIp: query.operIp });
+    }
+
+    if (query.status) {
+      entity.andWhere('entity.status = :status', { status: query.status });
+    }
+
+
     if (query.orderByColumn && query.isAsc) {
-      entity.orderBy(`entity.${query.orderByColumn}`, orderMap[query.isAsc])
+      const key = query.isAsc === 'ascending' ? 'ASC' : 'DESC';
+      entity.orderBy(`entity.${query.orderByColumn}`, key);
     }
 
     const [rows, total] = await entity.getManyAndCount()
@@ -50,16 +78,9 @@ export class OperlogService {
     return ResultData.ok()
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} operlog`
-  }
-
-  update(id: number, updateOperlogDto: UpdateOperlogDto) {
-    return `This action updates a #${id} operlog`
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} operlog`
+  async remove(operId: number) {
+    await this.sysOperlogEntityRep.delete({ operId: operId });
+    return ResultData.ok();
   }
 
   /**
@@ -158,5 +179,48 @@ export class OperlogService {
     }
 
     await this.sysOperlogEntityRep.save(params)
+  }
+
+  /**
+   * 导出操作日志数据为xlsx
+   * @param res
+   */
+  async export(res: Response, body: QueryOperLogDto) {
+    delete body.pageNum;
+    delete body.pageSize;
+    const { data } = await this.findAll(body);
+    const { data: operatorTypeDict } = await this.dictService.findOneDataType('sys_oper_type');
+    const operatorTypeDictMap = {};
+    operatorTypeDict.forEach((item) => {
+      operatorTypeDictMap[item.dictValue] = item.dictLabel;
+    });
+    const options = {
+      sheetName: '操作日志数据',
+      data: data.rows,
+      header: [
+        { title: '日志编号', dataIndex: 'operId' },
+        { title: '系统模块', dataIndex: 'title', width: 15 },
+        { title: '操作类型', dataIndex: 'businessType' },
+        { title: '操作人员', dataIndex: 'operName' },
+        { title: '主机', dataIndex: 'operIp' },
+        { title: '操作状态', dataIndex: 'status' },
+        { title: '操作时间', dataIndex: 'operTime', width: 15 },
+        {
+          title: '消耗时间',
+          dataIndex: 'costTime',
+          formateStr(value) {
+            return value + 'ms';
+          },
+        },
+      ],
+      dictMap: {
+        status: {
+          '0': '成功',
+          '1': '失败',
+        },
+        businessType: operatorTypeDictMap,
+      },
+    };
+    ExportTable(options, res);
   }
 }

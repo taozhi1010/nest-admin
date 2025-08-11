@@ -26,7 +26,7 @@ import {
 @ApiTags('字典管理')
 @Controller('system/dict')
 export class DictController {
-  constructor(private readonly dictService: DictService) {}
+  constructor(private readonly dictService: DictService) { }
 
   // 字典类型
   @ApiOperation({
