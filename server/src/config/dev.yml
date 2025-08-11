@@ -28,19 +28,19 @@ cos:
 
 # 数据库配置
 db:
-  postgres:
-    host: 127.0.0.1
-    username: admin
-    password: admin
-    database: nest
-    port: 5432
-    logger: file
-    logging: true
-    multipleStatements: true
-    dropSchema: false
-    synchronize: true
-    supportBigNumbers: true
-    bigNumberStrings: true
+  type: mysql
+  host: localhost
+  username: admin
+  password: admin
+  database: nest
+  port: 5432
+  logger: file
+  logging: true
+  multipleStatements: true
+  dropSchema: false
+  synchronize: true
+  supportBigNumbers: true
+  bigNumberStrings: true
 
 # redis 配置
 redis:

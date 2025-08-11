@@ -204,7 +204,7 @@ refresh();
       <BasicTable table-title="缓存列表" class="flex-1">
         <template #toolbar-tools>
           <Space>
-            <a-button :disabled="!checked" danger type="primary" @click="handleMultiDelete(false)"> 批量删除 </a-button>
+            <!-- <a-button :disabled="!checked" danger type="primary" @click="handleMultiDelete(false)"> 批量删除 </a-button> -->
             <a-button type="primary" danger @click="handleClearAll"> 清空全部 </a-button>
           </Space>
         </template>
@@ -217,11 +217,11 @@ refresh();
 
       <!-- 键名列表 -->
       <KeyTable :table-title="`键名列表 ${selectedCache ? `(${selectedCache})` : ''}`" class="flex-1">
-        <template #toolbar-tools>
+        <!-- <template #toolbar-tools>
           <Space>
             <a-button :disabled="!keyChecked" danger type="primary" @click="handleMultiDelete(true)"> 批量删除 </a-button>
           </Space>
-        </template>
+        </template> -->
         <template #action="{ row }">
           <Space>
             <a-button type="link" danger @click.stop="handleDelete(row)"> 删除 </a-button>

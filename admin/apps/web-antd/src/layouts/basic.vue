@@ -1,17 +1,12 @@
 <script lang="ts" setup>
-import { computed, onMounted, watch } from 'vue';
+import { computed, h, onMounted, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { AuthenticationLoginExpiredModal } from '@vben/common-ui';
 import { VBEN_GITHUB_URL } from '@vben/constants';
 import { useWatermark } from '@vben/hooks';
 import { GitHubOutlined, UserOutlined } from '@vben/icons';
-import {
-  BasicLayout,
-  LockScreen,
-  Notification,
-  UserDropdown,
-} from '@vben/layouts';
+import { BasicLayout, LockScreen, Notification, UserDropdown } from '@vben/layouts';
 import { preferences } from '@vben/preferences';
 import { useAccessStore, useUserStore } from '@vben/stores';
 import { openWindow } from '@vben/utils';
@@ -24,7 +19,7 @@ import { resetRoutes } from '#/router';
 import { useAuthStore, useNotifyStore } from '#/store';
 import { useTenantStore } from '#/store/tenant';
 import LoginForm from '#/views/_core/authentication/login.vue';
-
+import { GiteeIcon } from '@vben/icons';
 const userStore = useUserStore();
 const authStore = useAuthStore();
 const accessStore = useAccessStore();
@@ -50,15 +45,15 @@ const menus = computed(() => {
       icon: UserOutlined,
       text: $t('ui.widgets.profile'),
     },
-    // {
-    //   handler: () => {
-    //     openWindow('https://gitee.com/dapppp/ruoyi-plus-vben5', {
-    //       target: '_blank',
-    //     });
-    //   },
-    //   icon: () => h(GiteeIcon, { class: 'text-red-800' }),
-    //   text: 'Gitee项目地址',
-    // },
+    {
+      handler: () => {
+        openWindow('https://gitee.com/tao-zhi/nest-admin/tree/vben/', {
+          target: '_blank',
+        });
+      },
+      icon: () => h(GiteeIcon, { class: 'text-red-800' }),
+      text: 'nest-admin官方地址',
+    },
     {
       handler: () => {
         openWindow(VBEN_GITHUB_URL, {
@@ -132,7 +127,7 @@ watch(
         :avatar
         :menus
         :text="userStore.userInfo?.realName"
-        description="ann.vben@gmail.com"
+        :description="userStore.userInfo?.email"
         tag-text="Pro"
         @logout="handleLogout"
       />
@@ -148,10 +143,7 @@ watch(
       />
     </template>
     <template #extra>
-      <AuthenticationLoginExpiredModal
-        v-model:open="accessStore.loginExpired"
-        :avatar
-      >
+      <AuthenticationLoginExpiredModal v-model:open="accessStore.loginExpired" :avatar>
         <LoginForm />
       </AuthenticationLoginExpiredModal>
     </template>

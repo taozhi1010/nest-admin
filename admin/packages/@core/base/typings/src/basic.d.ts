@@ -32,6 +32,10 @@ interface BasicUserInfo {
    * 用户名
    */
   username: string;
+  /**
+   * 邮箱
+   */
+  email: string;
 }
 
 type ClassType = Array<object | string> | object | string;
