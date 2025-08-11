@@ -8,7 +8,7 @@ import archiver from 'archiver';
 class ZipNotNodeModules {
 	constructor(options = {}) {
 		this.sourceDir = options.sourceDir || process.cwd();
-		this.outputPath = options.outputPath || path.join(this.sourceDir, 'project-backup.zip');
+		this.outputPath = options.outputPath ||  path.posix.join(this.sourceDir, 'project-backup.zip');
 		this.excludePatterns = options.excludePatterns || [
 			'node_modules',
 			'.git',
@@ -58,7 +58,7 @@ class ZipNotNodeModules {
 			const items = fs.readdirSync(dir);
 
 			for (const item of items) {
-				const fullPath = path.join(dir, item);
+				const fullPath =  path.posix.join(dir, item);
 
 				if (this.shouldExclude(fullPath)) {
 					console.log(`排除: ${path.relative(this.sourceDir, fullPath)}`);
@@ -168,7 +168,7 @@ async function main() {
 	// 解析命令行参数
 	const args = process.argv.slice(2);
 	const sourceDir = args[0] || process.cwd();
-	const outputPath = args[1] || path.join(sourceDir, `project-backup-${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.zip`);
+	const outputPath = args[1] ||  path.posix.join(sourceDir, `project-backup-${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.zip`);
 
 	// 创建打包实例
 	const zipper = new ZipNotNodeModules({

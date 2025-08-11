@@ -82,12 +82,12 @@ export class UploadService {
    */
   async chunkFileUpload(file: Express.Multer.File, body: ChunkFileDto) {
     const rootPath = process.cwd()
-    const baseDirPath = path.join(rootPath, this.config.get('app.file.location'))
-    const chunckDirPath = path.join(baseDirPath, this.thunkDir, body.uploadId)
+    const baseDirPath = path.posix.join(rootPath, this.config.get('app.file.location'))
+    const chunckDirPath = path.posix.join(baseDirPath, this.thunkDir, body.uploadId)
     if (!fs.existsSync(chunckDirPath)) {
       this.mkdirsSync(chunckDirPath)
     }
-    const chunckFilePath = path.join(
+    const chunckFilePath = path.posix.join(
       chunckDirPath,
       `${body.uploadId}${body.fileName}@${body.index}`,
     )
@@ -107,9 +107,9 @@ export class UploadService {
    */
   async checkChunkFile(body) {
     const rootPath = process.cwd()
-    const baseDirPath = path.join(rootPath, this.config.get('app.file.location'))
-    const chunckDirPath = path.join(baseDirPath, this.thunkDir, body.uploadId)
-    const chunckFilePath = path.join(
+    const baseDirPath = path.posix.join(rootPath, this.config.get('app.file.location'))
+    const chunckDirPath = path.posix.join(baseDirPath, this.thunkDir, body.uploadId)
+    const chunckFilePath = path.posix.join(
       chunckDirPath,
       `${body.uploadId}${body.fileName}@${body.index}`,
     )
@@ -144,8 +144,8 @@ export class UploadService {
   async chunkMergeFile(body: ChunkMergeFileDto) {
     const { uploadId, fileName } = body
     const rootPath = process.cwd()
-    const baseDirPath = path.join(rootPath, this.config.get('app.file.location'))
-    const sourceFilesDir = path.join(baseDirPath, this.thunkDir, uploadId)
+    const baseDirPath = path.posix.join(rootPath, this.config.get('app.file.location'))
+    const sourceFilesDir = path.posix.join(baseDirPath, this.thunkDir, uploadId)
 
     if (!fs.existsSync(sourceFilesDir)) {
       throw ResultData.fail(500, '文件不存在')
@@ -153,12 +153,12 @@ export class UploadService {
 
     // 对文件重命名
     const newFileName = this.getNewFileName(fileName)
-    const targetFile = path.join(baseDirPath, newFileName)
+    const targetFile = path.posix.join(baseDirPath, newFileName)
     await this.thunkStreamMerge(sourceFilesDir, targetFile)
     // 文件相对地址
     const relativeFilePath = targetFile.replace(baseDirPath, '')
-    const url = path.join(this.config.get('app.file.domain'), fileName)
-    const key = path.join('test', relativeFilePath)
+    const url = path.posix.join(this.config.get('app.file.domain'), fileName)
+    const key = path.posix.join('test', relativeFilePath)
     const data = {
       fileName: key,
       newFileName,
@@ -168,7 +168,7 @@ export class UploadService {
 
     if (!this.isLocal) {
       this.uploadLargeFileCos(targetFile, key)
-      data.url = path.join(this.config.get('cos.domain'), key)
+      data.url = path.posix.join(this.config.get('cos.domain'), key)
       // 写入上传记录
       await this.sysUploadEntityRep.save({
         uploadId,
@@ -196,11 +196,11 @@ export class UploadService {
   async thunkStreamMerge(sourceFilesDir, targetFile) {
     const fileList = fs
       .readdirSync(sourceFilesDir)
-      .filter(file => fs.lstatSync(path.join(sourceFilesDir, file)).isFile())
+      .filter(file => fs.lstatSync(path.posix.join(sourceFilesDir, file)).isFile())
       .sort((a, b) => Number.parseInt(a.split('@')[1]) - Number.parseInt(b.split('@')[1]))
       .map(name => ({
         name,
-        filePath: path.join(sourceFilesDir, name),
+        filePath: path.posix.join(sourceFilesDir, name),
       }))
 
     const fileWriteStream = fs.createWriteStream(targetFile)
@@ -245,7 +245,7 @@ export class UploadService {
   async saveFileLocal(file: Express.Multer.File) {
     const rootPath = process.cwd()
     // 文件根目录
-    const baseDirPath = path.join(rootPath, this.config.get('app.file.location'))
+    const baseDirPath = path.posix.join(rootPath, this.config.get('app.file.location'))
 
     // 对文件名转码
     const originalname = iconv.decode(Buffer.from(file.originalname, 'binary'), 'utf8')
@@ -253,7 +253,7 @@ export class UploadService {
     // 重新生成文件名加上时间戳
     const newFileName = `${this.getNewFileName(originalname)}.${ext}`
     // 文件路径
-    const targetFile = path.join(baseDirPath, newFileName)
+    const targetFile = path.posix.join(baseDirPath, newFileName)
     // 文件目录
     const sourceFilesDir = path.dirname(targetFile)
     // 文件相对地址
@@ -303,9 +303,9 @@ export class UploadService {
     const originalname = iconv.decode(Buffer.from(file.originalname, 'binary'), 'utf8')
     // 重新生成文件名加上时间戳
     const newFileName = this.getNewFileName(originalname)
-    const targetFile = path.join(targetDir, newFileName)
+    const targetFile = path.posix.join(targetDir, newFileName)
     await this.uploadCos(targetFile, file.buffer)
-    const url = path.join(this.config.get('cos.domain'), targetFile)
+    const url = path.posix.join(this.config.get('cos.domain'), targetFile)
     return {
       fileName: targetFile,
       newFileName,
@@ -445,7 +445,7 @@ export class UploadService {
     const uploadId = GenerateUUID()
     const ext = this.getFileExtension(file.originalname)
     const newFileName = `${uploadId}.${ext}`
-    const targetPath = path.join(module || '', feature || '')
+    const targetPath = path.posix.join(module || '', feature || '')
 
     // 使用适配器模式处理不同存储类型
     const storage = this.storageAdapter?.getStorage(storageType) || null

@@ -4,8 +4,8 @@ import { glob } from 'glob'
 import { GenConstants } from 'src/common/constant/gen.constant'
 import velocityjs from 'velocityjs'
 
-const rootPath = path.join(process.cwd(), 'src/module/system/tool/template')
-const previewRootPath = path.join(process.cwd(), 'src/module/system/tool/template')
+const rootPath = path.posix.join(process.cwd(), 'src/module/system/tool/template')
+const previewRootPath = path.posix.join(process.cwd(), 'src/module/system/tool/template')
 
 // 匹配所有换行符到#之间的内容，并且替换为空，兼容crlf和lf
 function replaceSpace(content: string) {

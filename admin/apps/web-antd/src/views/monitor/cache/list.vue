@@ -3,7 +3,7 @@ import { ref } from 'vue';
 import { Page, useVbenModal, type VbenFormProps } from '@vben/common-ui';
 import { Card, Input, Modal, Space, Textarea } from 'ant-design-vue';
 import { vxeCheckboxChecked, useVbenVxeGrid, type VxeGridProps } from '#/adapter/vxe-table';
-import { deleteCache, clearAllCache, getCacheNames, getCacheKeys, getCacheValue } from '#/api/monitor/cache';
+import { deleteCacheName, deleteCacheKey, clearAllCache, getCacheNames, getCacheKeys, getCacheValue } from '#/api/monitor/cache';
 import type { CacheNameItem, CacheValueItem } from '#/api/monitor/cache/model';
 import { columns, keyColumns } from './data';
 
@@ -109,64 +109,68 @@ async function handleKeyClick({ row }: { row: { cacheKey: string } }) {
 }
 
 // 删除缓存
-async function handleDelete(record: any) {
-  try {
-    await Modal.confirm({
-      title: '警告',
-      content: '是否确认删除该缓存项？',
-      type: 'warning',
-    });
-    if (record.cacheKey) {
-      await deleteCache(selectedCache.value, record.cacheKey);
-    } else {
-      await deleteCache(record.cacheName, '');
-    }
-    await refresh();
-  } catch (error) {
-    console.error('删除失败:', error);
-  }
+function handleDelete(record: any) {
+  Modal.confirm({
+    title: '警告',
+    content: '是否确认删除该缓存项？',
+    type: 'warning',
+    onOk: async () => {
+      try {
+        if (record.cacheKey) {
+          await deleteCacheKey(record.cacheKey);
+        } else {
+          await deleteCacheName(record.cacheName);
+        }
+        await refresh();
+      } catch (error) {
+        console.error('删除失败:', error);
+      }
+    },
+  });
 }
 
 // 批量删除缓存
-async function handleMultiDelete(isKey = false) {
+function handleMultiDelete(isKey = false) {
   const api = isKey ? keyTableApi : tableApi;
   const rows = api.grid.getCheckboxRecords();
   const count = rows.length;
 
-  try {
-    await Modal.confirm({
-      title: '警告',
-      content: `是否确认删除选中的${count}条记录？`,
-      type: 'warning',
-    });
-
-    for (const row of rows) {
-      if (isKey) {
-        await deleteCache(selectedCache.value, row.cacheKey);
-      } else {
-        await deleteCache(row.cacheName, '');
+  Modal.confirm({
+    title: '警告',
+    content: `是否确认删除选中的${count}条记录？`,
+    type: 'warning',
+    onOk: async () => {
+      try {
+        for (const row of rows) {
+          if (isKey) {
+            await deleteCacheKey(row.cacheKey);
+          } else {
+            await deleteCacheName(row.cacheName);
+          }
+        }
+        await refresh();
+      } catch (error) {
+        console.error('批量删除失败:', error);
       }
-    }
-
-    await refresh();
-  } catch (error) {
-    console.error('批量删除失败:', error);
-  }
+    },
+  });
 }
 
 // 清空所有缓存
-async function handleClearAll() {
-  try {
-    await Modal.confirm({
-      title: '警告',
-      content: '是否确认清空所有缓存？',
-      type: 'warning',
-    });
-    await clearAllCache();
-    await refresh();
-  } catch (error) {
-    console.error('清空失败:', error);
-  }
+function handleClearAll() {
+  Modal.confirm({
+    title: '警告',
+    content: '是否确认清空所有缓存？',
+    type: 'warning',
+    onOk: async () => {
+      try {
+        await clearAllCache();
+        await refresh();
+      } catch (error) {
+        console.error('清空失败:', error);
+      }
+    },
+  });
 }
 
 // 刷新数据

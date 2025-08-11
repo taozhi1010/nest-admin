@@ -27,15 +27,22 @@ export function redisCacheInfo() {
 /**
  * 删除缓存
  */
-export function deleteCache(cacheName: string, cacheKey: string) {
-  return requestClient.delete(`/monitor/cache/${cacheName}/${cacheKey}`);
+export function deleteCacheName(cacheName: string) {
+  return requestClient.delete(`/monitor/cache/clearCacheName/${cacheName}`);
+}
+
+/**
+ * 删除缓存
+ */
+export function deleteCacheKey(cacheKey: string) {
+  return requestClient.delete(`/monitor/cache/clearCacheKey/${cacheKey}`);
 }
 
 /**
  * 清空所有缓存
  */
 export function clearAllCache() {
-  return requestClient.delete('/monitor/cache/all');
+  return requestClient.delete('/monitor/cache/clearCacheAll');
 }
 
 // 获取缓存名称列表

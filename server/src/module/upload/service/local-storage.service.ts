@@ -10,8 +10,8 @@ export class LocalStorageService implements IStorageService {
 
   async saveFile(targetPath: string, newFileName: string, file: Express.Multer.File) {
     const rootPath = process.cwd()
-    const baseDirPath = path.join(rootPath, this.config.get('extends.file.location'))
-    const targetFile = path.join(baseDirPath, targetPath, newFileName)
+    const baseDirPath = path.posix.join(rootPath, this.config.get('extends.file.location'))
+    const targetFile = path.posix.join(baseDirPath, targetPath, newFileName)
     const sourceFilesDir = path.dirname(targetFile)
     const relativeFilePath = targetFile.replace(baseDirPath, '')
 
@@ -19,7 +19,7 @@ export class LocalStorageService implements IStorageService {
       this.mkdirsSync(sourceFilesDir)
     }
     fs.writeFileSync(targetFile, file.buffer)
-    const url = `${this.config.get('extends.file.domain')}${path.join(this.config.get('extends.file.serveRoot'), relativeFilePath)}`
+    const url = `${this.config.get('extends.file.domain')}${path.posix.join(this.config.get('extends.file.serveRoot'), relativeFilePath)}`
 
     return { fileName: relativeFilePath, url }
   }
@@ -30,7 +30,7 @@ export class LocalStorageService implements IStorageService {
 
   async deleteFile(targetFile: string): Promise<void> {
     const rootPath = process.cwd()
-    targetFile = path.join(rootPath, this.config.get('extends.file.location'), targetFile)
+    targetFile = path.posix.join(rootPath, this.config.get('extends.file.location'), targetFile)
     console.log(targetFile)
     if (await this.checkExists(targetFile)) {
       fs.unlinkSync(targetFile)
@@ -59,11 +59,11 @@ export class LocalStorageService implements IStorageService {
   async mergeChunks(sourceDir: string, targetFile: string, uploadId: string) {
     const fileList = fs
       .readdirSync(sourceDir)
-      .filter(file => fs.lstatSync(path.join(sourceDir, file)).isFile())
+      .filter(file => fs.lstatSync(path.posix.join(sourceDir, file)).isFile())
       .sort((a, b) => Number.parseInt(a.split('@')[1]) - Number.parseInt(b.split('@')[1]))
       .map(name => ({
         name,
-        filePath: path.join(sourceDir, name),
+        filePath: path.posix.join(sourceDir, name),
       }))
 
     const fileWriteStream = fs.createWriteStream(targetFile)
@@ -79,11 +79,11 @@ export class LocalStorageService implements IStorageService {
 
   async uploadLargeFile(sourceFile: string, targetFile: string) {
     const rootPath = process.cwd()
-    const baseDirPath = path.join(rootPath, this.config.get('extends.file.location'))
+    const baseDirPath = path.posix.join(rootPath, this.config.get('extends.file.location'))
     const relativeFilePath = sourceFile.replace(baseDirPath, '')
 
-    const fileName = path.join(this.config.get('extends.file.serveRoot'), relativeFilePath)
-    const url = path.join(this.config.get('extends.file.domain'), fileName)
+    const fileName = path.posix.join(this.config.get('extends.file.serveRoot'), relativeFilePath)
+    const url = path.posix.join(this.config.get('extends.file.domain'), fileName)
 
     return { fileName, url }
   }

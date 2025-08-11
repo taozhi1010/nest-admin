@@ -254,7 +254,7 @@ export class ToolService {
    * @param res
    */
   async batchGenCode(table: TableIds, res) {
-    const zipFilePath = path.join(__dirname, 'temp.zip')
+    const zipFilePath = path.posix.join(__dirname, 'temp.zip')
     const output = fs.createWriteStream(zipFilePath)
     const archive = archiver('zip', {
       zlib: { level: 9 },

@@ -20,7 +20,7 @@ export class CosStorageService implements IStorageService {
 
   async saveFile(targetPath: string, newFileName: string, file: Express.Multer.File) {
     const targetDir = this.config.get('cos.location')
-    const targetFile = path.join(targetDir, targetPath, newFileName)
+    const targetFile = path.posix.join(targetDir, targetPath, newFileName)
 
     await this.cos.putObject({
       Bucket: this.config.get('cos.bucket'),
@@ -29,7 +29,7 @@ export class CosStorageService implements IStorageService {
       Body: file.buffer,
     })
 
-    const url = path.join(this.config.get('cos.domain'), targetFile)
+    const url = path.posix.join(this.config.get('cos.domain'), targetFile)
     return {
       fileName: targetFile,
       url,
@@ -98,7 +98,7 @@ export class CosStorageService implements IStorageService {
   }
 
   async uploadLargeFile(sourceFile: string, targetFile: string) {
-    const key = path.join('test', targetFile)
+    const key = path.posix.join('test', targetFile)
 
     await this.cos.uploadFile({
       Bucket: this.config.get('cos.bucket'),
@@ -108,7 +108,7 @@ export class CosStorageService implements IStorageService {
       SliceSize: 1024 * 1024 * 5,
     })
 
-    const url = path.join(this.config.get('cos.domain'), key)
+    const url = path.posix.join(this.config.get('cos.domain'), key)
     return { fileName: key, url }
   }
 }

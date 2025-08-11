@@ -158,7 +158,7 @@ function main() {
 
     try {
       const license = generator.generateLicense(clientId, expiryDate, features)
-      const outputPath = path.join(process.cwd(), 'nest-app.license')
+      const outputPath =  path.posix.join(process.cwd(), 'nest-app.license')
 
       fs.writeFileSync(outputPath, license)
 

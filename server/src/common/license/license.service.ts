@@ -20,7 +20,7 @@ export class LicenseService {
   private readonly algorithm: string = 'aes-256-cbc'
 
   constructor(private configService: ConfigService) {
-    this.licenseFilePath = path.join(process.cwd(), 'nest-app.license')
+    this.licenseFilePath = path.posix.join(process.cwd(), 'nest-app.license')
   }
 
   /**

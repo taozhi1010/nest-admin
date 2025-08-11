@@ -11,8 +11,8 @@ const { execSync } = require('child_process');
 const os = require('os');
 
 const rootDir = process.cwd();
-const distDir = path.join(rootDir, 'dist_ncc');
-const outputDir = path.join(rootDir, 'sea-output');
+const distDir =  path.posix.join(rootDir, 'dist_ncc');
+const outputDir =  path.posix.join(rootDir, 'sea-output');
 
 console.log('🚀 开始创建单文件可执行应用程序...');
 
@@ -29,7 +29,7 @@ async function createSEA() {
     console.log(`✅ Node.js 版本检查通过: ${nodeVersion}`);
 
     // 检查入口文件是否存在
-    const entryFile = path.join(distDir, 'index.js');
+    const entryFile =  path.posix.join(distDir, 'index.js');
     if (!fs.existsSync(entryFile)) {
       throw new Error(`入口文件不存在: ${entryFile}，请先运行 npm run build:ncc`);
     }
@@ -68,7 +68,7 @@ async function createSEA() {
         outputFileName = 'nest-app';
     }
     
-    const outputPath = path.join(outputDir, outputFileName);
+    const outputPath =  path.posix.join(outputDir, outputFileName);
     await fs.copy(nodeExe, outputPath);
     
     console.log('✅ Node.js 可执行文件复制完成');
@@ -86,7 +86,7 @@ async function createSEA() {
 
     // 步骤 4: 注入 blob
     console.log('💉 正在注入 blob 文件...');
-    const blobPath = path.join(rootDir, 'sea-prep.blob');
+    const blobPath =  path.posix.join(rootDir, 'sea-prep.blob');
     
     if (platform === 'win32') {
       // Windows 使用 postject
@@ -133,8 +133,8 @@ async function createSEA() {
     ];
     
     for (const file of resourceFiles) {
-      const srcPath = path.join(distDir, file);
-      const destPath = path.join(outputDir, file);
+      const srcPath =  path.posix.join(distDir, file);
+      const destPath =  path.posix.join(outputDir, file);
       
       if (await fs.pathExists(srcPath)) {
         await fs.copy(srcPath, destPath);
@@ -145,8 +145,8 @@ async function createSEA() {
     // 复制目录
     const resourceDirs = ['common', 'config', 'frontend', 'lib', 'module'];
     for (const dir of resourceDirs) {
-      const srcPath = path.join(distDir, dir);
-      const destPath = path.join(outputDir, dir);
+      const srcPath =  path.posix.join(distDir, dir);
+      const destPath =  path.posix.join(outputDir, dir);
       
       if (await fs.pathExists(srcPath)) {
         await fs.copy(srcPath, destPath);
@@ -157,7 +157,7 @@ async function createSEA() {
     // 清理临时文件
     console.log('🧹 正在清理临时文件...');
     const tempFiles = [
-      path.join(rootDir, 'sea-prep.blob')
+       path.posix.join(rootDir, 'sea-prep.blob')
     ];
     
     for (const file of tempFiles) {

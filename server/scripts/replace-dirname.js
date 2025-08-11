@@ -7,7 +7,7 @@ const path = require('path');
  * 替换 dist_ncc/index.js 文件中的所有 __dirname 为 import.meta.dirname
  */
 function replaceDirname() {
-  const targetFile = path.join(__dirname, '..', 'dist_ncc', 'index.js');
+  const targetFile =  path.posix.join(__dirname, '..', 'dist_ncc', 'index.js');
   
   console.log('开始处理文件:', targetFile);
   
