@@ -17,16 +17,16 @@ const settingList = [
     key: '2',
     name: '安全设置',
   },
-  {
-    component: AccountBind,
-    key: '3',
-    name: '账号绑定',
-  },
-  {
-    component: OnlineDevice,
-    key: '4',
-    name: '在线设备',
-  },
+  // {
+  //   component: AccountBind,
+  //   key: '3',
+  //   name: '账号绑定',
+  // },
+  // {
+  //   component: OnlineDevice,
+  //   key: '4',
+  //   name: '在线设备',
+  // },
 ];
 </script>
 

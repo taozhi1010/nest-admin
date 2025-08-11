@@ -1,4 +1,4 @@
-import * as bcrypt from 'bcryptjs';
+import * as bcrypt from 'bcryptjs'
 
 /**
  * 密码工具类 - 使用 bcryptjs
@@ -11,8 +11,8 @@ export class PasswordUtil {
    * @returns 哈希后的密码
    */
   static hashSync(password: string, rounds: number = 10): string {
-    const salt = bcrypt.genSaltSync(rounds);
-    return bcrypt.hashSync(password, salt);
+    const salt = bcrypt.genSaltSync(rounds)
+    return bcrypt.hashSync(password, salt)
   }
 
   /**
@@ -23,9 +23,10 @@ export class PasswordUtil {
    */
   static compareSync(password: string, storedHash: string): boolean {
     try {
-      return bcrypt.compareSync(password, storedHash);
-    } catch (error) {
-      return false;
+      return bcrypt.compareSync(password, storedHash)
+    }
+    catch (error) {
+      return false
     }
   }
 
@@ -35,6 +36,6 @@ export class PasswordUtil {
    * @returns 生成的盐值
    */
   static genSaltSync(rounds: number = 10): string {
-    return bcrypt.genSaltSync(rounds);
+    return bcrypt.genSaltSync(rounds)
   }
 }

@@ -1,32 +1,32 @@
-import { createParamDecorator, ExecutionContext } from '@nestjs/common';
+import { createParamDecorator, ExecutionContext } from '@nestjs/common'
 
-import { GetNowDate } from 'src/common/utils';
-import { UAParser } from 'ua-parser-js';
+import { GetNowDate } from 'src/common/utils'
+import { UAParser } from 'ua-parser-js'
 
 export const ClientInfo = createParamDecorator((data: unknown, ctx: ExecutionContext) => {
-	const request = ctx.switchToHttp().getRequest();
-	const { browser, os } = UAParser(request.headers['user-agent']);
+  const request = ctx.switchToHttp().getRequest()
+  const { browser, os } = UAParser(request.headers['user-agent'])
 
-	const clientInfo = {
-		userAgent: request.headers['user-agent'],
-		ipaddr: request.ip,
-		browser: browser.name,
-		os: os.name,
-		loginLocation: '',
+  const clientInfo = {
+    userAgent: request.headers['user-agent'],
+    ipaddr: request.ip,
+    browser: browser.name,
+    os: os.name,
+    loginLocation: '',
 
-		dateTime: GetNowDate(),
-		username: request.user?.user?.username,
-	};
+    dateTime: GetNowDate(),
+    username: request.user?.user?.username,
+  }
 
-	return clientInfo;
-});
+  return clientInfo
+})
 
 export interface ClientInfoDto {
-	userAgent: string;
-	ipaddr: string;
-	browser: string;
-	os: string;
-	loginLocation: string;
-	dateTime: string;
-	username?: string;
+  userAgent: string
+  ipaddr: string
+  browser: string
+  os: string
+  loginLocation: string
+  dateTime: string
+  username?: string
 }

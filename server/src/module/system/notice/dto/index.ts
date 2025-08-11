@@ -1,63 +1,63 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsNumber, IsOptional, IsString, Length } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger'
+import { IsEnum, IsNumber, IsOptional, IsString, Length } from 'class-validator'
 
-import { PagingDto } from 'src/common/dto/index';
+import { PagingDto } from 'src/common/dto/index'
 
 export enum StatusEnum {
-	STATIC = '0',
-	DYNAMIC = '1',
+  STATIC = '0',
+  DYNAMIC = '1',
 }
 export enum TypeEnum {
-	Instruct = '1',
-	Notice = '2',
+  Instruct = '1',
+  Notice = '2',
 }
 export class CreateNoticeDto {
-	@IsString()
-	@Length(0, 50)
-	noticeTitle: string;
+  @IsString()
+  @Length(0, 50)
+  noticeTitle: string
 
-	@IsString()
-	@IsEnum(TypeEnum)
-	noticeType: string;
+  @IsString()
+  @IsEnum(TypeEnum)
+  noticeType: string
 
-	@ApiProperty({
-		required: true,
-	})
-	@IsOptional()
-	@IsString()
-	@Length(0, 500)
-	remark?: string;
+  @ApiProperty({
+    required: true,
+  })
+  @IsOptional()
+  @IsString()
+  @Length(0, 500)
+  remark?: string
 
-	@ApiProperty({
-		required: false,
-	})
-	@IsOptional()
-	@IsString()
-	@IsEnum(StatusEnum)
-	status?: string;
+  @ApiProperty({
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  @IsEnum(StatusEnum)
+  status?: string
 
-	@IsOptional()
-	@IsString()
-	noticeContent?: string;
+  @IsOptional()
+  @IsString()
+  noticeContent?: string
 }
 
 export class UpdateNoticeDto extends CreateNoticeDto {
-	@IsNumber()
-	noticeId: number;
+  @IsNumber()
+  noticeId: number
 }
 
 export class ListNoticeDto extends PagingDto {
-	@IsOptional()
-	@IsString()
-	@Length(0, 50)
-	noticeTitle?: string;
+  @IsOptional()
+  @IsString()
+  @Length(0, 50)
+  noticeTitle?: string
 
-	@IsOptional()
-	@IsString()
-	@IsEnum(TypeEnum)
-	noticeType?: string;
+  @IsOptional()
+  @IsString()
+  @IsEnum(TypeEnum)
+  noticeType?: string
 
-	@IsOptional()
-	@IsString()
-	createBy?: string;
+  @IsOptional()
+  @IsString()
+  createBy?: string
 }

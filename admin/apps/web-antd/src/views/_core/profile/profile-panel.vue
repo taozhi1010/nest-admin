@@ -68,7 +68,8 @@ const poetrySrc = computed(() => {
           </DescriptionsItem>
           <DescriptionsItem label="部门">
             <Tag color="processing">
-              {{ profile.user.deptName ?? '未分配部门' }}
+              {{ profile.user.dept?.deptName ?? '未分配部门' }}
+
             </Tag>
             <Tag v-if="profile.postGroup" color="processing">
               {{ profile.postGroup }}

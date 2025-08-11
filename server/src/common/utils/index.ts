@@ -1,18 +1,18 @@
-import dayjs from 'dayjs';
-import isLeapYear from 'dayjs/plugin/isLeapYear'; // 导入插件
-import timezone from 'dayjs/plugin/timezone'; // 导入插件
-import utc from 'dayjs/plugin/utc'; // 导入插件
-import * as Lodash from 'lodash';
-import { v4 as uuidv4 } from 'uuid';
-import { DataScopeEnum } from '../enum/index'; // 导入本地化语言
+import dayjs from 'dayjs'
+import isLeapYear from 'dayjs/plugin/isLeapYear' // 导入插件
+import timezone from 'dayjs/plugin/timezone' // 导入插件
+import utc from 'dayjs/plugin/utc' // 导入插件
+import * as Lodash from 'lodash'
+import { v4 as uuidv4 } from 'uuid'
+import { DataScopeEnum } from '../enum/index' // 导入本地化语言
 
-import 'dayjs/locale/zh-cn';
+import 'dayjs/locale/zh-cn'
 
-dayjs.extend(utc);
-dayjs.extend(timezone);
-dayjs.extend(isLeapYear); // 使用插件
-dayjs.locale('zh-cn'); // 使用本地化语言
-dayjs.tz.setDefault('Asia/Beijing');
+dayjs.extend(utc)
+dayjs.extend(timezone)
+dayjs.extend(isLeapYear) // 使用插件
+dayjs.locale('zh-cn') // 使用本地化语言
+dayjs.tz.setDefault('Asia/Beijing')
 
 /**
  * 数组转树结构
@@ -22,29 +22,30 @@ dayjs.tz.setDefault('Asia/Beijing');
  * @returns
  */
 export function ListToTree(arr, getId, getLabel) {
-	const kData = {}; // 以id做key的对象 暂时储存数据
-	const lData = []; // 最终的数据 arr
+  const kData = {} // 以id做key的对象 暂时储存数据
+  const lData = [] // 最终的数据 arr
 
-	arr.forEach(m => {
-		m = {
-			id: getId(m),
-			label: getLabel(m),
-			parentId: +m.parentId,
-		};
-		kData[m.id] = {
-			id: m.id,
-			label: m.label,
-			parentId: m.parentId,
-		};
-		if (m.parentId === 0) {
-			lData.push(kData[m.id]);
-		} else {
-			kData[m.parentId] = kData[m.parentId] || {};
-			kData[m.parentId].children = kData[m.parentId].children || [];
-			kData[m.parentId].children.push(kData[m.id]);
-		}
-	});
-	return lData;
+  arr.forEach((m) => {
+    m = {
+      id: getId(m),
+      label: getLabel(m),
+      parentId: +m.parentId,
+    }
+    kData[m.id] = {
+      id: m.id,
+      label: m.label,
+      parentId: m.parentId,
+    }
+    if (m.parentId === 0) {
+      lData.push(kData[m.id])
+    }
+    else {
+      kData[m.parentId] = kData[m.parentId] || {}
+      kData[m.parentId].children = kData[m.parentId].children || []
+      kData[m.parentId].children.push(kData[m.id])
+    }
+  })
+  return lData
 }
 
 /**
@@ -53,7 +54,7 @@ export function ListToTree(arr, getId, getLabel) {
  * @returns
  */
 export function GetNowDate() {
-	return dayjs().format('YYYY-MM-DD HH:mm:ss');
+  return dayjs().format('YYYY-MM-DD HH:mm:ss')
 }
 
 /**
@@ -63,7 +64,7 @@ export function GetNowDate() {
  * @returns
  */
 export function FormatDate(date: Date, format = 'YYYY-MM-DD HH:mm:ss') {
-	return date && dayjs(date).format(format);
+  return date && dayjs(date).format(format)
 }
 
 /**
@@ -72,7 +73,7 @@ export function FormatDate(date: Date, format = 'YYYY-MM-DD HH:mm:ss') {
  * @returns
  */
 export function DeepClone<T>(obj: T) {
-	return Lodash.cloneDeep(obj);
+  return Lodash.cloneDeep(obj)
 }
 
 /**
@@ -81,8 +82,8 @@ export function DeepClone<T>(obj: T) {
  * @returns
  */
 export function GenerateUUID(): string {
-	const uuid = uuidv4();
-	return uuid.replaceAll('-', '');
+  const uuid = uuidv4()
+  return uuid.replaceAll('-', '')
 }
 
 /**
@@ -91,7 +92,7 @@ export function GenerateUUID(): string {
  * @returns
  */
 export function Uniq<T extends number | string>(list: Array<T>): Array<T> {
-	return Lodash.uniq(list);
+  return Lodash.uniq(list)
 }
 
 /**
@@ -102,38 +103,35 @@ export function Uniq<T extends number | string>(list: Array<T>): Array<T> {
  * @returns
  */
 export function Paginate(
-	data: { list: Array<any>; pageSize: number; pageNum: number },
-	filterParam: any
+  data: { list: Array<any>, pageSize: number, pageNum: number },
+  filterParam: any,
 ) {
-	// 检查 pageSize 和 pageNumber 的合法性
-	if (data.pageSize <= 0 || data.pageNum < 0) {
-		return [];
-	}
+  // 检查 pageSize 和 pageNumber 的合法性
+  if (data.pageSize <= 0 || data.pageNum < 0) {
+    return []
+  }
 
-	// 将数据转换为数组
-	let arrayData = Lodash.toArray(data.list);
+  // 将数据转换为数组
+  let arrayData = Lodash.toArray(data.list)
 
-	if (Object.keys(filterParam).length > 0) {
-		arrayData = Lodash.filter(arrayData, item => {
-			const arr = [];
-			if (filterParam.ipaddr) {
-				arr.push(Boolean(item.ipaddr.includes(filterParam.ipaddr)));
-			}
+  if (Object.keys(filterParam).length > 0) {
+    arrayData = Lodash.filter(arrayData, (item) => {
+      const arr = []
+      if (filterParam.ipaddr) {
+        arr.push(Boolean(item.ipaddr.includes(filterParam.ipaddr)))
+      }
 
-			if (filterParam.username && item.username) {
-				arr.push(Boolean(item.username.includes(filterParam.username)));
-			}
-			return !arr.includes(false);
-		});
-	}
+      if (filterParam.username && item.username) {
+        arr.push(Boolean(item.username.includes(filterParam.username)))
+      }
+      return !arr.includes(false)
+    })
+  }
 
-	// 获取指定页的数据
-	const pageData = arrayData.slice(
-		(data.pageNum - 1) * data.pageSize,
-		data.pageNum * data.pageSize
-	);
+  // 获取指定页的数据
+  const pageData = arrayData.slice((data.pageNum - 1) * data.pageSize, data.pageNum * data.pageSize)
 
-	return pageData;
+  return pageData
 }
 
 /**
@@ -146,17 +144,17 @@ export function Paginate(
  * @param permission 权限字符
  */
 export async function DataScopeFilter<T>(entity: any, dataScope: DataScopeEnum): Promise<T> {
-	switch (dataScope) {
-		case DataScopeEnum.DATA_SCOPE_CUSTOM:
-			// entity.andWhere((qb) => {
-			//   const subQuery = qb.subQuery().select('user.deptId').from(User, 'user').where('user.userId = :userId').getQuery();
-			//   return 'post.title IN ' + subQuery;
-			// });
-			break;
-		default:
-			break;
-	}
-	return entity;
+  switch (dataScope) {
+    case DataScopeEnum.DATA_SCOPE_CUSTOM:
+      // entity.andWhere((qb) => {
+      //   const subQuery = qb.subQuery().select('user.deptId').from(User, 'user').where('user.userId = :userId').getQuery();
+      //   return 'post.title IN ' + subQuery;
+      // });
+      break
+    default:
+      break
+  }
+  return entity
 }
 
 /**
@@ -165,7 +163,7 @@ export async function DataScopeFilter<T>(entity: any, dataScope: DataScopeEnum):
  * @returns {boolean}
  */
 export function isObject(item) {
-	return item && typeof item === 'object' && !Array.isArray(item);
+  return item && typeof item === 'object' && !Array.isArray(item)
 }
 
 /**
@@ -174,28 +172,31 @@ export function isObject(item) {
  * @param ...sources
  */
 export function mergeDeep(target, ...sources) {
-	if (!sources.length) return target;
-	const source = sources.shift();
+  if (!sources.length)
+    return target
+  const source = sources.shift()
 
-	if (isObject(target) && isObject(source)) {
-		for (const key in source) {
-			if (isObject(source[key])) {
-				if (!target[key]) Object.assign(target, { [key]: {} });
-				mergeDeep(target[key], source[key]);
-			} else {
-				Object.assign(target, { [key]: source[key] });
-			}
-		}
-	}
+  if (isObject(target) && isObject(source)) {
+    for (const key in source) {
+      if (isObject(source[key])) {
+        if (!target[key])
+          Object.assign(target, { [key]: {} })
+        mergeDeep(target[key], source[key])
+      }
+      else {
+        Object.assign(target, { [key]: source[key] })
+      }
+    }
+  }
 
-	return mergeDeep(target, ...sources);
+  return mergeDeep(target, ...sources)
 }
 
 export function ArrayToObject(list: any[], key: string) {
-	return list.reduce((acc, item) => {
-		if (item[key]) {
-			acc[item[key]] = item;
-		}
-		return acc;
-	}, {});
+  return list.reduce((acc, item) => {
+    if (item[key]) {
+      acc[item[key]] = item
+    }
+    return acc
+  }, {})
 }
