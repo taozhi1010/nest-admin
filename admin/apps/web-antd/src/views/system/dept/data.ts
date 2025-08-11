@@ -33,10 +33,6 @@ export const columns: VxeGridProps['columns'] = [
     width: 200,
   },
   {
-    field: 'deptCategory',
-    title: '类别编码',
-  },
-  {
     field: 'orderNum',
     title: '排序',
     width: 180,
@@ -97,11 +93,6 @@ export const drawerSchema: FormSchemaGetter = () => [
     fieldName: 'orderNum',
     label: '显示排序',
     rules: 'required',
-  },
-  {
-    component: 'Input',
-    fieldName: 'deptCategory',
-    label: '类别编码',
   },
   {
     component: 'Select',

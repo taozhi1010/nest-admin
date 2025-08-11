@@ -9,10 +9,7 @@ export class TaskService implements OnModuleInit {
 	private readonly taskMap = new Map<string, (...args: any[]) => Promise<any>>();
 	private serviceInstances = new Map<string, any>();
 
-	constructor(
-		private moduleRef: ModuleRef,
-		private jobLogService: JobLogService
-	) {}
+	constructor(private moduleRef: ModuleRef, private jobLogService: JobLogService) {}
 
 	onModuleInit() {
 		this.initializeTasks();
@@ -128,7 +125,7 @@ export class TaskService implements OnModuleInit {
 				.replace(/'/g, '"')
 				// 处理未加引号的字符串
 				.replace(/([{,]\s*)([a-z_]\w*)\s*:/gi, '$1"$2":');
-
+        
 			// 尝试解析为 JSON
 			return JSON.parse(`[${normalizedStr}]`);
 		} catch (error) {
@@ -137,29 +134,35 @@ export class TaskService implements OnModuleInit {
 		}
 	}
 
-	@Task('noParams')
+	@Task('task.noParams')
 	async ryNoParams() {
 		this.logger.log('执行无参示例任务');
 	}
 
-	@Task('params')
+	@Task('task.params')
 	async ryParams(param1: string, param2: number, param3: boolean) {
 		this.logger.log(`执行有参示例任务，参数：`, { param1, param2, param3 });
 	}
 
-	@Task('clearTemp')
+	@Task('task.multipleParams')
+	async multipleParams(param1: string, param2: number, param3: boolean) {
+		this.logger.log('执行多参数任务', { param1, param2, param3 });
+		// 实现多参数任务的逻辑
+	}
+
+	@Task('task.clearTemp')
 	async clearTemp() {
 		this.logger.log('执行清理临时文件任务');
 		// 实现清理临时文件的逻辑
 	}
 
-	@Task('monitorSystem')
+	@Task('task.monitorSystem')
 	async monitorSystem() {
 		this.logger.log('执行系统状态监控任务');
 		// 实现系统监控的逻辑
 	}
 
-	@Task('backupDatabase')
+	@Task('task.backupDatabase')
 	async backupDatabase() {
 		this.logger.log('执行数据库备份任务');
 		// 实现数据库备份的逻辑

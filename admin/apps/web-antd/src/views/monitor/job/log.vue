@@ -20,7 +20,7 @@ import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { Page, type VbenFormProps } from '@vben/common-ui';
 import { Modal, Space } from 'ant-design-vue';
-import { tableCheckboxEvent, useVbenVxeGrid, type VxeGridProps } from '#/adapter/vxe-table';
+import { useVbenVxeGrid, type VxeGridProps } from '#/adapter/vxe-table';
 import { getJob, jobLogExport } from '#/api/monitor/job';
 import { listJobLog, delJobLog, cleanJobLog } from '#/api/monitor/job';
 import { logColumns, logQuerySchema } from './data';
@@ -57,7 +57,7 @@ const gridOptions: VxeGridProps = {
   checkboxConfig: {
     highlight: true,
     reserve: true,
-   //  trigger: 'row',
+    //  trigger: 'row',
   },
   columns: logColumns,
   height: 'auto',

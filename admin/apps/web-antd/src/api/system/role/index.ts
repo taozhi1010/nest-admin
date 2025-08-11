@@ -134,10 +134,8 @@ export function roleAuthCancel(data: { roleId: ID; userId: ID }) {
  * @param userIds 用户ID集合
  * @returns void
  */
-export function roleAuthCancelAll(roleId: ID, userIds: IDS) {
-  return requestClient.putWithMsg<void>(
-    `${Api.roleAuthCancelAll}?roleId=${roleId}&userIds=${userIds.join(',')}`,
-  );
+export function roleAuthCancelAll(data: { roleId: ID; userIds: string }) {
+  return requestClient.putWithMsg<void>(Api.roleAuthCancelAll, data);
 }
 
 /**
@@ -146,10 +144,8 @@ export function roleAuthCancelAll(roleId: ID, userIds: IDS) {
  * @param userIds 用户ID集合
  * @returns void
  */
-export function roleSelectAll(roleId: ID, userIds: IDS) {
-  return requestClient.putWithMsg<void>(
-    `${Api.roleAuthSelectAll}?roleId=${roleId}&userIds=${userIds.join(',')}`,
-  );
+export function roleSelectAll(data: { roleId: ID; userIds: string }) {
+  return requestClient.putWithMsg<void>(Api.roleAuthSelectAll, data);
 }
 
 /**

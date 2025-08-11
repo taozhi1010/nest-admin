@@ -41,10 +41,10 @@ export const columns: VxeGridProps['columns'] = [
     title: '用户账号',
     field: 'username',
   },
-  {
-    title: '登录平台',
-    field: 'clientKey',
-  },
+  // {
+  //   title: '登录平台',
+  //   field: 'clientKey',
+  // },
   {
     title: 'IP地址',
     field: 'ipaddr',
@@ -93,7 +93,7 @@ export const columns: VxeGridProps['columns'] = [
   },
   {
     title: '信息',
-    field: 'msg',
+    field: 'message',
   },
   {
     title: '日期',
@@ -117,16 +117,16 @@ export const modalSchema: () => DescItem[] = () => [
       return renderDict(value, DictEnum.SYS_COMMON_STATUS);
     },
   },
-  {
-    field: 'clientKey',
-    label: '登录平台',
-    render(value) {
-      if (value) {
-        return value.toUpperCase();
-      }
-      return '';
-    },
-  },
+  // {
+  //   field: 'clientKey',
+  //   label: '登录平台',
+  //   render(value) {
+  //     if (value) {
+  //       return value.toUpperCase();
+  //     }
+  //     return '';
+  //   },
+  // },
   {
     field: 'ipaddr',
     label: '账号信息',
@@ -140,13 +140,13 @@ export const modalSchema: () => DescItem[] = () => [
     label: '登录时间',
   },
   {
-    field: 'msg',
+    field: 'message',
     label: '登录信息',
     render(_, data: any) {
-      const { msg, status } = data;
+      const { message, status } = data;
       return (
         <span class={['font-bold', status === '0' ? '' : 'text-red-500']}>
-          {msg}
+          {message}
         </span>
       );
     },

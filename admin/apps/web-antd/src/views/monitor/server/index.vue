@@ -11,7 +11,7 @@ const loading = ref(true);
 const serverInfo = ref<any>({});
 const refreshProgress = ref(0);
 const refreshInterval = ref<number>();
-
+const progressTimer = ref<number>();
 // 刷新进度条
 function updateProgress() {
   refreshProgress.value = (refreshProgress.value + 1) % 100;

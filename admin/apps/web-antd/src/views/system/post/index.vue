@@ -14,7 +14,6 @@ import { Modal, Popconfirm, Space } from 'ant-design-vue';
 import { useVbenVxeGrid, vxeCheckboxChecked } from '#/adapter/vxe-table';
 import { postExport, postList, postRemove } from '#/api/system/post';
 import { commonDownloadExcel } from '#/utils/file/download';
-import DeptTree from '#/views/system/user/dept-tree.vue';
 
 import { columns, querySchema } from './data';
 import postDrawer from './post-drawer.vue';
@@ -122,12 +121,6 @@ function handleDownloadExcel() {
 
 <template>
   <Page :auto-content-height="true" content-class="flex gap-[8px] w-full">
-    <DeptTree
-      v-model:select-dept-id="selectDeptId"
-      class="w-[260px]"
-      @reload="() => tableApi.reload()"
-      @select="() => tableApi.reload()"
-    />
     <BasicTable class="flex-1 overflow-hidden" table-title="岗位列表">
       <template #toolbar-tools>
         <Space>

@@ -57,7 +57,7 @@ export const columns: VxeGridProps['columns'] = [
   },
   {
     title: '创建人',
-    field: 'createByName',
+    field: 'createBy',
     width: 150,
   },
   {

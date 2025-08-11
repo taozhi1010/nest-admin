@@ -231,17 +231,17 @@ export class RedisService {
 	 * redis基本信息
 	 * @returns
 	 */
-	async getInfo(): Promise<Record<string, string>> {
-		const rawInfo = await this.adapter.info();
+	async getInfo() {
+		const client = this.rs.getOrThrow();
+		// 连接到 Redis 服务器
+		const rawInfo = await client.info();
 		// 按行分割字符串
 		const lines = rawInfo.split('\r\n');
-		const parsedInfo: Record<string, string> = {};
+		const parsedInfo = {};
 		// 遍历每一行并分割键值对
 		lines.forEach(line => {
 			const [key, value] = line.split(':');
-			if (key?.trim() && value?.trim()) {
-				parsedInfo[key.trim()] = value.trim();
-			}
+			parsedInfo[key?.trim()] = value?.trim();
 		});
 		return parsedInfo;
 	}

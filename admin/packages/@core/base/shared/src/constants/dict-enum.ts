@@ -18,4 +18,5 @@ export enum DictEnum {
   WF_TASK_STATUS = 'wf_task_status', // 任务状态
   CHAT_MODEL_CATEGORY = 'chat_model_category', // 模型分类
   STATUS_TYPE = 'status_type', // 状态类型
+  SYS_JOB_GROUP = 'sys_job_group', // 任务组
 }

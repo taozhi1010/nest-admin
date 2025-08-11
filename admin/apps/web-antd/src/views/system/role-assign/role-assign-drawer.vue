@@ -69,7 +69,7 @@ async function handleSubmit() {
   const records = tableApi.grid.getCheckboxRecords();
   const userIds = records.map((item) => item.userId);
   if (userIds.length > 0) {
-    await roleSelectAll(roleId, userIds);
+    await roleSelectAll({ roleId: +roleId, userIds: userIds.join(',') });
   }
   handleReset();
   emit('reload');

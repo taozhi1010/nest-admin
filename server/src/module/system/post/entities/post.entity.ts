@@ -12,9 +12,6 @@ export class SysPostEntity extends BaseEntity {
 
 	@Column({ type: 'varchar', name: 'post_code', length: 64, comment: '岗位编码' })
 	public postCode: string;
-
-	@Column({ type: 'varchar', name: 'post_category', length: 64, comment: '类别编码' })
-	public postCategory: string;
 	
 	@Column({ type: 'int', name: 'belong_dept_id', default: 100, comment: '部门ID' })
 	public deptId: number;

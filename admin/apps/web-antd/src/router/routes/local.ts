@@ -37,7 +37,18 @@ const localRoutes: RouteRecordStringComponent[] = [
     },
     name: 'RoleAssign',
     path: '/system/role-assign/:roleId',
-  }
+  },
+  {
+    component: '/monitor/job/log',
+    meta: {
+      activePath: '/monitor/job',
+      icon: 'eos-icons:role-binding-outlined',
+      title: '任务日志',
+      hideInMenu: true,
+    },
+    name: 'job-log',
+    path: '/monitor/job-log/:jobId',
+  },
 ];
 
 /**

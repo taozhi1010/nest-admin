@@ -36,10 +36,6 @@ export const columns: VxeGridProps['columns'] = [
     field: 'postCode',
   },
   {
-    title: '类别编码',
-    field: 'postCategory',
-  },
-  {
     title: '岗位名称',
     field: 'postName',
   },
@@ -99,11 +95,6 @@ export const drawerSchema: FormSchemaGetter = () => [
     fieldName: 'postCode',
     label: '岗位编码',
     rules: 'required',
-  },
-  {
-    component: 'Input',
-    fieldName: 'postCategory',
-    label: '类别编码',
   },
   {
     component: 'InputNumber',

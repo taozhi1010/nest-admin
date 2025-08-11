@@ -12,11 +12,7 @@ import { getVxePopupContainer } from '@vben/utils';
 import { Modal, Popconfirm, Space } from 'ant-design-vue';
 
 import { useVbenVxeGrid, vxeCheckboxChecked } from '#/adapter/vxe-table';
-import {
-  roleAllocatedList,
-  roleAuthCancel,
-  roleAuthCancelAll,
-} from '#/api/system/role';
+import { roleAllocatedList, roleAuthCancel, roleAuthCancelAll } from '#/api/system/role';
 
 import { columns, querySchema } from './data';
 import roleAssignDrawer from './role-assign-drawer.vue';
@@ -84,7 +80,7 @@ function handleAdd() {
  * 取消授权 一条记录
  */
 async function handleAuthCancel(record: User) {
-  await roleAuthCancel({ userId: record.userId, roleId });
+  await roleAuthCancel({ userId: record.userId, roleId: +roleId });
   await tableApi.query();
 }
 
@@ -99,7 +95,7 @@ function handleMultipleAuthCancel() {
     okType: 'danger',
     content: `确认取消选中的${ids.length}条授权记录吗？`,
     onOk: async () => {
-      await roleAuthCancelAll(roleId, ids);
+      await roleAuthCancelAll({ roleId: +roleId, userIds: ids.join(',') });
       await tableApi.query();
       tableApi.grid.clearCheckboxRow();
     },
@@ -121,11 +117,7 @@ function handleMultipleAuthCancel() {
           >
             取消授权
           </a-button>
-          <a-button
-            type="primary"
-            v-access:code="['system:role:add']"
-            @click="handleAdd"
-          >
+          <a-button type="primary" v-access:code="['system:role:add']" @click="handleAdd">
             {{ $t('pages.common.add') }}
           </a-button>
         </Space>
@@ -137,13 +129,7 @@ function handleMultipleAuthCancel() {
           placement="left"
           @confirm="handleAuthCancel(row)"
         >
-          <ghost-button
-            danger
-            v-access:code="['system:role:remove']"
-            @click.stop=""
-          >
-            取消授权
-          </ghost-button>
+          <ghost-button danger v-access:code="['system:role:remove']" @click.stop=""> 取消授权 </ghost-button>
         </Popconfirm>
       </template>
     </BasicTable>
