@@ -251,7 +251,7 @@ export class UploadService {
     const originalname = iconv.decode(Buffer.from(file.originalname, 'binary'), 'utf8')
     const ext = Mime.extension(file.mimetype)
     // 重新生成文件名加上时间戳
-    const newFileName = `${this.getNewFileName(originalname)}.${ext}`
+    const newFileName = this.getNewFileName(originalname)
     // 文件路径
     const targetFile = path.posix.join(baseDirPath, newFileName)
     // 文件目录
@@ -283,13 +283,9 @@ export class UploadService {
    */
   getNewFileName(originalname: string): string {
     if (!originalname) {
-      return originalname
+      return originalname;
     }
-    const newFileNameArr = originalname.split('.')
-    newFileNameArr[newFileNameArr.length - 1] = `${
-      newFileNameArr[newFileNameArr.length - 1]
-    }_${new Date().getTime()}`
-    return newFileNameArr.join('.')
+    return `${new Date().getTime()}_${originalname}`;
   }
 
   /**
