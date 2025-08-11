@@ -49,6 +49,17 @@ const localRoutes: RouteRecordStringComponent[] = [
     name: 'job-log',
     path: '/monitor/job-log/:jobId',
   },
+  {
+    component: '/tool/gen/edit-gen',
+    meta: {
+      activePath: '/code-gen',
+      icon: 'eos-icons:role-binding-outlined',
+      title: '代码生成编辑',
+      hideInMenu: true,
+    },
+    name: 'code-gen-edit',
+    path: '/code-gen/edit/:tableId',
+  },
 ];
 
 /**

@@ -195,12 +195,6 @@ function handleImport() {
   <Page :auto-content-height="true">
     <BasicTable table-title="代码生成列表">
       <template #toolbar-tools>
-        <a
-          class="text-primary mr-2"
-          href="https://dapdap.top/other/template.html"
-          target="_blank"
-          >👉关于代码生成模板
-        </a>
         <Space>
           <a-button
             :disabled="!checked"

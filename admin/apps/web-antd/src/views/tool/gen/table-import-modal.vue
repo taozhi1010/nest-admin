@@ -12,12 +12,12 @@ const emit = defineEmits<{ reload: [] }>();
 
 const formOptions: VbenFormProps = {
   schema: [
-    {
-      label: '数据源',
-      fieldName: 'dataName',
-      component: 'Select',
-      defaultValue: 'master',
-    },
+    // {
+    //   label: '数据源',
+    //   fieldName: 'dataName',
+    //   component: 'Select',
+    //   defaultValue: 'master',
+    // },
     {
       label: '表名称',
       fieldName: 'tableName',
