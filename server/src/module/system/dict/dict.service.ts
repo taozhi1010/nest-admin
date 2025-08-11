@@ -188,10 +188,10 @@ export class DictService {
   async export(res: Response, body: ListDictType) {
     delete body.pageNum
     delete body.pageSize
-    const list = await this.findAllType(body)
+    const { data } = await this.findAllType(body)
     const options = {
       sheetName: '字典数据',
-      data: list.data.list,
+      data: data.rows,
       header: [
         { title: '字典主键', dataIndex: 'dictId' },
         { title: '字典名称', dataIndex: 'dictName' },

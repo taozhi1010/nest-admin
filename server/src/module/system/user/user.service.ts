@@ -899,10 +899,10 @@ export class UserService {
   async export(res: Response, body: ListUserDto, user: UserType['user']) {
     delete body.pageNum
     delete body.pageSize
-    const list = await this.findAll(body, user)
+    const { data }  = await this.findAll(body, user)
     const options = {
       sheetName: '用户数据',
-      data: list.data.list,
+      data: data.rows,
       header: [
         { title: '用户序号', dataIndex: 'userId' },
         { title: '登录名称', dataIndex: 'username' },

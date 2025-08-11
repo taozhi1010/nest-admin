@@ -71,10 +71,10 @@ export class JobLogService {
   async export(res: Response, body: ListJobLogDto) {
     delete body.pageNum
     delete body.pageSize
-    const list = await this.list(body)
+    const { data } = await this.list(body)
     const options = {
       sheetName: '调度日志',
-      data: list.data.rows,
+      data: data.rows,
       header: [
         { title: '日志编号', dataIndex: 'jobLogId' },
         { title: '任务名称', dataIndex: 'jobName' },

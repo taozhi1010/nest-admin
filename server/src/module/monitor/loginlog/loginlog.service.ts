@@ -114,10 +114,10 @@ export class LoginlogService {
   async export(res: Response, body: ListLoginlogDto) {
     delete body.pageNum
     delete body.pageSize
-    const list = await this.findAll(body)
+    const { data } = await this.findAll(body)
     const options = {
       sheetName: '登录日志',
-      data: list.data.list,
+      data: data.rows,
       header: [
         { title: '序号', dataIndex: 'infoId' },
         { title: '用户账号', dataIndex: 'username' },

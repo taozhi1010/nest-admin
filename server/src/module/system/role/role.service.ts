@@ -239,10 +239,10 @@ export class RoleService {
   async export(res: Response, body: ListRoleDto) {
     delete body.pageNum
     delete body.pageSize
-    const list = await this.findAll(body)
+    const { data } = await this.findAll(body)
     const options = {
       sheetName: '角色数据',
-      data: list.data.list,
+      data: data.rows,
       header: [
         { title: '角色编号', dataIndex: 'roleId' },
         { title: '角色名称', dataIndex: 'roleName', width: 15 },

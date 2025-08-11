@@ -166,10 +166,10 @@ export class ${BusinessName}Service {
   async export(res: Response, body: List${BusinessName}Dto) {
     delete body.pageNum
     delete body.pageSize
-    const list = await this.findAll(body)
+    const { data } = await this.findAll(body)
     const options = {
       sheetName: '${tableComment}',
-      data: list.data.rows,
+      data: data.rows,
       header: [#foreach($column in $columns)#if($column.isList == '1')
         { title: '$column.columnComment', dataIndex: '$column.javaField' },#end#end
       ],

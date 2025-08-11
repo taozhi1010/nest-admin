@@ -120,10 +120,10 @@ export class ConfigService {
   async export(res: Response, body: ListConfigDto) {
     delete body.pageNum
     delete body.pageSize
-    const list = await this.findAll(body)
+    const { data } = await this.findAll(body)
     const options = {
       sheetName: '参数管理',
-      data: list.data.list,
+      data: data.rows,
       header: [
         { title: '参数主键', dataIndex: 'configId' },
         { title: '参数名称', dataIndex: 'configName' },

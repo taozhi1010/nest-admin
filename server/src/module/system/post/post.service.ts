@@ -81,10 +81,10 @@ export class PostService {
   async export(res: Response, body: ListPostDto) {
     delete body.pageNum
     delete body.pageSize
-    const list = await this.findAll(body)
+    const { data } = await this.findAll(body)
     const options = {
       sheetName: '岗位数据',
-      data: list.data.list,
+      data: data.rows,
       header: [
         { title: '岗位序号', dataIndex: 'postId' },
         { title: '岗位编码', dataIndex: 'postCode' },
