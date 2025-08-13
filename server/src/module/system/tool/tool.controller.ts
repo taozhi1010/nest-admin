@@ -67,9 +67,10 @@ export class ToolController {
   }
 
   @ApiOperation({ summary: '删除表数据' })
-  @Delete('/gen/:id')
-  remove(@Param('id') id: string) {
-    return this.toolService.remove(+id)
+  @Delete('/gen/:ids')
+  remove(@Param('ids') ids: string) {
+    const idList = ids.split(',').map(id => +id)
+    return this.toolService.remove(idList)
   }
 
   @ApiOperation({ summary: '查看代码' })

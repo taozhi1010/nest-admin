@@ -9,7 +9,7 @@ import { GenConstants } from 'src/common/constant/gen.constant'
 import { FormatDate, GetNowDate } from 'src/common/utils/index'
 import { ResultData } from 'src/common/utils/result'
 import { UserDto } from 'src/module/system/user/user.decorator'
-import { DataSource, Repository } from 'typeorm'
+import { DataSource, In, Repository } from 'typeorm'
 import toolConfig from './config'
 import {
   CreateGenTableDto,
@@ -242,9 +242,9 @@ export class ToolService {
    * @param id
    * @returns
    */
-  async remove(id: number) {
-    await this.genTableEntityRep.delete({ tableId: id })
-    await this.genTableColumnEntityRep.delete({ tableId: id })
+  async remove(ids: number[]) {
+    await this.genTableEntityRep.delete({ tableId: In(ids) })
+    await this.genTableColumnEntityRep.delete({ tableId: In(ids) })
     return ResultData.ok()
   }
 

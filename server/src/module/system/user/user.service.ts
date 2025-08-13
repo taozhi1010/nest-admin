@@ -54,7 +54,6 @@ export class UserService {
     private readonly deptService: DeptService,
     private readonly jwtService: JwtService,
     private readonly redisService: RedisService,
-    private readonly configService: ConfigService,
   ) {}
 
   /**
@@ -72,7 +71,7 @@ export class UserService {
       userType: SYS_USER_TYPE.CUSTOM,
     })
     const postEntity = this.sysUserWithPostEntityRep.createQueryBuilder('postEntity')
-    const postValues = createUserDto.postIds.map((id) => {
+    const postValues = createUserDto.postIds.map(id => {
       return {
         userId: res.userId,
         postId: id,
@@ -81,7 +80,7 @@ export class UserService {
     postEntity.insert().values(postValues).execute()
 
     const roleEntity = this.sysUserWithRoleEntityRep.createQueryBuilder('roleEntity')
-    const roleValues = createUserDto.roleIds.map((id) => {
+    const roleValues = createUserDto.roleIds.map(id => {
       return {
         userId: res.userId,
         roleId: id,
@@ -112,22 +111,19 @@ export class UserService {
         if (role.dataScope === DataScopeEnum.DATA_SCOPE_ALL) {
           dataScopeAll = true
           break
-        }
-        else if (role.dataScope === DataScopeEnum.DATA_SCOPE_CUSTOM) {
+        } else if (role.dataScope === DataScopeEnum.DATA_SCOPE_CUSTOM) {
           const roleWithDeptIds = await this.roleService.findRoleWithDeptIds(role.roleId)
           deptIds.push(...roleWithDeptIds)
-        }
-        else if (
-          role.dataScope === DataScopeEnum.DATA_SCOPE_DEPT
-          || role.dataScope === DataScopeEnum.DATA_SCOPE_DEPT_AND_CHILD
+        } else if (
+          role.dataScope === DataScopeEnum.DATA_SCOPE_DEPT ||
+          role.dataScope === DataScopeEnum.DATA_SCOPE_DEPT_AND_CHILD
         ) {
           const dataScopeWidthDeptIds = await this.deptService.findDeptIdsByDataScope(
             user.deptId,
-            role.dataScope,
+            role.dataScope
           )
           deptIds.push(...dataScopeWidthDeptIds)
-        }
-        else if (role.dataScope === DataScopeEnum.DATA_SCOPE_SELF) {
+        } else if (role.dataScope === DataScopeEnum.DATA_SCOPE_SELF) {
           dataScopeSelf = true
         }
       }
@@ -135,8 +131,7 @@ export class UserService {
       if (!dataScopeAll) {
         if (deptIds.length > 0) {
           entity.where('user.deptId IN (:...deptIds)', { deptIds })
-        }
-        else if (dataScopeSelf) {
+        } else if (dataScopeSelf) {
           entity.where('user.userId = :userId', { userId: user.userId })
         }
       }
@@ -145,7 +140,7 @@ export class UserService {
     if (query.deptId) {
       const deptIds = await this.deptService.findDeptIdsByDataScope(
         +query.deptId,
-        DataScopeEnum.DATA_SCOPE_DEPT_AND_CHILD,
+        DataScopeEnum.DATA_SCOPE_DEPT_AND_CHILD
       )
       entity.andWhere('user.deptId IN (:...deptIds)', { deptIds })
     }
@@ -263,7 +258,7 @@ export class UserService {
    * @param updateUserDto
    * @returns
    */
-  @CacheEvict(CacheEnum.SYS_USER_KEY, '{userId}')
+  @CacheEvict(CacheEnum.SYS_USER_KEY, '{updateUserDto.userId}')
   async update(updateUserDto: UpdateUserDto, userId: number) {
     // 不能修改超级管理员
     if (updateUserDto.userId === 1) {
@@ -293,7 +288,7 @@ export class UserService {
         })
       }
       const postEntity = this.sysUserWithPostEntityRep.createQueryBuilder('postEntity')
-      const postValues = updateUserDto.postIds.map((id) => {
+      const postValues = updateUserDto.postIds.map(id => {
         return {
           userId: updateUserDto.userId,
           postId: id,
@@ -316,7 +311,7 @@ export class UserService {
         })
       }
       const roleEntity = this.sysUserWithRoleEntityRep.createQueryBuilder('roleEntity')
-      const roleValues = updateUserDto.roleIds.map((id) => {
+      const roleValues = updateUserDto.roleIds.map(id => {
         return {
           userId: updateUserDto.userId,
           roleId: id,
@@ -378,7 +373,7 @@ export class UserService {
       {
         loginDate,
         loginIp: clientInfo.ipaddr,
-      },
+      }
     )
 
     const uuid = GenerateUUID()
@@ -414,7 +409,7 @@ export class UserService {
       {
         token,
       },
-      '登录成功',
+      '登录成功'
     )
   }
 
@@ -449,7 +444,7 @@ export class UserService {
     await this.redisService.set(
       `${CacheEnum.LOGIN_TOKEN_KEY}${token}`,
       newMetaData,
-      LOGIN_TOKEN_EXPIRESIN,
+      LOGIN_TOKEN_EXPIRESIN
     )
   }
 
@@ -481,7 +476,7 @@ export class UserService {
     // }
     const roleIds = await this.getRoleIds([userId])
     const list = await this.roleService.getPermissionsByRoleIds(roleIds)
-    const permissions = Uniq(list.map((item: SysMenuEntity) => item.perms)).filter((item) => {
+    const permissions = Uniq(list.map((item: SysMenuEntity) => item.perms)).filter(item => {
       return item
     })
     return permissions
@@ -566,7 +561,7 @@ export class UserService {
    * @param payload 数据声明
    * @return 令牌
    */
-  createToken(payload: { uuid: string, userId: number }): string {
+  createToken(payload: { uuid: string; userId: number }): string {
     const accessToken = this.jwtService.sign(payload)
     return accessToken
   }
@@ -584,8 +579,7 @@ export class UserService {
       }
       const payload = this.jwtService.verify(token.replace('Bearer ', ''))
       return payload
-    }
-    catch (error) {
+    } catch (error) {
       return null
     }
   }
@@ -608,7 +602,7 @@ export class UserService {
       },
       {
         password: body.password,
-      },
+      }
     )
     return ResultData.ok()
   }
@@ -624,7 +618,7 @@ export class UserService {
       { userId: In(ids), userType: Not(SYS_USER_TYPE.SYS) },
       {
         delFlag: '1',
-      },
+      }
     )
     return ResultData.ok(data)
   }
@@ -651,7 +645,7 @@ export class UserService {
 
     const roleIds = await this.getRoleIds([userId])
 
-    const roles = allRoles.filter((item) => {
+    const roles = allRoles.filter(item => {
       return roleIds.includes(item.roleId)
     })
 
@@ -688,7 +682,7 @@ export class UserService {
         })
       }
       const roleEntity = this.sysUserWithRoleEntityRep.createQueryBuilder('roleEntity')
-      const roleValues = roleIds.map((id) => {
+      const roleValues = roleIds.map(id => {
         return {
           userId: query.userId,
           roleId: id,
@@ -719,7 +713,7 @@ export class UserService {
       { userId: changeStatusDto.userId },
       {
         status: changeStatusDto.status,
-      },
+      }
     )
     return ResultData.ok(res)
   }
@@ -840,7 +834,7 @@ export class UserService {
    */
   async authUserSelectAll(data: AuthUserSelectAllDto) {
     const userIds = data.userIds.split(',')
-    const entitys = userIds.map((userId) => {
+    const entitys = userIds.map(userId => {
       const sysDeptEntityEntity = new SysUserWithRoleEntity()
       return Object.assign(sysDeptEntityEntity, {
         userId,
@@ -899,7 +893,7 @@ export class UserService {
   async export(res: Response, body: ListUserDto, user: UserType['user']) {
     delete body.pageNum
     delete body.pageSize
-    const { data }  = await this.findAll(body, user)
+    const { data } = await this.findAll(body, user)
     const options = {
       sheetName: '用户数据',
       data: data.rows,

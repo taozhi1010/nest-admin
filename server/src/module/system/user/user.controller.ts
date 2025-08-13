@@ -40,7 +40,7 @@ import { UserService } from './user.service'
 export class UserController {
   constructor(
     private readonly userService: UserService,
-    private readonly uploadService: UploadService,
+    private readonly uploadService: UploadService
   ) {}
 
   @ApiOperation({
@@ -74,8 +74,8 @@ export class UserController {
   @UseInterceptors(FileInterceptor('avatarfile'))
   async avatar(@UploadedFile() avatarfile: Express.Multer.File, @User() user: UserDto) {
     const res = await this.uploadService.singleFileUpload(avatarfile)
-    await this.userService.updateProfile(user, { avatar: res.fileName })
-    return ResultData.ok({ imgUrl: res.fileName })
+    await this.userService.updateProfile(user, { avatar: res.url })
+    return ResultData.ok(res)
   }
 
   @ApiOperation({
@@ -224,7 +224,7 @@ export class UserController {
   async export(
     @Res() res: Response,
     @Body() body: ListUserDto,
-    @User() user: UserDto,
+    @User() user: UserDto
   ): Promise<void> {
     return this.userService.export(res, body, user.user)
   }
