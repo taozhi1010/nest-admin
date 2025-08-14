@@ -11,7 +11,7 @@ import { JobLog } from './entities/job-log.entity'
 export class JobLogService {
   constructor(
     @InjectRepository(JobLog)
-    private jobLogRepository: Repository<JobLog>,
+    private jobLogRepository: Repository<JobLog>
   ) {}
 
   /**
@@ -63,6 +63,18 @@ export class JobLogService {
   async clean() {
     await this.jobLogRepository.clear()
     return ResultData.ok()
+  }
+
+  /**
+   * 查询任务日志详情
+   */
+  async findOne(jobLogId: number) {
+    const jobLog = await this.jobLogRepository.findOne({
+      where: {
+        jobLogId,
+      },
+    })
+    return ResultData.ok(jobLog)
   }
 
   /**

@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Post, Query, Res } from '@nestjs/common'
+import { Body, Controller, Delete, Get, Post, Query, Res, Param } from '@nestjs/common'
 import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { Response } from 'express'
 import { RequirePermission } from 'src/common/decorators/require-premission.decorator'
@@ -20,6 +20,15 @@ export class JobLogController {
   @Get('list')
   findAll(@Query() query: ListJobLogDto) {
     return this.jobLogService.list(query)
+  }
+
+  @ApiOperation({
+    summary: '定时任务日志-详情',
+  })
+  @RequirePermission('monitor:operlog:query')
+  @Get(':jobLogId')
+  findOne(@Param('jobLogId') jobLogId: string) {
+    return this.jobLogService.findOne(+jobLogId)
   }
 
   @Delete('clean')
