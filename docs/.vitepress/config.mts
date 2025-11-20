@@ -2,6 +2,7 @@ import { defineConfig } from 'vitepress'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
+  base: '/docs/',
   title: "nest-admin使用指南",
   description: "帮助你更好的使用nest-admin",
   themeConfig: {
@@ -47,5 +48,18 @@ export default defineConfig({
     socialLinks: [
       { icon: 'github', link: 'https://github.com/taozhi1010/nest-admin' }
     ]
-  }
+  },
+  head: [
+    [
+      'script',
+      {},
+      `var _hmt = _hmt || [];
+      (function() {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?3717a8ec648bcf75b6eb6022ade6a4c7";
+        var s = document.getElementsByTagName("script")[0]; 
+        s.parentNode.insertBefore(hm, s);
+      })();`
+    ],
+  ]
 })

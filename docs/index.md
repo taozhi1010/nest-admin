@@ -40,6 +40,8 @@ nest-admin 是一款基于现代化技术栈构建的企业级前后端分离管
 - **项目体验地址**：[https://nest-admin.dooring.vip/](https://nest-admin.dooring.vip/)
 - **GitHub 源码地址**：[https://github.com/taozhi1010/nest-admin](https://github.com/taozhi1010/nest-admin)
 - **Gitee 源码地址（国内镜像）**：[https://gitee.com/tao-zhi/nest-admin](https://gitee.com/tao-zhi/nest-admin)
+- **开发交流群**：扫码加入开发交流群，获取技术支持和最新动态
+  ![开发交流群二维码](https://fast.dooring.cn/static/nest-admin-wechat-new.jpg)
 
 ### 项目定位
 
