@@ -1,15 +1,9 @@
 <template>
-	<i-frame :src="url" />
+   <i-frame v-model:src="url"></i-frame>
 </template>
-<script>
-import iFrame from '@/components/iFrame/index';
-export default {
-	name: 'Swagger',
-	components: { iFrame },
-	data() {
-		return {
-			url: process.env.VUE_APP_BASE_API + '/swagger-ui',
-		};
-	},
-};
+
+<script setup>
+import iFrame from '@/components/iFrame'
+
+const url = ref(import.meta.env.VITE_APP_BASE_API + "/swagger-ui")
 </script>

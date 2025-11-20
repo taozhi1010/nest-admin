@@ -1,121 +1,105 @@
 <template>
-	<div :class="{ hidden: hidden }" class="pagination-container">
-		<el-pagination
-			:background="background"
-			:current-page.sync="currentPage"
-			:page-size.sync="pageSize"
-			:layout="layout"
-			:page-sizes="pageSizes"
-			:pager-count="pagerCount"
-			:total="total"
-			v-bind="$attrs"
-			@size-change="handleSizeChange"
-			@current-change="handleCurrentChange"
-		/>
-	</div>
+  <div :class="{ 'hidden': hidden }" class="pagination-container">
+    <el-pagination
+      :background="background"
+      v-model:current-page="currentPage"
+      v-model:page-size="pageSize"
+      :layout="layout"
+      :page-sizes="pageSizes"
+      :pager-count="pagerCount"
+      :total="total"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+    />
+  </div>
 </template>
 
-<script>
-import { scrollTo } from '@/utils/scroll-to';
+<script setup>
+import { scrollTo } from '@/utils/scroll-to'
 
-export default {
-	name: 'Pagination',
-	props: {
-		total: {
-			required: true,
-			type: Number,
-		},
-		page: {
-			type: Number,
-			default: 1,
-		},
-		limit: {
-			type: Number,
-			default: 20,
-		},
-		pageSizes: {
-			type: Array,
-			default() {
-				return [10, 20, 30, 50];
-			},
-		},
-		// 移动端页码按钮的数量端默认值5
-		pagerCount: {
-			type: Number,
-			default: document.body.clientWidth < 992 ? 5 : 7,
-		},
-		layout: {
-			type: String,
-			default: 'total, sizes, prev, pager, next, jumper',
-		},
-		background: {
-			type: Boolean,
-			default: true,
-		},
-		autoScroll: {
-			type: Boolean,
-			default: true,
-		},
-		hidden: {
-			type: Boolean,
-			default: false,
-		},
-	},
-	data() {
-		return {};
-	},
-  watch: {
-    page: {
-      handler(val) {
-				this.$emit('pagination', { page: val, limit: this.pageSize });
-      },
-      immediate: true,
-    },
+const props = defineProps({
+  total: {
+    required: true,
+    type: Number
   },
-	computed: {
-		currentPage: {
-			get() {
-				return this.page;
-			},
-			set(val) {
-				this.$emit('update:page', val);
-			},
-		},
-		pageSize: {
-			get() {
-				return this.limit;
-			},
-			set(val) {
-				this.$emit('update:limit', val);
-			},
-		},
-	},
-	methods: {
-		handleSizeChange(val) {
-			if (this.currentPage * val > this.total) {
-				this.currentPage = 1;
-			}
-			this.$emit('pagination', { page: this.currentPage, limit: val });
-			if (this.autoScroll) {
-				scrollTo(0, 800);
-			}
-		},
-		handleCurrentChange(val) {
-			// this.$emit('pagination', { page: val, limit: this.pageSize });
-			if (this.autoScroll) {
-				scrollTo(0, 800);
-			}
-		},
-	},
-};
+  page: {
+    type: Number,
+    default: 1
+  },
+  limit: {
+    type: Number,
+    default: 20
+  },
+  pageSizes: {
+    type: Array,
+    default() {
+      return [10, 20, 30, 50]
+    }
+  },
+  // 移动端页码按钮的数量端默认值5
+  pagerCount: {
+    type: Number,
+    default: document.body.clientWidth < 992 ? 5 : 7
+  },
+  layout: {
+    type: String,
+    default: 'total, sizes, prev, pager, next, jumper'
+  },
+  background: {
+    type: Boolean,
+    default: true
+  },
+  autoScroll: {
+    type: Boolean,
+    default: true
+  },
+  hidden: {
+    type: Boolean,
+    default: false
+  }
+})
+
+const emit = defineEmits();
+const currentPage = computed({
+  get() {
+    return props.page
+  },
+  set(val) {
+    emit('update:page', val)
+  }
+})
+const pageSize = computed({
+  get() {
+    return props.limit
+  },
+  set(val){
+    emit('update:limit', val)
+  }
+})
+function handleSizeChange(val) {
+  if (currentPage.value * val > props.total) {
+    currentPage.value = 1
+  }
+  emit('pagination', { page: currentPage.value, limit: val })
+  if (props.autoScroll) {
+    scrollTo(0, 800)
+  }
+}
+function handleCurrentChange(val) {
+  emit('pagination', { page: val, limit: pageSize.value })
+  if (props.autoScroll) {
+    scrollTo(0, 800)
+  }
+}
+
 </script>
 
 <style scoped>
 .pagination-container {
-	background: #fff;
-	padding: 32px 16px;
+  background: #fff;
+  padding: 32px 16px;
 }
 .pagination-container.hidden {
-	display: none;
+  display: none;
 }
 </style>

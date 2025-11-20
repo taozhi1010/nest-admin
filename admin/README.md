@@ -1,5 +1,3 @@
-### Tips：此版本（vue2）暂停维护，前端工程请移步 Admin-vue3
-
 ## 开发
 
 ```bash
@@ -19,7 +17,7 @@ npm install --registry=https://registry.npmmirror.com
 npm run dev
 ```
 
-浏览器访问 http://localhost:80
+浏览器访问 http://localhost:8888
 
 ## 发布
 

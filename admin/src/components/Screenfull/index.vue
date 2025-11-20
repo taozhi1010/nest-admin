@@ -1,57 +1,22 @@
 <template>
-	<div>
-		<svg-icon :icon-class="isFullscreen ? 'exit-fullscreen' : 'fullscreen'" @click="click" />
-	</div>
+  <div>
+    <svg-icon :icon-class="isFullscreen ? 'exit-fullscreen' : 'fullscreen'" @click="toggle" />
+  </div>
 </template>
 
-<script>
-import screenfull from 'screenfull';
+<script setup>
+import { useFullscreen } from '@vueuse/core'
 
-export default {
-	name: 'Screenfull',
-	data() {
-		return {
-			isFullscreen: false,
-		};
-	},
-	mounted() {
-		this.init();
-	},
-	beforeDestroy() {
-		this.destroy();
-	},
-	methods: {
-		click() {
-			if (!screenfull.isEnabled) {
-				this.$message({ message: '你的浏览器不支持全屏', type: 'warning' });
-				return false;
-			}
-			screenfull.toggle();
-		},
-		change() {
-			this.isFullscreen = screenfull.isFullscreen;
-		},
-		init() {
-			if (screenfull.isEnabled) {
-				screenfull.on('change', this.change);
-			}
-		},
-		destroy() {
-			if (screenfull.isEnabled) {
-				screenfull.off('change', this.change);
-			}
-		},
-	},
-};
+const { isFullscreen, enter, exit, toggle } = useFullscreen();
 </script>
 
-<style scoped>
+<style lang='scss' scoped>
 .screenfull-svg {
-	display: inline-block;
-	cursor: pointer;
-	fill: #5a5e66;
-	width: 20px;
-	height: 20px;
-	vertical-align: 10px;
+  display: inline-block;
+  cursor: pointer;
+  fill: #5a5e66;
+  width: 20px;
+  height: 20px;
+  vertical-align: 10px;
 }
 </style>
