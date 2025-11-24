@@ -3,7 +3,7 @@ import { defineConfig } from 'vitepress'
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   base: '/docs/',
-  title: "nest-admin使用指南",
+  title: "nest-admin官方文档",
   description: "帮助你更好的使用nest-admin",
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config

@@ -39,3 +39,10 @@ lerna-debug.log*
 package-lock.json
 yarn.lock
 pnpm-lock.yaml
+
+*.tar
+
+pg_data
+redis_data
+
+frontend/
