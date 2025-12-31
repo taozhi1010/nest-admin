@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: nest-admin-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql_data:/var/lib/mysql
+      - ./server/db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    command: --default-authentication-plugin=mysql_native_password
+    networks:
+      - nest-admin-net
+
+  redis:
+    image: redis:alpine
+    container_name: nest-admin-redis
+    ports:
+      - "${REDIS_PORT}:6379"
+    volumes:
+      - ./redis_data:/data
+    networks:
+      - nest-admin-net
+
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: nest-admin-server
+    environment:
+      NODE_ENV: production
+      # Pass environment variables to the container
+      MYSQL_HOST: ${MYSQL_HOST}
+      MYSQL_PORT: ${MYSQL_PORT}
+      MYSQL_USERNAME: ${MYSQL_USERNAME}
+      MYSQL_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    ports:
+      - "${SERVER_PORT}:8080"
+    depends_on:
+      - mysql
+      - redis
+    networks:
+      - nest-admin-net
+
+  admin-vue3:
+    build:
+      context: ./admin-vue3
+      dockerfile: Dockerfile
+    container_name: nest-admin-vue3
+    ports:
+      - "80:80"
+    depends_on:
+      - server
+    networks:
+      - nest-admin-net
+
+networks:
+  nest-admin-net:
+    driver: bridge
