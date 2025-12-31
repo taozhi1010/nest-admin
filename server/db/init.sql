@@ -633,7 +633,7 @@ create table sys_job_log (
 drop table if exists sys_notice;
 create table sys_notice (
   notice_id         int(4)          not null auto_increment    comment '公告ID',
-  notice_title      varchar(50)     not null                   comment '公告标题',
+  notice_title      varchar(80)     not null                   comment '公告标题',
   notice_type       char(1)         not null                   comment '公告类型（1通知 2公告）',
   notice_content    longtext        default null               comment '公告内容',
   status            char(1)         default '0'                comment '公告状态（0正常 1关闭）',
