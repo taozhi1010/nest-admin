@@ -512,7 +512,9 @@
             "description": ""
           }
         },
-        "tags": ["部门管理"]
+        "tags": [
+          "部门管理"
+        ]
       },
       "put": {
         "operationId": "DeptController_update",
@@ -533,7 +535,9 @@
             "description": ""
           }
         },
-        "tags": ["部门管理"]
+        "tags": [
+          "部门管理"
+        ]
       }
     },
     "/system/dept/list": {
@@ -563,7 +567,9 @@
             "description": ""
           }
         },
-        "tags": ["部门管理"]
+        "tags": [
+          "部门管理"
+        ]
       }
     },
     "/system/dept/{id}": {
@@ -585,7 +591,9 @@
             "description": ""
           }
         },
-        "tags": ["部门管理"]
+        "tags": [
+          "部门管理"
+        ]
       },
       "delete": {
         "operationId": "DeptController_remove",
@@ -605,7 +613,9 @@
             "description": ""
           }
         },
-        "tags": ["部门管理"]
+        "tags": [
+          "部门管理"
+        ]
       }
     },
     "/system/dept/list/exclude/{id}": {
@@ -627,7 +637,9 @@
             "description": ""
           }
         },
-        "tags": ["部门管理"]
+        "tags": [
+          "部门管理"
+        ]
       }
     },
     "/system/dict/type": {
@@ -650,7 +662,9 @@
             "description": ""
           }
         },
-        "tags": ["字典管理"]
+        "tags": [
+          "字典管理"
+        ]
       },
       "put": {
         "operationId": "DictController_updateType",
@@ -671,7 +685,9 @@
             "description": ""
           }
         },
-        "tags": ["字典管理"]
+        "tags": [
+          "字典管理"
+        ]
       }
     },
     "/system/dict/type/refreshCache": {
@@ -684,7 +700,9 @@
             "description": ""
           }
         },
-        "tags": ["字典管理"]
+        "tags": [
+          "字典管理"
+        ]
       }
     },
     "/system/dict/type/{id}": {
@@ -706,7 +724,9 @@
             "description": ""
           }
         },
-        "tags": ["字典管理"]
+        "tags": [
+          "字典管理"
+        ]
       },
       "get": {
         "operationId": "DictController_findOneType",
@@ -726,7 +746,9 @@
             "description": ""
           }
         },
-        "tags": ["字典管理"]
+        "tags": [
+          "字典管理"
+        ]
       }
     },
     "/system/dict/type/list": {
@@ -778,7 +800,9 @@
             "description": ""
           }
         },
-        "tags": ["字典管理"]
+        "tags": [
+          "字典管理"
+        ]
       }
     },
     "/system/dict/type/optionselect": {
@@ -791,7 +815,9 @@
             "description": ""
           }
         },
-        "tags": ["字典管理"]
+        "tags": [
+          "字典管理"
+        ]
       }
     },
     "/system/dict/data": {
@@ -814,7 +840,9 @@
             "description": ""
           }
         },
-        "tags": ["字典管理"]
+        "tags": [
+          "字典管理"
+        ]
       },
       "put": {
         "operationId": "DictController_updateDictData",
@@ -835,7 +863,9 @@
             "description": ""
           }
         },
-        "tags": ["字典管理"]
+        "tags": [
+          "字典管理"
+        ]
       }
     },
     "/system/dict/data/{id}": {
@@ -857,7 +887,9 @@
             "description": ""
           }
         },
-        "tags": ["字典管理"]
+        "tags": [
+          "字典管理"
+        ]
       },
       "get": {
         "operationId": "DictController_findOneDictData",
@@ -877,7 +909,9 @@
             "description": ""
           }
         },
-        "tags": ["字典管理"]
+        "tags": [
+          "字典管理"
+        ]
       }
     },
     "/system/dict/data/list": {
@@ -929,7 +963,9 @@
             "description": ""
           }
         },
-        "tags": ["字典管理"]
+        "tags": [
+          "字典管理"
+        ]
       }
     },
     "/system/dict/data/type/{id}": {
@@ -951,7 +987,9 @@
             "description": ""
           }
         },
-        "tags": ["字典管理"]
+        "tags": [
+          "字典管理"
+        ]
       }
     },
     "/system/dict/type/export": {
@@ -1004,29 +1042,6 @@
         ]
       }
     },
-    "/system/dict/data/export": {
-      "post": {
-        "operationId": "DictController_exportData",
-        "summary": "导出字典内容为xlsx文件",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ListDictType"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": ""
-          }
-        },
-        "tags": ["字典管理"]
-      }
-    },
     "/system/menu": {
       "post": {
         "operationId": "MenuController_create",
@@ -1047,7 +1062,9 @@
             "description": ""
           }
         },
-        "tags": ["菜单管理"]
+        "tags": [
+          "菜单管理"
+        ]
       },
       "put": {
         "operationId": "MenuController_update",
@@ -1068,7 +1085,9 @@
             "description": ""
           }
         },
-        "tags": ["菜单管理"]
+        "tags": [
+          "菜单管理"
+        ]
       }
     },
     "/system/menu/list": {
@@ -1098,7 +1117,9 @@
             "description": ""
           }
         },
-        "tags": ["菜单管理"]
+        "tags": [
+          "菜单管理"
+        ]
       }
     },
     "/system/menu/treeselect": {
@@ -1111,7 +1132,9 @@
             "description": ""
           }
         },
-        "tags": ["菜单管理"]
+        "tags": [
+          "菜单管理"
+        ]
       }
     },
     "/system/menu/roleMenuTreeselect/{menuId}": {
@@ -1133,7 +1156,9 @@
             "description": ""
           }
         },
-        "tags": ["菜单管理"]
+        "tags": [
+          "菜单管理"
+        ]
       }
     },
     "/system/menu/{menuId}": {
@@ -1155,7 +1180,9 @@
             "description": ""
           }
         },
-        "tags": ["菜单管理"]
+        "tags": [
+          "菜单管理"
+        ]
       },
       "delete": {
         "operationId": "MenuController_remove",
@@ -1543,7 +1570,9 @@
             "description": ""
           }
         },
-        "tags": ["角色管理"]
+        "tags": [
+          "角色管理"
+        ]
       },
       "put": {
         "operationId": "RoleController_update",
@@ -1564,7 +1593,9 @@
             "description": ""
           }
         },
-        "tags": ["角色管理"]
+        "tags": [
+          "角色管理"
+        ]
       }
     },
     "/system/role/list": {
@@ -1626,7 +1657,9 @@
             "description": ""
           }
         },
-        "tags": ["角色管理"]
+        "tags": [
+          "角色管理"
+        ]
       }
     },
     "/system/role/deptTree/{id}": {
@@ -1648,7 +1681,9 @@
             "description": ""
           }
         },
-        "tags": ["角色管理"]
+        "tags": [
+          "角色管理"
+        ]
       }
     },
     "/system/role/{id}": {
@@ -1670,7 +1705,9 @@
             "description": ""
           }
         },
-        "tags": ["角色管理"]
+        "tags": [
+          "角色管理"
+        ]
       },
       "delete": {
         "operationId": "RoleController_remove",
@@ -1689,7 +1726,9 @@
             "description": ""
           }
         },
-        "tags": ["角色管理"]
+        "tags": [
+          "角色管理"
+        ]
       }
     },
     "/system/role/dataScope": {
@@ -1712,7 +1751,9 @@
             "description": ""
           }
         },
-        "tags": ["角色管理"]
+        "tags": [
+          "角色管理"
+        ]
       }
     },
     "/system/role/changeStatus": {
@@ -1735,7 +1776,9 @@
             "description": ""
           }
         },
-        "tags": ["角色管理"]
+        "tags": [
+          "角色管理"
+        ]
       }
     },
     "/system/role/authUser/allocatedList": {
@@ -1821,7 +1864,9 @@
             "description": ""
           }
         },
-        "tags": ["角色管理"]
+        "tags": [
+          "角色管理"
+        ]
       }
     },
     "/system/role/authUser/unallocatedList": {
@@ -1907,7 +1952,9 @@
             "description": ""
           }
         },
-        "tags": ["角色管理"]
+        "tags": [
+          "角色管理"
+        ]
       }
     },
     "/system/role/authUser/cancel": {
@@ -1930,7 +1977,9 @@
             "description": ""
           }
         },
-        "tags": ["角色管理"]
+        "tags": [
+          "角色管理"
+        ]
       }
     },
     "/system/role/authUser/cancelAll": {
@@ -1953,7 +2002,9 @@
             "description": ""
           }
         },
-        "tags": ["角色管理"]
+        "tags": [
+          "角色管理"
+        ]
       }
     },
     "/system/role/authUser/selectAll": {
@@ -1976,7 +2027,9 @@
             "description": ""
           }
         },
-        "tags": ["角色管理"]
+        "tags": [
+          "角色管理"
+        ]
       }
     },
     "/system/role/export": {
@@ -1999,7 +2052,9 @@
             "description": ""
           }
         },
-        "tags": ["角色管理"]
+        "tags": [
+          "角色管理"
+        ]
       }
     },
     "/tool/gen/list": {
@@ -3078,7 +3133,9 @@
             "description": ""
           }
         },
-        "tags": ["缓存管理"]
+        "tags": [
+          "缓存管理"
+        ]
       }
     },
     "/monitor/cache/getNames": {
@@ -3091,7 +3148,9 @@
             "description": ""
           }
         },
-        "tags": ["缓存管理"]
+        "tags": [
+          "缓存管理"
+        ]
       }
     },
     "/monitor/cache/getKeys/{id}": {
@@ -3113,7 +3172,9 @@
             "description": ""
           }
         },
-        "tags": ["缓存管理"]
+        "tags": [
+          "缓存管理"
+        ]
       }
     },
     "/monitor/cache/getValue/{cacheName}/{cacheKey}": {
@@ -3126,7 +3187,9 @@
             "description": ""
           }
         },
-        "tags": ["缓存管理"]
+        "tags": [
+          "缓存管理"
+        ]
       }
     },
     "/monitor/cache/clearCacheName/{cacheName}": {
@@ -3148,7 +3211,9 @@
             "description": ""
           }
         },
-        "tags": ["缓存管理"]
+        "tags": [
+          "缓存管理"
+        ]
       }
     },
     "/monitor/cache/clearCacheKey/{cacheKey}": {
@@ -3170,7 +3235,9 @@
             "description": ""
           }
         },
-        "tags": ["缓存管理"]
+        "tags": [
+          "缓存管理"
+        ]
       }
     },
     "/monitor/cache/clearCacheAll": {
@@ -3183,7 +3250,9 @@
             "description": ""
           }
         },
-        "tags": ["缓存管理"]
+        "tags": [
+          "缓存管理"
+        ]
       }
     },
     "/monitor/logininfor/list": {
@@ -3269,7 +3338,9 @@
             "description": ""
           }
         },
-        "tags": ["登录日志"]
+        "tags": [
+          "登录日志"
+        ]
       }
     },
     "/monitor/logininfor/clean": {
@@ -3282,7 +3353,9 @@
             "description": ""
           }
         },
-        "tags": ["登录日志"]
+        "tags": [
+          "登录日志"
+        ]
       }
     },
     "/monitor/logininfor/{id}": {
@@ -3304,7 +3377,9 @@
             "description": ""
           }
         },
-        "tags": ["登录日志"]
+        "tags": [
+          "登录日志"
+        ]
       }
     },
     "/monitor/logininfor/export": {
@@ -3327,7 +3402,9 @@
             "description": ""
           }
         },
-        "tags": ["登录日志"]
+        "tags": [
+          "登录日志"
+        ]
       }
     },
     "/monitor/online/list": {
@@ -3350,7 +3427,9 @@
             "description": ""
           }
         },
-        "tags": ["系统监控-在线用户"]
+        "tags": [
+          "系统监控-在线用户"
+        ]
       }
     },
     "/monitor/online/{token}": {
@@ -3372,7 +3451,9 @@
             "description": ""
           }
         },
-        "tags": ["系统监控-在线用户"]
+        "tags": [
+          "系统监控-在线用户"
+        ]
       }
     },
     "/monitor/operlog": {
@@ -3483,6 +3564,264 @@
             "description": ""
           }
         }
+      }
+    },
+    "/game/article": {
+      "post": {
+        "operationId": "GameArticleController_create",
+        "summary": "游戏文章-创建",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateGameAricleDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "游戏文章"
+        ]
+      },
+      "put": {
+        "operationId": "GameArticleController_update",
+        "summary": "游戏文章-更新",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateGameAricleDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "游戏文章"
+        ]
+      }
+    },
+    "/game/article/guest/list": {
+      "get": {
+        "operationId": "GameArticleController_findGuestAll",
+        "summary": "游戏文章-游客-列表",
+        "parameters": [
+          {
+            "name": "pageNum",
+            "required": true,
+            "in": "query",
+            "description": "当前分页",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": true,
+            "in": "query",
+            "description": "每页数量",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "orderByColumn",
+            "required": false,
+            "in": "query",
+            "description": "排序字段",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "isAsc",
+            "required": false,
+            "in": "query",
+            "description": "排序规则",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "title",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "游戏文章"
+        ]
+      }
+    },
+    "/game/article/guest/detail": {
+      "get": {
+        "operationId": "GameArticleController_findGuestOne",
+        "summary": "游戏文章-详情",
+        "parameters": [
+          {
+            "name": "gameId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "游戏文章"
+        ]
+      }
+    },
+    "/game/article/list": {
+      "get": {
+        "operationId": "GameArticleController_findAll",
+        "summary": "游戏文章-管理员-列表",
+        "parameters": [
+          {
+            "name": "pageNum",
+            "required": true,
+            "in": "query",
+            "description": "当前分页",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": true,
+            "in": "query",
+            "description": "每页数量",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "orderByColumn",
+            "required": false,
+            "in": "query",
+            "description": "排序字段",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "isAsc",
+            "required": false,
+            "in": "query",
+            "description": "排序规则",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "title",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "游戏文章"
+        ]
+      }
+    },
+    "/game/article/{id}": {
+      "get": {
+        "operationId": "GameArticleController_findOne",
+        "summary": "游戏文章-详情",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "游戏文章"
+        ]
+      },
+      "delete": {
+        "operationId": "GameArticleController_remove",
+        "summary": "游戏文章-删除",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "游戏文章"
+        ]
       }
     }
   },
@@ -3666,7 +4005,11 @@
             "type": "string"
           }
         },
-        "required": ["parentId", "deptName", "orderNum"]
+        "required": [
+          "parentId",
+          "deptName",
+          "orderNum"
+        ]
       },
       "UpdateDeptDto": {
         "type": "object",
@@ -3696,7 +4039,11 @@
             "type": "number"
           }
         },
-        "required": ["parentId", "deptName", "orderNum"]
+        "required": [
+          "parentId",
+          "deptName",
+          "orderNum"
+        ]
       },
       "CreateDictTypeDto": {
         "type": "object",
@@ -3714,7 +4061,11 @@
             "type": "string"
           }
         },
-        "required": ["dictName", "dictType", "remark"]
+        "required": [
+          "dictName",
+          "dictType",
+          "remark"
+        ]
       },
       "UpdateDictTypeDto": {
         "type": "object",
@@ -3732,7 +4083,11 @@
             "type": "string"
           }
         },
-        "required": ["dictName", "dictType", "remark"]
+        "required": [
+          "dictName",
+          "dictType",
+          "remark"
+        ]
       },
       "CreateDictDataDto": {
         "type": "object",
@@ -3772,7 +4127,10 @@
             "description": "排序规则"
           }
         },
-        "required": ["pageNum", "pageSize"]
+        "required": [
+          "pageNum",
+          "pageSize"
+        ]
       },
       "CreateMenuDto": {
         "type": "object",
@@ -3817,7 +4175,11 @@
             "type": "string"
           }
         },
-        "required": ["menuName", "parentId", "isFrame"]
+        "required": [
+          "menuName",
+          "parentId",
+          "isFrame"
+        ]
       },
       "UpdateMenuDto": {
         "type": "object",
@@ -4024,7 +4386,11 @@
             "type": "string"
           }
         },
-        "required": ["roleName", "roleKey", "roleSort"]
+        "required": [
+          "roleName",
+          "roleKey",
+          "roleSort"
+        ]
       },
       "ListRoleDto": {
         "type": "object",
@@ -4056,7 +4422,10 @@
             "description": "排序规则"
           }
         },
-        "required": ["pageNum", "pageSize"]
+        "required": [
+          "pageNum",
+          "pageSize"
+        ]
       },
       "UpdateRoleDto": {
         "type": "object",
@@ -4144,7 +4513,10 @@
             "type": "string"
           }
         },
-        "required": ["pageNum", "pageSize"]
+        "required": [
+          "pageNum",
+          "pageSize"
+        ]
       },
       "AuthUserCancelDto": {
         "type": "object",
@@ -4156,7 +4528,10 @@
             "type": "number"
           }
         },
-        "required": ["roleId", "userId"]
+        "required": [
+          "roleId",
+          "userId"
+        ]
       },
       "AuthUserCancelAllDto": {
         "type": "object",
@@ -4168,7 +4543,10 @@
             "type": "string"
           }
         },
-        "required": ["roleId", "userIds"]
+        "required": [
+          "roleId",
+          "userIds"
+        ]
       },
       "AuthUserSelectAllDto": {
         "type": "object",
@@ -4180,7 +4558,10 @@
             "type": "string"
           }
         },
-        "required": ["roleId", "userIds"]
+        "required": [
+          "roleId",
+          "userIds"
+        ]
       },
       "TableName": {
         "type": "object",
@@ -4576,7 +4957,10 @@
             "type": "string"
           }
         },
-        "required": ["pageNum", "pageSize"]
+        "required": [
+          "pageNum",
+          "pageSize"
+        ]
       },
       "OnlineListDto": {
         "type": "object",
@@ -4602,6 +4986,47 @@
       "UpdateOperlogDto": {
         "type": "object",
         "properties": {}
+      },
+      "CreateGameAricleDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "remark": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "title",
+          "remark",
+          "status"
+        ]
+      },
+      "UpdateGameAricleDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "remark": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "articleId": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "title",
+          "remark",
+          "status"
+        ]
       }
     }
   }

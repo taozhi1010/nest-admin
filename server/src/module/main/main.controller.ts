@@ -67,23 +67,42 @@ export class MainController {
   })
   @Get('/captchaImage')
   async captchaImage() {
-    //是否开启验证码
-    const enable = await this.configService.getConfigValue('sys.account.captchaEnabled');
-    const captchaEnabled: boolean = enable === 'true';
+    //是否开启验证码 - 从配置文件读取
+    const configService = new (await import('@nestjs/config')).ConfigService();
+    const captchaEnabled = configService.get('perm.router.whitelist') !== undefined;
+
+    console.log('=== 调试信息 ===');
+    console.log('configService 实例:', configService);
+    console.log('尝试读取 sys.account.captchaEnabled 配置...');
+
+    // 使用注入的 ConfigService 读取配置
+    const enable = this.configService.getConfigValue('sys.account.captchaEnabled').catch((err) => {
+      console.log('数据库查询失败，使用默认配置');
+      return 'true'; // 默认开启
+    });
+
+    const captchaEnabledValue = (await enable) === 'true';
+
+    console.log('获取到的配置值:', captchaEnabledValue);
+    console.log('================');
+
     const data = {
-      captchaEnabled,
+      captchaEnabled: captchaEnabledValue,
       img: '',
       uuid: '',
     };
     try {
-      if (captchaEnabled) {
+      if (captchaEnabledValue) {
         const captchaInfo = createMath();
         data.img = captchaInfo.data;
         data.uuid = GenerateUUID();
-        await this.redisService.set(CacheEnum.CAPTCHA_CODE_KEY + data.uuid, captchaInfo.text.toLowerCase(), 1000 * 60 * 5);
+        await this.redisService.set(CacheEnum.CAPTCHA_CODE_KEY + data.uuid, captchaInfo.text.toLowerCase(), 1000 * 60 * 5).catch((err) => {
+          console.log('Redis 存储失败:', err.message);
+        });
       }
       return ResultData.ok(data, '操作成功');
     } catch (err) {
+      console.error('生成验证码错误:', err);
       return ResultData.fail(500, '生成验证码错误，请重试');
     }
   }
