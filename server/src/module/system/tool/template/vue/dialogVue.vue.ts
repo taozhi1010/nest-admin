@@ -124,7 +124,7 @@ const generateScriptSetup = ({ columns, BusinessName, moduleName, businessName, 
 
   return `
     <script setup>
-    import { add${BusinessName}, update${BusinessName} } from "@/api/${moduleName}/${businessName}";
+    import { add${BusinessName}, update${BusinessName}, get${BusinessName} } from "@/api/${moduleName}/${businessName}";
     import { ref, getCurrentInstance } from "vue";
     const { proxy } = getCurrentInstance();
     ${dicts}
@@ -158,14 +158,19 @@ const generateScriptSetup = ({ columns, BusinessName, moduleName, businessName, 
       }
       proxy.resetForm("formRef");
     }
-    const init = (row) => {
+    const init = (id) => {
       reset();
-      dialogTitle.value = row ? "修改${functionName}" : "新增${functionName}";
-      form.value = row ? { ...row } : {};
+      dialogTitle.value = id ? "修改${functionName}" : "新增${functionName}";
+      id && getDetail(id);
     };
-    const openDialog = (row = null) => {
+    const getDetail = (id) => {
+      getNotice(id).then((res) => {
+          form.value = res.data
+      })
+    }
+    const openDialog = (id = null) => {
       dialogVisible.value = true;
-      init(row);
+      init(id);
     };
     defineExpose({ openDialog });
     </script>

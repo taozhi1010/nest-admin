@@ -22,7 +22,7 @@ const htmlTemplate = (options) => {
             ${queryTem}
             </el-form>
             ${buttonTem}
-            <el-table v-loading="loading" :data="${businessName}List" >
+            <el-table v-loading="loading" :data="${businessName}List" @selection-change="handleSelectionChange">
              ${tableTem}
             </el-table>
             <pagination
@@ -33,7 +33,7 @@ const htmlTemplate = (options) => {
                 @pagination="getList"
             />
         </div>
-        <index-dialog ref="indexDialogRef" @update="updateHandler"></index-dialog>
+        <index-dialog ref="dialogRef" @update="updateHandler"></index-dialog>
     </template>
     `;
 
@@ -58,37 +58,59 @@ const indexScript = (options) => {
         pageSize: 10,
     });
     const loading = ref(true)
+    const showSearch = ref(true);
+    const ids = ref([]);
+    const single = ref(true);
+    const multiple = ref(true);
     const total = ref(0)
-    const dataList = ref([])
-    const indexDialogRef = ref(null)
+    const ${businessName}List = ref([])
+    const dialogRef = ref(null)
     const queryRef = ref(null)
     const queryHandler = () => {
         queryParams.value.pageNum = 1;
         getList();
     };
+
     const getList = () => {
         loading.value = true
-        list${BusinessName}(queryParams.value).then(({data,total:temTotal}) => {
-           dataList.value = data;
-           total.value = temTotal;
+        list${BusinessName}(queryParams.value).then(({data}) => {
+           ${businessName}List.value = data.list;
+           total.value = data.total;
            loading.value = false
          });
     };
+    /** 搜索按钮操作 */
+    function handleQuery() {
+      queryParams.value.pageNum = 1;
+      getList();
+    }
+    // 多选框选中数据
+    function handleSelectionChange(selection) {
+      ids.value = selection.map(item => item.${primaryKey});
+      single.value = selection.length != 1;
+      multiple.value = !selection.length;
+    }
+    /** 重置按钮操作 */
     const resetQuery = () => {
         proxy.resetForm("queryRef");
         queryHandler()
     };
+    /** 修改按钮操作 */
     const handleUpdate = (row) => {
-        demoDialogRef.value.openDialog(row);
+        const ${primaryKey} = row.${primaryKey} || ids.value
+        dialogRef.value.openDialog(${primaryKey});
     };
+    /** 新增按钮操作 */
     const handleAdd = () => {
-        demoDialogRef.value.openDialog();
+        dialogRef.value.openDialog();
     };
+    /** 删除按钮操作 */
     const handleDelete = (row) => {
+         const ${primaryKey} = row.${primaryKey} || ids.value
          proxy.$modal
-          .confirm('是否确认删除编号为"' + row.${primaryKey} + '"的数据项?')
+          .confirm('是否确认删除编号为"' + ${primaryKey} + '"的数据项?')
            .then(function () {
-             return del${BusinessName}(row.${primaryKey});
+             return del${BusinessName}(${primaryKey});
            })
            .then(() => {
              getList();
@@ -122,11 +144,12 @@ const indexQueryTemplate = (columns) => {
 
       if (item.htmlType == 'input') {
         html += `
-                <el-form-item label="${comment}" prop="${item.javaField}">
+                <el-form-item label="${comment}" prop="${item.javaField}" >
                 <el-input
                   v-model="queryParams.${item.javaField}"
                   placeholder="请输入${comment}"
                   clearable
+                  style="width: 160px"
                   @keyup.enter="handleQuery"
                 />
               </el-form-item>
@@ -205,7 +228,7 @@ const indexButtomTemplate = (moduleName, businessName) => {
             plain
             icon="Edit"
             :disabled="single"
-            @click="handleUpdate"
+            @click="handleUpdate" 
             v-hasPermi="['${moduleName}:${businessName}:edit']"
         >修改</el-button>
         </el-col>
@@ -234,7 +257,8 @@ const indexButtomTemplate = (moduleName, businessName) => {
 };
 const indexTableTemplate = (columns, businessName, moduleName) => {
   let javaField, parentheseIndex, comment;
-  let html = '';
+  let html = `<el-table-column type="selection" width="55" align="center" />
+            `;
   columns.forEach((item) => {
     javaField = item.javaField;
     parentheseIndex = item.columnComment.indexOf('（');
@@ -243,24 +267,24 @@ const indexTableTemplate = (columns, businessName, moduleName) => {
     } else {
       comment = item.columnComment;
     }
-    if (item.isPk) {
+    if (item.isPk == '1') {
       html += `<el-table-column label="${comment}" align="center" prop="${javaField}" />
             `;
-    } else if (item.isList == '1' && item.htmlType == 'datetime') {
+    } else if (item.isList == '1' && item.htmlType === 'datetime') {
       html += `<el-table-column label="${comment}" align="center" prop="${javaField}" width="180">
                 <template v-solt="{row}">
                 <span>{{ parseTime(row.${javaField}, '{y}-{m}-{d}') }}</span>
                 </template>
             </el-table-column>
             `;
-    } else if (item.list == '1' && item.htmlType == 'imageUpload') {
+    } else if (item.isList == '1' && item.htmlType === 'imageUpload') {
       html += `<el-table-column label="${comment}" align="center" prop="${javaField}" width="100">
                 <template v-slot="{ row }">
                 <image-preview :src="row.${javaField}" :width="50" :height="50"/>
                 </template>
             </el-table-column>
             `;
-    } else if (item.list == '1' && item.dictType != '') {
+    } else if (item.isList == '1' && item.dictType != '') {
       html += `<el-table-column label="${comment}" align="center" prop="${javaField}">
                 <template v-slot="{ row }">
             `;

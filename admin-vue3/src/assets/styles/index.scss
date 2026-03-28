@@ -190,17 +190,21 @@ aside {
 
 // 表单中需要解释的字段提示icon样式
 .tips {
-  width: 24px;
+  display: flex;
+  justify-content: flex-start;
   height: 24px;
+  line-height: 24px;
   text-align: center;
   margin-right: 4px;
   text-align: center;
-  line-height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  cursor: pointer;
+
   &-icon {
-    margin-top: 6px;
-    font-size: 16px;
+    width: 22px;
+    margin: 4px;
+  }
+
+  &-text {
+    margin: 4px;
   }
 }

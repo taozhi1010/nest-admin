@@ -1,6 +1,6 @@
 import * as Lodash from 'lodash';
 export const controllerTem = (options) => {
-  const { BusinessName, businessName, functionName, moduleName } = options;
+  const { BusinessName, businessName, functionName, moduleName, primaryKey } = options;
   const serviceName = `${Lodash.upperFirst(BusinessName)}Service`;
   const serviceInstance = `${businessName}Service`;
   return `
@@ -56,9 +56,10 @@ constructor(private readonly ${serviceInstance}: ${serviceName}) {}
     })
     @ApiDataResponse()
     @RequirePermission('${moduleName}:${businessName}:remove')
-    @Delete(':id')
-    remove(@Param('id') id: string) {
-        return this.${serviceInstance}.remove(+id);
+    @Delete(':ids')
+    remove(@Param('ids') ids: string) {
+        const ${primaryKey}s = ids.split(',').map((id) => +id);
+        return this.${serviceInstance}.remove(${primaryKey}s);
     }
 }`;
 };
