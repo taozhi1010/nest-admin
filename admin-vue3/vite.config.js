@@ -61,8 +61,7 @@ export default defineConfig(({ mode, command }) => {
           assetFileNames: outputHash ? 'static/[ext]/[name]-[hash].[ext]' : 'static/[ext]/[name].[ext]',
           manualChunks: {
             'element-plus': ['element-plus'],
-            echarts: ['echarts'],
-            vuedraggable: ['vuedraggable']
+            echarts: ['echarts']
           }
         }
       },
