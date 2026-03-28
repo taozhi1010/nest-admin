@@ -3459,6 +3459,7 @@
     "/monitor/operlog": {
       "post": {
         "operationId": "OperlogController_create",
+        "summary": "创建操作日志",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -3474,35 +3475,31 @@
           "201": {
             "description": ""
           }
-        }
-      }
-    },
-    "/monitor/operlog/clean": {
-      "delete": {
-        "operationId": "OperlogController_removeAll",
-        "summary": "登录日志-清除全部日志",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        }
+        },
+        "tags": [
+          "操作日志管理"
+        ]
       }
     },
     "/monitor/operlog/list": {
       "get": {
         "operationId": "OperlogController_findAll",
+        "summary": "查询操作日志列表",
         "parameters": [],
         "responses": {
           "200": {
             "description": ""
           }
-        }
+        },
+        "tags": [
+          "操作日志管理"
+        ]
       }
     },
     "/monitor/operlog/{id}": {
       "get": {
         "operationId": "OperlogController_findOne",
+        "summary": "获取单个操作日志详情",
         "parameters": [
           {
             "name": "id",
@@ -3517,10 +3514,14 @@
           "200": {
             "description": ""
           }
-        }
+        },
+        "tags": [
+          "操作日志管理"
+        ]
       },
       "patch": {
         "operationId": "OperlogController_update",
+        "summary": "更新操作日志",
         "parameters": [
           {
             "name": "id",
@@ -3545,10 +3546,14 @@
           "200": {
             "description": ""
           }
-        }
+        },
+        "tags": [
+          "操作日志管理"
+        ]
       },
       "delete": {
         "operationId": "OperlogController_remove",
+        "summary": "删除单个操作日志",
         "parameters": [
           {
             "name": "id",
@@ -3563,7 +3568,25 @@
           "200": {
             "description": ""
           }
-        }
+        },
+        "tags": [
+          "操作日志管理"
+        ]
+      }
+    },
+    "/monitor/operlog/clean": {
+      "delete": {
+        "operationId": "OperlogController_removeAll",
+        "summary": "清除全部操作日志",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "操作日志管理"
+        ]
       }
     },
     "/game/article": {
