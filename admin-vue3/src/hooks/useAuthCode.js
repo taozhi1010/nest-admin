@@ -3,6 +3,8 @@ import { encrypt, decrypt } from '@/utils/jsencrypt'
 import { reactive } from 'vue'
 import { ElMessage } from 'element-plus'
 import { getCodeImg } from '@/api/login'
+import { useCatTools } from '@/composables/useCatTools'
+
 
 // 验证码相关信息
 const authCodeInfo = reactive({
@@ -18,13 +20,15 @@ const authCodeInfo = reactive({
  * @param isClick 是否点击触发
  */
 const getValidateCode = async (form, isClick) => {
+  const { isNullorUndefined } = useCatTools()
+  
   try {
-    if ((form.username === '' || form.username === undefined) && isClick) {
+    if (isNullorUndefined(form.username) && isClick) {
       ElMessage.error('请输入用户账号')
       return
     }
 
-    if ((form.password === '' || form.password === undefined) && isClick) {
+    if (isNullorUndefined(form.password) && isClick) {
       ElMessage.error('请输入用户密码')
       return
     }
@@ -47,15 +51,17 @@ const getValidateCode = async (form, isClick) => {
   }
 }
 
-// 从cookie中获取登录用户信息
+// 从 cookie 中获取登录用户信息
 const getUserCookie = (data) => {
+  const { isNullorUndefined } = useCatTools()
+  
   const username = Cookies.get('username')
   const password = Cookies.get('password')
   const rememberMe = Cookies.get('rememberMe')
   const form = {
-    username: username === undefined ? data.username : username,
-    password: password === undefined ? data.password : decrypt(password),
-    rememberMe: rememberMe === undefined ? false : Boolean(rememberMe)
+    username: isNullorUndefined(username) ? data.username : username,
+    password: isNullorUndefined(password) ? data.password : decrypt(password),
+    rememberMe: isNullorUndefined(rememberMe) ? false : Boolean(rememberMe)
   }
   return form
 }
