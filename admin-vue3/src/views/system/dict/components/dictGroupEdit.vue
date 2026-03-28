@@ -29,9 +29,10 @@
 
 <script setup>
 import { addType, updateType } from '@/api/system/dict/type'
+import { useDict } from '@/composables/useDict'
+import { resetForm } from '@/composables/useCommon'
 
-const { proxy } = getCurrentInstance()
-const { sys_normal_disable } = proxy.useDict('sys_normal_disable')
+const { sys_normal_disable } = useDict('sys_normal_disable')
 
 const dialogTableVisible = ref(false)
 const formRef = ref()
@@ -53,7 +54,7 @@ const form = reactive({
   reset: () => {
     form.loading = false
     nextTick(() => {
-      proxy.resetForm('formRef')
+      resetForm(formRef)
     })
   },
   submit: () => {

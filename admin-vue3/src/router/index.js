@@ -149,7 +149,7 @@ export const dynamicRoutes = [
     component: Layout,
     hidden: false,
     alwaysShow: true,
-    permissions: ['tool:gen:list'],
+    permissions: ['tool:error:list'],
     meta: { title: '错误页面', icon: 'error' },
     children: [
       {

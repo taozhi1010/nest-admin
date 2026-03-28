@@ -249,9 +249,9 @@ import {
 } from '@/api/tool/gen';
 import router from '@/router';
 import importTable from './importTable';
+import { resetForm, addDateRange } from '@/composables/useCommon'
 
 const route = useRoute();
-const { proxy } = getCurrentInstance();
 
 const tableList = ref([]);
 const loading = ref(true);
@@ -287,7 +287,7 @@ onActivated(() => {
     uniqueId.value = time;
     queryParams.value.pageNum = Number(route.query.pageNum);
     dateRange.value = [];
-    proxy.resetForm('queryForm');
+    resetForm('queryForm');
     getList();
   }
 });
@@ -295,7 +295,7 @@ onActivated(() => {
 /** 查询表集合 */
 function getList() {
   loading.value = true;
-  listTable(proxy.addDateRange(queryParams.value, dateRange.value)).then(
+  listTable(addDateRange(queryParams.value, dateRange.value)).then(
     (response) => {
       tableList.value = response.data.list;
       total.value = response.data.total;
@@ -346,7 +346,7 @@ function openImportTable() {
 /** 重置按钮操作 */
 function resetQuery() {
   dateRange.value = [];
-  proxy.resetForm('queryRef');
+  resetForm('queryRef');
   handleQuery();
 }
 /** 预览按钮 */

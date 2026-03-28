@@ -26,7 +26,7 @@
 </template>
 
 <script setup>
-import errImage from "@/assets/401_images/401.gif";
+import errImage from "@/assets/401_images/401-new.svg";
 
 let { proxy } = getCurrentInstance();
 
