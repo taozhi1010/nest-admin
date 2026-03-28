@@ -17,7 +17,6 @@
     "axios": "0.27.2",
     "clipboard": "^2.0.11",
     "dayjs": "^1.11.13",
-    "dd-form-draggable": "^1.0.7",
     "echarts": "5.4.0",
     "element-plus": "2.2.27",
     "file-saver": "2.0.5",
@@ -32,8 +31,7 @@
     "pinia": "2.0.22",
     "vue": "3.2.45",
     "vue-cropper": "1.0.3",
-    "vue-router": "4.1.4",
-    "vuedraggable": "^2.24.3"
+    "vue-router": "4.1.4"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "3.1.0",
