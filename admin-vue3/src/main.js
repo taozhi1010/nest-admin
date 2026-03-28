@@ -3,7 +3,9 @@ import { createApp } from 'vue'
 import Cookies from 'js-cookie'
 
 import ElementPlus from 'element-plus'
-import locale from 'element-plus/lib/locale/lang/zh-cn' // 中文语言
+import locale from 'element-plus/es/locale/lang/zh-cn' // 中文语言
+
+import catTools from 'cat-tools'
 
 import '@/assets/styles/index.scss' // global css
 
@@ -56,6 +58,10 @@ app.config.globalProperties.handleTree = handleTree
 app.config.globalProperties.addDateRange = addDateRange
 app.config.globalProperties.selectDictLabel = selectDictLabel
 app.config.globalProperties.selectDictLabels = selectDictLabels
+
+Object.keys(catTools).forEach((key) => {
+  app.config.globalProperties[key] = catTools[key]
+})
 
 // 全局组件挂载
 app.component('DictTag', DictTag)
