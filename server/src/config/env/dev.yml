@@ -31,7 +31,7 @@ db:
     host: '111.229.29.214'
     username: 'root'
     password: 'mysql_6zaSGd'
-    database: 'mysql'
+    database: 'mysql'  # 暂时使用 mysql 数据库，因为 nest_admin 还不存在
     port: 3306
     charset: 'utf8mb4'
     logger: 'file'
@@ -45,7 +45,7 @@ db:
 # redis 配置
 redis:
   host: '111.229.29.214'
-  password: 'redis_kjkikp_6379'
+  password: 'redis_dECN6N'
   port: 6379
   db: 2
   keyPrefix: ''
