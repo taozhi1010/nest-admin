@@ -9,7 +9,7 @@ import { HttpExceptionsFilter } from 'src/common/filters/http-exceptions-filter'
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { join } from 'path';
-import { writeFileSync } from 'fs';
+import { setupApiDocs } from 'src/common/utils/api-docs';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
@@ -56,65 +56,8 @@ async function bootstrap() {
     }),
   );
 
-  const swaggerOptions = new DocumentBuilder()
-    .setTitle('Nest-Admin')
-    .setDescription('Nest-Admin 接口文档')
-    .setVersion('2.0.0')
-    .addBearerAuth(
-      {
-        type: 'http',
-        scheme: 'bearer',
-        bearerFormat: 'JWT',
-      },
-      'token',
-    )
-    .build();
-  const document = SwaggerModule.createDocument(app, swaggerOptions);
-
-  // 保存 OpenAPI 规范文件
-  const openApiJsonPath = join(process.cwd(), 'openApi.json');
-  writeFileSync(openApiJsonPath, JSON.stringify(document, null, 2));
-
-  // Swagger UI - 用于交互式调试
-  SwaggerModule.setup(`${prefix}/swagger-ui`, app, document, {
-    swaggerOptions: {
-      persistAuthorization: true,
-    },
-    customSiteTitle: 'Nest-Admin API Docs',
-  });
-
-  // 提供 OpenAPI JSON 文件访问（供 Apifox 导入）
-  app.use('/openapi.json', (req, res) => {
-    res.sendFile(openApiJsonPath);
-  });
-
-  // Redoc - 用于文档阅读（更美观、更清晰）
-  app.use(`${prefix}/docs`, (req, res) => {
-    res.send(`
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <title>Nest-Admin API 文档</title>
-    <style>
-      body { margin: 0; padding: 0; }
-      redoc { display: block; }
-    </style>
-  </head>
-  <body>
-    <redoc 
-      spec-url="/openapi.json"
-      theme='{"colors": {"primary": {"main": "#1890ff"}}}'
-      hide-hostname="true"
-      required-props-first="true"
-      expand-responses="200,400,401,403,404,500"
-    ></redoc>
-    <script src="https://cdn.redoc.ly/redoc/latest/bundles/redoc.standalone.js"> </script>
-  </body>
-</html>
-    `);
-  });
+  // 设置 API 文档（Swagger UI + Redoc）
+  setupApiDocs(app, prefix, '#1890ff');
 
   // 获取真实 ip
   app.use(requestIpMw({ attributeName: 'ip' }));
