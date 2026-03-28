@@ -77,7 +77,7 @@ const total = ref(0);
 const visible = ref(false);
 const tables = ref([]);
 const dbTableList = ref([]);
-const { proxy } = getCurrentInstance();
+import { resetForm } from '@/composables/useCommon'
 
 const queryParams = reactive({
   pageNum: 1,
@@ -115,7 +115,7 @@ function handleQuery() {
 }
 /** 重置按钮操作 */
 function resetQuery() {
-  proxy.resetForm('queryRef');
+  resetForm(queryRef);
   handleQuery();
 }
 /** 导入按钮操作 */

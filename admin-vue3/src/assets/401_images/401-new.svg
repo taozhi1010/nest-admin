@@ -1,0 +1,84 @@
+<svg width="400" height="400" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; }
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+    @keyframes rotate {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .lock-body { animation: float 3s ease-in-out infinite; }
+    .lock-shackle { animation: shake 0.5s ease-in-out infinite; }
+    .access-denied { animation: pulse 2s ease-in-out infinite; }
+    .bg-circle { animation: rotate 20s linear infinite; }
+  </style>
+  
+  <!-- Background circles -->
+  <circle class="bg-circle" cx="200" cy="200" r="180" fill="#f0f4f8" opacity="0.5"/>
+  <circle cx="200" cy="200" r="140" fill="#e1e8ed" opacity="0.3"/>
+  
+  <!-- Lock body -->
+  <g class="lock-body">
+    <!-- Lock shackle -->
+    <path class="lock-shackle" d="M160 180 V140 A40 40 0 0 1 240 140 V180" 
+          fill="none" 
+          stroke="#dc3545" 
+          stroke-width="12" 
+          stroke-linecap="round"/>
+    
+    <!-- Lock body rectangle -->
+    <rect x="140" y="180" 
+          width="120" height="100" 
+          rx="10" 
+          fill="#dc3545"/>
+    
+    <!-- Lock keyhole -->
+    <circle cx="200" cy="220" r="15" fill="#fff"/>
+    <rect x="195" y="220" width="10" height="30" fill="#fff"/>
+    
+    <!-- X mark on lock -->
+    <g class="access-denied">
+      <line x1="175" y1="205" x2="225" y2="255" stroke="#fff" stroke-width="8" stroke-linecap="round"/>
+      <line x1="225" y1="205" x2="175" y2="255" stroke="#fff" stroke-width="8" stroke-linecap="round"/>
+    </g>
+  </g>
+  
+  <!-- Access denied icon -->
+  <g class="access-denied">
+    <circle cx="320" cy="80" r="30" fill="#dc3545"/>
+    <line x1="305" y1="65" x2="335" y2="95" stroke="#fff" stroke-width="6" stroke-linecap="round"/>
+    <line x1="335" y1="65" x2="305" y2="95" stroke="#fff" stroke-width="6" stroke-linecap="round"/>
+  </g>
+  
+  <!-- Small decorative elements -->
+  <circle cx="80" cy="120" r="8" fill="#dc3545" opacity="0.6"/>
+  <circle cx="330" cy="300" r="12" fill="#dc3545" opacity="0.4"/>
+  <circle cx="100" cy="320" r="6" fill="#dc3545" opacity="0.5"/>
+  
+  <!-- Text -->
+  <text x="200" y="350" 
+        text-anchor="middle" 
+        font-family="Arial, sans-serif" 
+        font-size="24" 
+        font-weight="bold" 
+        fill="#dc3545">
+    401
+  </text>
+  <text x="200" y="375" 
+        text-anchor="middle" 
+        font-family="Arial, sans-serif" 
+        font-size="14" 
+        fill="#666">
+    Unauthorized
+  </text>
+</svg>
