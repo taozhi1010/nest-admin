@@ -1,11 +1,10 @@
-import { createApp } from 'vue'
+﻿import { createApp } from 'vue'
 
 import Cookies from 'js-cookie'
 
 import ElementPlus from 'element-plus'
 import locale from 'element-plus/es/locale/lang/zh-cn' // 中文语言
 
-import catTools from 'cat-tools'
 
 import '@/assets/styles/index.scss' // global css
 
@@ -18,7 +17,7 @@ import directive from './directive' // directive
 import plugins from './plugins' // plugins
 import { download } from '@/utils/request'
 
-// svg图标
+// svg 图标
 import 'virtual:svg-icons-register'
 import SvgIcon from '@/components/SvgIcon'
 import elementIcons from '@/components/SvgIcon/svgicon'
@@ -26,9 +25,6 @@ import elementIcons from '@/components/SvgIcon/svgicon'
 import './permission' // permission control
 
 import submitNoEnter from '@/utils/submitNoEnter' //取消回车提交
-
-import { useDict } from '@/utils/dict'
-import { parseTime, resetForm, addDateRange, handleTree, selectDictLabel, selectDictLabels } from '@/utils/ruoyi'
 
 // 分页组件
 import Pagination from '@/components/Pagination'
@@ -49,20 +45,6 @@ import DictTag from '@/components/DictTag'
 
 const app = createApp(App)
 
-// 全局方法挂载
-app.config.globalProperties.useDict = useDict
-app.config.globalProperties.download = download
-app.config.globalProperties.parseTime = parseTime
-app.config.globalProperties.resetForm = resetForm
-app.config.globalProperties.handleTree = handleTree
-app.config.globalProperties.addDateRange = addDateRange
-app.config.globalProperties.selectDictLabel = selectDictLabel
-app.config.globalProperties.selectDictLabels = selectDictLabels
-
-Object.keys(catTools).forEach((key) => {
-  app.config.globalProperties[key] = catTools[key]
-})
-
 // 全局组件挂载
 app.component('DictTag', DictTag)
 app.component('Pagination', Pagination)
@@ -81,7 +63,7 @@ app.component('svg-icon', SvgIcon)
 app.mixin(submitNoEnter)
 directive(app)
 
-// 使用element-plus 并且设置全局的大小
+// 使用 element-plus 并且设置全局的大小
 app.use(ElementPlus, {
   locale: locale,
   // 支持 large、default、small
@@ -89,3 +71,9 @@ app.use(ElementPlus, {
 })
 
 app.mount('#app')
+
+// 移除 loading 动画
+const loader = document.getElementById('loader')
+const loadTitle = document.querySelector('.load_title')
+if (loader) loader.remove()
+if (loadTitle) loadTitle.remove()
