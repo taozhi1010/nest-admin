@@ -2,10 +2,12 @@
   <div class="app-container">
     <el-form :model="queryParams" ref="queryRef" :inline="true" v-show="showSearch" label-width="68px">
       <el-form-item label="参数名称" prop="configName">
-        <el-input v-model="queryParams.configName" placeholder="请输入参数名称" clearable style="width: 160px" @keyup.enter="configTable.onSearch" />
+        <el-input v-model="queryParams.configName" placeholder="请输入参数名称" clearable style="width: 160px"
+          @keyup.enter="configTable.onSearch" />
       </el-form-item>
       <el-form-item label="参数键名" prop="configKey">
-        <el-input v-model="queryParams.configKey" placeholder="请输入参数键名" clearable style="width: 160px" @keyup.enter="configTable.onSearch" />
+        <el-input v-model="queryParams.configKey" placeholder="请输入参数键名" clearable style="width: 160px"
+          @keyup.enter="configTable.onSearch" />
       </el-form-item>
       <el-form-item label="系统内置" prop="configType" label-width="90px">
         <template #label>
@@ -23,7 +25,8 @@
         </el-select>
       </el-form-item>
       <el-form-item label="创建时间" style="width: 408px">
-        <el-date-picker v-model="dateRange" value-format="YYYY-MM-DD" type="daterange" range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
+        <el-date-picker v-model="dateRange" value-format="YYYY-MM-DD" type="daterange" range-separator="-"
+          start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="Search" @click="configTable.onSearch">搜索</el-button>
@@ -36,10 +39,12 @@
         <el-button type="primary" plain icon="Plus" @click="handleAdd" v-hasPermi="['system:config:add']">新增</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button type="success" plain icon="Edit" :disabled="single" @click="handleUpdate" v-hasPermi="['system:config:edit']">修改</el-button>
+        <el-button type="success" plain icon="Edit" :disabled="single" @click="handleUpdate"
+          v-hasPermi="['system:config:edit']">修改</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button type="danger" plain icon="Delete" :disabled="multiple" @click="handleDelete" v-hasPermi="['system:config:remove']">删除</el-button>
+        <el-button type="danger" plain icon="Delete" :disabled="multiple" @click="handleDelete"
+          v-hasPermi="['system:config:remove']">删除</el-button>
       </el-col>
       <!-- <el-col :span="1.5">
         <el-button type="warning" plain icon="Download" @click="handleExport" v-hasPermi="['system:config:export']">导出</el-button>
@@ -50,7 +55,8 @@
       <right-toolbar v-model:showSearch="showSearch" @queryTable="configTable.request"></right-toolbar>
     </el-row>
 
-    <el-table v-loading="configTable.state.loading" :data="configTable.state.list" @selection-change="handleSelectionChange">
+    <el-table v-loading="configTable.state.loading" :data="configTable.state.list"
+      @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="参数主键" align="center" prop="configId" width="85" />
       <el-table-column label="参数名称" align="center" prop="configName" :show-overflow-tooltip="true" />
@@ -69,24 +75,23 @@
       </el-table-column>
       <el-table-column label="操作" align="center" width="150" class-name="small-padding fixed-width">
         <template #default="scope">
-          <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['system:config:edit']">修改</el-button>
-          <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['system:config:remove']">删除</el-button>
+          <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)"
+            v-hasPermi="['system:config:edit']">修改</el-button>
+          <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)"
+            v-hasPermi="['system:config:remove']">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
 
-    <pagination
-      v-show="configTable.state.page.total > 0"
-      :total="configTable.state.page.total"
-      v-model:page="configTable.state.page.pageNum"
-      v-model:limit="configTable.state.page.pageSize"
-      @pagination="configTable.request"
-    />
+    <pagination v-show="configTable.state.page.total > 0" :total="configTable.state.page.total"
+      v-model:page="configTable.state.page.pageNum" v-model:limit="configTable.state.page.pageSize"
+      @pagination="configTable.request" />
   </div>
 
   <!-- 添加或修改参数配置对话框 -->
   <el-dialog :title="configForm.state.title" v-model="configForm.state.open" width="600px" append-to-body>
-    <el-form v-loading="configForm.state.loading" ref="configFormRef" :model="configForm.state.form" :rules="rules" label-width="120px">
+    <el-form v-loading="configForm.state.loading" ref="configFormRef" :model="configForm.state.form" :rules="rules"
+      label-width="120px">
       <el-form-item label="参数名称" prop="configName">
         <el-input v-model="configForm.state.form.configName" placeholder="请输入参数名称" />
       </el-form-item>
@@ -128,6 +133,7 @@
 import { listConfig, getConfig, delConfig, addConfig, updateConfig, refreshCache } from '@/api/system/config'
 import { useDict } from '@/composables/useDict'
 import { parseTime } from '@/composables/useCommon'
+import useForm from '@/hooks/useForm'
 import useTable from '@/hooks/useTable'
 
 const { sys_yes_no } = useDict('sys_yes_no')
