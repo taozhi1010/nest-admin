@@ -44,11 +44,12 @@ db:
     # 连接池配置 - 防止连接断开
     extra:
       connectionLimit: 20  # 最大连接数
-      acquireTimeout: 60000  # 获取连接超时时间 (毫秒)
-      connectTimeout: 60000  # 初始连接超时 (毫秒)
+      connectTimeout: 60000  # 初始连接超时 (60 秒)
+      acquireTimeout: 60000  # 获取连接超时 (60 秒) - TypeORM 会忽略此参数
+      timeout: 60000  # 查询超时 (60 秒)
       idleTimeout: 300000  # 空闲连接超时 (5 分钟)
       enableKeepAlive: true  # 开启 TCP KeepAlive
-      keepAliveInitialDelay: 0  # TCP KeepAlive 初始延迟
+      keepAliveInitialDelay: 0  # TCP KeepAlive 立即生效
 
 # redis 配置
 redis:
