@@ -51,9 +51,10 @@
 
 <script setup name="Data">
 import { addData, updateData } from '@/api/system/dict/data'
+import { useDict } from '@/composables/useDict'
+import { resetForm } from '@/composables/useCommon'
 
-const { proxy } = getCurrentInstance()
-const { sys_normal_disable } = proxy.useDict('sys_normal_disable')
+const { sys_normal_disable } = useDict('sys_normal_disable')
 
 // 数据标签回显样式
 const listClassOptions = ref([
@@ -90,7 +91,7 @@ const form = reactive({
   reset: () => {
     form.loading = false
     nextTick(() => {
-      proxy.resetForm('formRef')
+      resetForm(formRef)
     })
   },
   submit: () => {

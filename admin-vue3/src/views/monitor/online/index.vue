@@ -43,6 +43,7 @@
 
 <script setup name="Online">
 import { forceLogout, list as initData } from '@/api/monitor/online'
+import { resetForm } from '@/composables/useCommon'
 
 const { proxy } = getCurrentInstance()
 
@@ -77,7 +78,7 @@ function handleQuery() {
 }
 /** 重置按钮操作 */
 function resetQuery() {
-  proxy.resetForm('queryRef')
+  resetForm('queryRef')
   handleQuery()
 }
 /** 强退按钮操作 */

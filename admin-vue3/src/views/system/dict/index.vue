@@ -164,9 +164,10 @@ import dictGroupEdit from './components/dictGroupEdit'
 import dictDataEdit from './components/dictDataEdit'
 import { listType, delType, refreshCache } from '@/api/system/dict/type'
 import { listData, delData } from '@/api/system/dict/data'
+import { useDict } from '@/composables/useDict'
+import { resetForm, download } from '@/composables/useCommon'
 
-const { proxy } = getCurrentInstance()
-const { sys_normal_disable } = proxy.useDict('sys_normal_disable')
+const { sys_normal_disable } = useDict('sys_normal_disable')
 
 // 字典组树和列表的ref
 const dictGroupRef = ref()
@@ -234,7 +235,7 @@ const dictGroup = reactive({
       })
   },
   handleExport: () => {
-    proxy.download(
+    download(
       'system/dict/type/export',
       {
         ...dictGroup.query
@@ -246,7 +247,7 @@ const dictGroup = reactive({
     dictGroup.request()
   },
   handleReset: () => {
-    proxy.resetForm('queryDictGroupRef')
+    resetForm(queryDictGroupRef)
     dictGroup.request()
   },
   handleNodeSelect: (data) => {
@@ -318,7 +319,7 @@ const dictData = reactive({
       })
   },
   handleExport: () => {
-    proxy.download(
+    download(
       'system/dict/data/export',
       {
         ...dictData.query

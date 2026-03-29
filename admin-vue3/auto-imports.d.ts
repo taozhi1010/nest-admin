@@ -8,6 +8,7 @@ export {}
 declare global {
   const EffectScope: typeof import('vue').EffectScope
   const acceptHMRUpdate: typeof import('pinia').acceptHMRUpdate
+  const addDateRange: typeof import('./src/composables/useCommon').addDateRange
   const computed: typeof import('vue').computed
   const createApp: typeof import('vue').createApp
   const createPinia: typeof import('pinia').createPinia
@@ -15,12 +16,14 @@ declare global {
   const defineAsyncComponent: typeof import('vue').defineAsyncComponent
   const defineComponent: typeof import('vue').defineComponent
   const defineStore: typeof import('pinia').defineStore
+  const download: typeof import('./src/composables/useCommon').download
   const effectScope: typeof import('vue').effectScope
   const getActivePinia: typeof import('pinia').getActivePinia
   const getCurrentInstance: typeof import('vue').getCurrentInstance
   const getCurrentScope: typeof import('vue').getCurrentScope
   const getCurrentWatcher: typeof import('vue').getCurrentWatcher
   const h: typeof import('vue').h
+  const handleTree: typeof import('./src/composables/useCommon').handleTree
   const inject: typeof import('vue').inject
   const isProxy: typeof import('vue').isProxy
   const isReactive: typeof import('vue').isReactive
@@ -50,11 +53,15 @@ declare global {
   const onUnmounted: typeof import('vue').onUnmounted
   const onUpdated: typeof import('vue').onUpdated
   const onWatcherCleanup: typeof import('vue').onWatcherCleanup
+  const parseTime: typeof import('./src/composables/useCommon').parseTime
   const provide: typeof import('vue').provide
   const reactive: typeof import('vue').reactive
   const readonly: typeof import('vue').readonly
   const ref: typeof import('vue').ref
+  const resetForm: typeof import('./src/composables/useCommon').resetForm
   const resolveComponent: typeof import('vue').resolveComponent
+  const selectDictLabel: typeof import('./src/composables/useCommon').selectDictLabel
+  const selectDictLabels: typeof import('./src/composables/useCommon').selectDictLabels
   const setActivePinia: typeof import('pinia').setActivePinia
   const setMapStoreSuffix: typeof import('pinia').setMapStoreSuffix
   const shallowReactive: typeof import('vue').shallowReactive

@@ -105,12 +105,12 @@
 </template>
 
 <script setup name="Notice">
-const { proxy } = getCurrentInstance()
-const { sys_notice_status, sys_notice_type } = proxy.useDict('sys_notice_status', 'sys_notice_type')
-
 import { listNotice, getNotice, delNotice, addNotice, updateNotice } from '@/api/system/notice'
 import useTable from '@/hooks/useTable'
 import useForm from '@/hooks/useForm'
+import { useDict } from '@/composables/useDict'
+
+const { sys_notice_status, sys_notice_type } = useDict('sys_notice_status', 'sys_notice_type')
 
 // 列表
 const queryRef = ref()

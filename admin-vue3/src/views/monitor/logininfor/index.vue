@@ -72,9 +72,10 @@
 
 <script setup name="Logininfor">
 import { list, delLogininfor, cleanLogininfor, unlockLogininfor } from '@/api/monitor/logininfor'
+import { useDict } from '@/composables/useDict'
+import { resetForm, addDateRange, download } from '@/composables/useCommon'
 
-const { proxy } = getCurrentInstance()
-const { sys_common_status } = proxy.useDict('sys_common_status')
+const { sys_common_status } = useDict('sys_common_status')
 
 const logininforList = ref([])
 const loading = ref(true)
@@ -101,7 +102,7 @@ const queryParams = ref({
 /** 查询登录日志列表 */
 function getList() {
   loading.value = true
-  list(proxy.addDateRange(queryParams.value, dateRange.value)).then((response) => {
+  list(addDateRange(queryParams.value, dateRange.value)).then((response) => {
     logininforList.value = response.data.list
     total.value = response.data.total
     loading.value = false
@@ -115,7 +116,7 @@ function handleQuery() {
 /** 重置按钮操作 */
 function resetQuery() {
   dateRange.value = []
-  proxy.resetForm('queryRef')
+  resetForm('queryRef')
   queryParams.value.pageNum = 1
   proxy.$refs['logininforRef'].sort(defaultSort.value.prop, defaultSort.value.order)
 }
@@ -174,7 +175,7 @@ function handleUnlock() {
 }
 /** 导出按钮操作 */
 function handleExport() {
-  proxy.download(
+  download(
     'monitor/logininfor/export',
     {
       ...queryParams.value
