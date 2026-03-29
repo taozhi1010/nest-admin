@@ -10,7 +10,7 @@
           @keyup.enter="notice.onSearch" />
       </el-form-item>
       <el-form-item label="类型" prop="noticeType">
-        <el-select v-model="notice.queryParams.noticeType" placeholder="请选择公告类型" clearable style="width: 80px">
+        <el-select v-model="notice.queryParams.noticeType" placeholder="公告类型" clearable style="width: 100px">
           <el-option v-for="dict in sys_notice_type" :key="dict.value" :label="dict.label" :value="dict.value" />
         </el-select>
       </el-form-item>
@@ -113,9 +113,11 @@
 import { listNotice, getNotice, delNotice, addNotice, updateNotice } from '@/api/system/notice'
 import { useDict } from '@/composables/useDict'
 import { parseTime, resetForm } from '@/composables/useCommon'
+import { useCatTools } from '@/composables/useCatTools'
 
 const { proxy } = getCurrentInstance()
 const { sys_notice_status, sys_notice_type } = useDict('sys_notice_status', 'sys_notice_type')
+const { isNullorUndefined } = useCatTools()
 
 // 公告管理
 const notice = reactive({
@@ -211,12 +213,12 @@ const notice = reactive({
 
       notice.formLoading = true
       try {
-        if (notice.form.noticeId !== undefined) {
-          await updateNotice(notice.form)
-          proxy.$modal.msgSuccess('修改成功')
-        } else {
+        if (isNullorUndefined(notice.form.noticeId)) {
           await addNotice(notice.form)
           proxy.$modal.msgSuccess('新增成功')
+        } else {
+          await updateNotice(notice.form)
+          proxy.$modal.msgSuccess('修改成功')
         }
         notice.open = false
         notice.getList()
@@ -236,7 +238,7 @@ const notice = reactive({
 
   // 删除操作
   handleDelete: async (row) => {
-    const noticeIds = row.noticeId || notice.ids
+    const noticeIds = isNullorUndefined(row.noticeId) ? notice.ids : row.noticeId
     try {
       await proxy.$modal.confirm('您确认删除该公告吗？', '删除提示')
       await delNotice(noticeIds)
