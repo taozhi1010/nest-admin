@@ -143,7 +143,7 @@
 <script setup name="Dept">
 import { listDept, getDept, delDept, addDept, updateDept, listDeptExcludeChild } from "@/api/system/dept";
 import { useDict } from '@/composables/useDict'
-import { resetForm, handleTree } from '@/composables/useCommon'
+import { resetForm, handleTree, parseTime } from '@/composables/useCommon'
 
 const { sys_normal_disable } = useDict("sys_normal_disable");
 
@@ -153,8 +153,9 @@ const loading = ref(true);
 const showSearch = ref(true);
 const title = ref("");
 const deptOptions = ref([]);
-const isExpandAll = ref(true);
-const refreshTable = ref(true);
+const isExpandAll = ref(true)
+const refreshTable = ref(true)
+const deptRef = ref(null)
 
 const data = reactive({
   form: {},

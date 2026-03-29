@@ -232,7 +232,7 @@
 import { getToken } from '@/utils/auth'
 import { changeUserStatus, listUser, resetUserPwd, delUser, getUser, updateUser, addUser, deptTreeSelect } from '@/api/system/user'
 import { useDict } from '@/composables/useDict'
-import { resetForm, addDateRange, download } from '@/composables/useCommon'
+import { resetForm, addDateRange, download, parseTime } from '@/composables/useCommon'
 
 const router = useRouter()
 const { sys_normal_disable, sys_user_sex } = useDict('sys_normal_disable', 'sys_user_sex')
@@ -252,6 +252,9 @@ const deptOptions = ref(undefined)
 const initPassword = ref(undefined)
 const postOptions = ref([])
 const roleOptions = ref([])
+const userRef = ref(null)
+const deptTreeRef = ref(null)
+const uploadRef = ref(null)
 /*** 用户导入参数 */
 const upload = reactive({
   // 是否显示弹出层（用户导入）

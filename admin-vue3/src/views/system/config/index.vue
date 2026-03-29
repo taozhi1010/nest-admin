@@ -127,12 +127,10 @@
 <script setup name="Config">
 import { listConfig, getConfig, delConfig, addConfig, updateConfig, refreshCache } from '@/api/system/config'
 import { useDict } from '@/composables/useDict'
+import { parseTime } from '@/composables/useCommon'
+import useTable from '@/hooks/useTable'
 
 const { sys_yes_no } = useDict('sys_yes_no')
-
-import { listConfig, getConfig, delConfig, addConfig, updateConfig, refreshCache } from '@/api/system/config'
-
-import useTable from '@/hooks/useTable'
 
 // 列表
 const queryRef = ref()

@@ -170,7 +170,7 @@
 import { addRole, changeRoleStatus, dataScope, delRole, getRole, listRole, updateRole, deptTreeSelect } from '@/api/system/role'
 import { roleMenuTreeselect, treeselect as menuTreeselect } from '@/api/system/menu'
 import { useDict } from '@/composables/useDict'
-import { resetForm, addDateRange, download } from '@/composables/useCommon'
+import { resetForm, addDateRange, download, parseTime } from '@/composables/useCommon'
 
 const router = useRouter()
 const { sys_normal_disable } = useDict('sys_normal_disable')
@@ -194,6 +194,7 @@ const deptOptions = ref([])
 const openDataScope = ref(false)
 const menuRef = ref(null)
 const deptRef = ref(null)
+const roleRef = ref(null)
 
 /** 数据范围选项*/
 const dataScopeOptions = ref([

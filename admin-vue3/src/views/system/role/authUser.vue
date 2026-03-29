@@ -60,7 +60,7 @@ import { allocatedUserList, authUserCancel, authUserCancelAll } from '@/api/syst
 
 const route = useRoute()
 import { useDict } from '@/composables/useDict'
-import { resetForm } from '@/composables/useCommon'
+import { resetForm, parseTime } from '@/composables/useCommon'
 
 const { sys_normal_disable } = useDict('sys_normal_disable')
 
@@ -70,6 +70,7 @@ const showSearch = ref(true)
 const multiple = ref(true)
 const total = ref(0)
 const userIds = ref([])
+const selectRef = ref(null)
 
 const queryParams = reactive({
   pageNum: 1,

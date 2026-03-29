@@ -249,7 +249,7 @@ import {
 } from '@/api/tool/gen';
 import router from '@/router';
 import importTable from './importTable';
-import { resetForm, addDateRange } from '@/composables/useCommon'
+import { resetForm, addDateRange, parseTime } from '@/composables/useCommon'
 
 const route = useRoute();
 

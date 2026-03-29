@@ -43,7 +43,7 @@
 
 <script setup name="Online">
 import { forceLogout, list as initData } from '@/api/monitor/online'
-import { resetForm } from '@/composables/useCommon'
+import { resetForm, parseTime } from '@/composables/useCommon'
 
 const { proxy } = getCurrentInstance()
 
