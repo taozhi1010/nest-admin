@@ -283,7 +283,7 @@ import SvgIcon from "@/components/SvgIcon";
 import IconSelect from "@/components/IconSelect";
 import { ClickOutside as vClickOutside } from 'element-plus'
 import { useDict } from '@/composables/useDict'
-import { resetForm, handleTree } from '@/composables/useCommon'
+import { resetForm, handleTree, parseTime } from '@/composables/useCommon'
 
 const { sys_show_hide, sys_normal_disable } = useDict("sys_show_hide", "sys_normal_disable");
 
@@ -295,8 +295,9 @@ const title = ref("");
 const menuOptions = ref([]);
 const isExpandAll = ref(false);
 const refreshTable = ref(true);
-const showChooseIcon = ref(false);
-const iconSelectRef = ref(null);
+const showChooseIcon = ref(false)
+const iconSelectRef = ref(null)
+const menuRef = ref(null)
 
 const data = reactive({
   form: {},

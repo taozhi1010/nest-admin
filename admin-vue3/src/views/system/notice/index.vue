@@ -109,6 +109,7 @@ import { listNotice, getNotice, delNotice, addNotice, updateNotice } from '@/api
 import useTable from '@/hooks/useTable'
 import useForm from '@/hooks/useForm'
 import { useDict } from '@/composables/useDict'
+import { parseTime } from '@/composables/useCommon'
 
 const { sys_notice_status, sys_notice_type } = useDict('sys_notice_status', 'sys_notice_type')
 

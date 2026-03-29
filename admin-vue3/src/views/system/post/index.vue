@@ -147,9 +147,14 @@
 <script setup name="Post">
 import { listPost, addPost, delPost, getPost, updatePost } from "@/api/system/post";
 import { useDict } from '@/composables/useDict'
-import { resetForm, download } from '@/composables/useCommon'
+import { resetForm, download, parseTime } from '@/composables/useCommon'
+
+const { proxy } = getCurrentInstance()
 
 const { sys_normal_disable } = useDict("sys_normal_disable");
+
+const queryRef = ref()
+const postRef = ref()
 
 const postList = ref([]);
 const open = ref(false);
@@ -239,7 +244,7 @@ function handleUpdate(row) {
 }
 /** 提交按钮 */
 function submitForm() {
-  proxy.$refs["postRef"].validate(valid => {
+  postRef.value.validate(valid => {
     if (valid) {
       if (form.value.postId != undefined) {
         updatePost(form.value).then(response => {

@@ -174,7 +174,7 @@
 import { getJob } from "@/api/monitor/job";
 import { listJobLog, delJobLog, cleanJobLog } from "@/api/monitor/jobLog";
 import { useDict } from '@/composables/useDict'
-import { resetForm, addDateRange, download } from '@/composables/useCommon'
+import { resetForm, addDateRange, download, parseTime } from '@/composables/useCommon'
 
 const { sys_common_status, sys_job_group } = useDict("sys_common_status", "sys_job_group");
 

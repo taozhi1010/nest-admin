@@ -165,7 +165,7 @@ import dictDataEdit from './components/dictDataEdit'
 import { listType, delType, refreshCache } from '@/api/system/dict/type'
 import { listData, delData } from '@/api/system/dict/data'
 import { useDict } from '@/composables/useDict'
-import { resetForm, download } from '@/composables/useCommon'
+import { resetForm, download, parseTime } from '@/composables/useCommon'
 
 const { sys_normal_disable } = useDict('sys_normal_disable')
 

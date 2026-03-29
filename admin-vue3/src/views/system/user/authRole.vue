@@ -47,16 +47,18 @@
 
 <script setup name="AuthRole">
 import { getAuthRole, updateAuthRole } from "@/api/system/user";
+import { parseTime } from '@/composables/useCommon'
 
 const route = useRoute();
 const { proxy } = getCurrentInstance();
 
 const loading = ref(true);
 const total = ref(0);
-const pageNum = ref(1);
-const pageSize = ref(10);
-const roleIds = ref([]);
-const roles = ref([]);
+const pageNum = ref(1)
+const pageSize = ref(10)
+const roleIds = ref([])
+const roles = ref([])
+const roleRef = ref(null)
 const form = ref({
   nickName: undefined,
   userName: undefined,
