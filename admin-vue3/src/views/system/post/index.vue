@@ -3,11 +3,11 @@
       <el-form :model="post.queryParams" ref="post.queryRef" :inline="true" v-show="post.showSearch">
          <el-form-item label="岗位编码" prop="postCode">
             <el-input v-model="post.queryParams.postCode" placeholder="请输入岗位编码" clearable style="width: 200px"
-               @keyup.enter="handleQuery" />
+               @keyup.enter="post.handleQuery" />
          </el-form-item>
          <el-form-item label="岗位名称" prop="postName">
             <el-input v-model="post.queryParams.postName" placeholder="请输入岗位名称" clearable style="width: 200px"
-               @keyup.enter="handleQuery" />
+               @keyup.enter="post.handleQuery" />
          </el-form-item>
          <el-form-item label="状态" prop="status">
             <el-select v-model="post.queryParams.status" placeholder="岗位状态" clearable style="width: 200px">
@@ -16,8 +16,8 @@
             </el-select>
          </el-form-item>
          <el-form-item>
-            <el-button type="primary" icon="Search" @click="handleQuery">搜索</el-button>
-            <el-button icon="Refresh" @click="resetQuery">重置</el-button>
+            <el-button type="primary" icon="Search" @click="post.handleQuery">搜索</el-button>
+            <el-button icon="Refresh" @click="post.resetQuery">重置</el-button>
          </el-form-item>
       </el-form>
 
@@ -85,7 +85,7 @@
             <el-form-item label="岗位状态" prop="status">
                <el-radio-group v-model="post.form.status">
                   <el-radio v-for="dict in sys_normal_disable" :key="dict.value" :label="dict.value">{{ dict.label
-                  }}</el-radio>
+                     }}</el-radio>
                </el-radio-group>
             </el-form-item>
             <el-form-item label="备注" prop="remark">
@@ -105,7 +105,7 @@
 <script setup name="Post">
 import { listPost, addPost, delPost, getPost, updatePost } from "@/api/system/post"
 import { useDict } from '@/composables/useDict'
-import { resetForm, download } from '@/composables/useCommon'
+import { resetForm, download, parseTime } from '@/composables/useCommon'
 
 const { proxy } = getCurrentInstance()
 const { sys_normal_disable } = useDict('sys_normal_disable')
@@ -113,17 +113,17 @@ const { sys_normal_disable } = useDict('sys_normal_disable')
 // 岗位管理
 const post = reactive({
    // 响应式数据
-   queryRef: ref(),
-   postRef: ref(),
-   postList: ref([]),
-   open: ref(false),
-   loading: ref(true),
-   showSearch: ref(true),
-   ids: ref([]),
-   single: ref(true),
-   multiple: ref(true),
-   total: ref(0),
-   title: ref(""),
+   queryRef: null,
+   postRef: null,
+   postList: [],
+   open: false,
+   loading: true,
+   showSearch: true,
+   ids: [],
+   single: true,
+   multiple: true,
+   total: 0,
+   title: "",
 
    // 表单和查询参数
    form: {},
@@ -143,19 +143,19 @@ const post = reactive({
    // 方法集合
    // 查询岗位列表
    getList: async () => {
-      post.loading.value = true
+      post.loading = true
       try {
          const response = await listPost(post.queryParams)
-         post.postList.value = response.data.list
-         post.total.value = response.data.total
+         post.postList = response.data.list
+         post.total = response.data.total
       } finally {
-         post.loading.value = false
+         post.loading = false
       }
    },
 
    // 取消按钮
    cancel: () => {
-      post.open.value = false
+      post.open = false
       post.reset()
    },
 
@@ -169,7 +169,7 @@ const post = reactive({
          status: "0",
          remark: undefined
       }
-      resetForm(post.postRef.value)
+      resetForm(post.postRef)
    },
 
    // 搜索按钮操作
@@ -180,33 +180,33 @@ const post = reactive({
 
    // 重置按钮操作
    resetQuery: () => {
-      resetForm(post.queryRef.value)
+      resetForm(post.queryRef)
       post.handleQuery()
    },
 
    // 多选框选中数据
    handleSelectionChange: (selection) => {
-      post.ids.value = selection.map(item => item.postId)
-      post.single.value = selection.length !== 1
-      post.multiple.value = !selection.length
+      post.ids = selection.map(item => item.postId)
+      post.single = selection.length !== 1
+      post.multiple = !selection.length
    },
 
    // 新增按钮操作
    handleAdd: () => {
       post.reset()
-      post.open.value = true
-      post.title.value = "添加岗位"
+      post.open = true
+      post.title = "添加岗位"
    },
 
    // 修改按钮操作
    handleUpdate: async (row) => {
       post.reset()
-      const postId = row.postId || post.ids.value
+      const postId = row.postId || post.ids
       try {
          const response = await getPost(postId)
          post.form = response.data
-         post.open.value = true
-         post.title.value = "修改岗位"
+         post.open = true
+         post.title = "修改岗位"
       } catch (e) {
          console.error('获取岗位信息失败:', e)
       }
@@ -214,7 +214,7 @@ const post = reactive({
 
    // 提交按钮
    submitForm: () => {
-      post.postRef.value.validate(async (valid) => {
+      post.postRef.validate(async (valid) => {
          if (!valid) return
 
          try {
@@ -225,7 +225,7 @@ const post = reactive({
                await addPost(post.form)
                proxy.$modal.msgSuccess("新增成功")
             }
-            post.open.value = false
+            post.open = false
             post.getList()
          } catch (e) {
             console.error('提交失败:', e)
@@ -235,7 +235,7 @@ const post = reactive({
 
    // 删除按钮操作
    handleDelete: async (row) => {
-      const postIds = row.postId || post.ids.value
+      const postIds = row.postId || post.ids
       try {
          await proxy.$modal.confirm('是否确认删除岗位编号为"' + postIds + '"的数据项？')
          await delPost(postIds)
