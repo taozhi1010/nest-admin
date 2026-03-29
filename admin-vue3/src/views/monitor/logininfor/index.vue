@@ -11,7 +11,7 @@
           @keyup.enter="logininfor.handleQuery" />
       </el-form-item>
       <el-form-item label="状态" prop="status">
-        <el-select v-model="logininfor.queryParams.status" placeholder="登录状态" clearable style="width: 240px">
+        <el-select v-model="logininfor.queryParams.status" placeholder="登录状态" clearable style="width: 140px">
           <el-option v-for="dict in sys_common_status" :key="dict.value" :label="dict.label" :value="dict.value" />
         </el-select>
       </el-form-item>
