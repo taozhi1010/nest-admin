@@ -3,6 +3,9 @@
     <div :class="['captcha-code-container', `captcha-size-${size}`]" @click="handleClick">
         <!-- 加载状态（初始或刷新） -->
         <div v-if="!imgUrl || refreshing" class="loading-overlay">
+            <el-icon class="is-loading loading-icon">
+                <Loading />
+            </el-icon>
             <span class="loading-text">加载中...</span>
         </div>
         <!-- 验证码图片 (使用 v-html 避免 base64 解析问题) -->
@@ -109,12 +112,19 @@ const handleClick = () => {
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 8px; // 图标和文字之间的间距
     z-index: 10;
+
+    .loading-icon {
+        color: #409eff;
+        font-size: 16px; // 图标大小
+    }
 
     .loading-text {
         color: #409eff;
-        font-size: 12px;
+        font-size: 14px; // 字体放大，避免扁平感
         font-weight: 500;
+        letter-spacing: 2px; // 增加文字间隔，避免拥挤
     }
 }
 
