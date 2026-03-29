@@ -236,6 +236,7 @@ import { resetForm, addDateRange, download, parseTime } from '@/composables/useC
 
 const router = useRouter()
 const { sys_normal_disable, sys_user_sex } = useDict('sys_normal_disable', 'sys_user_sex')
+const { sys_normal_disable, sys_user_sex } = useDict('sys_normal_disable', 'sys_user_sex')
 
 const userList = ref([])
 const open = ref(false)
@@ -346,6 +347,7 @@ function handleQuery() {
 function resetQuery() {
   dateRange.value = []
   resetForm(queryRef)
+  resetForm(queryRef)
   queryParams.value.deptId = undefined
   proxy.$refs.deptTreeRef.setCurrentKey(null)
   handleQuery()
@@ -366,6 +368,7 @@ function handleDelete(row) {
 }
 /** 导出按钮操作 */
 function handleExport() {
+  download(
   download(
     'system/user/export',
     {
@@ -471,6 +474,7 @@ function reset() {
     postIds: [],
     roleIds: []
   }
+  resetForm(userRef)
   resetForm(userRef)
 }
 /** 取消按钮 */
