@@ -22,11 +22,13 @@ export class MainService {
    * @returns
    */
   async login(user: LoginDto, clientInfo: ClientInfoDto) {
+    const loginTime = new Date();
     const loginLog = {
       ...clientInfo,
       userName: user.username,
       status: '0',
       msg: '',
+      loginTime: loginTime,
     };
     try {
       const loginLocation = await this.axiosService.getIpAddress(clientInfo.ipaddr);
@@ -43,10 +45,12 @@ export class MainService {
    * @param clientInfo
    */
   async logout(clientInfo: ClientInfoDto) {
+    const loginTime = new Date();
     const loginLog = {
       ...clientInfo,
       status: '0',
       msg: '退出成功',
+      loginTime: loginTime,
     };
     try {
       const loginLocation = await this.axiosService.getIpAddress(clientInfo.ipaddr);
