@@ -10,7 +10,6 @@
         <el-input v-model.trim="loginForm.model.username" maxlength="10" type="text" size="large" auto-complete="off"
           placeholder="账号">
           <template #prefix>
-            <!-- <svg-icon icon-class="User" class="input-icon" /> -->
             <User class="input-icon" />
           </template>
         </el-input>
