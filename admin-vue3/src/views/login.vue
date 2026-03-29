@@ -67,8 +67,9 @@ const loginRef = ref()
 
 const loginForm = reactive({
   model: {
-    username: '',
-    password: '',
+    // TODO: 等后续开发完毕，我会删除这个配置
+    username: 'admin', // 默认登录用户
+    password: '123456', // 默认密码
     rememberMe: false,
     code: '',
     uuid: ''
