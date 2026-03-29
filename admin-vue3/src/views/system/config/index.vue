@@ -125,13 +125,14 @@
 </template>
 
 <script setup name="Config">
-const { proxy } = getCurrentInstance()
-const { sys_yes_no } = proxy.useDict('sys_yes_no')
+import { listConfig, getConfig, delConfig, addConfig, updateConfig, refreshCache } from '@/api/system/config'
+import { useDict } from '@/composables/useDict'
+
+const { sys_yes_no } = useDict('sys_yes_no')
 
 import { listConfig, getConfig, delConfig, addConfig, updateConfig, refreshCache } from '@/api/system/config'
 
 import useTable from '@/hooks/useTable'
-import useForm from '@/hooks/useForm'
 
 // 列表
 const queryRef = ref()

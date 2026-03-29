@@ -112,17 +112,7 @@
           </div>
         </el-card>
       </el-col>
-      <!-- <el-col :xs="24" :sm="24" :md="12" :lg="8">
-				<el-card class="update-log">
-					<div slot="header" class="clearfix">
-						<span>捐赠支持</span>
-					</div>
-					<div class="body">
-						<img src="@/assets/images/pay.png" alt="donate" width="100%" />
-						<span style="display: inline-block; height: 30px; line-height: 30px">你可以请作者喝杯咖啡表示鼓励</span>
-					</div>
-				</el-card>
-			</el-col> -->
+
     </el-row>
   </div>
 </template>

@@ -231,10 +231,11 @@
 <script setup name="User">
 import { getToken } from '@/utils/auth'
 import { changeUserStatus, listUser, resetUserPwd, delUser, getUser, updateUser, addUser, deptTreeSelect } from '@/api/system/user'
+import { useDict } from '@/composables/useDict'
+import { resetForm, addDateRange, download } from '@/composables/useCommon'
 
 const router = useRouter()
-const { proxy } = getCurrentInstance()
-const { sys_normal_disable, sys_user_sex } = proxy.useDict('sys_normal_disable', 'sys_user_sex')
+const { sys_normal_disable, sys_user_sex } = useDict('sys_normal_disable', 'sys_user_sex')
 
 const userList = ref([])
 const open = ref(false)
@@ -322,7 +323,7 @@ function getDeptTree() {
 /** 查询用户列表 */
 function getList() {
   loading.value = true
-  listUser(proxy.addDateRange(queryParams.value, dateRange.value)).then((res) => {
+  listUser(addDateRange(queryParams.value, dateRange.value)).then((res) => {
     loading.value = false
     userList.value = res.data.list
     total.value = res.data.total
@@ -341,7 +342,7 @@ function handleQuery() {
 /** 重置按钮操作 */
 function resetQuery() {
   dateRange.value = []
-  proxy.resetForm('queryRef')
+  resetForm(queryRef)
   queryParams.value.deptId = undefined
   proxy.$refs.deptTreeRef.setCurrentKey(null)
   handleQuery()
@@ -362,7 +363,7 @@ function handleDelete(row) {
 }
 /** 导出按钮操作 */
 function handleExport() {
-  proxy.download(
+  download(
     'system/user/export',
     {
       ...queryParams.value
@@ -433,7 +434,7 @@ function handleImport() {
 }
 /** 下载模板操作 */
 function importTemplate() {
-  proxy.download('system/user/importTemplate', {}, `user_template_${new Date().getTime()}.xlsx`)
+  download('system/user/importTemplate', {}, `user_template_${new Date().getTime()}.xlsx`)
 }
 /**文件上传中处理 */
 const handleFileUploadProgress = (event, file, fileList) => {
@@ -467,7 +468,7 @@ function reset() {
     postIds: [],
     roleIds: []
   }
-  proxy.resetForm('userRef')
+  resetForm(userRef)
 }
 /** 取消按钮 */
 function cancel() {

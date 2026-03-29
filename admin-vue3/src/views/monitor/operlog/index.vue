@@ -272,9 +272,10 @@
 
 <script setup name="Operlog">
 import { list, delOperlog, cleanOperlog } from '@/api/monitor/operlog';
+import { useDict } from '@/composables/useDict'
+import { resetForm, addDateRange, selectDictLabel } from '@/composables/useCommon'
 
-const { proxy } = getCurrentInstance();
-const { sys_oper_type, sys_common_status } = proxy.useDict(
+const { sys_oper_type, sys_common_status } = useDict(
   'sys_oper_type',
   'sys_common_status'
 );
@@ -308,7 +309,7 @@ const { queryParams, form } = toRefs(data);
 /** 查询登录日志 */
 function getList() {
   loading.value = true;
-  list(proxy.addDateRange(queryParams.value, dateRange.value)).then(
+  list(addDateRange(queryParams.value, dateRange.value)).then(
     (response) => {
       console.log('response', response);
       operlogList.value = response.data.list;
@@ -319,7 +320,7 @@ function getList() {
 }
 /** 操作日志类型字典翻译 */
 function typeFormat(row, column) {
-  return proxy.selectDictLabel(sys_oper_type.value, row.businessType);
+  return selectDictLabel(sys_oper_type.value, row.businessType);
 }
 /** 搜索按钮操作 */
 function handleQuery() {
@@ -329,7 +330,7 @@ function handleQuery() {
 /** 重置按钮操作 */
 function resetQuery() {
   dateRange.value = [];
-  proxy.resetForm('queryRef');
+  resetForm('queryRef');
   queryParams.value.pageNum = 1;
   proxy.$refs['operlogRef'].sort(
     defaultSort.value.prop,
@@ -381,13 +382,13 @@ function handleClean() {
 }
 /** 导出按钮操作 */
 function handleExport() {
-  proxy.download(
+  download(
     'monitor/operlog/export',
     {
       ...queryParams.value,
     },
     `config_${new Date().getTime()}.xlsx`
-  );
+  )
 }
 
 getList();

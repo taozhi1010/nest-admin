@@ -146,9 +146,10 @@
 
 <script setup name="Post">
 import { listPost, addPost, delPost, getPost, updatePost } from "@/api/system/post";
+import { useDict } from '@/composables/useDict'
+import { resetForm, download } from '@/composables/useCommon'
 
-const { proxy } = getCurrentInstance();
-const { sys_normal_disable } = proxy.useDict("sys_normal_disable");
+const { sys_normal_disable } = useDict("sys_normal_disable");
 
 const postList = ref([]);
 const open = ref(false);
@@ -202,7 +203,7 @@ function reset() {
     status: "0",
     remark: undefined
   };
-  proxy.resetForm("postRef");
+  resetForm("postRef");
 }
 /** 搜索按钮操作 */
 function handleQuery() {
@@ -211,7 +212,7 @@ function handleQuery() {
 }
 /** 重置按钮操作 */
 function resetQuery() {
-  proxy.resetForm("queryRef");
+  resetForm("queryRef");
   handleQuery();
 }
 /** 多选框选中数据 */
@@ -268,7 +269,7 @@ function handleDelete(row) {
 }
 /** 导出按钮操作 */
 function handleExport() {
-  proxy.download("system/post/export", {
+  download("system/post/export", {
     ...queryParams.value
   }, `post_${new Date().getTime()}.xlsx`);
 }

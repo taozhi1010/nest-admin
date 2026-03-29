@@ -270,10 +270,10 @@
 
 <script setup>
 import { listMenu } from '@/api/system/menu';
+import { handleTree } from '@/composables/useCommon'
 
 const subColumns = ref([]);
 const menuOptions = ref([]);
-const { proxy } = getCurrentInstance();
 
 const props = defineProps({
   info: {
@@ -323,7 +323,7 @@ function setSubTableColumns(value) {
 /** 查询菜单下拉树结构 */
 function getMenuTreeselect() {
   listMenu().then((response) => {
-    menuOptions.value = proxy.handleTree(response.data, 'menuId');
+    menuOptions.value = handleTree(response.data, 'menuId');
   });
 }
 

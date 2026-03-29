@@ -169,10 +169,11 @@
 <script setup name="Role">
 import { addRole, changeRoleStatus, dataScope, delRole, getRole, listRole, updateRole, deptTreeSelect } from '@/api/system/role'
 import { roleMenuTreeselect, treeselect as menuTreeselect } from '@/api/system/menu'
+import { useDict } from '@/composables/useDict'
+import { resetForm, addDateRange, download } from '@/composables/useCommon'
 
 const router = useRouter()
-const { proxy } = getCurrentInstance()
-const { sys_normal_disable } = proxy.useDict('sys_normal_disable')
+const { sys_normal_disable } = useDict('sys_normal_disable')
 
 const roleList = ref([])
 const open = ref(false)
@@ -224,7 +225,7 @@ const { queryParams, form, rules } = toRefs(data)
 /** 查询角色列表 */
 function getList() {
   loading.value = true
-  listRole(proxy.addDateRange(queryParams.value, dateRange.value)).then((response) => {
+  listRole(addDateRange(queryParams.value, dateRange.value)).then((response) => {
     roleList.value = response.data.list
     total.value = response.data.total
     loading.value = false
@@ -238,7 +239,7 @@ function handleQuery() {
 /** 重置按钮操作 */
 function resetQuery() {
   dateRange.value = []
-  proxy.resetForm('queryRef')
+  resetForm('queryRef')
   handleQuery()
 }
 /** 删除按钮操作 */
@@ -257,7 +258,7 @@ function handleDelete(row) {
 }
 /** 导出按钮操作 */
 function handleExport() {
-  proxy.download(
+  download(
     'system/role/export',
     {
       ...queryParams.value
@@ -339,7 +340,7 @@ function reset() {
     deptCheckStrictly: true,
     remark: undefined
   }
-  proxy.resetForm('roleRef')
+  resetForm(roleRef)
 }
 /** 添加角色 */
 function handleAdd() {

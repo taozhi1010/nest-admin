@@ -91,9 +91,10 @@
 <script setup name="Article">
 import { listArticle, addArticle, delArticle, getArticle, updateArticle } from '@/api/game/article'
 import Preview from './components/Preview'
+import { useDict } from '@/composables/useDict'
+import { resetForm } from '@/composables/useCommon'
 
-const { proxy } = getCurrentInstance()
-const { sys_article_status } = proxy.useDict('sys_article_status')
+const { sys_article_status } = useDict('sys_article_status')
 console.log(sys_article_status, '数据字典')
 console.log(dayjs(new Date()).format('YYYY-MM-DD HH:mm:ss'), '字典')
 
@@ -163,7 +164,7 @@ function reset() {
     remark: undefined,
     pushTime: dayjs().valueOf()
   }
-  proxy.resetForm('ArticleRef')
+  resetForm(ArticleRef)
 }
 /** 搜索按钮操作 */
 function handleQuery() {
@@ -172,7 +173,7 @@ function handleQuery() {
 }
 /** 重置按钮操作 */
 function resetQuery() {
-  proxy.resetForm('queryRef')
+  resetForm(queryRef)
   handleQuery()
 }
 /** 多选框选中数据 */
