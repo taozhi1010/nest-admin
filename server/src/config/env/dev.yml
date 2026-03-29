@@ -41,6 +41,14 @@ db:
     synchronize: false
     supportBigNumbers: true
     bigNumberStrings: true
+    # 连接池配置 - 防止连接断开
+    extra:
+      connectionLimit: 20  # 最大连接数
+      acquireTimeout: 60000  # 获取连接超时时间 (毫秒)
+      connectTimeout: 60000  # 初始连接超时 (毫秒)
+      idleTimeout: 300000  # 空闲连接超时 (5 分钟)
+      enableKeepAlive: true  # 开启 TCP KeepAlive
+      keepAliveInitialDelay: 0  # TCP KeepAlive 初始延迟
 
 # redis 配置
 redis:
@@ -49,6 +57,10 @@ redis:
   port: 6379
   db: 2
   keyPrefix: ''
+  # 连接池配置 - 防止连接断开
+  keepAlive: 30000  # TCP KeepAlive 间隔 (30 秒)
+  connectTimeout: 10000  # 连接超时 (10 秒)
+  commandTimeout: 10000  # 命令执行超时 (10 秒)
 
 # jwt 配置
 jwt:

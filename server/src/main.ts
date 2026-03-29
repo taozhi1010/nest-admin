@@ -15,6 +15,16 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     cors: true, // 开启跨域访问
   });
+
+  // 配置 CORS 选项
+  app.enableCors({
+    origin: true, // 允许所有来源（开发环境）
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+    exposedHeaders: ['Content-Disposition'],
+    credentials: true, // 允许携带 cookie
+    maxAge: 3600, // 预检请求缓存时间
+  });
   const config = app.get(ConfigService);
   // 设置访问频率
   app.use(
@@ -51,6 +61,7 @@ async function bootstrap() {
           fontSrc: [`'self'`, 'fonts.gstatic.com', 'cdn.redoc.ly'],
           scriptSrc: [`'self'`, `'unsafe-inline'`, 'cdn.redoc.ly'],
           imgSrc: [`'self'`, 'data:', 'cdn.redoc.ly'],
+          frameAncestors: [`'self'`, 'http://localhost:*', 'https://localhost:*'], // 允许本地任意端口嵌套
         },
       },
     }),
@@ -58,6 +69,19 @@ async function bootstrap() {
 
   // 设置 API 文档（Swagger UI + Redoc）
   setupApiDocs(app, prefix, '#1890ff');
+
+  // 为 Swagger UI 和 Redoc 静态资源添加 CORS 头
+  app.use('/swagger-ui*', (req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET, OPTIONS');
+    next();
+  });
+
+  app.use('/docs*', (req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET, OPTIONS');
+    next();
+  });
 
   // 获取真实 ip
   app.use(requestIpMw({ attributeName: 'ip' }));
