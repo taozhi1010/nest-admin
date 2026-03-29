@@ -209,6 +209,7 @@ function reset() {
     remark: undefined
   };
   resetForm("postRef");
+  resetForm("postRef");
 }
 /** 搜索按钮操作 */
 function handleQuery() {
@@ -217,6 +218,7 @@ function handleQuery() {
 }
 /** 重置按钮操作 */
 function resetQuery() {
+  resetForm("queryRef");
   resetForm("queryRef");
   handleQuery();
 }

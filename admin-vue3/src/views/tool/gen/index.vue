@@ -347,6 +347,7 @@ function openImportTable() {
 function resetQuery() {
   dateRange.value = [];
   resetForm('queryRef');
+  resetForm('queryRef');
   handleQuery();
 }
 /** 预览按钮 */
