@@ -4,6 +4,7 @@ import Cookies from 'js-cookie'
 
 import ElementPlus from 'element-plus'
 import locale from 'element-plus/es/locale/lang/zh-cn' // 中文语言
+import 'element-plus/dist/index.css' // 引入全局样式
 
 
 import '@/assets/styles/index.scss' // global css
