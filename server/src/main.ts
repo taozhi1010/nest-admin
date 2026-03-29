@@ -20,7 +20,7 @@ async function bootstrap() {
   app.enableCors({
     origin: true, // 允许所有来源（开发环境）
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'istoken'],
     exposedHeaders: ['Content-Disposition'],
     credentials: true, // 允许携带 cookie
     maxAge: 3600, // 预检请求缓存时间
