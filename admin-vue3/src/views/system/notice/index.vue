@@ -1,12 +1,13 @@
 <template>
+  <!-- 通知公告 -->
   <div class="app-container">
-    <el-form :model="notice.queryParams" ref="notice.queryRef" :inline="true" v-show="notice.showSearch">
+    <el-form :model="notice.queryParams" ref="queryRef" :inline="true" v-show="notice.showSearch">
       <el-form-item label="公告标题" prop="noticeTitle">
-        <el-input v-model="notice.queryParams.noticeTitle" placeholder="请输入公告标题" clearable
+        <el-input v-model.trim="notice.queryParams.noticeTitle" placeholder="请输入公告标题" clearable
           @keyup.enter="notice.onSearch" />
       </el-form-item>
       <el-form-item label="操作人员" prop="createBy">
-        <el-input v-model="notice.queryParams.createBy" placeholder="请输入操作人员" clearable
+        <el-input v-model.trim="notice.queryParams.createBy" placeholder="请输入操作人员" clearable
           @keyup.enter="notice.onSearch" />
       </el-form-item>
       <el-form-item label="类型" prop="noticeType">
@@ -68,12 +69,12 @@
 
     <!-- 添加或修改公告对话框 -->
     <el-dialog :title="notice.title" v-model="notice.open" width="800px" append-to-body>
-      <el-form v-loading="notice.formLoading" ref="notice.noticeFormRef" :model="notice.form" :rules="notice.rules"
+      <el-form v-loading="notice.formLoading" ref="noticeFormRef" :model="notice.form" :rules="notice.rules"
         label-width="80px">
         <el-row>
           <el-col :span="12">
             <el-form-item label="公告标题" prop="noticeTitle">
-              <el-input v-model="notice.form.noticeTitle" placeholder="请输入公告标题" />
+              <el-input v-model.trim="notice.form.noticeTitle" placeholder="请输入公告标题" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -110,6 +111,7 @@
 </template>
 
 <script setup name="Notice">
+import { nextTick } from 'vue'
 import { listNotice, getNotice, delNotice, addNotice, updateNotice } from '@/api/system/notice'
 import { useDict } from '@/composables/useDict'
 import { parseTime, resetForm } from '@/composables/useCommon'
@@ -119,11 +121,13 @@ const { proxy } = getCurrentInstance()
 const { sys_notice_status, sys_notice_type } = useDict('sys_notice_status', 'sys_notice_type')
 const { isNullorUndefined } = useCatTools()
 
+// 表单 ref
+const queryRef = ref()
+const noticeFormRef = ref()
+
 // 公告管理
 const notice = reactive({
   // 响应式数据
-  queryRef: null,
-  noticeFormRef: null,
   showSearch: true,
   ids: [],
   single: true,
@@ -172,7 +176,7 @@ const notice = reactive({
 
   // 重置按钮
   onReset: () => {
-    resetForm(notice.queryRef)
+    resetForm(queryRef.value)
     notice.onSearch()
   },
 
@@ -185,14 +189,20 @@ const notice = reactive({
 
   // 新增操作
   handleAdd: () => {
-    notice.form = {}
+    notice.form = {
+      noticeType: '1', // 默认选中第一个类型（通知公告）
+      status: '0' // 默认启用状态
+    }
     notice.title = '添加公告'
     notice.open = true
   },
 
   // 修改操作
   handleUpdate: async (row) => {
-    notice.form = {}
+    notice.form = {
+      noticeType: '1',
+      status: '0'
+    }
     notice.title = '修改公告'
     notice.open = true
     notice.formLoading = true
@@ -208,7 +218,9 @@ const notice = reactive({
 
   // 提交按钮
   handleSubmit: () => {
-    notice.noticeFormRef.validate(async (valid) => {
+    if (!noticeFormRef.value) return
+
+    noticeFormRef.value.validate(async (valid) => {
       if (!valid) return
 
       notice.formLoading = true
@@ -233,7 +245,14 @@ const notice = reactive({
   // 取消弹窗
   handleCancel: () => {
     notice.open = false
-    notice.form = {}
+    notice.form = {
+      noticeType: '1',
+      status: '0'
+    }
+    // 重置表单验证
+    nextTick(() => {
+      noticeFormRef.value?.resetFields()
+    })
   },
 
   // 删除操作
