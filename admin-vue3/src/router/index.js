@@ -143,6 +143,28 @@ export const dynamicRoutes = [
         meta: { title: '修改生成配置', activeMenu: '/tool/gen' }
       }
     ]
+  },
+  {
+    path: '/tool/error-page',
+    component: Layout,
+    hidden: false,
+    alwaysShow: true,
+    permissions: ['tool:error:list'],
+    meta: { title: '错误页面', icon: 'error' },
+    children: [
+      {
+        path: '401',
+        component: () => import('@/views/error/401'),
+        name: 'Error401',
+        meta: { title: '401 未授权', icon: 'error' }
+      },
+      {
+        path: '404',
+        component: () => import('@/views/error/404'),
+        name: 'Error404',
+        meta: { title: '404 未找到', icon: 'error' }
+      }
+    ]
   }
 ]
 

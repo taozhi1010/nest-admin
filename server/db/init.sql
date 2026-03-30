@@ -740,3 +740,78 @@ CREATE TABLE `sys_upload` (
   `ext` varchar(255) DEFAULT NULL COMMENT '拓展名',
   PRIMARY KEY (`upload_id`)
 ) ENGINE=InnoDB COMMENT='文件上传记录';
+
+
+-- ----------------------------
+-- 21、游戏库表
+-- ----------------------------
+DROP TABLE IF EXISTS `game_info`;
+CREATE TABLE `game_info` (
+  `id` VARCHAR (64) NOT NULL COMMENT '游戏id',
+  `name_zh` VARCHAR (64) NOT NULL COMMENT '游戏中文名',
+  `name_en` VARCHAR (64) NOT NULL COMMENT '游戏英文名',
+  `desc` VARCHAR (255) DEFAULT NULL COMMENT '游戏简介',
+  `cover` VARCHAR (255) DEFAULT NULL COMMENT '游戏封面',
+  `desc_cover_url` VARCHAR (255) DEFAULT NULL COMMENT '游戏描述图片',
+  `game_type` VARCHAR (64) DEFAULT NULL COMMENT '游戏类型',
+  `version` VARCHAR (32) DEFAULT NULL COMMENT '当前版本号',
+  `language` VARCHAR (32) DEFAULT NULL COMMENT '支持语言（数据字典game_language）',
+  `online` CHAR(1) NOT NULL DEFAULT '0' COMMENT '是否支持联机（1：是，0：否）',
+  `age_range` VARCHAR (32) DEFAULT NULL COMMENT '适龄区间',
+  `sale_platform` VARCHAR (128) DEFAULT NULL COMMENT '发售平台',
+  `operate_system` VARCHAR (128) DEFAULT NULL COMMENT '操作系统',
+  `release_date` DATETIME (6) DEFAULT NULL COMMENT '发售日期',
+  `price` DECIMAL (10, 2) DEFAULT NULL COMMENT '最近价格',
+  `lowest_price` DECIMAL (10, 2) DEFAULT NULL COMMENT '史上最低价格',
+  `game_studio` VARCHAR (128) DEFAULT NULL COMMENT '游戏开发商',
+  `create_time` DATETIME (6) DEFAULT CURRENT_TIMESTAMP(6) COMMENT '创建时间',
+  `remark` VARCHAR (500) DEFAULT NULL COMMENT '备注',
+  `del_flag` CHAR(1) NOT NULL DEFAULT '0' COMMENT '删除标志（0代表存在 1代表删除）',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB COMMENT='游戏库';
+
+
+
+-- ----------------------------
+-- 22、游戏文章库
+-- ----------------------------
+DROP TABLE IF EXISTS `game_article`;
+CREATE TABLE `game_article` (
+  `id` varchar(64) NOT NULL COMMENT '文章id',
+  `title` varchar(64) NOT NULL COMMENT '文章标题',
+  `desc` varchar(255) DEFAULT NULL COMMENT '文章简介',
+  `subject_id` varchar(64) NOT NULL COMMENT '专栏id',
+  `content` longtext COMMENT '文章内容',
+  `cover` varchar(255) DEFAULT NULL COMMENT '封面',
+  `author` varchar(64) DEFAULT NULL COMMENT '作者',
+  `publish_time` datetime(6) DEFAULT NULL COMMENT '发布时间',
+  `like_num` VARCHAR(64) NOT NULL DEFAULT '0' COMMENT '点赞数',
+  `read_num` VARCHAR(64) NOT NULL DEFAULT '0' COMMENT '阅读数',
+  `comment_num` VARCHAR(64) NOT NULL DEFAULT '0' COMMENT '评论数',
+  `status` char(1) NOT NULL DEFAULT '0' COMMENT '发布状态（0草稿 1发布 2下架 3审核中）',
+  `sort` int(11) DEFAULT NULL COMMENT '排序',
+  `create_time` datetime(6) DEFAULT CURRENT_TIMESTAMP(6) COMMENT '创建时间',
+  `update_time` datetime(6) DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6) COMMENT '更新时间',
+  `del_flag` CHAR(1) NOT NULL DEFAULT '0' COMMENT '删除标志（0代表存在 1代表删除）',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB COMMENT='文章库';
+
+
+
+-- ----------------------------
+-- 22、游戏专栏库
+-- ----------------------------
+DROP TABLE IF EXISTS `game_subject`;
+CREATE TABLE `game_subject`  (
+  `id` varchar(64) NOT NULL COMMENT '专栏id',
+  `title` varchar(64) NOT NULL COMMENT '专栏标题',
+  `desc` varchar(255) DEFAULT NULL COMMENT '专栏简介',
+  `cover` varchar(255) DEFAULT NULL COMMENT '专栏封面',
+  `author` varchar(64) DEFAULT NULL COMMENT '作者',
+  `status` char(1) NOT NULL DEFAULT '0' COMMENT '发布状态（0草稿 1发布 2下架 3审核中）',
+  `sort` int(11) DEFAULT NULL COMMENT '排序',
+  `create_time` datetime(6) DEFAULT CURRENT_TIMESTAMP(6) COMMENT '创建时间',
+  `update_time` datetime(6) DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6) COMMENT '更新时间',
+  `del_flag` CHAR(1) NOT NULL DEFAULT '0' COMMENT '删除标志（0代表存在 1代表删除）',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB COMMENT='专栏库';

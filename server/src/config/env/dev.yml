@@ -1,0 +1,89 @@
+# 开发环境配置
+app:
+  prefix: ''
+  port: 8080
+  logger:
+    # 项目日志存储路径，相对路径（相对本项目根目录）或绝对路径
+    dir: '../logs'
+  # 文件相关
+  file:
+    # 是否为本地文件服务或cos
+    isLocal: true
+    # location 文件上传后存储目录，相对路径（相对本项目根目录）或绝对路径
+    location: '../upload'
+    # 文件服务器地址，这是开发环境的配置 生产环境请自行配置成可访问域名
+    domain: 'http://localhost:8080'
+    # 文件虚拟路径, 必须以 / 开头， 如 http://localhost:8080/profile/****.jpg  , 如果不需要则 设置 ''
+    serveRoot: '/profile'
+    # 文件大小限制，单位M
+    maxSize: 10
+# 腾讯云cos配置
+cos:
+  secretId: ''
+  secretKey: ''
+  bucket: ''
+  region: ''
+  domain: ''
+  location: ''
+# 数据库配置
+db:
+  mysql:
+    host: '111.229.29.214'
+    username: 'root'
+    password: 'mysql_6zaSGd'
+    database: 'mysql'  # 暂时使用 mysql 数据库，因为 nest_admin 还不存在
+    port: 3306
+    charset: 'utf8mb4'
+    logger: 'file'
+    logging: true
+    multipleStatements: true
+    dropSchema: false
+    synchronize: false
+    supportBigNumbers: true
+    bigNumberStrings: true
+    # 连接池配置 - 防止连接断开
+    extra:
+      connectionLimit: 20  # 最大连接数
+      connectTimeout: 30000  # 初始连接超时 (30 秒)
+      acquireTimeout: 30000  # 获取连接超时 (30 秒) - TypeORM 会忽略此参数
+      timeout: 30000  # 查询超时 (30 秒)
+      idleTimeout: 180000  # 空闲连接超时 (3 分钟) - 短于数据库的 wait_timeout
+      enableKeepAlive: true  # 开启 TCP KeepAlive
+      keepAliveInitialDelay: 10000  # TCP KeepAlive 间隔 (10 秒)
+
+# redis 配置
+redis:
+  host: '111.229.29.214'
+  password: 'redis_dECN6N'
+  port: 6379
+  db: 2
+  keyPrefix: ''
+  # 连接池配置 - 防止连接断开
+  keepAlive: 30000  # TCP KeepAlive 间隔 (30 秒)
+  connectTimeout: 10000  # 连接超时 (10 秒)
+  commandTimeout: 10000  # 命令执行超时 (10 秒)
+
+# jwt 配置
+jwt:
+  secretkey: 'you_secretkey'
+  expiresin: '1h'
+  refreshExpiresIn: '2h'
+# 权限 白名单配置
+perm:
+  router:
+    whitelist:
+      [
+        { path: '/captchaImage', method: 'GET' },
+        { path: '/register', method: 'POST' },
+        { path: '/login', method: 'POST' },
+        { path: '/logout', method: 'POST' },
+        { path: '/perm/{id}', method: 'GET' },
+        { path: '/upload', method: 'POST' },
+        { path: '/game/article/guest/list', method: 'GET' },
+        { path: '/game/article/guest/detail', method: 'GET' },
+      ]
+
+# 用户相关
+# 初始密码， 重置密码
+user:
+  initialPassword: '123456'

@@ -282,9 +282,10 @@ import { addMenu, delMenu, getMenu, listMenu, updateMenu } from "@/api/system/me
 import SvgIcon from "@/components/SvgIcon";
 import IconSelect from "@/components/IconSelect";
 import { ClickOutside as vClickOutside } from 'element-plus'
+import { useDict } from '@/composables/useDict'
+import { resetForm, handleTree, parseTime } from '@/composables/useCommon'
 
-const { proxy } = getCurrentInstance();
-const { sys_show_hide, sys_normal_disable } = proxy.useDict("sys_show_hide", "sys_normal_disable");
+const { sys_show_hide, sys_normal_disable } = useDict("sys_show_hide", "sys_normal_disable");
 
 const menuList = ref([]);
 const open = ref(false);
@@ -294,8 +295,9 @@ const title = ref("");
 const menuOptions = ref([]);
 const isExpandAll = ref(false);
 const refreshTable = ref(true);
-const showChooseIcon = ref(false);
-const iconSelectRef = ref(null);
+const showChooseIcon = ref(false)
+const iconSelectRef = ref(null)
+const menuRef = ref(null)
 
 const data = reactive({
   form: {},
@@ -316,7 +318,7 @@ const { queryParams, form, rules } = toRefs(data);
 function getList() {
   loading.value = true;
   listMenu(queryParams.value).then(response => {
-    menuList.value = proxy.handleTree(response.data, "menuId");
+    menuList.value = handleTree(response.data, "menuId");
     loading.value = false;
   });
 }
@@ -325,7 +327,7 @@ function getTreeselect() {
   menuOptions.value = [];
   listMenu().then(response => {
     const menu = { menuId: 0, menuName: "主类目", children: [] };
-    menu.children = proxy.handleTree(response.data, "menuId");
+    menu.children = handleTree(response.data, "menuId");
     menuOptions.value.push(menu);
   });
 }
@@ -348,7 +350,7 @@ function reset() {
     visible: "0",
     status: "0"
   };
-  proxy.resetForm("menuRef");
+  resetForm(menuRef)
 }
 /** 展示下拉图标 */
 function showSelectIcon() {
@@ -374,8 +376,8 @@ function handleQuery() {
 }
 /** 重置按钮操作 */
 function resetQuery() {
-  proxy.resetForm("queryRef");
-  handleQuery();
+  resetForm(queryRef)
+  handleQuery()
 }
 /** 新增按钮操作 */
 function handleAdd(row) {

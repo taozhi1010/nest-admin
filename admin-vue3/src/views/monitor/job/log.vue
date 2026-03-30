@@ -173,9 +173,10 @@
 <script setup name="JobLog">
 import { getJob } from "@/api/monitor/job";
 import { listJobLog, delJobLog, cleanJobLog } from "@/api/monitor/jobLog";
+import { useDict } from '@/composables/useDict'
+import { resetForm, addDateRange, download, parseTime } from '@/composables/useCommon'
 
-const { proxy } = getCurrentInstance();
-const { sys_common_status, sys_job_group } = proxy.useDict("sys_common_status", "sys_job_group");
+const { sys_common_status, sys_job_group } = useDict("sys_common_status", "sys_job_group");
 
 const jobLogList = ref([]);
 const open = ref(false);
@@ -203,7 +204,7 @@ const { queryParams, form, rules } = toRefs(data);
 /** 查询调度日志列表 */
 function getList() {
   loading.value = true;
-  listJobLog(proxy.addDateRange(queryParams.value, dateRange.value)).then(response => {
+  listJobLog(addDateRange(queryParams.value, dateRange.value)).then(response => {
     jobLogList.value = response.data.list;
     total.value = response.data.total;
     loading.value = false;
@@ -222,7 +223,7 @@ function handleQuery() {
 /** 重置按钮操作 */
 function resetQuery() {
   dateRange.value = [];
-  proxy.resetForm("queryRef");
+  resetForm("queryRef");
   handleQuery();
 }
 // 多选框选中数据
@@ -255,7 +256,7 @@ function handleClean() {
 }
 /** 导出按钮操作 */
 function handleExport() {
-  proxy.download("monitor/jobLog/export", {
+  download("monitor/jobLog/export", {
     ...queryParams.value,
   }, `job_log_${new Date().getTime()}.xlsx`);
 }

@@ -52,12 +52,16 @@ const props = defineProps({
 })
 
 const { proxy } = getCurrentInstance()
-const { sys_normal_disable } = proxy.useDict('sys_normal_disable')
+import { useDict } from '@/composables/useDict'
+import { resetForm, parseTime } from '@/composables/useCommon'
+
+const { sys_normal_disable } = useDict('sys_normal_disable')
 
 const userList = ref([])
 const visible = ref(false)
 const total = ref(0)
 const userIds = ref([])
+const refTable = ref(null)
 
 const queryParams = reactive({
   pageNum: 1,
@@ -95,7 +99,7 @@ function handleQuery() {
 }
 /** 重置按钮操作 */
 function resetQuery() {
-  proxy.resetForm('queryRef')
+  resetForm(queryRef)
   handleQuery()
 }
 const emit = defineEmits(['ok'])
