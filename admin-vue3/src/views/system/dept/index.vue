@@ -142,9 +142,10 @@
 
 <script setup name="Dept">
 import { listDept, getDept, delDept, addDept, updateDept, listDeptExcludeChild } from "@/api/system/dept";
+import { useDict } from '@/composables/useDict'
+import { resetForm, handleTree, parseTime } from '@/composables/useCommon'
 
-const { proxy } = getCurrentInstance();
-const { sys_normal_disable } = proxy.useDict("sys_normal_disable");
+const { sys_normal_disable } = useDict("sys_normal_disable");
 
 const deptList = ref([]);
 const open = ref(false);
@@ -152,8 +153,9 @@ const loading = ref(true);
 const showSearch = ref(true);
 const title = ref("");
 const deptOptions = ref([]);
-const isExpandAll = ref(true);
-const refreshTable = ref(true);
+const isExpandAll = ref(true)
+const refreshTable = ref(true)
+const deptRef = ref(null)
 
 const data = reactive({
   form: {},
@@ -176,7 +178,7 @@ const { queryParams, form, rules } = toRefs(data);
 function getList() {
   loading.value = true;
   listDept(queryParams.value).then(response => {
-    deptList.value = proxy.handleTree(response.data, "deptId");
+    deptList.value = handleTree(response.data, "deptId");
     loading.value = false;
   });
 }
@@ -197,7 +199,7 @@ function reset() {
     email: undefined,
     status: "0"
   };
-  proxy.resetForm("deptRef");
+  resetForm(deptRef)
 }
 /** 搜索按钮操作 */
 function handleQuery() {
@@ -205,14 +207,14 @@ function handleQuery() {
 }
 /** 重置按钮操作 */
 function resetQuery() {
-  proxy.resetForm("queryRef");
-  handleQuery();
+  resetForm(queryRef)
+  handleQuery()
 }
 /** 新增按钮操作 */
 function handleAdd(row) {
   reset();
   listDept().then(response => {
-    deptOptions.value = proxy.handleTree(response.data, "deptId");
+    deptOptions.value = handleTree(response.data, "deptId");
   });
   if (row != undefined) {
     form.value.parentId = row.deptId;
@@ -232,7 +234,7 @@ function toggleExpandAll() {
 function handleUpdate(row) {
   reset();
   listDeptExcludeChild(row.deptId).then(response => {
-    deptOptions.value = proxy.handleTree(response.data, "deptId");
+    deptOptions.value = handleTree(response.data, "deptId");
   });
   getDept(row.deptId).then(response => {
     form.value = response.data;

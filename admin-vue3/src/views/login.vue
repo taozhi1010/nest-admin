@@ -7,36 +7,42 @@
     <el-form ref="loginRef" :model="loginForm.model" :rules="loginForm.rules" class="login-form">
       <h3 class="title">nest-admin后台管理系统</h3>
       <el-form-item prop="username">
-        <el-input v-model.trim="loginForm.model.username" maxlength="10" type="text" size="large" auto-complete="off" placeholder="账号">
+        <el-input v-model.trim="loginForm.model.username" maxlength="10" type="text" size="large" auto-complete="off"
+          placeholder="账号">
           <template #prefix>
-            <!-- <svg-icon icon-class="User" class="input-icon" /> -->
             <User class="input-icon" />
           </template>
         </el-input>
       </el-form-item>
       <el-form-item prop="password">
-        <el-input v-model="loginForm.model.password" maxlength="20" type="password" size="large" auto-complete="off" placeholder="密码" @keyup.enter="handleLogin">
+        <el-input v-model="loginForm.model.password" maxlength="20" type="password" size="large" auto-complete="off"
+          placeholder="密码" @keyup.enter="handleLogin">
           <template #prefix>
             <Lock class="input-icon" />
           </template>
         </el-input>
       </el-form-item>
       <el-form-item prop="code" v-if="authCodeInfo.captchaEnabled">
-        <el-input v-model.trim="loginForm.model.code" maxlength="3" size="large" auto-complete="off" placeholder="验证码" style="width: 63%" @keyup.enter="handleLogin">
-          <template #prefix>
-            <svg-icon icon-class="validCode" class="input-icon" />
-          </template>
-        </el-input>
-        <div class="login-code" v-html="authCodeInfo.imgUrl" @click="useAuthCode.getValidateCode(loginForm.model, true)" />
+        <div class="code-input-container">
+          <el-input v-model.trim="loginForm.model.code" maxlength="3" size="large" auto-complete="off" placeholder="验证码"
+            style="width: 63%" @keyup.enter="handleLogin">
+            <template #prefix>
+              <svg-icon icon-class="validCode" class="input-icon" />
+            </template>
+          </el-input>
+          <CaptchaCode size="large" :img-url="authCodeInfo.imgUrl" :refreshing="authCodeInfo.refreshing"
+            @refresh="handleRefreshCaptcha" />
+        </div>
       </el-form-item>
 
       <div class="login-tips">
         <el-checkbox v-model="loginForm.model.rememberMe" style="margin: 0px 0px 25px 0px">记住密码</el-checkbox>
-        <el-link class="login-tips-link" type="primary" href="/register" target="_blank">去注册账号</el-link>
+        <el-link v-if="false" class="login-tips-link" type="primary" href="/register" target="_blank">去注册账号</el-link>
       </div>
 
       <el-form-item style="width: 100%">
-        <el-button :loading="authCodeInfo.loading" size="large" type="primary" style="width: 100%" @click.prevent="handleLogin">
+        <el-button :loading="authCodeInfo.loading" size="large" type="primary" style="width: 100%"
+          @click.prevent="handleLogin">
           <span v-if="!authCodeInfo.loading">登 录</span>
           <span v-else>登 录 中...</span>
         </el-button>
@@ -61,8 +67,9 @@ const loginRef = ref()
 
 const loginForm = reactive({
   model: {
-    username: '',
-    password: '',
+    // TODO: 等后续开发完毕，我会删除这个配置
+    username: 'admin', // 默认登录用户
+    password: '123456', // 默认密码
     rememberMe: false,
     code: '',
     uuid: ''
@@ -92,7 +99,7 @@ function handleLogin() {
       // 勾选了需要记住密码设置在 cookie 中设置记住用户名和密码，否则移除
       useAuthCode.setUserCookie(loginForm.model)
 
-      // 调用action的登录方法
+      // 调用 action 的登录方法
       userStore
         .login(loginForm.model)
         .then(() => {
@@ -111,6 +118,11 @@ function handleLogin() {
   })
 }
 
+// 刷新验证码
+function handleRefreshCaptcha() {
+  useAuthCode.getValidateCode(loginForm.model, true)
+}
+
 useAuthCode.getValidateCode(loginForm.model, false)
 loginForm.model = useAuthCode.getUserCookie(loginForm.model)
 </script>
@@ -125,6 +137,7 @@ loginForm.model = useAuthCode.getUserCookie(loginForm.model)
   height: 100%;
   background: #f0f2f5;
 }
+
 .title {
   margin: 0px auto 30px auto;
   text-align: center;
@@ -136,6 +149,7 @@ loginForm.model = useAuthCode.getUserCookie(loginForm.model)
   background: #ffffff;
   width: 400px;
   padding: 25px 25px 5px 25px;
+
   .input-icon {
     height: 39px;
     width: 14px;
@@ -143,16 +157,16 @@ loginForm.model = useAuthCode.getUserCookie(loginForm.model)
   }
 }
 
-.login-code {
-  width: 35%;
-  height: 48px;
-  float: right;
-  text-align: right;
-  img {
-    cursor: pointer;
-    vertical-align: middle;
+.code-input-container {
+  display: flex;
+  gap: 2%; // 输入框和验证码之间的间距
+  align-items: center; // 垂直居中对齐
+
+  .el-input {
+    flex: 1;
   }
 }
+
 .el-login-footer {
   height: 40px;
   line-height: 40px;

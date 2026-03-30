@@ -12,11 +12,13 @@ import { RedisClientOptions } from '@songkeys/nestjs-redis';
         imports: [ConfigModule],
         inject: [ConfigService],
         useFactory: (config: ConfigService) => {
+          // 动态读取 config 中的 redis 配置
+          const redisConfig = config.get<RedisClientOptions>('redis');
           return {
             closeClient: true,
             readyLog: true,
             errorLog: true,
-            config: config.get<RedisClientOptions>('redis'),
+            config: redisConfig,
           };
         },
       },
