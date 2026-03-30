@@ -1,51 +1,59 @@
-import { reactive } from 'vue'
+import { reactive, Ref } from 'vue'
+import { ElMessage } from 'element-plus'
+import type { FormInstance } from 'element-plus'
+import type { ApiResponse, PageQuery, PageResult } from '@/types/api'
 
 // 后续参考一下这个
 // https://www.buerblog.cn/docs/study/web/use-table
 
 /**
- * 定义pageInfo
+ * 分页信息接口
  */
-interface page {
-  pageNum: number
-  pageSize: number
+interface PageInfo extends PageQuery {
   total: number
 }
 
 /**
- * api参数
+ * API 参数接口
  * @param get 获取列表数据
  * @param export 导出接口
  */
-interface apiParams {
-  get: (id: number | string) => Promise<any>
-  export?: (id: number | string) => Promise<any>
+interface ApiParams {
+  get: (params: PageQuery) => Promise<ApiResponse<PageResult>>
+  export?: (params: PageQuery) => Promise<Blob>
 }
 
 /**
- * 定义数据
+ * 表格状态接口
  */
 interface TableState {
-  page: page
+  page: PageInfo
   loading: boolean
   list: any[]
 }
 
 /**
- * @description table操作方法封装
- * @param {Function} api 表格列表数据接口
- * @param {Object} searchParam 表格查询参数
- * @param {Object} formRef 表单ref,用于处理清空form的校验结果等操作
+ * @description table 操作方法封装
+ * @param api 表格列表数据接口
+ * @param searchParam 表格查询参数（响应式对象）
+ * @param formRef 表单 ref，用于处理清空 form 的校验结果等操作
+ * @param options 配置选项
  */
-
-const useTable = (api: apiParams, searchParam, formRef: any) => {
+const useTable = (
+  api: ApiParams,
+  searchParam: Ref<Record<string, any>>,
+  formRef: Ref<FormInstance | null>,
+  options?: {
+    immediate?: boolean // 是否立即请求，默认 true
+  }
+) => {
   const state = reactive<TableState>({
     loading: false,
     list: [],
     page: {
       pageNum: 1,
       pageSize: 20,
-      total: 1
+      total: 0
     }
   })
 
@@ -54,20 +62,22 @@ const useTable = (api: apiParams, searchParam, formRef: any) => {
     const params = {
       pageNum: state.page.pageNum,
       pageSize: state.page.pageSize,
-      ...searchParam
+      ...searchParam.value
     }
-
+  
     state.loading = true
     try {
       const { code, data } = await api.get(params)
       if (code === 200) {
-        // todo：因为reative的问题，直接清空和赋值无效，只能用push方法，希望能有更优雅的方法
-        state.list.length = 0
-        state.list.push(...data.list)
-        state.page.total = data.total
+        // 直接赋值，保持响应式
+        state.list = data.list || []
+        state.page.total = data.total || 0
+      } else {
+        ElMessage.error('加载失败')
       }
-    } catch (e) {
-      console.log('list error：', e)
+    } catch (error) {
+      console.error('列表加载失败:', error)
+      ElMessage.error('加载失败')
     } finally {
       state.loading = false
     }
@@ -94,18 +104,36 @@ const useTable = (api: apiParams, searchParam, formRef: any) => {
   // 重置搜索
   const onReset = () => {
     state.page.pageNum = 1
-    formRef.value.resetFields()
+    formRef.value?.resetFields()
     request()
   }
 
-  // 导出Excel
-  const onExport = () => {
-    const params = {
-      pageNum: state.page.pageNum,
-      pageSize: state.page.pageSize,
-      ...searchParam
+  // 导出 Excel
+  const onExport = async (fileName?: string) => {
+    if (!api.export) {
+      ElMessage.warning('未提供导出接口')
+      return
     }
-    api.export(params)
+      
+    state.loading = true
+    try {
+      const params = {
+        pageNum: state.page.pageNum,
+        pageSize: state.page.pageSize,
+        ...searchParam.value
+      }
+      const blob = await api.export(params)
+        
+      // 使用 download 工具下载
+      const { download } = await import('@/utils/request')
+      download(blob, fileName || `export_${Date.now()}.xlsx`)
+      ElMessage.success('导出成功')
+    } catch (error) {
+      console.error('导出失败:', error)
+      ElMessage.error('导出失败')
+    } finally {
+      state.loading = false
+    }
   }
 
   // 刷新
@@ -114,7 +142,9 @@ const useTable = (api: apiParams, searchParam, formRef: any) => {
   }
 
   // 初始化请求数据
-  request()
+  if (options?.immediate !== false) {
+    request()
+  }
 
   // 返回相关变量与方法
   return {
