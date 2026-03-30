@@ -11,14 +11,16 @@
         <el-input v-model.trim="config.queryParams.configKey" placeholder="请输入参数键名" clearable style="width: 160px"
           @keyup.enter="config.handleQuery" />
       </el-form-item>
-      <el-form-item label="系统内置" prop="configType" label-width="100px">
+      <el-form-item label="系统内置" prop="configType">
         <template #label>
-          <div style="display: flex; align-items: center; gap: 6px">
+          <span style="display: inline-flex; align-items: center; gap: 4px; white-space: nowrap">
             <el-tooltip effect="dark" content="系统内置：是代表不可删除，否代表可以删除" placement="top-start">
-              <QuestionFilled :size="14" />
+              <el-icon :size="16">
+                <QuestionFilled />
+              </el-icon>
             </el-tooltip>
             <span>系统内置</span>
-          </div>
+          </span>
         </template>
         <el-select v-model="config.queryParams.configType" placeholder="系统内置" clearable style="width: 160px">
           <el-option v-for="dict in sys_yes_no" :key="dict.value" :label="dict.label" :value="dict.value" />
@@ -72,7 +74,6 @@
         </template>
       </el-table-column>
     </el-table>
-
     <pagination v-show="config.total > 0" :total="config.total" v-model:page="config.queryParams.pageNum"
       v-model:limit="config.queryParams.pageSize" @pagination="config.getList" />
   </div>
@@ -92,12 +93,14 @@
       </el-form-item>
       <el-form-item prop="configType">
         <template #label>
-          <div style="display: flex; align-items: center; gap: 6px">
+          <span style="display: inline-flex; align-items: center; gap: 4px; white-space: nowrap">
             <el-tooltip effect="dark" content="系统内置：是代表不可删除，否代表可以删除" placement="top-start">
-              <QuestionFilled :size="14" />
+              <el-icon :size="16">
+                <QuestionFilled />
+              </el-icon>
             </el-tooltip>
             <span>系统内置</span>
-          </div>
+          </span>
         </template>
         <el-radio-group v-model="config.form.configType">
           <el-radio v-for="dict in sys_yes_no" :key="dict.value" :label="dict.value">{{ dict.label }}</el-radio>
