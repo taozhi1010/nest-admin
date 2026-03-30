@@ -1,16 +1,17 @@
 <template>
-	<div class="popup-result">
-		<p class="title">最近5次运行时间</p>
-		<ul class="popup-result-scroll">
-			<template v-if='isShow'>
-				<li v-for='item in resultList' :key="item">{{item}}</li>
-			</template>
-			<li v-else>计算结果中...</li>
-		</ul>
-	</div>
+    <div class="popup-result">
+        <p class="title">最近5次运行时间</p>
+        <ul class="popup-result-scroll">
+            <template v-if='isShow'>
+                <li v-for='item in resultList' :key="item">{{ item }}</li>
+            </template>
+            <li v-else>计算结果中...</li>
+        </ul>
+    </div>
 </template>
 
 <script setup>
+import { ref, watch } from 'vue'
 const props = defineProps({
     ex: {
         type: String,
