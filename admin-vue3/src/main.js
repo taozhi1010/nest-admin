@@ -5,6 +5,7 @@ import Cookies from 'js-cookie'
 import ElementPlus from 'element-plus'
 import locale from 'element-plus/es/locale/lang/zh-cn' // 中文语言
 import 'element-plus/dist/index.css' // 引入全局样式
+import * as ElementPlusIconsVue from '@element-plus/icons-vue' // 引入所有图标
 
 
 import '@/assets/styles/index.scss' // global css
@@ -55,6 +56,11 @@ app.component('ImageUpload', ImageUpload)
 app.component('ImagePreview', ImagePreview)
 app.component('RightToolbar', RightToolbar)
 app.component('Editor', Editor)
+
+// 全局注册所有 Element Plus 图标
+Object.keys(ElementPlusIconsVue).forEach((key) => {
+  app.component(key, ElementPlusIconsVue[key])
+})
 
 app.use(router)
 app.use(store)
