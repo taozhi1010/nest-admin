@@ -77,16 +77,18 @@
                <el-input v-model.trim="post.form.postCode" placeholder="请输入编码名称" />
             </el-form-item>
             <el-form-item label="岗位顺序" prop="postSort">
-               <el-input-number v-model="post.form.postSort" controls-position="right" :min="0" />
+               <el-input-number v-model.trim="post.form.postSort" controls-position="right" :min="0"
+                  placeholder="请输入岗位顺序" />
             </el-form-item>
             <el-form-item label="岗位状态" prop="status">
                <el-radio-group v-model="post.form.status">
                   <el-radio v-for="dict in sys_normal_disable" :key="dict.value" :label="dict.value">{{ dict.label
-                     }}</el-radio>
+                  }}</el-radio>
                </el-radio-group>
             </el-form-item>
             <el-form-item label="备注" prop="remark">
-               <el-input v-model="post.form.remark" type="textarea" placeholder="请输入内容" />
+               <el-input v-model.trim="post.form.remark" type="textarea" placeholder="请输入备注内容" clearable show-word-limit
+                  maxlength="500" />
             </el-form-item>
          </el-form>
          <template #footer>
