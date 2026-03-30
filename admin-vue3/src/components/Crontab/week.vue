@@ -16,23 +16,13 @@
             <el-radio v-model='radioValue' :label="3">
                 周期从
                 <el-select clearable v-model="cycle01">
-                    <el-option
-                        v-for="(item,index) of weekList"
-                        :key="index"
-                        :label="item.value"
-                        :value="item.key"
-                        :disabled="item.key === 7"
-                    >{{item.value}}</el-option>
+                    <el-option v-for="(item, index) of weekList" :key="index" :label="item.value" :value="item.key"
+                        :disabled="item.key === 7">{{ item.value }}</el-option>
                 </el-select>
                 -
                 <el-select clearable v-model="cycle02">
-                    <el-option
-                        v-for="(item,index) of weekList"
-                        :key="index"
-                        :label="item.value"
-                        :value="item.key"
-                        :disabled="item.key <= cycle01"
-                    >{{item.value}}</el-option>
+                    <el-option v-for="(item, index) of weekList" :key="index" :label="item.value" :value="item.key"
+                        :disabled="item.key <= cycle01">{{ item.value }}</el-option>
                 </el-select>
             </el-radio>
         </el-form-item>
@@ -59,7 +49,8 @@
         <el-form-item>
             <el-radio v-model='radioValue' :label="6">
                 指定
-                <el-select class="multiselect" clearable v-model="checkboxList" placeholder="可多选" multiple :multiple-limit="6">
+                <el-select class="multiselect" clearable v-model="checkboxList" placeholder="可多选" multiple
+                    :multiple-limit="6">
                     <el-option v-for="item in weekList" :key="item.key" :label="item.value" :value="item.key" />
                 </el-select>
             </el-radio>
@@ -69,6 +60,7 @@
 </template>
 
 <script setup>
+import { ref, computed, watch } from 'vue'
 const emit = defineEmits(['update'])
 const props = defineProps({
     cron: {
@@ -98,13 +90,13 @@ const weekday = ref(2)
 const checkboxList = ref([])
 const checkCopy = ref([2])
 const weekList = ref([
-    {key: 1, value: '星期日'},
-    {key: 2, value: '星期一'},
-    {key: 3, value: '星期二'},
-    {key: 4, value: '星期三'},
-    {key: 5, value: '星期四'},
-    {key: 6, value: '星期五'},
-    {key: 7, value: '星期六'}
+    { key: 1, value: '星期日' },
+    { key: 2, value: '星期一' },
+    { key: 3, value: '星期二' },
+    { key: 4, value: '星期三' },
+    { key: 5, value: '星期四' },
+    { key: 6, value: '星期五' },
+    { key: 7, value: '星期六' }
 ])
 const cycleTotal = computed(() => {
     cycle01.value = props.check(cycle01.value, 1, 6)
@@ -185,13 +177,19 @@ function onRadioChange() {
 </script>
 
 <style lang="scss" scoped>
-.el-input-number--small, .el-select, .el-select--small {
+.el-input-number--small,
+.el-select,
+.el-select--small {
     margin: 0 0.5rem;
 }
-.el-select, .el-select--small {
+
+.el-select,
+.el-select--small {
     width: 8rem;
 }
-.el-select.multiselect, .el-select--small.multiselect {
+
+.el-select.multiselect,
+.el-select--small.multiselect {
     width: 17.8rem;
 }
 </style>

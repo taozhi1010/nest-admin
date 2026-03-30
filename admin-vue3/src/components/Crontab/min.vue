@@ -33,6 +33,7 @@
     </el-form>
 </template>
 <script setup>
+import { ref, computed, watch } from 'vue'
 const emit = defineEmits(['update'])
 const props = defineProps({
     cron: {
@@ -117,10 +118,14 @@ function onRadioChange() {
 </script>
 
 <style lang="scss" scoped>
-.el-input-number--small, .el-select, .el-select--small {
+.el-input-number--small,
+.el-select,
+.el-select--small {
     margin: 0 0.2rem;
 }
-.el-select, .el-select--small {
+
+.el-select,
+.el-select--small {
     width: 19.8rem;
 }
 </style>
