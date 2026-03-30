@@ -3,11 +3,11 @@
    <div class="app-container">
       <el-form :model="post.queryParams" ref="post.queryRef" :inline="true" v-show="post.showSearch">
          <el-form-item label="岗位编码" prop="postCode">
-            <el-input v-model="post.queryParams.postCode" placeholder="请输入岗位编码" clearable style="width: 200px"
+            <el-input v-model.trim="post.queryParams.postCode" placeholder="请输入岗位编码" clearable style="width: 200px"
                @keyup.enter="post.handleQuery" />
          </el-form-item>
          <el-form-item label="岗位名称" prop="postName">
-            <el-input v-model="post.queryParams.postName" placeholder="请输入岗位名称" clearable style="width: 200px"
+            <el-input v-model.trim="post.queryParams.postName" placeholder="请输入岗位名称" clearable style="width: 200px"
                @keyup.enter="post.handleQuery" />
          </el-form-item>
          <el-form-item label="状态" prop="status">
@@ -69,12 +69,12 @@
 
       <!-- 添加或修改岗位对话框 -->
       <el-dialog :title="post.title" v-model="post.open" width="500px" append-to-body>
-         <el-form ref="post.postRef" :model="post.form" :rules="post.rules" label-width="80px">
+         <el-form ref="postRef" :model="post.form" :rules="post.rules" label-width="80px">
             <el-form-item label="岗位名称" prop="postName">
-               <el-input v-model="post.form.postName" placeholder="请输入岗位名称" />
+               <el-input v-model.trim="post.form.postName" placeholder="请输入岗位名称" />
             </el-form-item>
             <el-form-item label="岗位编码" prop="postCode">
-               <el-input v-model="post.form.postCode" placeholder="请输入编码名称" />
+               <el-input v-model.trim="post.form.postCode" placeholder="请输入编码名称" />
             </el-form-item>
             <el-form-item label="岗位顺序" prop="postSort">
                <el-input-number v-model="post.form.postSort" controls-position="right" :min="0" />
@@ -91,8 +91,8 @@
          </el-form>
          <template #footer>
             <div class="dialog-footer">
-               <el-button type="primary" @click="submitForm">确 定</el-button>
-               <el-button @click="cancel">取 消</el-button>
+               <el-button type="primary" @click="post.submitForm">确 定</el-button>
+               <el-button @click="post.cancel">取 消</el-button>
             </div>
          </template>
       </el-dialog>
@@ -107,11 +107,13 @@ import { resetForm, download, parseTime } from '@/composables/useCommon'
 const { proxy } = getCurrentInstance()
 const { sys_normal_disable } = useDict('sys_normal_disable')
 
+// 模板引用
+const postRef = ref(null)
+
 // 岗位管理
 const post = reactive({
    // 响应式数据
    queryRef: null,
-   postRef: null,
    postList: [],
    open: false,
    loading: true,
@@ -166,7 +168,7 @@ const post = reactive({
          status: "0",
          remark: undefined
       }
-      resetForm(post.postRef)
+      resetForm(postRef.value)
    },
 
    // 搜索按钮操作
@@ -211,7 +213,7 @@ const post = reactive({
 
    // 提交按钮
    submitForm: () => {
-      post.postRef.validate(async (valid) => {
+      postRef.value.validate(async (valid) => {
          if (!valid) return
 
          try {
