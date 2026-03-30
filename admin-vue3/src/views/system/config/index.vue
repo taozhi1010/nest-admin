@@ -1,4 +1,5 @@
 <template>
+  <!-- 参数设置 -->
   <div class="app-container">
     <el-form :model="config.queryParams" ref="config.queryRef" :inline="true" v-show="config.showSearch"
       label-width="68px">

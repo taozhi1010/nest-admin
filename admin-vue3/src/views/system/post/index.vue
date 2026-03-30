@@ -1,4 +1,5 @@
 <template>
+   <!-- 岗位管理 -->
    <div class="app-container">
       <el-form :model="post.queryParams" ref="post.queryRef" :inline="true" v-show="post.showSearch">
          <el-form-item label="岗位编码" prop="postCode">
@@ -25,10 +26,6 @@
          <el-col :span="1.5">
             <el-button type="primary" plain icon="Plus" @click="post.handleAdd"
                v-hasPermi="['system:post:add']">新增</el-button>
-         </el-col>
-         <el-col :span="1.5">
-            <el-button type="success" plain icon="Edit" :disabled="post.single" @click="post.handleUpdate"
-               v-hasPermi="['system:post:edit']">修改</el-button>
          </el-col>
          <el-col :span="1.5">
             <el-button type="danger" plain icon="Delete" :disabled="post.multiple" @click="post.handleDelete"
