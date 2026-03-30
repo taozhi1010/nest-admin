@@ -1,0 +1,17 @@
+{
+  // 禁用 SQL 文件的格式化
+  "[sql]": {
+    "editor.formatOnSave": false,
+    "editor.defaultFormatter": ""
+  },
+  // 禁用所有文件的保存时自动格式化（如果只想针对 SQL，保留上面的配置即可）
+  // "editor.formatOnSave": false,
+  
+  // 排除 SQL 文件不被 Prettier 格式化
+  "prettier.ignoreDocumentLanguage": ["sql"],
+  
+  // 或者使用 files.exclude 完全忽略格式化
+  "files.associations": {
+    "*.sql": "sql"
+  }
+}
