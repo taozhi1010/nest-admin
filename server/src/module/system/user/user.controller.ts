@@ -197,4 +197,11 @@ export class UserController {
   async importData(@UploadedFile() file: Express.Multer.File, @Query('updateSupport') updateSupport: string, @User() user: UserDto) {
     return this.userService.importData(file, updateSupport === '1', user);
   }
+
+  @ApiOperation({ summary: '下载用户导入模板' })
+  @RequirePermission('system:user:add')
+  @Post('/downloadTemplate')
+  async downloadTemplate(@Res() res: Response): Promise<void> {
+    return this.userService.downloadTemplate(res);
+  }
 }
