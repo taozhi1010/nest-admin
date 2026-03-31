@@ -79,6 +79,26 @@ export function FormatDate(date: Date, format = 'YYYY-MM-DD HH:mm:ss') {
 }
 
 /**
+ * 格式化对象中的时间字段
+ * @param obj 对象
+ * @param fields 需要格式化的时间字段名数组
+ * @returns
+ */
+export function FormatObjectDate<T extends Record<string, any>>(obj: T, fields: string[] = ['createTime', 'updateTime']): T {
+  if (!obj || typeof obj !== 'object') {
+    return obj;
+  }
+
+  const result: any = { ...obj };
+  fields.forEach((field) => {
+    if (result[field]) {
+      result[field] = dayjs(result[field]).format('YYYY-MM-DD HH:mm:ss');
+    }
+  });
+  return result as T;
+}
+
+/**
  * 深拷贝
  * @param obj
  * @returns

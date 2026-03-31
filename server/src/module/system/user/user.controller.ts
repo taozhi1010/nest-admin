@@ -183,10 +183,18 @@ export class UserController {
     return this.userService.remove(menuIds);
   }
 
-  @ApiOperation({ summary: '导出用户信息数据为xlsx' })
+  @ApiOperation({ summary: '导出用户信息数据为 xlsx' })
   @RequirePermission('system:user:export')
   @Post('/export')
   async export(@Res() res: Response, @Body() body: ListUserDto, @User() user: UserDto): Promise<void> {
     return this.userService.export(res, body, user.user);
+  }
+
+  @ApiOperation({ summary: '导入用户信息数据从 xlsx' })
+  @RequirePermission('system:user:add')
+  @Post('/importData')
+  @UseInterceptors(FileInterceptor('file'))
+  async importData(@UploadedFile() file: Express.Multer.File, @Query('updateSupport') updateSupport: string, @User() user: UserDto) {
+    return this.userService.importData(file, updateSupport === '1', user);
   }
 }

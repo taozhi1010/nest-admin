@@ -2804,7 +2804,7 @@
     "/system/user/export": {
       "post": {
         "operationId": "UserController_export",
-        "summary": "导出用户信息数据为xlsx",
+        "summary": "导出用户信息数据为 xlsx",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -2816,6 +2816,35 @@
             }
           }
         },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "用户管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/system/user/importData": {
+      "post": {
+        "operationId": "UserController_importData",
+        "summary": "导入用户信息数据从 xlsx",
+        "parameters": [
+          {
+            "name": "updateSupport",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "201": {
             "description": ""
