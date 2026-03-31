@@ -5,7 +5,7 @@ import { JwtService } from '@nestjs/jwt';
 import { RedisService } from 'src/module/common/redis/redis.service';
 import * as bcrypt from 'bcryptjs';
 import { Response } from 'express';
-import { GetNowDate, GenerateUUID, Uniq } from 'src/common/utils/index';
+import { GetNowDate, GenerateUUID, Uniq, createExcelTemplate } from 'src/common/utils/index';
 import { ExportTable } from 'src/common/utils/export';
 import * as ExcelJS from 'exceljs';
 
@@ -1123,5 +1123,38 @@ export class UserService {
     } catch (error) {
       return ResultData.fail(500, `导入失败：${error.message}`);
     }
+  }
+
+  /**
+   * 下载用户导入模板
+   * @param res
+   */
+  async downloadTemplate(res: Response): Promise<void> {
+    const config = {
+      sheetName: '用户数据',
+      fileName: '用户导入模板.xlsx',
+      columns: [
+        { header: '用户账号', key: 'userName', width: 20, required: true },
+        { header: '用户昵称', key: 'nickName', width: 20, required: true },
+        { header: '部门 ID', key: 'deptId', width: 15 },
+        { header: '用户邮箱', key: 'email', width: 25 },
+        { header: '手机号码', key: 'phonenumber', width: 15 },
+        { header: '性别', key: 'sex', width: 10, validation: ['男', '女', '未知'] },
+        { header: '帐号状态', key: 'status', width: 15, validation: ['正常', '停用'] },
+        { header: '备注', key: 'remark', width: 30 },
+      ],
+      exampleData: {
+        userName: 'zhangsan',
+        nickName: '张三',
+        deptId: 100,
+        email: 'zhangsan@example.com',
+        phonenumber: '13800138000',
+        sex: '男',
+        status: '正常',
+        remark: '示例数据，请删除后填写实际数据',
+      },
+    };
+
+    await createExcelTemplate(res, config);
   }
 }

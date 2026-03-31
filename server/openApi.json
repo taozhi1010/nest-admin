@@ -2860,6 +2860,26 @@
         ]
       }
     },
+    "/system/user/downloadTemplate": {
+      "post": {
+        "operationId": "UserController_downloadTemplate",
+        "summary": "下载用户导入模板",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "用户管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
     "/monitor/job/list": {
       "get": {
         "operationId": "JobController_list",
