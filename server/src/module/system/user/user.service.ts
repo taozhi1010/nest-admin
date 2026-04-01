@@ -234,13 +234,15 @@ export class UserService {
    * @param updateUserDto
    * @returns
    */
-  @CacheEvict(CacheEnum.SYS_USER_KEY, '{userId}')
+  @CacheEvict(CacheEnum.SYS_USER_KEY, '{updateUserDto.userId}')
   async update(updateUserDto: UpdateUserDto, userId: number) {
     //不能修改超级管理员
     if (updateUserDto.userId === 1) throw new BadRequestException('非法操作！');
 
     //过滤掉设置超级管理员角色
-    updateUserDto.roleIds = updateUserDto.roleIds.filter((v) => v !== 1);
+    if (updateUserDto.roleIds && Array.isArray(updateUserDto.roleIds)) {
+      updateUserDto.roleIds = updateUserDto.roleIds.filter((v) => v !== 1);
+    }
 
     //当前用户不能修改自己的状态
     if (updateUserDto.userId === userId) {
@@ -556,6 +558,7 @@ export class UserService {
    * @param body
    * @returns
    */
+  @CacheEvict(CacheEnum.SYS_USER_KEY, '{body.userId}')
   async resetPwd(body: ResetPwdDto) {
     if (body.userId === 1) {
       return ResultData.fail(500, '系统用户不能重置密码');
@@ -671,6 +674,7 @@ export class UserService {
    * @param changeStatusDto
    * @returns
    */
+  @CacheEvict(CacheEnum.SYS_USER_KEY, '{changeStatusDto.userId}')
   async changeStatus(changeStatusDto: ChangeStatusDto) {
     const userData = await this.userRepo.findOne({
       where: {
