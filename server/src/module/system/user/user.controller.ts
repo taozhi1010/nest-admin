@@ -41,14 +41,19 @@ export class UserController {
   }
 
   @ApiOperation({
-    summary: '个人中心-上传用户头像',
+    summary: '个人中心 - 上传用户头像',
   })
   @RequirePermission('system:user:edit')
   @Post('/profile/avatar')
   @UseInterceptors(FileInterceptor('avatarfile'))
   async avatar(@UploadedFile() avatarfile: Express.Multer.File, @User() user: UserDto) {
     const res = await this.uploadService.singleFileUpload(avatarfile);
-    return ResultData.ok({ imgUrl: res.fileName });
+    const imgUrl = res.fileName;
+
+    // 将头像 URL 保存到用户信息表
+    await this.userService.updateUserAvatar(user.user.userId, imgUrl);
+
+    return ResultData.ok({ imgUrl });
   }
 
   @ApiOperation({
