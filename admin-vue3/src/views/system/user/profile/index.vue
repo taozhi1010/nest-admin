@@ -3,45 +3,50 @@
     <el-row :gutter="20">
       <el-col :span="6" :xs="24">
         <el-card class="box-card">
-          <template v-slot:header>
+          <template #header>
             <div class="clearfix">
               <span>个人信息</span>
             </div>
           </template>
           <div>
             <div class="text-center">
-              <userAvatar :user="state.user" @updateAvatar="updateAvatar" />
+              <user-avatar :user="profile.user" @update-avatar="profile.updateAvatar" />
             </div>
             <ul class="list-group list-group-striped">
               <li class="list-group-item">
                 <svg-icon icon-class="user" />
                 用户账号
-                <div class="pull-right">{{ state.user.userName }}</div>
+                <div class="pull-right">{{ profile.user.userName }}</div>
               </li>
               <li class="list-group-item">
                 <svg-icon icon-class="phone" />
                 手机号码
-                <div class="pull-right">{{ state.user.phonenumber }}</div>
+                <div class="pull-right">{{ profile.user.phonenumber }}</div>
               </li>
               <li class="list-group-item">
                 <svg-icon icon-class="email" />
                 用户邮箱
-                <div class="pull-right">{{ state.user.email }}</div>
+                <div class="pull-right">{{ profile.user.email }}</div>
               </li>
               <li class="list-group-item">
                 <svg-icon icon-class="tree" />
                 所属部门
-                <div class="pull-right" v-if="state.user.dept">{{ state.user.dept.deptName }} / {{ state.postGroup }}</div>
+                <div v-if="profile.user.dept" class="pull-right">{{ profile.user.dept.deptName }}</div>
               </li>
               <li class="list-group-item">
                 <svg-icon icon-class="peoples" />
                 所属角色
-                <div class="pull-right">{{ state.user.roles }}</div>
+                <div v-if="profile.user.roles && Array.isArray(profile.user.roles)" class="pull-right">
+                  <el-tag v-for="(role, index) in profile.user.roles" :key="index" size="small" style="margin-left: 5px;">
+                    {{ role.roleName }}
+                  </el-tag>
+                </div>
+                <div v-else class="pull-right">{{ profile.user.roles || '-' }}</div>
               </li>
               <li class="list-group-item">
                 <svg-icon icon-class="date" />
                 创建日期
-                <div class="pull-right">{{ state.user.createTime }}</div>
+                <div v-if="profile.user.createTime" class="pull-right">{{ dayjs(profile.user.createTime).format('YYYY-MM-DD HH:mm:ss') }}</div>
               </li>
             </ul>
           </div>
@@ -49,17 +54,17 @@
       </el-col>
       <el-col :span="18" :xs="24">
         <el-card>
-          <template v-slot:header>
+          <template #header>
             <div class="clearfix">
               <span>基本资料</span>
             </div>
           </template>
-          <el-tabs v-model="activeTab">
+          <el-tabs v-model="profile.activeTab">
             <el-tab-pane label="基本资料" name="userinfo">
-              <userInfo :user="state.user" />
+              <user-info :user="profile.user" />
             </el-tab-pane>
             <el-tab-pane label="修改密码" name="resetPwd">
-              <resetPwd />
+              <reset-pwd />
             </el-tab-pane>
           </el-tabs>
         </el-card>
@@ -69,35 +74,49 @@
 </template>
 
 <script setup name="Profile">
+// ==================== 导入区域 ====================
 import userAvatar from './userAvatar'
 import userInfo from './userInfo'
 import resetPwd from './resetPwd'
 import { getUserProfile } from '@/api/system/user'
+import dayjs from 'dayjs'
 
-const activeTab = ref('userinfo')
-const state = reactive({
+// ==================== 实例和字典 ====================
+const { proxy } = getCurrentInstance()
+
+// ==================== 个人信息管理（集中式管理） ====================
+const profile = reactive({
+  // 响应式数据
+  activeTab: 'userinfo',
   user: {},
   roleGroup: {},
-  postGroup: {}
+  postGroup: {},
+
+  // 方法集合
+  // 获取用户信息
+  getUser: async () => {
+    try {
+      const response = await getUserProfile()
+      profile.user = response.data
+      profile.user.createTime = dayjs(profile.user.createTime).format('YYYY-MM-DD HH:mm:ss')
+      const roles = response.data.roles
+        .filter((x) => x && typeof x === 'object' && x.hasOwnProperty('roleName'))
+        .map((x) => x.roleName)
+        .join('、')
+      profile.user.roles = roles
+      profile.roleGroup = response.roleGroup
+      profile.postGroup = response.postGroup
+    } catch (e) {
+      console.error('获取用户信息失败:', e)
+    }
+  },
+
+  // 更新头像
+  updateAvatar: (url) => {
+    profile.user.avatar = url
+  }
 })
 
-function getUser() {
-  getUserProfile().then((res) => {
-    state.user = res.data
-    state.user.createTime = dayjs(state.user.createTime).format('YYYY-MM-DD HH:mm:ss')
-    const roles = res.data.roles
-      .filter((x) => x && typeof x === 'object' && x.hasOwnProperty('roleName'))
-      .map((x) => x.roleName)
-      .join('、')
-    state.user.roles = roles
-    state.roleGroup = res.roleGroup
-    state.postGroup = res.postGroup
-  })
-}
-
-function updateAvatar(url) {
-  state.user.avatar = url
-}
-
-getUser()
+// ==================== 初始化加载 ====================
+profile.getUser()
 </script>
