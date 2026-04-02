@@ -1,78 +1,66 @@
 <template>
   <div class="app-container">
-    <el-form :model="logininfor.queryParams" ref="logininfor.queryRef" :inline="true" v-show="logininfor.showSearch"
-      label-width="68px">
+    <div class="main-card">
+      <el-form v-show="logininfor.showSearch" ref="logininfor.queryRef" :inline="true" label-width="68px" :model="logininfor.queryParams">
       <el-form-item label="登录地址" prop="ipaddr">
-        <el-input v-model="logininfor.queryParams.ipaddr" placeholder="请输入登录地址" clearable style="width: 240px"
-          @keyup.enter="logininfor.handleQuery" />
+        <el-input v-model="logininfor.queryParams.ipaddr" clearable placeholder="请输入登录地址" style="width: 240px" @keyup.enter="logininfor.handleQuery" />
       </el-form-item>
       <el-form-item label="用户账号" prop="userName">
-        <el-input v-model="logininfor.queryParams.userName" placeholder="请输入用户账号" clearable style="width: 240px"
-          @keyup.enter="logininfor.handleQuery" />
+        <el-input v-model="logininfor.queryParams.userName" clearable placeholder="请输入用户账号" style="width: 240px" @keyup.enter="logininfor.handleQuery" />
       </el-form-item>
       <el-form-item label="状态" prop="status">
-        <el-select v-model="logininfor.queryParams.status" placeholder="登录状态" clearable style="width: 140px">
+        <el-select v-model="logininfor.queryParams.status" clearable placeholder="登录状态" style="width: 140px">
           <el-option v-for="dict in sys_common_status" :key="dict.value" :label="dict.label" :value="dict.value" />
         </el-select>
       </el-form-item>
       <el-form-item label="登录时间" style="width: 308px">
-        <el-date-picker v-model="logininfor.dateRange" value-format="YYYY-MM-DD HH:mm:ss" type="daterange"
-          range-separator="-" start-placeholder="开始日期" end-placeholder="结束日期"
-          :default-time="[new Date(2000, 1, 1, 0, 0, 0), new Date(2000, 1, 1, 23, 59, 59)]"></el-date-picker>
+        <el-date-picker v-model="logininfor.dateRange" :default-time="[new Date(2000, 1, 1, 0, 0, 0), new Date(2000, 1, 1, 23, 59, 59)]" end-placeholder="结束日期" range-separator="-" start-placeholder="开始日期" type="daterange" value-format="YYYY-MM-DD HH:mm:ss" />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" icon="Search" @click="logininfor.handleQuery">搜索</el-button>
+        <el-button icon="Search" type="primary" @click="logininfor.handleQuery">搜索</el-button>
         <el-button icon="Refresh" @click="logininfor.resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
 
-    <el-row :gutter="10" class="mb8">
+    <el-row class="mb8" :gutter="10">
       <el-col :span="1.5">
-        <el-button type="danger" plain icon="Delete" :disabled="logininfor.multiple" @click="logininfor.handleDelete"
-          v-hasPermi="['monitor:logininfor:remove']">删除</el-button>
+        <el-button v-hasPermi="['monitor:logininfor:remove']" :disabled="logininfor.multiple" icon="Delete" plain type="danger" @click="logininfor.handleDelete">删除</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button type="danger" plain icon="Delete" @click="logininfor.handleClean"
-          v-hasPermi="['monitor:logininfor:remove']">清空</el-button>
+        <el-button v-hasPermi="['monitor:logininfor:remove']" icon="Delete" plain type="danger" @click="logininfor.handleClean">清空</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button type="primary" plain icon="Unlock" :disabled="logininfor.single" @click="logininfor.handleUnlock"
-          v-hasPermi="['monitor:logininfor:unlock']">解锁</el-button>
+        <el-button v-hasPermi="['monitor:logininfor:unlock']" :disabled="logininfor.single" icon="Unlock" plain type="primary" @click="logininfor.handleUnlock">解锁</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button type="warning" plain icon="Download" @click="logininfor.handleExport"
-          v-hasPermi="['monitor:logininfor:export']">导出</el-button>
+        <el-button v-hasPermi="['monitor:logininfor:export']" icon="Download" plain type="warning" @click="logininfor.handleExport">导出</el-button>
       </el-col>
-      <right-toolbar v-model:showSearch="logininfor.showSearch" @queryTable="logininfor.getList"></right-toolbar>
+      <right-toolbar v-model:show-search="logininfor.showSearch" @query-table="logininfor.getList" />
     </el-row>
 
-    <el-table ref="logininfor.logininforRef" v-loading="logininfor.loading" :data="logininfor.list"
-      @selection-change="logininfor.handleSelectionChange" :default-sort="logininfor.defaultSort"
-      @sort-change="logininfor.handleSortChange">
-      <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="访问编号" align="center" prop="infoId" />
-      <el-table-column label="用户账号" align="center" prop="userName" :show-overflow-tooltip="true" sortable="custom"
-        :sort-orders="['descending', 'ascending']" />
-      <el-table-column label="地址" align="center" prop="ipaddr" :show-overflow-tooltip="true" />
-      <el-table-column label="登录地点" align="center" prop="loginLocation" :show-overflow-tooltip="true" />
-      <el-table-column label="操作系统" align="center" prop="os" :show-overflow-tooltip="true" />
-      <el-table-column label="浏览器" align="center" prop="browser" :show-overflow-tooltip="true" />
-      <el-table-column label="登录状态" align="center" prop="status">
+    <el-table ref="logininfor.logininforRef" v-loading="logininfor.loading" :data="logininfor.list" :default-sort="logininfor.defaultSort" @selection-change="logininfor.handleSelectionChange" @sort-change="logininfor.handleSortChange">
+      <el-table-column align="center" type="selection" width="55" />
+      <el-table-column align="center" label="访问编号" prop="infoId" />
+      <el-table-column align="center" label="用户账号" prop="userName" :show-overflow-tooltip="true" :sort-orders="['descending', 'ascending']" sortable="custom" />
+      <el-table-column align="center" label="地址" prop="ipaddr" :show-overflow-tooltip="true" />
+      <el-table-column align="center" label="登录地点" prop="loginLocation" :show-overflow-tooltip="true" />
+      <el-table-column align="center" label="操作系统" prop="os" :show-overflow-tooltip="true" />
+      <el-table-column align="center" label="浏览器" prop="browser" :show-overflow-tooltip="true" />
+      <el-table-column align="center" label="登录状态" prop="status">
         <template #default="scope">
           <dict-tag :options="sys_common_status" :value="scope.row.status" />
         </template>
       </el-table-column>
-      <el-table-column label="描述" align="center" prop="msg" :show-overflow-tooltip="true" />
-      <el-table-column label="访问时间" align="center" prop="loginTime" sortable="custom"
-        :sort-orders="['descending', 'ascending']" width="180">
+      <el-table-column align="center" label="描述" prop="msg" :show-overflow-tooltip="true" />
+      <el-table-column align="center" label="访问时间" prop="loginTime" :sort-orders="['descending', 'ascending']" sortable="custom" width="180">
         <template #default="scope">
           <span>{{ parseTime(scope.row.loginTime) }}</span>
         </template>
       </el-table-column>
     </el-table>
 
-    <pagination v-show="logininfor.total > 0" :total="logininfor.total" v-model:page="logininfor.queryParams.pageNum"
-      v-model:limit="logininfor.queryParams.pageSize" @pagination="logininfor.getList" />
+    <pagination v-show="logininfor.total > 0" v-model:limit="logininfor.queryParams.pageSize" v-model:page="logininfor.queryParams.pageNum" :total="logininfor.total" @pagination="logininfor.getList" />
+    </div>
   </div>
 </template>
 
@@ -157,7 +145,7 @@ const logininfor = reactive({
   handleDelete: async (row) => {
     const infoIds = row.infoId || logininfor.ids
     try {
-      await proxy.$modal.confirm('是否确认删除访问编号为"' + infoIds + '"的数据项？')
+      await proxy.$modal.confirm(`是否确认删除访问编号为"${infoIds}"的数据项？`)
       await delLogininfor(infoIds)
       proxy.$modal.msgSuccess('删除成功')
       logininfor.getList()
@@ -186,9 +174,9 @@ const logininfor = reactive({
   handleUnlock: async () => {
     const username = logininfor.selectName
     try {
-      await proxy.$modal.confirm('是否确认解锁用户"' + username + '"数据项？')
+      await proxy.$modal.confirm(`是否确认解锁用户"${username}"数据项？`)
       await unlockLogininfor(username)
-      proxy.$modal.msgSuccess('用户' + username + '解锁成功')
+      proxy.$modal.msgSuccess(`用户${username}解锁成功`)
     } catch (e) {
       if (e !== 'cancel') {
         console.error('解锁失败:', e)
