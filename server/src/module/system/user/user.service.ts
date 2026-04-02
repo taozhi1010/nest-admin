@@ -855,17 +855,38 @@ export class UserService {
       sex: updateProfileDto.sex,
       avatar: updateProfileDto.avatar,
     };
-  
+
     await this.userRepo.update({ userId: user.user.userId }, allowedFields);
-      
+
     // 更新 Redis 中的用户信息
     const userData = await this.redisService.get(`${CacheEnum.LOGIN_TOKEN_KEY}${user.token}`);
     if (userData) {
       userData.user = Object.assign(userData.user, allowedFields);
       await this.redisService.set(`${CacheEnum.LOGIN_TOKEN_KEY}${user.token}`, userData);
     }
-      
+
     return ResultData.ok();
+  }
+
+  /**
+   * 个人中心 - 更新用户头像
+   * @param userId 用户 ID
+   * @param avatarUrl 头像 URL
+   */
+  async updateUserAvatar(userId: number, avatarUrl: string) {
+    // 更新数据库中的用户头像
+    await this.userRepo.update({ userId }, { avatar: avatarUrl });
+
+    // 更新 Redis 中的用户信息
+    const cacheKeys = await this.redisService.keys(`${CacheEnum.LOGIN_TOKEN_KEY}*`);
+    for (const key of cacheKeys) {
+      const userData = await this.redisService.get(key);
+      if (userData && userData.user?.userId === userId) {
+        userData.user.avatar = avatarUrl;
+        await this.redisService.set(key, userData);
+        break; // 找到并更新后退出
+      }
+    }
   }
 
   /**
