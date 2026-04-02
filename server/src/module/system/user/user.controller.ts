@@ -22,11 +22,13 @@ export class UserController {
   ) {}
 
   @ApiOperation({
-    summary: '个人中心-用户信息',
+    summary: '个人中心 - 用户信息',
   })
   @RequirePermission('system:user:query')
   @Get('/profile')
   profile(@User() user: UserDto) {
+    console.log('🟢 [profile] 获取用户信息:', user.user.userName);
+    console.log('🟢 [profile] 用户头像:', user.user.avatar);
     return ResultData.ok(user.user);
   }
 
@@ -48,10 +50,11 @@ export class UserController {
   @UseInterceptors(FileInterceptor('avatarfile'))
   async avatar(@UploadedFile() avatarfile: Express.Multer.File, @User() user: UserDto) {
     const res = await this.uploadService.singleFileUpload(avatarfile);
-    const imgUrl = res.fileName;
+    // 使用完整 URL 而不是相对路径
+    const imgUrl = res.url;
 
-    // 将头像 URL 保存到用户信息表
-    await this.userService.updateUserAvatar(user.user.userId, imgUrl);
+    // 将头像 URL 保存到用户信息表，并传入当前 token
+    await this.userService.updateUserAvatar(user.user.userId, imgUrl, user.token);
 
     return ResultData.ok({ imgUrl });
   }
