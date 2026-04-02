@@ -131,6 +131,17 @@ aside {
   padding: 20px;
   background-color: #f0f2f5;
   min-height: calc(100vh - 84px); // 减去顶部导航栏高度
+  
+  // 卡片容器样式
+  .main-card {
+    background: #fff;
+    border-radius: 4px;
+    padding: 20px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+    min-height: calc(100vh - 144px); // 最小高度：窗口高度 - 顶部导航栏 - 上下 padding
+    height: calc(100vh - 144px); // 撑满当前窗口（留出底边距）
+    overflow: auto; // 内容超出时显示滚动条
+  }
 }
 
 .components-container {
