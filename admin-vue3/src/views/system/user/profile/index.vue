@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-row :gutter="20">
       <el-col :span="6" :xs="24">
-        <el-card class="box-card">
+        <el-card class="box-card" :body-style="{ height: 'calc(100vh - 200px)', overflow: 'auto' }">
           <template #header>
             <div class="clearfix">
               <span>个人信息</span>
@@ -53,7 +53,7 @@
         </el-card>
       </el-col>
       <el-col :span="18" :xs="24">
-        <el-card>
+        <el-card :body-style="{ height: 'calc(100vh - 200px)', overflow: 'auto' }">
           <template #header>
             <div class="clearfix">
               <span>基本资料</span>
@@ -84,6 +84,33 @@ import dayjs from 'dayjs'
 // ==================== 实例和字典 ====================
 const { proxy } = getCurrentInstance()
 
+// ==================== 方法定义 ====================
+
+// 拼接完整的图片 URL（处理双斜杠问题）
+const buildImageUrl = (path) => {
+  if (!path) return ''
+  
+  // 如果已经是完整 URL（以 http 或 https 开头），直接返回
+  if (path.startsWith('http://') || path.startsWith('https://')) {
+    return path
+  }
+  
+  const baseUrl = import.meta.env.VITE_APP_BASE_API.replace(/\/$/, '')
+  const normalizedPath = path.startsWith('/') ? path : `/${path}`
+  let url = `${baseUrl}${normalizedPath}`
+  
+  // 从第 3 个字符开始替换所有的双斜杠（保留 http:// 或 https://）
+  if (url.startsWith('http')) {
+    const protocol = url.substring(0, url.indexOf('://') + 3)
+    const rest = url.substring(url.indexOf('://') + 3).replaceAll('//', '/')
+    url = protocol + rest
+  } else {
+    url = url.replaceAll('//', '/')
+  }
+  
+  return url
+}
+
 // ==================== 个人信息管理（集中式管理） ====================
 const profile = reactive({
   // 响应式数据
@@ -97,10 +124,17 @@ const profile = reactive({
   getUser: async () => {
     try {
       const response = await getUserProfile()
+      
       profile.user = response.data
       profile.user.createTime = dayjs(profile.user.createTime).format('YYYY-MM-DD HH:mm:ss')
+      
+      // 处理头像路径（使用统一的 URL 构建方法）
+      if (profile.user.avatar) {
+        profile.user.avatar = buildImageUrl(profile.user.avatar)
+      }
+      
       const roles = response.data.roles
-        .filter((x) => x && typeof x === 'object' && x.hasOwnProperty('roleName'))
+        .filter((x) => x && typeof x === 'object' && Object.prototype.hasOwnProperty.call(x, 'roleName'))
         .map((x) => x.roleName)
         .join('、')
       profile.user.roles = roles
@@ -112,8 +146,12 @@ const profile = reactive({
   },
 
   // 更新头像
-  updateAvatar: (url) => {
-    profile.user.avatar = url
+  updateAvatar: async (url) => {
+    const fullUrl = buildImageUrl(url)
+    profile.user.avatar = fullUrl
+    
+    // 重新获取用户信息以确保数据完全同步
+    await profile.getUser()
   }
 })
 

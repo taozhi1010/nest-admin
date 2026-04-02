@@ -1,21 +1,21 @@
 <template>
-  <div class="user-info-head" @click="userAvatar.editCropper()">
-    <img class="img-circle img-lg" :src="userAvatar.options.img" title="点击上传头像" />
-    <el-dialog v-model="userAvatar.open" append-to-body :title="userAvatar.title" width="800px" @close="userAvatar.closeDialog" @opened="userAvatar.modalOpened">
+  <div class="user-info-head" @click="openDialog()">
+    <img class="img-circle img-lg" :src="imgSource" title="点击上传头像" />
+    <el-dialog v-model="dialogVisible" append-to-body title="修改头像" width="800px" @close="closeDialog" @opened="onDialogOpened">
       <el-row>
         <el-col :md="12" :style="{ height: '350px' }" :xs="24">
-          <vue-cropper v-if="userAvatar.visible" ref="cropperRef" :auto-crop="userAvatar.options.autoCrop" :auto-crop-height="userAvatar.options.autoCropHeight" :auto-crop-width="userAvatar.options.autoCropWidth" :fixed-box="userAvatar.options.fixedBox" :img="userAvatar.options.img" :info="true" :output-type="userAvatar.options.outputType" @real-time="userAvatar.realTime" />
+          <vue-cropper v-if="cropperVisible" ref="cropperRef" :auto-crop="true" :auto-crop-height="200" :auto-crop-width="200" :fixed-box="true" :img="imgSource" :info="true" :output-type="'png'" @real-time="handleRealTime" />
         </el-col>
         <el-col :md="12" :style="{ height: '350px' }" :xs="24">
           <div class="avatar-upload-preview">
-            <img :src="userAvatar.options.previews.url" :style="userAvatar.options.previews.img" />
+            <img :src="previews.url" :style="previews.img" />
           </div>
         </el-col>
       </el-row>
       <br />
       <el-row>
         <el-col :lg="2" :md="2">
-          <el-upload action="#" :before-upload="beforeUpload" :http-request="requestUpload" :show-file-list="false">
+          <el-upload action="#" :before-upload="handleFileSelect" :show-file-list="false">
             <el-button>
               选择
               <el-icon class="el-icon--right">
@@ -25,19 +25,19 @@
           </el-upload>
         </el-col>
         <el-col :lg="{ span: 1, offset: 2 }" :md="2">
-          <el-button icon="Plus" @click="userAvatar.changeScale(1)" />
+          <el-button icon="Plus" @click="changeScale(1)" />
         </el-col>
         <el-col :lg="{ span: 1, offset: 1 }" :md="2">
-          <el-button icon="Minus" @click="userAvatar.changeScale(-1)" />
+          <el-button icon="Minus" @click="changeScale(-1)" />
         </el-col>
         <el-col :lg="{ span: 1, offset: 1 }" :md="2">
-          <el-button icon="RefreshLeft" @click="userAvatar.rotateLeft()" />
+          <el-button icon="RefreshLeft" @click="rotateLeft()" />
         </el-col>
         <el-col :lg="{ span: 1, offset: 1 }" :md="2">
-          <el-button icon="RefreshRight" @click="userAvatar.rotateRight()" />
+          <el-button icon="RefreshRight" @click="rotateRight()" />
         </el-col>
         <el-col :lg="{ span: 2, offset: 6 }" :md="2">
-          <el-button type="primary" @click="userAvatar.uploadImg()">提 交</el-button>
+          <el-button type="primary" @click="submitCrop()">提 交</el-button>
         </el-col>
       </el-row>
     </el-dialog>
@@ -50,6 +50,7 @@ import 'vue-cropper/dist/index.css'
 import { VueCropper } from 'vue-cropper'
 import { uploadAvatar } from '@/api/system/user'
 import useUserStore from '@/store/modules/user'
+import { watch } from 'vue'
 
 // ==================== Props ====================
 const props = defineProps({
@@ -69,97 +70,160 @@ const { proxy } = getCurrentInstance()
 // ==================== 表单引用 ====================
 const cropperRef = ref(null)
 
-// ==================== 头像管理（集中式管理） ====================
-const userAvatar = reactive({
-  // 响应式数据
-  open: false,
-  visible: false,
-  title: '修改头像',
+// ==================== 响应式数据 ====================
+const dialogVisible = ref(false)
+const cropperVisible = ref(false)
+const imgSource = ref('')
+const previews = ref({})
 
-  // 图片裁剪数据
-  options: {
-    img: userStore.avatar, // 裁剪图片的地址
-    autoCrop: true, // 是否默认生成截图框
-    autoCropWidth: 200, // 默认生成截图框宽度
-    autoCropHeight: 200, // 默认生成截图框高度
-    fixedBox: true, // 固定截图框大小 不允许改变
-    outputType: 'png', // 默认生成截图为 PNG 格式
-    previews: {} //预览数据
-  },
-
-  // 方法集合
-  // 编辑头像
-  editCropper: () => {
-    userAvatar.open = true
-  },
-
-  // 打开弹出层结束时的回调
-  modalOpened: () => {
-    userAvatar.visible = true
-  },
-
-  // 覆盖默认上传行为
-  requestUpload: () => {},
-
-  // 向左旋转
-  rotateLeft: () => {
-    proxy.$refs.cropperRef.rotateLeft()
-  },
-
-  // 向右旋转
-  rotateRight: () => {
-    proxy.$refs.cropperRef.rotateRight()
-  },
-
-  // 图片缩放
-  changeScale: (num) => {
-    num = num || 1
-    proxy.$refs.cropperRef.changeScale(num)
-  },
-
-  // 上传预处理
-  beforeUpload: (file) => {
-    if (file.type.indexOf('image/') == -1) {
-      proxy.$modal.msgError('文件格式错误，请上传图片类型，如：JPG，PNG 后缀的文件。')
-    } else {
-      const reader = new FileReader()
-      reader.readAsDataURL(file)
-      reader.onload = () => {
-        userAvatar.options.img = reader.result
-      }
-    }
-  },
-
-  // 上传图片
-  uploadImg: async () => {
-    try {
-      proxy.$refs.cropperRef.getCropBlob(async (data) => {
-        let formData = new FormData()
-        formData.append('avatarfile', data)
-        const response = await uploadAvatar(formData)
-        userAvatar.open = false
-        userAvatar.options.img = import.meta.env.VITE_APP_BASE_API + response.data.imgUrl
-        userStore.avatar = userAvatar.options.img
-        emit('updateAvatar', response.data.imgUrl)
-        proxy.$modal.msgSuccess('修改成功')
-        userAvatar.visible = false
-      })
-    } catch (e) {
-      console.error('上传头像失败:', e)
-    }
-  },
-
-  // 实时预览
-  realTime: (data) => {
-    userAvatar.options.previews = data
-  },
-
-  // 关闭窗口
-  closeDialog: () => {
-    userAvatar.options.img = userStore.avatar
-    userAvatar.visible = false
+// ==================== 监听 Props 变化 ====================
+// 监听 user prop 变化，更新头像显示
+watch(() => props.user?.avatar, (newAvatar) => {
+  if (newAvatar) {
+    const imgUrl = buildImageUrl(newAvatar)
+    imgSource.value = imgUrl
+    // 同时更新 store，保持一致
+    userStore.avatar = imgUrl
   }
-})
+}, { immediate: true })
+
+// ==================== 方法定义 ====================
+
+// 拼接完整的图片 URL（处理双斜杠问题）
+const buildImageUrl = (path) => {
+  if (!path) return ''
+  
+  // 如果已经是完整 URL（以 http 或 https 开头），直接返回
+  if (path.startsWith('http://') || path.startsWith('https://')) {
+    return path
+  }
+  
+  const baseUrl = import.meta.env.VITE_APP_BASE_API.replace(/\/$/, '')
+  const normalizedPath = path.startsWith('/') ? path : `/${path}`
+  let url = `${baseUrl}${normalizedPath}`
+  
+  // 从第 3 个字符开始替换所有的双斜杠（保留 http:// 或 https://）
+  if (url.startsWith('http')) {
+    const protocol = url.substring(0, url.indexOf('://') + 3)
+    const rest = url.substring(url.indexOf('://') + 3).replaceAll('//', '/')
+    url = protocol + rest
+  } else {
+    url = url.replaceAll('//', '/')
+  }
+  
+  return url
+}
+
+// 打开裁剪弹窗
+const openDialog = () => {
+  dialogVisible.value = true
+}
+
+// 弹窗打开完成后的回调
+const onDialogOpened = () => {
+  cropperVisible.value = true
+}
+
+// 关闭弹窗
+const closeDialog = () => {
+  dialogVisible.value = false
+  cropperVisible.value = false
+  // 恢复原始图片
+  imgSource.value = userStore.avatar
+}
+
+// 选择图片文件
+const handleFileSelect = (file) => {
+  // 验证文件类型
+  if (!file.type.startsWith('image/')) {
+    proxy.$modal.msgError('文件格式错误，请上传图片类型，如：JPG，PNG 后缀的文件。')
+    return false
+  }
+  
+  // 验证文件大小（2MB 以内）
+  const maxSize = 2 * 1024 * 1024 // 2MB
+  if (file.size > maxSize) {
+    proxy.$modal.msgError('头像图片大小不能超过 2MB！')
+    return false
+  }
+  
+  // 读取文件并显示
+  const reader = new FileReader()
+  reader.readAsDataURL(file)
+  reader.onload = () => {
+    imgSource.value = reader.result
+  }
+  return false // 阻止默认上传行为
+}
+
+// 图片缩放
+const changeScale = (num) => {
+  num = num || 1
+  cropperRef.value?.changeScale(num)
+}
+
+// 向左旋转
+const rotateLeft = () => {
+  cropperRef.value?.rotateLeft()
+}
+
+// 向右旋转
+const rotateRight = () => {
+  cropperRef.value?.rotateRight()
+}
+
+// 实时预览
+const handleRealTime = (data) => {
+  previews.value = data
+}
+
+// 提交裁剪的图片
+const submitCrop = async () => {
+  return new Promise((resolve, reject) => {
+    cropperRef.value?.getCropBlob((blob) => {
+      if (!blob) {
+        proxy.$modal.msgError('裁剪图片失败')
+        reject(new Error('裁剪失败'))
+        return
+      }
+      
+      // 创建 FormData
+      const formData = new FormData()
+      formData.append('avatarfile', blob)
+      
+      // 上传到服务器
+      uploadAvatar(formData)
+        .then((response) => {
+          // 后端返回的 data 就是完整的用户对象，包含 avatar 字段
+          const avatarPath = response.data.avatar || response.data.imgUrl
+          
+          // 获取完整的图片 URL（处理双斜杠问题）
+          const imgUrl = buildImageUrl(avatarPath)
+          
+          // 1. 先通知父组件更新（这样外部头像会立即刷新）
+          emit('updateAvatar', avatarPath)
+          
+          // 2. 更新 Pinia Store
+          userStore.avatar = imgUrl
+          
+          // 3. 更新本地显示
+          imgSource.value = imgUrl
+          
+          // 4. 关闭弹窗
+          closeDialog()
+          
+          // 5. 显示成功提示
+          proxy.$modal.msgSuccess('修改成功')
+          resolve(response)
+        })
+        .catch((error) => {
+          console.error('上传头像失败:', error)
+          proxy.$modal.msgError('上传头像失败，请重试')
+          reject(error)
+        })
+    })
+  })
+}
 </script>
 
 <style lang="scss" scoped>
