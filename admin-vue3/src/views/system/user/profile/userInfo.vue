@@ -1,5 +1,5 @@
 <template>
-  <el-form ref="userInfoRef" label-width="80px" :model="userInfo.form" :rules="userInfo.rules">
+  <el-form ref="userInfoRef" label-width="80px" :model="userInfo.form" :rules="userInfo.rules" :validate-on-rule-change="false">
     <el-form-item label="用户昵称" prop="nickName">
       <el-input v-model.trim="userInfo.form.nickName" maxlength="30" />
     </el-form-item>
@@ -61,9 +61,10 @@ const userInfo = reactive({
     ]
   },
 
-  // 方法集合
   // 提交按钮
   submit: async () => {
+    console.log('=== 调用 updateUserProfile 接口 ===')
+    console.log('表单数据:', userInfo.form)
     try {
       await proxy.$refs.userInfoRef.validate()
       // 将表单数据与用户原始数据合并
@@ -71,6 +72,7 @@ const userInfo = reactive({
         ...props.user,
         ...userInfo.form
       }
+      console.log('提交的数据:', updateData)
       await updateUserProfile(updateData)
       proxy.$modal.msgSuccess('修改成功')
     } catch (e) {
@@ -91,11 +93,14 @@ watch(
   () => props.user,
   (newVal) => {
     if (newVal && Object.keys(newVal).length > 0) {
-      userInfo.form = {
-        nickName: newVal.nickName || '',
-        phonenumber: newVal.phonenumber || '',
-        email: newVal.email || '',
-        sex: newVal.sex || '0'
+      // 只在表单未被用户修改过时才填充数据
+      if (!userInfo.form.nickName && !userInfo.form.phonenumber && !userInfo.form.email) {
+        userInfo.form = {
+          nickName: newVal.nickName || '',
+          phonenumber: newVal.phonenumber || '',
+          email: newVal.email || '',
+          sex: newVal.sex || '0'
+        }
       }
     }
   },

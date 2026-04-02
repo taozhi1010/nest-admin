@@ -129,6 +129,8 @@ aside {
 //main-container全局样式
 .app-container {
   padding: 20px;
+  background-color: #f0f2f5;
+  min-height: calc(100vh - 84px); // 减去顶部导航栏高度
 }
 
 .components-container {
