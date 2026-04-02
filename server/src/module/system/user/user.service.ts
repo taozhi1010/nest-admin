@@ -872,20 +872,77 @@ export class UserService {
    * 个人中心 - 更新用户头像
    * @param userId 用户 ID
    * @param avatarUrl 头像 URL
+   * @param token 当前用户的 token（可选）
    */
-  async updateUserAvatar(userId: number, avatarUrl: string) {
-    // 更新数据库中的用户头像
-    await this.userRepo.update({ userId }, { avatar: avatarUrl });
+  async updateUserAvatar(userId: number, avatarUrl: string, token?: string) {
+    console.log('🔵 [updateUserAvatar] 开始更新头像:', { userId, avatarUrl, token });
 
-    // 更新 Redis 中的用户信息
-    const cacheKeys = await this.redisService.keys(`${CacheEnum.LOGIN_TOKEN_KEY}*`);
-    for (const key of cacheKeys) {
-      const userData = await this.redisService.get(key);
-      if (userData && userData.user?.userId === userId) {
-        userData.user.avatar = avatarUrl;
-        await this.redisService.set(key, userData);
-        break; // 找到并更新后退出
+    try {
+      // 方式 2: 使用 queryRunner 显式事务
+      const queryRunner = this.userRepo.manager.connection.createQueryRunner();
+      await queryRunner.connect();
+      await queryRunner.startTransaction();
+
+      try {
+        // 查询用户
+        const user = await queryRunner.manager.findOne(UserEntity, { where: { userId } });
+        if (!user) {
+          throw new Error(`用户 ${userId} 不存在`);
+        }
+
+        console.log('🔵 [updateUserAvatar] 更新前头像:', user.avatar);
+
+        // 修改头像
+        user.avatar = avatarUrl;
+
+        // 保存
+        await queryRunner.manager.save(user);
+        console.log('🔵 [updateUserAvatar] 已保存到事务');
+
+        // 提交事务
+        await queryRunner.commitTransaction();
+        console.log('✅ [updateUserAvatar] 事务已提交');
+
+        // 再次查询确认（直接查数据库）
+        const verifyUser = await this.userRepo.findOne({ where: { userId } });
+        console.log('🔵 [updateUserAvatar] 最终验证 - 头像:', verifyUser.avatar);
+      } catch (error) {
+        // 回滚事务
+        await queryRunner.rollbackTransaction();
+        console.error('❌ [updateUserAvatar] 事务回滚:', error);
+        throw error;
+      } finally {
+        await queryRunner.release();
       }
+
+      console.log('✅ [updateUserAvatar] 数据库更新成功');
+
+      // 更新 Redis 中的用户信息 - 只更新当前 token 对应的数据
+      if (token) {
+        const cacheKey = `${CacheEnum.LOGIN_TOKEN_KEY}${token}`;
+        const userData = await this.redisService.get(cacheKey);
+
+        if (userData && userData.user?.userId === userId) {
+          console.log('🔵 [updateUserAvatar] 找到匹配 token，更新前 avatar:', userData.user.avatar);
+          userData.user.avatar = avatarUrl;
+
+          const setResult = await this.redisService.set(cacheKey, userData);
+          console.log('🔵 [updateUserAvatar] Redis set 结果:', setResult);
+
+          // 验证是否真的更新了
+          const verifyData = await this.redisService.get(cacheKey);
+          console.log('🔵 [updateUserAvatar] Redis 验证 - avatar:', verifyData?.user?.avatar);
+
+          console.log('🔵 [updateUserAvatar] Redis 缓存已更新');
+        } else {
+          console.warn('⚠️ [updateUserAvatar] 未找到匹配的 token 数据');
+        }
+      }
+
+      console.log('✅ [updateUserAvatar] 完成');
+    } catch (error) {
+      console.error('❌ [updateUserAvatar] 更新失败:', error);
+      throw error;
     }
   }
 
