@@ -227,21 +227,24 @@ export class UploadService {
     const targetFile = path.join(baseDirPath, newFileName);
     //文件目录
     const sourceFilesDir = path.dirname(targetFile);
-    //文件相对地址
-    const relativeFilePath = targetFile.replace(baseDirPath, '');
 
     if (!fs.existsSync(sourceFilesDir)) {
       this.mkdirsSync(sourceFilesDir);
     }
     fs.writeFileSync(targetFile, file.buffer);
 
-    //文件服务完整路径
-    const fileName = path.join(this.config.get('app.file.serveRoot'), relativeFilePath);
-    const url = path.join(this.config.get('app.file.domain'), fileName);
+    //文件服务完整路径 - 使用正斜杠拼接 URL
+    const serveRoot = this.config.get('app.file.serveRoot');
+    const relativeFilePath = targetFile.replace(baseDirPath, '').replace(/\\/g, '/');
+    const fileName = serveRoot + relativeFilePath;
+
+    // 构建 URL（只返回相对路径，前端会自动拼接域名）
+    const url = fileName;  // 返回 /profile/blob_xxx.png 格式
+
     return {
       fileName: fileName,
       newFileName: newFileName,
-      url: url,
+      url: url,  // 返回 /profile/blob_xxx.png 格式
     };
   }
   /**
