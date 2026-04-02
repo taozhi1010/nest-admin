@@ -249,8 +249,8 @@ export class UserService {
       delete updateUserDto.status;
     }
 
-    if (updateUserDto?.postIds?.length > 0) {
-      //用户已有岗位,先删除所有关联岗位
+    if (updateUserDto?.postIds !== undefined) {
+      //用户已有岗位，先删除所有关联岗位
       const hasPostId = await this.sysUserWithPostEntityRep.findOne({
         where: {
           userId: updateUserDto.userId,
@@ -263,18 +263,21 @@ export class UserService {
           userId: updateUserDto.userId,
         });
       }
-      const postEntity = this.sysUserWithPostEntityRep.createQueryBuilder('postEntity');
-      const postValues = updateUserDto.postIds.map((id) => {
-        return {
-          userId: updateUserDto.userId,
-          postId: id,
-        };
-      });
-      postEntity.insert().values(postValues).execute();
+      // 只有当 postIds 不为空时才插入新记录
+      if (updateUserDto.postIds && updateUserDto.postIds.length > 0) {
+        const postEntity = this.sysUserWithPostEntityRep.createQueryBuilder('postEntity');
+        const postValues = updateUserDto.postIds.map((id) => {
+          return {
+            userId: updateUserDto.userId,
+            postId: id,
+          };
+        });
+        postEntity.insert().values(postValues).execute();
+      }
     }
 
-    if (updateUserDto?.roleIds?.length > 0) {
-      //用户已有角色,先删除所有关联角色
+    if (updateUserDto?.roleIds !== undefined) {
+      //用户已有角色，先删除所有关联角色
       const hasRoletId = await this.sysUserWithRoleEntityRep.findOne({
         where: {
           userId: updateUserDto.userId,
@@ -286,14 +289,17 @@ export class UserService {
           userId: updateUserDto.userId,
         });
       }
-      const roleEntity = this.sysUserWithRoleEntityRep.createQueryBuilder('roleEntity');
-      const roleValues = updateUserDto.roleIds.map((id) => {
-        return {
-          userId: updateUserDto.userId,
-          roleId: id,
-        };
-      });
-      roleEntity.insert().values(roleValues).execute();
+      // 只有当 roleIds 不为空时才插入新记录
+      if (updateUserDto.roleIds && updateUserDto.roleIds.length > 0) {
+        const roleEntity = this.sysUserWithRoleEntityRep.createQueryBuilder('roleEntity');
+        const roleValues = updateUserDto.roleIds.map((id) => {
+          return {
+            userId: updateUserDto.userId,
+            roleId: id,
+          };
+        });
+        roleEntity.insert().values(roleValues).execute();
+      }
     }
 
     delete updateUserDto.password;
@@ -836,15 +842,29 @@ export class UserService {
   }
 
   /**
-   * 个人中心-用户信息
+   * 个人中心 - 用户信息
    * @param user
    * @returns
    */
   async updateProfile(user: UserType, updateProfileDto: UpdateProfileDto) {
-    await this.userRepo.update({ userId: user.user.userId }, updateProfileDto);
+    // 只允许更新允许的字段
+    const allowedFields = {
+      nickName: updateProfileDto.nickName,
+      email: updateProfileDto.email,
+      phonenumber: updateProfileDto.phonenumber,
+      sex: updateProfileDto.sex,
+      avatar: updateProfileDto.avatar,
+    };
+  
+    await this.userRepo.update({ userId: user.user.userId }, allowedFields);
+      
+    // 更新 Redis 中的用户信息
     const userData = await this.redisService.get(`${CacheEnum.LOGIN_TOKEN_KEY}${user.token}`);
-    userData.user = Object.assign(userData.user, updateProfileDto);
-    await this.redisService.set(`${CacheEnum.LOGIN_TOKEN_KEY}${user.token}`, userData);
+    if (userData) {
+      userData.user = Object.assign(userData.user, allowedFields);
+      await this.redisService.set(`${CacheEnum.LOGIN_TOKEN_KEY}${user.token}`, userData);
+    }
+      
     return ResultData.ok();
   }
 
