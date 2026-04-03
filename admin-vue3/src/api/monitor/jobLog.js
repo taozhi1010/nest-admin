@@ -12,7 +12,7 @@ export function listJobLog(query) {
 // 删除调度日志
 export function delJobLog(jobLogId) {
   return request({
-    url: '/monitor/jobLog/' + jobLogId,
+    url: `/monitor/jobLog/${jobLogId}`,
     method: 'delete'
   })
 }

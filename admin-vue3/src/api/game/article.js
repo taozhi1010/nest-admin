@@ -12,7 +12,7 @@ export function listArticle(query) {
 // 查询游戏详细
 export function getArticle(ArticleId) {
   return request({
-    url: '/game/article/' + ArticleId,
+    url: `/game/article/${ArticleId}`,
     method: 'get'
   })
 }
@@ -38,7 +38,7 @@ export function updateArticle(data) {
 // 删除游戏
 export function delArticle(ArticleId) {
   return request({
-    url: '/game/article/' + ArticleId,
+    url: `/game/article/${ArticleId}`,
     method: 'delete'
   })
 }

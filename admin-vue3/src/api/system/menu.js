@@ -12,7 +12,7 @@ export function listMenu(query) {
 // 查询菜单详细
 export function getMenu(menuId) {
   return request({
-    url: '/system/menu/' + menuId,
+    url: `/system/menu/${menuId}`,
     method: 'get'
   })
 }
@@ -28,7 +28,7 @@ export function treeselect() {
 // 根据角色ID查询菜单下拉树结构
 export function roleMenuTreeselect(roleId) {
   return request({
-    url: '/system/menu/roleMenuTreeselect/' + roleId,
+    url: `/system/menu/roleMenuTreeselect/${roleId}`,
     method: 'get'
   })
 }
@@ -54,7 +54,7 @@ export function updateMenu(data) {
 // 删除菜单
 export function delMenu(menuId) {
   return request({
-    url: '/system/menu/' + menuId,
+    url: `/system/menu/${menuId}`,
     method: 'delete'
   })
 }

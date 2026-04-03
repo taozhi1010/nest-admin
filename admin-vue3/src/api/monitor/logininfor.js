@@ -12,7 +12,7 @@ export function list(query) {
 // 删除登录日志
 export function delLogininfor(infoId) {
   return request({
-    url: '/monitor/logininfor/' + infoId,
+    url: `/monitor/logininfor/${infoId}`,
     method: 'delete'
   })
 }
@@ -20,7 +20,7 @@ export function delLogininfor(infoId) {
 // 解锁用户登录状态
 export function unlockLogininfor(userName) {
   return request({
-    url: '/monitor/logininfor/unlock/' + userName,
+    url: `/monitor/logininfor/unlock/${userName}`,
     method: 'get'
   })
 }
