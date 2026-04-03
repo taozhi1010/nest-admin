@@ -1,6 +1,6 @@
 <template>
-  <svg :class="svgClass" aria-hidden="true">
-    <use :xlink:href="iconName" :fill="color" />
+  <svg aria-hidden="true" :class="svgClass">
+    <use :fill="color" :xlink:href="iconName" />
   </svg>
 </template>
 
@@ -18,7 +18,7 @@ export default defineComponent({
     color: {
       type: String,
       default: ''
-    },
+    }
   },
   setup(props) {
     return {

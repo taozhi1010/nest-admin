@@ -1,18 +1,8 @@
 <template>
-  <div :class="{ 'show': show }" class="header-search">
+  <div class="header-search" :class="{ show: show }">
     <svg-icon class-name="search-icon" icon-class="search" @click.stop="click" />
-    <el-select
-      ref="headerSearchSelectRef"
-      v-model="search"
-      :remote-method="querySearch"
-      filterable
-      default-first-option
-      remote
-      placeholder="Search"
-      class="header-search-select"
-      @change="change"
-    >
-      <el-option v-for="option in options" :key="option.item.path" :value="option.item" :label="option.item.title.join(' > ')" />
+    <el-select ref="headerSearchSelectRef" v-model="search" class="header-search-select" default-first-option filterable placeholder="Search" remote :remote-method="querySearch" @change="change">
+      <el-option v-for="option in options" :key="option.item.path" :label="option.item.title.join(' > ')" :value="option.item" />
     </el-select>
   </div>
 </template>
@@ -23,32 +13,32 @@ import { getNormalPath } from '@/utils/ruoyi'
 import { isHttp } from '@/utils/validate'
 import usePermissionStore from '@/store/modules/permission'
 
-const search = ref('');
-const options = ref([]);
-const searchPool = ref([]);
-const show = ref(false);
-const fuse = ref(undefined);
-const headerSearchSelectRef = ref(null);
-const router = useRouter();
-const routes = computed(() => usePermissionStore().routes);
+const search = ref('')
+const options = ref([])
+const searchPool = ref([])
+const show = ref(false)
+const fuse = ref(undefined)
+const headerSearchSelectRef = ref(null)
+const router = useRouter()
+const routes = computed(() => usePermissionStore().routes)
 
 function click() {
   show.value = !show.value
   if (show.value) {
     headerSearchSelectRef.value && headerSearchSelectRef.value.focus()
   }
-};
+}
 function close() {
   headerSearchSelectRef.value && headerSearchSelectRef.value.blur()
   options.value = []
   show.value = false
 }
 function change(val) {
-  const path = val.path;
+  const path = val.path
   if (isHttp(path)) {
     // http(s):// 路径新窗口打开
-    const pindex = path.indexOf("http");
-    window.open(path.substr(pindex, path.length), "_blank");
+    const pindex = path.indexOf('http')
+    window.open(path.substr(pindex, path.length), '_blank')
   } else {
     router.push(path)
   }
@@ -66,13 +56,16 @@ function initFuse(list) {
     location: 0,
     distance: 100,
     minMatchCharLength: 1,
-    keys: [{
-      name: 'title',
-      weight: 0.7
-    }, {
-      name: 'path',
-      weight: 0.3
-    }]
+    keys: [
+      {
+        name: 'title',
+        weight: 0.7
+      },
+      {
+        name: 'path',
+        weight: 0.3
+      }
+    ]
   })
 }
 // Filter out the routes that can be displayed in the sidebar
@@ -82,8 +75,10 @@ function generateRoutes(routes, basePath = '', prefixTitle = []) {
 
   for (const r of routes) {
     // skip hidden router
-    if (r.hidden) { continue }
-    const p = r.path.length > 0 && r.path[0] === '/' ? r.path : '/' + r.path;
+    if (r.hidden) {
+      continue
+    }
+    const p = r.path.length > 0 && r.path[0] === '/' ? r.path : `/${r.path}`
     const data = {
       path: !isHttp(r.path) ? getNormalPath(basePath + p) : r.path,
       title: [...prefixTitle]
@@ -118,7 +113,7 @@ function querySearch(query) {
 }
 
 onMounted(() => {
-  searchPool.value = generateRoutes(routes.value);
+  searchPool.value = generateRoutes(routes.value)
 })
 
 watchEffect(() => {
@@ -138,7 +133,7 @@ watch(searchPool, (list) => {
 })
 </script>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 .header-search {
   font-size: 0 !important;
 

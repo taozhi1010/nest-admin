@@ -1,17 +1,17 @@
 <template>
-  <el-menu :default-active="activeMenu" mode="horizontal" @select="handleSelect" :ellipsis="false">
+  <el-menu :default-active="activeMenu" :ellipsis="false" mode="horizontal" @select="handleSelect">
     <template v-for="(item, index) in topMenus">
-      <el-menu-item :style="{ '--theme': theme }" :index="item.path" :key="index" v-if="index < visibleNumber">
+      <el-menu-item v-if="index < visibleNumber" :key="index" :index="item.path" :style="{ '--theme': theme }">
         <svg-icon :icon-class="item.meta.icon" />
         {{ item.meta.title }}
       </el-menu-item>
     </template>
 
     <!-- 顶部菜单超出数量折叠 -->
-    <el-sub-menu :style="{ '--theme': theme }" index="more" v-if="topMenus.length > visibleNumber">
+    <el-sub-menu v-if="topMenus.length > visibleNumber" index="more" :style="{ '--theme': theme }">
       <template #title>更多菜单</template>
       <template v-for="(item, index) in topMenus">
-        <el-menu-item :index="item.path" :key="index" v-if="index >= visibleNumber">
+        <el-menu-item v-if="index >= visibleNumber" :key="index" :index="item.path">
           <svg-icon :icon-class="item.meta.icon" />
           {{ item.meta.title }}
         </el-menu-item>
@@ -68,10 +68,10 @@ const childrenMenus = computed(() => {
     for (let item in router.children) {
       if (router.children[item].parentPath === undefined) {
         if (router.path === '/') {
-          router.children[item].path = '/' + router.children[item].path
+          router.children[item].path = `/${router.children[item].path}`
         } else {
           if (!isHttp(router.children[item].path)) {
-            router.children[item].path = router.path + '/' + router.children[item].path
+            router.children[item].path = `${router.path}/${router.children[item].path}`
           }
         }
         router.children[item].parentPath = router.path
@@ -88,7 +88,7 @@ const activeMenu = computed(() => {
   let activePath = path
   if (path !== undefined && path.lastIndexOf('/') > 0 && hideList.indexOf(path) === -1) {
     const tmpPath = path.substring(1, path.length)
-    activePath = '/' + tmpPath.substring(0, tmpPath.indexOf('/'))
+    activePath = `/${tmpPath.substring(0, tmpPath.indexOf('/'))}`
     if (!route.meta.link) {
       appStore.toggleSideBarHide(false)
     }
