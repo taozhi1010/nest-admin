@@ -1,4 +1,5 @@
 ﻿import { createApp } from 'vue'
+import dayjs from 'dayjs'
 
 import Cookies from 'js-cookie'
 
@@ -6,7 +7,6 @@ import ElementPlus from 'element-plus'
 import locale from 'element-plus/es/locale/lang/zh-cn' // 中文语言
 import 'element-plus/dist/index.css' // 引入全局样式
 import * as ElementPlusIconsVue from '@element-plus/icons-vue' // 引入所有图标
-
 
 import '@/assets/styles/index.scss' // global css
 
@@ -66,9 +66,12 @@ app.use(router)
 app.use(store)
 app.use(plugins)
 app.use(elementIcons)
-app.component('svg-icon', SvgIcon)
+app.component('SvgIcon', SvgIcon)
 app.mixin(submitNoEnter)
 directive(app)
+
+// 全局挂载 dayjs
+app.config.globalProperties.$dayjs = dayjs
 
 // 使用 element-plus 并且设置全局的大小
 app.use(ElementPlus, {
@@ -76,6 +79,15 @@ app.use(ElementPlus, {
   // 支持 large、default、small
   size: Cookies.get('size') || 'default'
 })
+
+// 初始化字典数据
+import useDictStore from '@/store/modules/dict'
+const dictStore = useDictStore()
+if (dictStore) {
+  dictStore.initDict().catch(error => {
+    console.error('字典初始化失败:', error)
+  })
+}
 
 app.mount('#app')
 
