@@ -14,48 +14,48 @@ export function useCatTools() {
      * @param format - 格式化模板，默认 'YYYY-MM-DD HH:mm:ss'
      */
     dateFormat: catTools.dateFormat,
-    
+
     /**
      * 深拷贝
      */
     deepClone: catTools.deepClone,
-    
+
     /**
      * 防抖函数
      * @param fn - 要执行的函数
      * @param delay - 延迟时间（毫秒）
      */
     debounce: catTools.debounce,
-    
+
     /**
      * 节流函数
      * @param fn - 要执行的函数
      * @param delay - 延迟时间（毫秒）
      */
     throttle: catTools.throttle,
-    
+
     /**
      * 生成 UUID
      */
     uuid: catTools.uuid,
-    
+
     /**
      * 解析 URL 参数
      */
     parseUrl: catTools.parseUrl,
-    
+
     /**
      * 格式化文件大小
      */
     formatSize: catTools.formatSize,
-    
+
     /**
      * 随机数
      * @param min - 最小值
      * @param max - 最大值
      */
     random: catTools.random,
-    
+
     // 导出所有 catTools 方法
     ...catTools
   }
