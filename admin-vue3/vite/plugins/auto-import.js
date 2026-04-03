@@ -8,7 +8,14 @@ export default function createAutoImport() {
       imports: ['vue', 'vue-router', 'pinia'],
       dts: true, // 启用类型声明生成
       resolvers: [ElementPlusResolver()],
-      dirs: ['./src/composables']
+      dirs: ['./src/composables'],
+      presetImports: [
+        { from: 'dayjs', as: 'dayjs' },
+        { from: 'dayjs/plugin/isSameOrBefore', as: 'isSameOrBefore' },
+        { from: 'dayjs/plugin/isSameOrAfter', as: 'isSameOrAfter' }
+      ],
+      // 全局导入，无需手动 import
+      injectAtEnd: true
     }),
     Components({
       resolvers: [ElementPlusResolver()]
