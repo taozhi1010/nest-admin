@@ -2336,7 +2336,7 @@
     "/system/user/profile": {
       "get": {
         "operationId": "UserController_profile",
-        "summary": "个人中心-用户信息",
+        "summary": "个人中心 - 用户信息",
         "parameters": [],
         "responses": {
           "200": {
@@ -2384,7 +2384,7 @@
     "/system/user/profile/avatar": {
       "post": {
         "operationId": "UserController_avatar",
-        "summary": "个人中心-上传用户头像",
+        "summary": "个人中心 - 上传用户头像",
         "parameters": [],
         "responses": {
           "201": {
