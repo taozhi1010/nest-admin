@@ -48,7 +48,7 @@ export const constantRoutes = [
     hidden: true
   },
   {
-    path: "/:pathMatch(.*)*",
+    path: '/:pathMatch(.*)*',
     component: () => import('@/views/error/404'),
     hidden: true
   },
@@ -177,7 +177,7 @@ const router = createRouter({
     } else {
       return { top: 0 }
     }
-  },
-});
+  }
+})
 
-export default router;
+export default router
