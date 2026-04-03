@@ -34,12 +34,7 @@ interface ApiParams<T = any, R = any> {
  * @param key 表单的 key，id 关键字，用来获取、修改表单数据
  * @param initialData 表单初始值（可选）
  */
-const useForm = <T = any, R = any>(
-  api: ApiParams<T, R>,
-  formRef: Ref<FormInstance | null>,
-  key: string,
-  initialData?: Partial<T>
-) => {
+const useForm = <T = any, R = any>(api: ApiParams<T, R>, formRef: Ref<FormInstance | null>, key: string, initialData?: Partial<T>) => {
   const state = reactive<FormState>({
     loading: false, // 表单加载状态
     open: false, // 弹窗是否打开
@@ -69,7 +64,7 @@ const useForm = <T = any, R = any>(
       ElMessage.warning('未提供删除接口')
       return
     }
-    
+
     state.loading = true
     try {
       await api.delete(ids)
@@ -86,7 +81,7 @@ const useForm = <T = any, R = any>(
   const onOpenForm = async (row?: any) => {
     state.loading = true
     state.open = true
-    
+
     // 判断是修改还是添加操作
     if (row && row[key]) {
       try {

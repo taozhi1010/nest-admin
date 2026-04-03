@@ -64,7 +64,7 @@ const useTable = (
       pageSize: state.page.pageSize,
       ...searchParam.value
     }
-  
+
     state.loading = true
     try {
       const { code, data } = await api.get(params)
@@ -114,7 +114,7 @@ const useTable = (
       ElMessage.warning('未提供导出接口')
       return
     }
-      
+
     state.loading = true
     try {
       const params = {
@@ -123,7 +123,7 @@ const useTable = (
         ...searchParam.value
       }
       const blob = await api.export(params)
-        
+
       // 使用 download 工具下载
       const { download } = await import('@/utils/request')
       download(blob, fileName || `export_${Date.now()}.xlsx`)
