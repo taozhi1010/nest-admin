@@ -74,7 +74,7 @@ let lastRefreshTime = 0
  */
 const getValidateCode = async (form: LoginForm, isClick = false): Promise<void> => {
   const { isNullorUndefined } = useCatTools()
-  
+
   try {
     // 检查是否正在加载
     if (authCodeInfo.loading || authCodeInfo.refreshing) {
@@ -109,7 +109,7 @@ const getValidateCode = async (form: LoginForm, isClick = false): Promise<void> 
       authCodeInfo.refreshing = true
     }
 
-    const { data } = await getCodeImg() as ApiResponse<CaptchaResponse>
+    const { data } = (await getCodeImg()) as ApiResponse<CaptchaResponse>
     authCodeInfo.loading = true
     authCodeInfo.captchaEnabled = data.captchaEnabled === undefined ? true : data.captchaEnabled
     authCodeInfo.uuid = data.uuid
@@ -135,19 +135,19 @@ const getValidateCode = async (form: LoginForm, isClick = false): Promise<void> 
  */
 const getUserCookie = (data: LoginForm): LoginForm => {
   const { isNullorUndefined } = useCatTools()
-  
+
   const cookieData: CookieData = {
     username: Cookies.get('username'),
     password: Cookies.get('password'),
     rememberMe: Cookies.get('rememberMe')
   }
-  
+
   const form: LoginForm = {
     username: isNullorUndefined(cookieData.username) ? data.username : cookieData.username,
     password: isNullorUndefined(cookieData.password) ? data.password : decrypt(cookieData.password),
     rememberMe: isNullorUndefined(cookieData.rememberMe) ? false : Boolean(cookieData.rememberMe)
   }
-  
+
   return form
 }
 
