@@ -1,17 +1,17 @@
 <template>
-  <el-drawer v-model="drawer.visible" title="文章详情" size="1200px" direction="rtl">
+  <el-drawer v-model="drawer.visible" direction="rtl" size="1200px" title="文章详情">
     <el-tabs v-model="drawer.activeName" class="demo-tabs" @tab-click="handleClick">
       <el-tab-pane label="基本信息" name="first">
         <h2 class="article-title">{{ form.model.title }}</h2>
         <el-descriptions direction="vertical">
-          <el-descriptions-item label="文章简介" :span="3" label-class-name="desc-label">{{ form.model.remark }}</el-descriptions-item>
+          <el-descriptions-item label="文章简介" label-class-name="desc-label" :span="3">{{ form.model.remark }}</el-descriptions-item>
           <el-descriptions-item label="发布时间" label-class-name="desc-label">{{ form.model.publishTime }}</el-descriptions-item>
           <el-descriptions-item label="创建时间" label-class-name="desc-label">{{ form.model.createTime }}</el-descriptions-item>
           <el-descriptions-item label="最后修改时间" :label-class-name="'desc-label'">{{ form.model.updateTime }}</el-descriptions-item>
         </el-descriptions>
       </el-tab-pane>
       <el-tab-pane label="文章内容" name="detail">
-        <MdViewer :value="form.model.content" />
+        <md-viewer :value="form.model.content" />
       </el-tab-pane>
     </el-tabs>
   </el-drawer>

@@ -1,48 +1,43 @@
 <template>
   <div class="login-bg">
-    <div v-for="n in 5" :key="n" />
+    <div v-for="n in 5" :key="n"></div>
   </div>
 
   <div class="login">
-    <el-form ref="loginRef" :model="loginForm.model" :rules="loginForm.rules" class="login-form">
+    <el-form ref="loginRef" class="login-form" :model="loginForm.model" :rules="loginForm.rules">
       <h3 class="title">nest-admin后台管理系统</h3>
       <el-form-item prop="username">
-        <el-input v-model.trim="loginForm.model.username" maxlength="10" type="text" size="large" auto-complete="off"
-          placeholder="账号">
+        <el-input v-model.trim="loginForm.model.username" auto-complete="off" maxlength="10" placeholder="账号" size="large" type="text">
           <template #prefix>
-            <User class="input-icon" />
+            <user class="input-icon" />
           </template>
         </el-input>
       </el-form-item>
       <el-form-item prop="password">
-        <el-input v-model="loginForm.model.password" maxlength="20" type="password" size="large" auto-complete="off"
-          placeholder="密码" @keyup.enter="handleLogin">
+        <el-input v-model="loginForm.model.password" auto-complete="off" maxlength="20" placeholder="密码" size="large" type="password" @keyup.enter="handleLogin">
           <template #prefix>
-            <Lock class="input-icon" />
+            <lock class="input-icon" />
           </template>
         </el-input>
       </el-form-item>
-      <el-form-item prop="code" v-if="authCodeInfo.captchaEnabled">
+      <el-form-item v-if="authCodeInfo.captchaEnabled" prop="code">
         <div class="code-input-container">
-          <el-input v-model.trim="loginForm.model.code" maxlength="3" size="large" auto-complete="off" placeholder="验证码"
-            style="width: 63%" @keyup.enter="handleLogin">
+          <el-input v-model.trim="loginForm.model.code" auto-complete="off" maxlength="3" placeholder="验证码" size="large" style="width: 63%" @keyup.enter="handleLogin">
             <template #prefix>
-              <svg-icon icon-class="validCode" class="input-icon" />
+              <svg-icon class="input-icon" icon-class="validCode" />
             </template>
           </el-input>
-          <CaptchaCode size="large" :img-url="authCodeInfo.imgUrl" :refreshing="authCodeInfo.refreshing"
-            @refresh="handleRefreshCaptcha" />
+          <captcha-code :img-url="authCodeInfo.imgUrl" :refreshing="authCodeInfo.refreshing" size="large" @refresh="handleRefreshCaptcha" />
         </div>
       </el-form-item>
 
       <div class="login-tips">
         <el-checkbox v-model="loginForm.model.rememberMe" style="margin: 0px 0px 25px 0px">记住密码</el-checkbox>
-        <el-link v-if="false" class="login-tips-link" type="primary" href="/register" target="_blank">去注册账号</el-link>
+        <el-link v-if="false" class="login-tips-link" href="/register" target="_blank" type="primary">去注册账号</el-link>
       </div>
 
       <el-form-item style="width: 100%">
-        <el-button :loading="authCodeInfo.loading" size="large" type="primary" style="width: 100%"
-          @click.prevent="handleLogin">
+        <el-button :loading="authCodeInfo.loading" size="large" style="width: 100%" type="primary" @click.prevent="handleLogin">
           <span v-if="!authCodeInfo.loading">登 录</span>
           <span v-else>登 录 中...</span>
         </el-button>
