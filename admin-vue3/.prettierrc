@@ -1,5 +1,5 @@
 {
-  "printWidth": 200,
+  "printWidth": 9999,
   "tabWidth": 2,
   "useTabs": false,
   "semi": false,
@@ -8,9 +8,17 @@
   "jsxSingleQuote": true,
   "trailingComma": "none",
   "bracketSpacing": true,
-  "bracketSameLine": false,
+  "bracketSameLine": true,
   "arrowParens": "always",
   "htmlWhitespaceSensitivity": "ignore",
   "vueIndentScriptAndStyle": false,
-  "endOfLine": "auto"
+  "endOfLine": "lf",
+  "overrides": [
+    {
+      "files": "*.vue",
+      "options": {
+        "parser": "vue"
+      }
+    }
+  ]
 }

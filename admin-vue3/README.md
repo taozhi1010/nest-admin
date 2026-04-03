@@ -19,6 +19,28 @@ npm run dev
 
 浏览器访问 http://localhost:8888
 
+### 配置文件管理
+
+项目使用 `config` 文件夹统一管理配置文件，按功能分为三类：
+
+- **dev/** - 开发环境配置（Prettier、ESLint、TypeScript）
+- **env/** - 环境配置（各环境变量文件）
+- **ops/** - 运维部署配置（Dockerfile、Nginx）
+
+**注意**: 根目录的配置文件已移除，统一在 `config/` 目录下管理。
+
+**修改配置文件后**，需要运行以下命令将配置文件复制到项目根目录：
+
+```powershell
+.\copy-config.ps1
+```
+
+或者手动复制单个文件：
+
+```powershell
+copy "config\dev\.prettierrc" ".prettierrc"
+```
+
 ## 发布
 
 ```bash
