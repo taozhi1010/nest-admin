@@ -3,12 +3,13 @@ import path from 'path'
 
 import createVitePlugins from './vite/plugins'
 
-// 打包后的文件是否开启hash
+// 打包后的文件是否开启 hash
 const outputHash = true
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode, command }) => {
-  const env = loadEnv(mode, process.cwd())
+  // 从 config/env 目录加载环境变量
+  const env = loadEnv(mode, path.join(process.cwd(), 'config/env'))
   const { VITE_APP_ENV } = env
   return {
     // 部署生产环境和开发环境下的URL。
