@@ -4,17 +4,12 @@
       <template #header>
         <span>✅ 自动引入验证成功！</span>
       </template>
-      
-      <el-alert
-        title="Composables + Auto Import 方案验证"
-        type="success"
-        :closable="false"
-        style="margin-bottom: 20px"
-      >
+
+      <el-alert :closable="false" style="margin-bottom: 20px" title="Composables + Auto Import 方案验证" type="success">
         <p>当前页面没有手动 import useCatTools，但可以直接使用！</p>
       </el-alert>
 
-      <el-descriptions title="验证结果" :column="1" border>
+      <el-descriptions border :column="1" title="验证结果">
         <el-descriptions-item label="useCatTools 状态">
           <el-tag type="success">✅ 已自动导入</el-tag>
         </el-descriptions-item>
@@ -33,12 +28,12 @@
         <el-form-item label="日期格式化">
           {{ testDateFormat() }}
         </el-form-item>
-        
+
         <el-form-item label="深拷贝测试">
           <el-button @click="testDeepClone">执行深拷贝</el-button>
           <div v-if="cloneResult">结果：{{ cloneResult }}</div>
         </el-form-item>
-        
+
         <el-form-item label="消息提示">
           <el-button @click="testMessage">触发消息提示</el-button>
         </el-form-item>

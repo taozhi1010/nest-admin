@@ -1,62 +1,56 @@
 <template>
   <div class="app-container">
-    <el-form :model="authUser.queryParams" ref="authUser.queryRef" v-show="authUser.showSearch" :inline="true">
+    <el-form v-show="authUser.showSearch" ref="authUser.queryRef" :inline="true" :model="authUser.queryParams">
       <el-form-item label="用户账号" prop="userName">
-        <el-input v-model.trim="authUser.queryParams.userName" placeholder="请输入用户账号" clearable style="width: 240px"
-          @keyup.enter="authUser.handleQuery" />
+        <el-input v-model.trim="authUser.queryParams.userName" clearable placeholder="请输入用户账号" style="width: 240px" @keyup.enter="authUser.handleQuery" />
       </el-form-item>
       <el-form-item label="手机号码" prop="phonenumber">
-        <el-input v-model.trim="authUser.queryParams.phonenumber" placeholder="请输入手机号码" clearable style="width: 240px"
-          @keyup.enter="authUser.handleQuery" />
+        <el-input v-model.trim="authUser.queryParams.phonenumber" clearable placeholder="请输入手机号码" style="width: 240px" @keyup.enter="authUser.handleQuery" />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" icon="Search" @click="authUser.handleQuery">搜索</el-button>
+        <el-button icon="Search" type="primary" @click="authUser.handleQuery">搜索</el-button>
         <el-button icon="Refresh" @click="authUser.resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
 
-    <el-row :gutter="10" class="mb8">
+    <el-row class="mb8" :gutter="10">
       <el-col :span="1.5">
-        <el-button type="primary" plain icon="Plus" @click="authUser.openSelectUser"
-          v-hasPermi="['system:role:add']">添加用户</el-button>
+        <el-button v-hasPermi="['system:role:add']" icon="Plus" plain type="primary" @click="authUser.openSelectUser">添加用户</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button type="danger" plain icon="CircleClose" :disabled="authUser.multiple"
-          @click="authUser.cancelAuthUserAll" v-hasPermi="['system:role:remove']">批量取消授权</el-button>
+        <el-button v-hasPermi="['system:role:remove']" :disabled="authUser.multiple" icon="CircleClose" plain type="danger" @click="authUser.cancelAuthUserAll">批量取消授权</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button type="warning" plain icon="Close" @click="authUser.handleClose">关闭</el-button>
+        <el-button icon="Close" plain type="warning" @click="authUser.handleClose">关闭</el-button>
       </el-col>
-      <right-toolbar v-model:showSearch="authUser.showSearch" @queryTable="authUser.getList"></right-toolbar>
+      <right-toolbar v-model:show-search="authUser.showSearch" @query-table="authUser.getList" />
     </el-row>
 
     <el-table v-loading="authUser.loading" :data="authUser.userList" @selection-change="authUser.handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" />
+      <el-table-column align="center" type="selection" width="55" />
       <el-table-column label="用户账号" prop="userName" :show-overflow-tooltip="true" />
       <el-table-column label="用户昵称" prop="nickName" :show-overflow-tooltip="true" />
       <el-table-column label="邮箱" prop="email" :show-overflow-tooltip="true" />
       <el-table-column label="手机" prop="phonenumber" :show-overflow-tooltip="true" />
-      <el-table-column label="状态" align="center" prop="status">
+      <el-table-column align="center" label="状态" prop="status">
         <template #default="scope">
           <dict-tag :options="sys_normal_disable" :value="scope.row.status" />
         </template>
       </el-table-column>
-      <el-table-column label="创建时间" align="center" prop="createTime" width="180">
+      <el-table-column align="center" label="创建时间" prop="createTime" width="180">
         <template #default="scope">
           <span>{{ parseTime(scope.row.createTime) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column align="center" class-name="small-padding fixed-width" label="操作">
         <template #default="scope">
-          <el-button link type="primary" icon="CircleClose" @click="authUser.cancelAuthUser(scope.row)"
-            v-hasPermi="['system:role:remove']">取消授权</el-button>
+          <el-button v-hasPermi="['system:role:remove']" icon="CircleClose" link type="primary" @click="authUser.cancelAuthUser(scope.row)">取消授权</el-button>
         </template>
       </el-table-column>
     </el-table>
 
-    <pagination v-show="authUser.total > 0" :total="authUser.total" v-model:page="authUser.queryParams.pageNum"
-      v-model:limit="authUser.queryParams.pageSize" @pagination="authUser.getList" />
-    <select-user ref="selectRef" :roleId="authUser.queryParams.roleId" @ok="authUser.handleQuery" />
+    <pagination v-show="authUser.total > 0" v-model:limit="authUser.queryParams.pageSize" v-model:page="authUser.queryParams.pageNum" :total="authUser.total" @pagination="authUser.getList" />
+    <select-user ref="selectRef" :role-id="authUser.queryParams.roleId" @ok="authUser.handleQuery" />
   </div>
 </template>
 
@@ -140,7 +134,7 @@ const authUser = reactive({
   // 取消授权按钮操作
   cancelAuthUser: async (row) => {
     try {
-      await proxy.$modal.confirm('确认要取消该用户"' + row.userName + '"角色吗？')
+      await proxy.$modal.confirm(`确认要取消该用户"${row.userName}"角色吗？`)
       await authUserCancel({ userId: row.userId, roleId: +authUser.queryParams.roleId })
       proxy.$modal.msgSuccess('取消授权成功')
       authUser.getList()

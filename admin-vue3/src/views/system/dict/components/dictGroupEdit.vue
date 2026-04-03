@@ -1,7 +1,7 @@
 <template>
   <!-- 添加或修改数据字典项配置 -->
-  <el-dialog :title="form.title" v-model="dialogTableVisible" width="600px" append-to-body>
-    <el-form ref="formRef" :model="form.model" :rules="form.rules" label-width="100px">
+  <el-dialog v-model="dialogTableVisible" append-to-body :title="form.title" width="600px">
+    <el-form ref="formRef" label-width="100px" :model="form.model" :rules="form.rules">
       <el-form-item label="字典名称" prop="dictName">
         <el-input v-model="form.model.dictName" placeholder="请输入字典名称" />
       </el-form-item>
@@ -14,7 +14,7 @@
         </el-radio-group>
       </el-form-item>
       <el-form-item label="备注" prop="remark">
-        <el-input v-model="form.model.remark" type="textarea" placeholder="请输入内容"></el-input>
+        <el-input v-model="form.model.remark" placeholder="请输入内容" type="textarea" />
       </el-form-item>
     </el-form>
     <template #footer>

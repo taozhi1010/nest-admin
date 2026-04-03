@@ -2,23 +2,25 @@
   <div class="error-401-container">
     <div class="error-content">
       <div class="error-icon">
-        <el-icon :size="180" color="#E6A23C">
-          <WarningFilled />
+        <el-icon color="#E6A23C" :size="180">
+          <warning-filled />
         </el-icon>
       </div>
       <div class="error-text">
         <h1 class="error-title">401</h1>
         <h2 class="error-subtitle">未授权访问</h2>
         <p class="error-description">
-          抱歉，您没有权限访问此页面。<br>请联系管理员获取相应权限。
+          抱歉，您没有权限访问此页面。
+          <br />
+          请联系管理员获取相应权限。
         </p>
         <div class="error-actions">
           <el-button type="primary" @click="back">
-            <el-icon><ArrowLeft /></el-icon>
+            <el-icon><arrow-left /></el-icon>
             返回上一页
           </el-button>
           <el-button @click="goHome">
-            <el-icon><House /></el-icon>
+            <el-icon><house /></el-icon>
             返回首页
           </el-button>
         </div>
@@ -28,16 +30,16 @@
 </template>
 
 <script setup>
-import { WarningFilled, ArrowLeft, House } from '@element-plus/icons-vue';
+import { WarningFilled, ArrowLeft, House } from '@element-plus/icons-vue'
 
-const router = useRouter();
+const router = useRouter()
 
 function back() {
-  router.back();
+  router.back()
 }
 
 function goHome() {
-  router.push('/');
+  router.push('/')
 }
 </script>
 
@@ -79,7 +81,8 @@ function goHome() {
       animation: float 3s ease-in-out infinite;
 
       @keyframes float {
-        0%, 100% {
+        0%,
+        100% {
           transform: translateY(0);
         }
         50% {
@@ -94,7 +97,7 @@ function goHome() {
       .error-title {
         font-size: 72px;
         font-weight: 700;
-        color: #E6A23C;
+        color: #e6a23c;
         margin: 0 0 10px 0;
         line-height: 1;
       }
@@ -154,7 +157,7 @@ function goHome() {
 
         .error-actions {
           flex-direction: column;
-          
+
           .el-button {
             width: 100%;
           }

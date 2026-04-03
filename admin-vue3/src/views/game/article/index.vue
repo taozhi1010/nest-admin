@@ -1,8 +1,8 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryRef" :inline="true" v-show="showSearch">
+    <el-form v-show="showSearch" ref="queryRef" :inline="true" :model="queryParams">
       <el-form-item label="文章标题" prop="title">
-        <el-input v-model="queryParams.title" placeholder="请输入文章标题" clearable style="width: 200px" @keyup.enter="handleQuery" />
+        <el-input v-model="queryParams.title" clearable placeholder="请输入文章标题" style="width: 200px" @keyup.enter="handleQuery" />
       </el-form-item>
       <!-- todo: 状态字典翻译,数据字典有问题，目前的数据字典改完数据之后，前端的数据字典没有及时修改数据键值 -->
       <!-- <el-form-item label="状态" prop="status">
@@ -11,60 +11,60 @@
         </el-select>
       </el-form-item> -->
       <el-form-item>
-        <el-button type="primary" icon="Search" @click="handleQuery">搜索</el-button>
+        <el-button icon="Search" type="primary" @click="handleQuery">搜索</el-button>
         <el-button icon="Refresh" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
 
-    <el-row :gutter="10" class="mb8">
+    <el-row class="mb8" :gutter="10">
       <el-col :span="1.5">
-        <el-button type="primary" plain icon="Plus" @click="handleAdd" v-hasPermi="['game:Article:add']">新增</el-button>
+        <el-button v-hasPermi="['game:Article:add']" icon="Plus" plain type="primary" @click="handleAdd">新增</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button type="success" plain icon="Edit" :disabled="single" @click="handleUpdate" v-hasPermi="['game:Article:edit']">修改</el-button>
+        <el-button v-hasPermi="['game:Article:edit']" :disabled="single" icon="Edit" plain type="success" @click="handleUpdate">修改</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button type="danger" plain icon="Delete" :disabled="multiple" @click="handleDelete" v-hasPermi="['game:Article:remove']">删除</el-button>
+        <el-button v-hasPermi="['game:Article:remove']" :disabled="multiple" icon="Delete" plain type="danger" @click="handleDelete">删除</el-button>
       </el-col>
-      <right-toolbar v-model:showSearch="showSearch" @queryTable="getList"></right-toolbar>
+      <right-toolbar v-model:show-search="showSearch" @query-table="getList" />
     </el-row>
 
     <el-table v-loading="loading" :data="ArticleList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="文章标题" align="left" prop="title" show-overflow-tooltip />
-      <el-table-column label="文章简介" align="center" prop="remark" show-overflow-tooltip />
-      <el-table-column label="文章作者" align="center" prop="author" />
-      <el-table-column v-if="false" label="状态" align="center" prop="status">
+      <el-table-column align="center" type="selection" width="55" />
+      <el-table-column align="left" label="文章标题" prop="title" show-overflow-tooltip />
+      <el-table-column align="center" label="文章简介" prop="remark" show-overflow-tooltip />
+      <el-table-column align="center" label="文章作者" prop="author" />
+      <el-table-column v-if="false" align="center" label="状态" prop="status">
         <template #default="scope">
           <!-- <dict-tag :options="sys_article_status" :value="scope.row.status" /> -->
         </template>
       </el-table-column>
-      <el-table-column label="发布时间" align="center" prop="publishTime" width="180">
+      <el-table-column align="center" label="发布时间" prop="publishTime" width="180">
         <template #default="scope">
           <!-- <span>{{ dayjs(scope.row.publishTime).format('YYYY-MM-DD HH:mm:ss') }}</span> -->
         </template>
       </el-table-column>
-      <el-table-column label="创建时间" align="center" prop="createTime" width="180" />
-      <el-table-column label="修改时间" align="center" prop="updateTime" width="180" />
-      <el-table-column label="操作" width="240" align="center" fixed="right" class-name="small-padding fixed-width">
+      <el-table-column align="center" label="创建时间" prop="createTime" width="180" />
+      <el-table-column align="center" label="修改时间" prop="updateTime" width="180" />
+      <el-table-column align="center" class-name="small-padding fixed-width" fixed="right" label="操作" width="240">
         <template #default="scope">
-          <el-button link type="primary" icon="View" @click="table.handlePreview(scope.row)">预览</el-button>
-          <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['game:Article:edit']">修改</el-button>
-          <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['game:Article:remove']">删除</el-button>
+          <el-button icon="View" link type="primary" @click="table.handlePreview(scope.row)">预览</el-button>
+          <el-button v-hasPermi="['game:Article:edit']" icon="Edit" link type="primary" @click="handleUpdate(scope.row)">修改</el-button>
+          <el-button v-hasPermi="['game:Article:remove']" icon="Delete" link type="primary" @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
 
-    <pagination v-show="total > 0" :total="total" v-model:page="queryParams.pageNum" v-model:limit="queryParams.pageSize" @pagination="getList" />
+    <pagination v-show="total > 0" v-model:limit="queryParams.pageSize" v-model:page="queryParams.pageNum" :total="total" @pagination="getList" />
 
     <!-- 添加或修改文章对话框 -->
-    <el-dialog :title="title" v-model="open" width="700px" append-to-body>
-      <el-form ref="ArticleRef" :model="form" :rules="rules" label-width="80px">
+    <el-dialog v-model="open" append-to-body :title="title" width="700px">
+      <el-form ref="ArticleRef" label-width="80px" :model="form" :rules="rules">
         <el-form-item label="文章标题" prop="title">
-          <el-input v-model="form.title" placeholder="请输入文章标题" clearable maxlength="25" show-word-limit />
+          <el-input v-model="form.title" clearable maxlength="25" placeholder="请输入文章标题" show-word-limit />
         </el-form-item>
         <el-form-item label="文章简介" prop="remark">
-          <el-input v-model="form.remark" placeholder="请输入文章简介" type="textarea" :rows="5" maxlength="200" show-word-limit />
+          <el-input v-model="form.remark" maxlength="200" placeholder="请输入文章简介" :rows="5" show-word-limit type="textarea" />
         </el-form-item>
         <!-- todo: 文件上传公用组件的封装 -->
         <!-- <el-form-item label="文章封面" prop="remark">
@@ -84,7 +84,7 @@
       </template>
     </el-dialog>
 
-    <Preview ref="PreviewRef" />
+    <preview ref="PreviewRef" />
   </div>
 </template>
 
@@ -223,7 +223,7 @@ function submitForm() {
 function handleDelete(row) {
   const articleIds = row.articleId || ids.value
   proxy.$modal
-    .confirm('是否确认删除文章编号为"' + row.title + '"的数据项？')
+    .confirm(`是否确认删除文章编号为"${row.title}"的数据项？`)
     .then(function () {
       return delArticle(articleIds)
     })

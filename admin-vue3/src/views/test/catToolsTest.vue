@@ -7,7 +7,7 @@
         </div>
       </template>
 
-      <el-form :model="formData" label-width="120px">
+      <el-form label-width="120px" :model="formData">
         <el-form-item label="日期格式化">
           <div>{{ formattedDate }}</div>
         </el-form-item>
@@ -98,7 +98,7 @@ const testGlobalMethod = () => {
     globalTestResult.value = result
     console.log('UUID 生成:', result)
   } catch (error) {
-    globalTestResult.value = '错误：' + error.message
+    globalTestResult.value = `错误：${error.message}`
   }
 }
 </script>

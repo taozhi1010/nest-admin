@@ -1,34 +1,34 @@
 <template>
   <div class="login-bg">
-    <div v-for="n in 5" :key="n" />
+    <div v-for="n in 5" :key="n"></div>
   </div>
 
   <div class="register">
-    <el-form ref="registerRef" :model="registerForm.model" :rules="registerForm.rules" class="register-form">
+    <el-form ref="registerRef" class="register-form" :model="registerForm.model" :rules="registerForm.rules">
       <h3 class="title">nest-admin后台管理系统</h3>
       <el-form-item prop="username">
-        <el-input v-model="registerForm.model.username" type="text" size="large" auto-complete="off" placeholder="账号">
-          <template #prefix><svg-icon icon-class="user" class="el-input__icon input-icon" /></template>
+        <el-input v-model="registerForm.model.username" auto-complete="off" placeholder="账号" size="large" type="text">
+          <template #prefix><svg-icon class="el-input__icon input-icon" icon-class="user" /></template>
         </el-input>
       </el-form-item>
       <el-form-item prop="password">
-        <el-input v-model="registerForm.model.password" type="password" size="large" auto-complete="off" placeholder="密码" @keyup.enter="handleRegister">
-          <template #prefix><svg-icon icon-class="password" class="el-input__icon input-icon" /></template>
+        <el-input v-model="registerForm.model.password" auto-complete="off" placeholder="密码" size="large" type="password" @keyup.enter="handleRegister">
+          <template #prefix><svg-icon class="el-input__icon input-icon" icon-class="password" /></template>
         </el-input>
       </el-form-item>
       <el-form-item prop="confirmPassword">
-        <el-input v-model="registerForm.model.confirmPassword" type="password" size="large" auto-complete="off" placeholder="确认密码" @keyup.enter="handleRegister">
-          <template #prefix><svg-icon icon-class="password" class="el-input__icon input-icon" /></template>
+        <el-input v-model="registerForm.model.confirmPassword" auto-complete="off" placeholder="确认密码" size="large" type="password" @keyup.enter="handleRegister">
+          <template #prefix><svg-icon class="el-input__icon input-icon" icon-class="password" /></template>
         </el-input>
       </el-form-item>
-      <el-form-item prop="code" v-if="authCodeInfo.captchaEnabled">
-        <el-input size="large" v-model="registerForm.model.code" auto-complete="off" placeholder="验证码" style="width: 63%" @keyup.enter="handleRegister">
-          <template #prefix><svg-icon icon-class="validCode" class="el-input__icon input-icon" /></template>
+      <el-form-item v-if="authCodeInfo.captchaEnabled" prop="code">
+        <el-input v-model="registerForm.model.code" auto-complete="off" placeholder="验证码" size="large" style="width: 63%" @keyup.enter="handleRegister">
+          <template #prefix><svg-icon class="el-input__icon input-icon" icon-class="validCode" /></template>
         </el-input>
-        <div class="register-code" v-html="authCodeInfo.imgUrl" @click="useAuthCode.getValidateCode(registerForm.model, true)"></div>
+        <div class="register-code" @click="useAuthCode.getValidateCode(registerForm.model, true)" v-html="authCodeInfo.imgUrl"></div>
       </el-form-item>
       <el-form-item style="width: 100%">
-        <el-button :loading="authCodeInfo.loading" size="large" type="primary" style="width: 100%" @click="handleRegister">
+        <el-button :loading="authCodeInfo.loading" size="large" style="width: 100%" type="primary" @click="handleRegister">
           <span v-if="!authCodeInfo.loading">注 册</span>
           <span v-else>注 册 中...</span>
         </el-button>
@@ -93,7 +93,7 @@ const handleRegister = () => {
       register(registerForm.model)
         .then(() => {
           const username = registerForm.model.username
-          ElMessageBox.alert("<font color='red'>恭喜你，您的账号 " + username + ' 注册成功！</font>', '系统提示', {
+          ElMessageBox.alert(`<font color='red'>恭喜你，您的账号 ${username} 注册成功！</font>`, '系统提示', {
             dangerouslyUseHTMLString: true,
             type: 'success'
           })

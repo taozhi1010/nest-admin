@@ -10,26 +10,24 @@
               <span style="margin-left: 10px">Composable 方式 (useCatTools)</span>
             </div>
           </template>
-          
+
           <el-form label-width="100px" size="default">
             <el-form-item label="日期格式化">
               <div>{{ composableFormattedDate }}</div>
             </el-form-item>
-            
+
             <el-form-item label="深拷贝">
               <el-button @click="composableDeepClone">执行深拷贝</el-button>
-              <div v-if="composableCloned" style="margin-top: 5px">
-                结果：{{ JSON.stringify(composableCloned) }}
-              </div>
+              <div v-if="composableCloned" style="margin-top: 5px">结果：{{ JSON.stringify(composableCloned) }}</div>
             </el-form-item>
-            
+
             <el-form-item label="UUID 生成">
               <el-button @click="composableUuid">生成 UUID</el-button>
               <div v-if="composableUuidResult" style="margin-top: 5px">
                 {{ composableUuidResult }}
               </div>
             </el-form-item>
-            
+
             <el-form-item label="防抖测试">
               <el-button @click="composableDebounceTest">触发防抖</el-button>
               <div>次数：{{ composableDebounceCount }}</div>
@@ -47,26 +45,24 @@
               <span style="margin-left: 10px">全局属性方式 (devTools)</span>
             </div>
           </template>
-          
+
           <el-form label-width="100px" size="default">
             <el-form-item label="日期格式化">
               <div>{{ globalFormattedDate }}</div>
             </el-form-item>
-            
+
             <el-form-item label="深拷贝">
               <el-button @click="globalDeepClone">执行深拷贝</el-button>
-              <div v-if="globalCloned" style="margin-top: 5px">
-                结果：{{ JSON.stringify(globalCloned) }}
-              </div>
+              <div v-if="globalCloned" style="margin-top: 5px">结果：{{ JSON.stringify(globalCloned) }}</div>
             </el-form-item>
-            
+
             <el-form-item label="UUID 生成">
               <el-button @click="globalUuid">生成 UUID</el-button>
               <div v-if="globalUuidResult" style="margin-top: 5px">
                 {{ globalUuidResult }}
               </div>
             </el-form-item>
-            
+
             <el-form-item label="防抖测试">
               <el-button @click="globalDebounceTest">触发防抖</el-button>
               <div>次数：{{ globalDebounceCount }}</div>
@@ -81,11 +77,11 @@
       <template #header>
         <span>📊 两种方案对比</span>
       </template>
-      
-      <el-table :data="comparisonData" stripe border>
-        <el-table-column prop="feature" label="特性" width="150" />
-        <el-table-column prop="composable" label="Composable 方式" />
-        <el-table-column prop="global" label="全局属性方式" />
+
+      <el-table border :data="comparisonData" stripe>
+        <el-table-column label="特性" prop="feature" width="150" />
+        <el-table-column label="Composable 方式" prop="composable" />
+        <el-table-column label="全局属性方式" prop="global" />
       </el-table>
     </el-card>
   </div>
