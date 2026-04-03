@@ -1,43 +1,43 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryRef" :inline="true">
+    <el-form ref="queryRef" :inline="true" :model="queryParams">
       <el-form-item label="登录地址" prop="ipaddr">
-        <el-input v-model="queryParams.ipaddr" placeholder="请输入登录地址" clearable style="width: 200px" @keyup.enter="handleQuery" />
+        <el-input v-model="queryParams.ipaddr" clearable placeholder="请输入登录地址" style="width: 200px" @keyup.enter="handleQuery" />
       </el-form-item>
       <el-form-item label="用户账号" prop="userName">
-        <el-input v-model="queryParams.userName" placeholder="请输入用户账号" clearable style="width: 200px" @keyup.enter="handleQuery" />
+        <el-input v-model="queryParams.userName" clearable placeholder="请输入用户账号" style="width: 200px" @keyup.enter="handleQuery" />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" icon="Search" @click="handleQuery">搜索</el-button>
+        <el-button icon="Search" type="primary" @click="handleQuery">搜索</el-button>
         <el-button icon="Refresh" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
     <el-table v-loading="loading" :data="onlineList" style="width: 100%">
-      <el-table-column label="序号" width="50" type="index" align="center">
+      <el-table-column align="center" label="序号" type="index" width="50">
         <template #default="scope">
           <span>{{ (pageNum - 1) * pageSize + scope.$index + 1 }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="会话编号" align="center" prop="tokenId" :show-overflow-tooltip="true" />
-      <el-table-column label="登录账号" align="center" prop="userName" :show-overflow-tooltip="true" />
-      <el-table-column label="所属部门" align="center" prop="deptName" :show-overflow-tooltip="true" />
-      <el-table-column label="主机" align="center" prop="ipaddr" :show-overflow-tooltip="true" />
-      <el-table-column label="登录地点" align="center" prop="loginLocation" :show-overflow-tooltip="true" />
-      <el-table-column label="操作系统" align="center" prop="os" :show-overflow-tooltip="true" />
-      <el-table-column label="浏览器" align="center" prop="browser" :show-overflow-tooltip="true" />
-      <el-table-column label="登录时间" align="center" prop="loginTime" width="180">
+      <el-table-column align="center" label="会话编号" prop="tokenId" :show-overflow-tooltip="true" />
+      <el-table-column align="center" label="登录账号" prop="userName" :show-overflow-tooltip="true" />
+      <el-table-column align="center" label="所属部门" prop="deptName" :show-overflow-tooltip="true" />
+      <el-table-column align="center" label="主机" prop="ipaddr" :show-overflow-tooltip="true" />
+      <el-table-column align="center" label="登录地点" prop="loginLocation" :show-overflow-tooltip="true" />
+      <el-table-column align="center" label="操作系统" prop="os" :show-overflow-tooltip="true" />
+      <el-table-column align="center" label="浏览器" prop="browser" :show-overflow-tooltip="true" />
+      <el-table-column align="center" label="登录时间" prop="loginTime" width="180">
         <template #default="scope">
           <span>{{ parseTime(scope.row.loginTime) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column align="center" class-name="small-padding fixed-width" label="操作">
         <template #default="scope">
-          <el-button link type="primary" icon="Delete" @click="handleForceLogout(scope.row)" v-hasPermi="['monitor:online:forceLogout']">强退</el-button>
+          <el-button v-hasPermi="['monitor:online:forceLogout']" icon="Delete" link type="primary" @click="handleForceLogout(scope.row)">强退</el-button>
         </template>
       </el-table-column>
     </el-table>
 
-    <pagination v-show="total > 0" :total="total" v-model:page="pageNum" v-model:limit="pageSize" @pagination="getList" />
+    <pagination v-show="total > 0" v-model:limit="pageSize" v-model:page="pageNum" :total="total" @pagination="getList" />
   </div>
 </template>
 
@@ -84,7 +84,7 @@ function resetQuery() {
 /** 强退按钮操作 */
 function handleForceLogout(row) {
   proxy.$modal
-    .confirm('是否确认强退名称为"' + row.userName + '"的用户?')
+    .confirm(`是否确认强退名称为"${row.userName}"的用户?`)
     .then(function () {
       return forceLogout(row.tokenId)
     })
