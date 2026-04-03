@@ -1,21 +1,16 @@
 <template>
-  <el-scrollbar
-    ref="scrollContainer"
-    :vertical="false"
-    class="scroll-container"
-    @wheel.prevent="handleScroll"
-  >
-    <slot />
+  <el-scrollbar ref="scrollContainer" class="scroll-container" :vertical="false" @wheel.prevent="handleScroll">
+    <slot></slot>
   </el-scrollbar>
 </template>
 
 <script setup>
 import useTagsViewStore from '@/store/modules/tagsView'
 
-const tagAndTagSpacing = ref(4);
-const { proxy } = getCurrentInstance();
+const tagAndTagSpacing = ref(4)
+const { proxy } = getCurrentInstance()
 
-const scrollWrapper = computed(() => proxy.$refs.scrollContainer.$refs.wrapRef);
+const scrollWrapper = computed(() => proxy.$refs.scrollContainer.$refs.wrapRef)
 
 onMounted(() => {
   scrollWrapper.value.addEventListener('scroll', emitScroll, true)
@@ -26,7 +21,7 @@ onBeforeUnmount(() => {
 
 function handleScroll(e) {
   const eventDelta = e.wheelDelta || -e.deltaY * 40
-  const $scrollWrapper = scrollWrapper.value;
+  const $scrollWrapper = scrollWrapper.value
   $scrollWrapper.scrollLeft = $scrollWrapper.scrollLeft + eventDelta / 4
 }
 const emits = defineEmits()
@@ -35,12 +30,12 @@ const emitScroll = () => {
 }
 
 const tagsViewStore = useTagsViewStore()
-const visitedViews = computed(() => tagsViewStore.visitedViews);
+const visitedViews = computed(() => tagsViewStore.visitedViews)
 
 function moveToTarget(currentTag) {
   const $container = proxy.$refs.scrollContainer.$el
   const $containerWidth = $container.offsetWidth
-  const $scrollWrapper = scrollWrapper.value;
+  const $scrollWrapper = scrollWrapper.value
 
   let firstTag = null
   let lastTag = null
@@ -56,17 +51,17 @@ function moveToTarget(currentTag) {
   } else if (lastTag === currentTag) {
     $scrollWrapper.scrollLeft = $scrollWrapper.scrollWidth - $containerWidth
   } else {
-    const tagListDom = document.getElementsByClassName('tags-view-item');
-    const currentIndex = visitedViews.value.findIndex(item => item === currentTag)
+    const tagListDom = document.getElementsByClassName('tags-view-item')
+    const currentIndex = visitedViews.value.findIndex((item) => item === currentTag)
     let prevTag = null
     let nextTag = null
     for (const k in tagListDom) {
       if (k !== 'length' && Object.hasOwnProperty.call(tagListDom, k)) {
         if (tagListDom[k].dataset.path === visitedViews.value[currentIndex - 1].path) {
-          prevTag = tagListDom[k];
+          prevTag = tagListDom[k]
         }
         if (tagListDom[k].dataset.path === visitedViews.value[currentIndex + 1].path) {
-          nextTag = tagListDom[k];
+          nextTag = tagListDom[k]
         }
       }
     }
@@ -85,11 +80,11 @@ function moveToTarget(currentTag) {
 }
 
 defineExpose({
-  moveToTarget,
+  moveToTarget
 })
 </script>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 .scroll-container {
   white-space: nowrap;
   position: relative;
