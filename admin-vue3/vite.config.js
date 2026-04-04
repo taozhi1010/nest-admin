@@ -14,6 +14,7 @@ export default defineConfig(({ mode, command }) => {
 
   console.log('🔥 mode:', mode)
   console.log('🔥 VITE_APP_BASE_API:', env.VITE_APP_BASE_API)
+  console.log('🔥 VITE_APP_TITLE:', env.VITE_APP_TITLE)
   return {
     // 指定环境变量文件所在目录
     envDir: path.join(process.cwd(), 'config/env'),
@@ -67,31 +68,32 @@ export default defineConfig(({ mode, command }) => {
           chunkFileNames: outputHash ? 'static/js/[name]-[hash].js' : 'static/js/[name].js',
           entryFileNames: outputHash ? 'static/js/[name]-[hash].js' : 'static/js/[name].js',
           assetFileNames: outputHash ? 'static/[ext]/[name]-[hash].[ext]' : 'static/[ext]/[name].[ext]',
-          // 优化打包策略，减少碎片化
-          advancedChunks: {
-            minSize: 100000, // 最小 chunk 大小 100KB，小于此值的模块会合并
-            groups: [
-              {
-                // echarts 单独拆分（体积大且按需加载）
-                test: /[\\/]node_modules[\\/]echarts[\\/]/,
-                name: 'echarts',
-                priority: 20,
-                minSize: 0
-              },
-              {
-                // element-plus UI 库单独拆分
-                test: /[\\/]node_modules[\\/]element-plus[\\/]/,
-                name: 'element-plus',
-                priority: 15,
-                minSize: 0
-              },
-              {
-                // 其他第三方库合并到 vendor
-                test: /[\\/]node_modules[\\/]/,
-                name: 'vendor',
-                priority: 10
+          // Vite 8 新的代码分割配置
+          manualChunks: (id) => {
+            if (id.includes('node_modules')) {
+              // echarts 单独拆分
+              if (id.includes('echarts')) {
+                return 'echarts'
               }
-            ]
+              // element-plus UI 库单独拆分
+              if (id.includes('element-plus')) {
+                return 'element-plus'
+              }
+              // Vue 相关库单独拆分
+              if (id.includes('vue') || id.includes('vue-router') || id.includes('pinia')) {
+                return 'vue-vendor'
+              }
+              // Markdown 编辑器单独拆分
+              if (id.includes('@kangc/v-md-editor') || id.includes('markdown-it') || id.includes('highlight.js') || id.includes('prismjs')) {
+                return 'markdown'
+              }
+              // Quill 编辑器单独拆分
+              if (id.includes('@vueup/vue-quill')) {
+                return 'quill'
+              }
+              // 其他第三方库合并到 vendor
+              return 'vendor'
+            }
           }
         }
       },
