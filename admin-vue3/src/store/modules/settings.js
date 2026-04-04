@@ -1,13 +1,13 @@
 import defaultSettings from '@/settings'
 import { useDynamicTitle } from '@/utils/dynamicTitle'
 
-const { sideTheme, showSettings, topNav, tagsView, fixedHeader, sidebarLogo, dynamicTitle } = defaultSettings
+const { sideTheme, showSettings, topNav, tagsView, fixedHeader, sidebarLogo, dynamicTitle, title: defaultTitle } = defaultSettings
 
 const storageSetting = JSON.parse(localStorage.getItem('layout-setting')) || ''
 
 const useSettingsStore = defineStore('settings', {
   state: () => ({
-    title: '',
+    title: defaultTitle || 'nest-admin 后台管理系统',
     theme: storageSetting.theme || '#409EFF',
     sideTheme: storageSetting.sideTheme || sideTheme,
     showSettings: showSettings,

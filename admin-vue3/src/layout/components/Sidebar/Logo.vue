@@ -3,7 +3,7 @@
     <transition name="sidebarLogoFade">
       <router-link v-if="collapse" key="collapse" class="sidebar-logo-link" to="/">
         <img v-if="logo" class="sidebar-logo" :src="logo" />
-        <h1 v-else class="sidebar-title" :style="{ color: sideTheme === 'theme-dark' ? variables.logoTitleColor : variables.logoLightTitleColor }">{{ title }}</h1>
+        <h1 class="sidebar-title" :style="{ color: sideTheme === 'theme-dark' ? variables.logoTitleColor : variables.logoLightTitleColor }">{{ title }}</h1>
       </router-link>
       <router-link v-else key="expand" class="sidebar-logo-link" to="/">
         <img v-if="logo" class="sidebar-logo" :src="logo" />
@@ -18,14 +18,14 @@ import variables from '@/assets/styles/variables.module.scss'
 import logo from '@/assets/logo/logo.png'
 import useSettingsStore from '@/store/modules/settings'
 
-defineProps({
+const props = defineProps({
   collapse: {
     type: Boolean,
     required: true
   }
 })
 
-const title = import.meta.env.VITE_APP_TITLE
+const title = ref('后台管理系统')
 const settingsStore = useSettingsStore()
 const sideTheme = computed(() => settingsStore.sideTheme)
 </script>
@@ -52,11 +52,15 @@ const sideTheme = computed(() => settingsStore.sideTheme)
   & .sidebar-logo-link {
     height: 100%;
     width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 0 20px;
 
     & .sidebar-logo {
       width: 32px;
       height: 32px;
-      vertical-align: middle;
+      flex-shrink: 0;
       margin-right: 12px;
     }
 
@@ -65,21 +69,26 @@ const sideTheme = computed(() => settingsStore.sideTheme)
       margin: 0;
       color: #fff;
       font-weight: 600;
-      line-height: 50px;
-      font-size: 12px;
+      font-size: 15px;
       font-family:
         Avenir,
         Helvetica Neue,
         Arial,
         Helvetica,
         sans-serif;
-      vertical-align: middle;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      letter-spacing: 1px;
     }
   }
 
   &.collapse {
     .sidebar-logo {
       margin-right: 0px;
+    }
+    .sidebar-title {
+      display: none;
     }
   }
 }
