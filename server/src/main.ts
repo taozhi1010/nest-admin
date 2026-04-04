@@ -40,7 +40,7 @@ async function bootstrap() {
   const baseDirPath = join(rootPath, config.get('app.file.location'));
   app.useStaticAssets(baseDirPath, {
     prefix: '/profile/',
-    maxAge: 86400000 * 365,
+    maxAge: 0, // 头像等动态资源不缓存，确保实时更新
   });
 
   app.setGlobalPrefix(prefix);
