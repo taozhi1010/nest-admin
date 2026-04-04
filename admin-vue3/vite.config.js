@@ -11,7 +11,12 @@ export default defineConfig(({ mode, command }) => {
   // 从 config/env 目录加载环境变量
   const env = loadEnv(mode, path.join(process.cwd(), 'config/env'))
   const { VITE_APP_ENV } = env
+
+  console.log('🔥 mode:', mode)
+  console.log('🔥 VITE_APP_BASE_API:', env.VITE_APP_BASE_API)
   return {
+    // 指定环境变量文件所在目录
+    envDir: path.join(process.cwd(), 'config/env'),
     // 部署生产环境和开发环境下的URL。
     // 默认情况下，vite 会假设你的应用是被部署在一个域名的根路径上
     // 例如 https://www.ruoyi.vip/。如果应用被部署在一个子路径上，你就需要用这个选项指定这个子路径。例如，如果你的应用被部署在 https://www.ruoyi.vip/admin/，则设置 baseUrl 为 /admin/。
@@ -60,9 +65,15 @@ export default defineConfig(({ mode, command }) => {
           chunkFileNames: outputHash ? 'static/js/[name]-[hash].js' : 'static/js/[name].js',
           entryFileNames: outputHash ? 'static/js/[name]-[hash].js' : 'static/js/[name].js',
           assetFileNames: outputHash ? 'static/[ext]/[name]-[hash].[ext]' : 'static/[ext]/[name].[ext]',
-          manualChunks: {
-            'element-plus': ['element-plus'],
-            echarts: ['echarts']
+          manualChunks(id) {
+            if (id.includes('node_modules')) {
+              if (id.includes('element-plus')) {
+                return 'element-plus'
+              }
+              if (id.includes('echarts')) {
+                return 'echarts'
+              }
+            }
           }
         }
       },
