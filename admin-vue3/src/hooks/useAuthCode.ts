@@ -109,18 +109,23 @@ const getValidateCode = async (form: LoginForm, isClick = false): Promise<void> 
       authCodeInfo.refreshing = true
     }
 
-    const { data } = (await getCodeImg()) as ApiResponse<CaptchaResponse>
+    const responseData = (await getCodeImg()) as any
+    // 后端返回格式: { code: 200, msg: '操作成功', data: { captchaEnabled, uuid, img } }
+    const captchaData = responseData.data
     authCodeInfo.loading = true
-    authCodeInfo.captchaEnabled = data.captchaEnabled === undefined ? true : data.captchaEnabled
-    authCodeInfo.uuid = data.uuid
+    authCodeInfo.captchaEnabled = captchaData?.captchaEnabled === undefined ? true : captchaData.captchaEnabled
+    authCodeInfo.uuid = captchaData?.uuid
     if (authCodeInfo.captchaEnabled) {
-      authCodeInfo.imgUrl = data.img
+      authCodeInfo.imgUrl = captchaData?.img
       authCodeInfo.loading = false
       authCodeInfo.refreshing = false
       // 更新最后刷新时间
       if (isClick) {
         lastRefreshTime = Date.now()
       }
+    } else {
+      authCodeInfo.loading = false
+      authCodeInfo.refreshing = false
     }
   } catch (err) {
     console.log('验证码获取错误:', err)
