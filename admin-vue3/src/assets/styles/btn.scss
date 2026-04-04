@@ -1,4 +1,4 @@
-@import './variables.module.scss';
+@use './_variables.scss' as *;
 
 @mixin colorBtn($color) {
   background: $color;
