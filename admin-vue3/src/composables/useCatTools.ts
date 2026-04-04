@@ -1,4 +1,4 @@
-import { catTools } from 'cat-tools'
+import { catTools } from '@/utils/catTools'
 
 /**
  * catTools Composable
