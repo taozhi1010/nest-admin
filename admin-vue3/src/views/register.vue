@@ -119,7 +119,7 @@ useAuthCode.getValidateCode(registerForm.model, false)
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/styles/login.scss';
+@use '@/assets/styles/login.scss' as *;
 
 .register {
   display: flex;
