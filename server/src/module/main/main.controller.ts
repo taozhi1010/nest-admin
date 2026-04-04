@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, HttpCode } from '@nestjs/common';
+import { Controller, Get, Post, Body, HttpCode, Res, Headers } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBody } from '@nestjs/swagger';
 import { MainService } from './main.service';
 import { RegisterDto, LoginDto } from './dto/index';
@@ -66,7 +66,7 @@ export class MainController {
     summary: '获取验证图片',
   })
   @Get('/captchaImage')
-  async captchaImage() {
+  async captchaImage(@Res() res) {
     //是否开启验证码 - 从配置文件读取
     const configService = new (await import('@nestjs/config')).ConfigService();
     const captchaEnabled = configService.get('perm.router.whitelist') !== undefined;
@@ -100,7 +100,13 @@ export class MainController {
           console.log('Redis 存储失败:', err.message);
         });
       }
-      return ResultData.ok(data, '操作成功');
+
+      // 设置响应头禁用缓存
+      res.header('Cache-Control', 'no-cache, no-store, must-revalidate');
+      res.header('Pragma', 'no-cache');
+      res.header('Expires', '0');
+
+      return res.json(ResultData.ok(data, '操作成功'));
     } catch (err) {
       console.error('生成验证码错误:', err);
       return ResultData.fail(500, '生成验证码错误，请重试');
@@ -111,14 +117,19 @@ export class MainController {
     summary: '用户信息',
   })
   @Get('/getInfo')
-  async getInfo(@User() user: UserDto) {
-    return {
+  async getInfo(@User() user: UserDto, @Res() res) {
+    // 设置响应头禁用缓存
+    res.header('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.header('Pragma', 'no-cache');
+    res.header('Expires', '0');
+
+    return res.json({
       msg: '操作成功',
       code: 200,
       permissions: user.permissions,
       roles: user.roles,
       user: user.user,
-    };
+    });
   }
 
   @ApiOperation({
