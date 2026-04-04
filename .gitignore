@@ -5,3 +5,6 @@
 /docs/node_modules
 /docs/dist
 **/node_modules
+
+# Upload folder (local test files)
+/upload
