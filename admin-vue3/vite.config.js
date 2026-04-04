@@ -55,6 +55,8 @@ export default defineConfig(({ mode, command }) => {
       cssCodeSplit: true,
       // 生产环境构建文件的目录名
       outDir: 'dist',
+      // 构建前是否清空输出目录
+      emptyOutDir: true,
       // 启用/禁用 gzip 压缩大小报告
       reportCompressedSize: false,
       rollupOptions: {
@@ -65,15 +67,31 @@ export default defineConfig(({ mode, command }) => {
           chunkFileNames: outputHash ? 'static/js/[name]-[hash].js' : 'static/js/[name].js',
           entryFileNames: outputHash ? 'static/js/[name]-[hash].js' : 'static/js/[name].js',
           assetFileNames: outputHash ? 'static/[ext]/[name]-[hash].[ext]' : 'static/[ext]/[name].[ext]',
-          manualChunks(id) {
-            if (id.includes('node_modules')) {
-              if (id.includes('element-plus')) {
-                return 'element-plus'
+          // 优化打包策略，减少碎片化
+          advancedChunks: {
+            minSize: 100000, // 最小 chunk 大小 100KB，小于此值的模块会合并
+            groups: [
+              {
+                // echarts 单独拆分（体积大且按需加载）
+                test: /[\\/]node_modules[\\/]echarts[\\/]/,
+                name: 'echarts',
+                priority: 20,
+                minSize: 0
+              },
+              {
+                // element-plus UI 库单独拆分
+                test: /[\\/]node_modules[\\/]element-plus[\\/]/,
+                name: 'element-plus',
+                priority: 15,
+                minSize: 0
+              },
+              {
+                // 其他第三方库合并到 vendor
+                test: /[\\/]node_modules[\\/]/,
+                name: 'vendor',
+                priority: 10
               }
-              if (id.includes('echarts')) {
-                return 'echarts'
-              }
-            }
+            ]
           }
         }
       },
