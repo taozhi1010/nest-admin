@@ -20,6 +20,9 @@ lerna-debug.log*
 /server/src/config/prod.yml
 /server/src/config/test.yml
 
+# Upload folder (local test files)
+/upload
+
 # IDEs and editors
 /.idea
 .project
