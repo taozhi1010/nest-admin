@@ -21,9 +21,18 @@ selenium-debug.log
 
 .env.development
 .env.production
-.env.production
+.env.staging
+
+# 自动生成的类型声明文件（从 config 复制）
+.prettierrc
+.prettierignore
+eslint.config.js
+tsconfig.json
+Dockerfile
+nginx.conf
 
 components.d.ts
+auto-imports.d.ts
 
 package-lock.json
 yarn.lock
