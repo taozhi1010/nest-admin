@@ -74,7 +74,7 @@ const formatted = proxy.devTools.dateFormat(new Date(), 'YYYY-MM-DD')
 
 ```vue
 <script setup>
-import { catTools } from 'cat-tools'
+import { catTools } from '@/utils/catTools'
 
 const formatted = catTools.dateFormat(new Date(), 'YYYY-MM-DD')
 </script>
@@ -141,7 +141,7 @@ const { dateFormat, deepClone } = useCatTools()
 const { success } = useMessage()
 
 // 2. 不常用的工具直接导入（清晰）
-import { catTools } from 'cat-tools'
+import { catTools } from '@/utils/catTools'
 
 // 3. 特殊场景使用全局属性（兼容）
 const { proxy } = getCurrentInstance()

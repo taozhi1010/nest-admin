@@ -70,7 +70,7 @@ export default {
 </template>
 
 <script setup>
-import { catTools } from 'cat-tools'
+import { catTools } from '@/utils/catTools'
 import { ref, computed } from 'vue'
 
 const date = ref(new Date())
