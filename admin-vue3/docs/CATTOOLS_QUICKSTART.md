@@ -28,7 +28,7 @@ const id = uuid()
 
 ```vue
 <script setup>
-import { catTools } from 'cat-tools'
+import { catTools } from '@/utils/catTools'
 
 // 使用
 const date = catTools.dateFormat(new Date(), 'YYYY-MM-DD')
@@ -172,7 +172,7 @@ const date = dateFormat(new Date())
 3. **组合使用** - 可以混合使用不同方案
    ```javascript
    const { dateFormat } = useCatTools() // 自动导入
-   import { catTools } from 'cat-tools' // 直接导入（特殊场景）
+   import { catTools } from '@/utils/catTools' // 直接导入（特殊场景）
    ```
 
 ---

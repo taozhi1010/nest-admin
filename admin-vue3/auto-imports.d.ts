@@ -7,7 +7,6 @@
 export {}
 declare global {
   const EffectScope: typeof import('vue').EffectScope
-  const ElMessageBox: typeof import('element-plus/es').ElMessageBox
   const acceptHMRUpdate: typeof import('pinia').acceptHMRUpdate
   const addDateRange: typeof import('./src/composables/useCommon').addDateRange
   const computed: typeof import('vue').computed
@@ -61,6 +60,7 @@ declare global {
   const ref: typeof import('vue').ref
   const resetForm: typeof import('./src/composables/useCommon').resetForm
   const resolveComponent: typeof import('vue').resolveComponent
+  const resolveDirective: typeof import('vue')['resolveDirective']
   const selectDictLabel: typeof import('./src/composables/useCommon').selectDictLabel
   const selectDictLabels: typeof import('./src/composables/useCommon').selectDictLabels
   const setActivePinia: typeof import('pinia').setActivePinia

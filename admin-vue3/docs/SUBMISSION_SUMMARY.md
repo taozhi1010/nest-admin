@@ -43,7 +43,7 @@
 
 #### 📜 源代码文件
 - `src/main.js`
-  - 移除 `import { catTools } from 'cat-tools'`
+  - 移除 `import { catTools } from '@/utils/catTools'`
   - 移除 `import catToolsPlugin from './plugins/catTools'`
   - 移除 `app.use(catToolsPlugin)`
 
@@ -118,7 +118,7 @@ Status: ⚠️ 网络超时，待重试
 ### 之前（Vue 2 风格）
 ```javascript
 // main.js
-import { catTools } from 'cat-tools'
+import { catTools } from '@/utils/catTools'
 Object.keys(catTools).forEach((key) => {
   app.config.globalProperties[key] = catTools[key]
 })
