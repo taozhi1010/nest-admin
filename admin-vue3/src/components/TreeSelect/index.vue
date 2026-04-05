@@ -9,7 +9,8 @@
 </template>
 
 <script setup>
-const { proxy } = getCurrentInstance()
+const treeSelect = ref(null)
+const selectTree = ref(null)
 
 const props = defineProps({
   /* 配置项 */
@@ -62,11 +63,13 @@ function initHandle() {
   nextTick(() => {
     const selectedValue = valueId.value
     if (selectedValue !== null && typeof selectedValue !== 'undefined') {
-      const node = proxy.$refs.selectTree.getNode(selectedValue)
-      if (node) {
-        valueTitle.value = node.data[props.objMap.label]
-        proxy.$refs.selectTree.setCurrentKey(selectedValue) // 设置默认选中
-        defaultExpandedKey.value = [selectedValue] // 设置默认展开
+      if (selectTree.value) {
+        const node = selectTree.value.getNode(selectedValue)
+        if (node) {
+          valueTitle.value = node.data[props.objMap.label]
+          selectTree.value.setCurrentKey(selectedValue) // 设置默认选中
+          defaultExpandedKey.value = [selectedValue] // 设置默认展开
+        }
       }
     } else {
       clearHandle()
@@ -77,11 +80,15 @@ function handleNodeClick(node) {
   valueTitle.value = node[props.objMap.label]
   valueId.value = node[props.objMap.value]
   defaultExpandedKey.value = []
-  proxy.$refs.treeSelect.blur()
+  if (treeSelect.value) {
+    treeSelect.value.blur()
+  }
   selectFilterData('')
 }
 function selectFilterData(val) {
-  proxy.$refs.selectTree.filter(val)
+  if (selectTree.value) {
+    selectTree.value.filter(val)
+  }
 }
 function filterNode(value, data) {
   if (!value) return true

@@ -107,6 +107,7 @@ const single = ref(true)
 const multiple = ref(true)
 const total = ref(0)
 const title = ref('')
+const ArticleRef = ref(null)
 const PreviewRef = ref()
 
 const data = reactive({
@@ -201,23 +202,25 @@ function handleUpdate(row) {
 /** 提交按钮 */
 function submitForm() {
   console.log(form.value)
-  proxy.$refs['ArticleRef'].validate((valid) => {
-    if (valid) {
-      if (form.value.articleId != undefined) {
-        updateArticle(form.value).then((res) => {
-          ElMessage.success('修改成功') 
-          open.value = false
-          getList()
-        })
-      } else {
-        addArticle(form.value).then((res) => {
-          ElMessage.success('新增成功')
-          open.value = false
-          getList()
-        })
+  if (ArticleRef.value) {
+    ArticleRef.value.validate((valid) => {
+      if (valid) {
+        if (form.value.articleId != undefined) {
+          updateArticle(form.value).then((res) => {
+            ElMessage.success('修改成功') 
+            open.value = false
+            getList()
+          })
+        } else {
+          addArticle(form.value).then((res) => {
+            ElMessage.success('新增成功')
+            open.value = false
+            getList()
+          })
+        }
       }
-    }
-  })
+    })
+  }
 }
 /** 删除按钮操作 */
 function handleDelete(row) {

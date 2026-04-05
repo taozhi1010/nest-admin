@@ -130,6 +130,7 @@ import { resetForm, addDateRange, selectDictLabel, parseTime } from '@/composabl
 
 const { sys_oper_type, sys_common_status, getDictLabel } = useDict('sys_oper_type', 'sys_common_status')
 
+const operlogRef = ref(null)
 const operlogList = ref([])
 const open = ref(false)
 const loading = ref(true)
@@ -180,7 +181,9 @@ function resetQuery() {
   dateRange.value = []
   resetForm('queryRef')
   queryParams.value.pageNum = 1
-  proxy.$refs['operlogRef'].sort(defaultSort.value.prop, defaultSort.value.order)
+  if (operlogRef.value) {
+    operlogRef.value.sort(defaultSort.value.prop, defaultSort.value.order)
+  }
 }
 /** 多选框选中数据 */
 function handleSelectionChange(selection) {

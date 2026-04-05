@@ -79,7 +79,9 @@ const authRole = reactive({
   // 方法集合
   // 单击选中行数据
   clickRow: (row) => {
-    proxy.$refs['roleRef'].toggleRowSelection(row)
+    if (roleRef.value) {
+      roleRef.value.toggleRowSelection(row)
+    }
   },
 
   // 多选框选中数据
@@ -124,7 +126,9 @@ const authRole = reactive({
         nextTick(() => {
           authRole.roles.forEach((row) => {
             if (row.flag) {
-              proxy.$refs['roleRef'].toggleRowSelection(row)
+              if (roleRef.value) {
+                roleRef.value.toggleRowSelection(row)
+              }
             }
           })
         })

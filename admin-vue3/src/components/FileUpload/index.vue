@@ -58,7 +58,7 @@ const props = defineProps({
   }
 })
 
-const { proxy } = getCurrentInstance()
+const fileUpload = ref(null)
 const emit = defineEmits(['update:modelValue'])
 const number = ref(0)
 const uploadList = ref([])
@@ -143,7 +143,9 @@ function handleUploadSuccess(res, file) {
       loadingInstance = null
     }
     ElMessage.error(res.msg)
-    proxy.$refs.fileUpload.handleRemove(file)
+    if (fileUpload.value) {
+      fileUpload.value.handleRemove(file)
+    }
     uploadedSuccessfully()
   }
 }

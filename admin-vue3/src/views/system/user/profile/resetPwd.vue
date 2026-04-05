@@ -63,7 +63,9 @@ const resetPwd = reactive({
   // 提交按钮
   submit: async () => {
     try {
-      await proxy.$refs.pwdRef.validate()
+      if (pwdRef.value) {
+        await pwdRef.value.validate()
+      }
       await updateUserPwd(resetPwd.form.oldPassword, resetPwd.form.newPassword)
       ElMessage.success('修改成功')
     } catch (e) {

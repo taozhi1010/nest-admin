@@ -38,7 +38,7 @@
       <right-toolbar v-model:show-search="logininfor.showSearch" @query-table="logininfor.getList" />
     </el-row>
 
-    <el-table ref="logininfor.logininforRef" v-loading="logininfor.loading" :data="logininfor.list" :default-sort="logininfor.defaultSort" @selection-change="logininfor.handleSelectionChange" @sort-change="logininfor.handleSortChange">
+    <el-table ref="logininforRef" v-loading="logininfor.loading" :data="logininfor.list" :default-sort="logininfor.defaultSort" @selection-change="logininfor.handleSelectionChange" @sort-change="logininfor.handleSortChange">
       <el-table-column align="center" type="selection" width="55" />
       <el-table-column align="center" label="访问编号" prop="infoId" />
       <el-table-column align="center" label="用户账号" prop="userName" :show-overflow-tooltip="true" :sort-orders="['descending', 'ascending']" sortable="custom" />
@@ -69,14 +69,12 @@ import { list, delLogininfor, cleanLogininfor, unlockLogininfor } from '@/api/mo
 import { useDict } from '@/composables/useDict'
 import { resetForm, addDateRange, download, parseTime } from '@/composables/useCommon'
 
-const { proxy } = getCurrentInstance()
 const { sys_common_status, getDictLabel } = useDict('sys_common_status')
 
 // 登录日志管理
+const logininforRef = ref(null)
+const queryRef = ref(null)
 const logininfor = reactive({
-  // 响应式数据
-  logininforRef: null,
-  queryRef: null,
   list: [],
   loading: true,
   showSearch: true,
@@ -121,9 +119,11 @@ const logininfor = reactive({
   // 重置按钮操作
   resetQuery: () => {
     logininfor.dateRange = []
-    resetForm(logininfor.queryRef)
+    resetForm(queryRef.value)
     logininfor.queryParams.pageNum = 1
-    proxy.$refs['logininforRef'].sort(logininfor.defaultSort.prop, logininfor.defaultSort.order)
+    if (logininforRef.value) {
+      logininforRef.value.sort(logininfor.defaultSort.prop, logininfor.defaultSort.order)
+    }
   },
 
   // 多选框选中数据
