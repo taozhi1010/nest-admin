@@ -205,13 +205,13 @@ function submitForm() {
     if (valid) {
       if (form.value.articleId != undefined) {
         updateArticle(form.value).then((res) => {
-          proxy.$modal.msgSuccess('修改成功')
+          ElMessage.success('修改成功') 
           open.value = false
           getList()
         })
       } else {
         addArticle(form.value).then((res) => {
-          proxy.$modal.msgSuccess('新增成功')
+          ElMessage.success('新增成功')
           open.value = false
           getList()
         })
@@ -222,14 +222,17 @@ function submitForm() {
 /** 删除按钮操作 */
 function handleDelete(row) {
   const articleIds = row.articleId || ids.value
-  proxy.$modal
-    .confirm(`是否确认删除文章编号为"${row.title}"的数据项？`)
+  ElMessageBox.confirm(`是否确认删除文章编号为"${row.title}"的数据项？`, '系统提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  })
     .then(function () {
       return delArticle(articleIds)
     })
     .then(() => {
       getList()
-      proxy.$modal.msgSuccess('删除成功')
+      ElMessage.success('删除成功')
     })
     .catch(() => {})
 }
