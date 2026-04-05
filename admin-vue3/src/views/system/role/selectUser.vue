@@ -58,7 +58,6 @@ const props = defineProps({
 const emit = defineEmits(['ok'])
 
 // ==================== 实例和字典 ====================
-const { proxy } = getCurrentInstance()
 const { sys_normal_disable } = useDict('sys_normal_disable')
 
 // ==================== 表单引用 ====================
@@ -92,7 +91,7 @@ const selectUser = reactive({
 
   // 选择行
   clickRow: (row) => {
-    proxy.$refs['refTable'].toggleRowSelection(row)
+    refTable.value.toggleRowSelection(row)
   },
 
   // 多选框选中数据
@@ -129,13 +128,13 @@ const selectUser = reactive({
     const uIds = selectUser.userIds.join(',')
 
     if (uIds == '') {
-      proxy.$modal.msgError('请选择要分配的用户')
+      ElMessage.error('请选择要分配的用户')
       return
     }
 
     try {
       const response = await authUserSelectAll({ roleId: +roleId, userIds: uIds })
-      proxy.$modal.msgSuccess(response.msg)
+      ElMessage.success(response.msg)
       if (response.code === 200) {
         selectUser.visible = false
         emit('ok')

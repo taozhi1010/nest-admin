@@ -154,7 +154,6 @@ import { useDict } from '@/composables/useDict'
 import { resetForm, addDateRange, download, parseTime } from '@/composables/useCommon'
 
 // ==================== 实例和字典 ====================
-const { proxy } = getCurrentInstance()
 const { sys_normal_disable } = useDict('sys_normal_disable')
 
 // ==================== 表单引用 ====================
@@ -315,9 +314,13 @@ const role = reactive({
   handleDelete: async (row) => {
     const roleIds = row.roleId || role.ids
     try {
-      await proxy.$modal.confirm(`是否确认删除角色编号为"${roleIds}"的数据项？`)
+      await ElMessageBox.confirm(`是否确认删除角色编号为"${roleIds}"的数据项？`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
       await delRole(roleIds)
-      proxy.$modal.msgSuccess('删除成功')
+      ElMessage.success('删除成功')
       role.getList()
     } catch (e) {
       if (e !== 'cancel') {
@@ -341,9 +344,13 @@ const role = reactive({
   handleStatusChange: async (row) => {
     let text = row.status === '0' ? '启用' : '停用'
     try {
-      await proxy.$modal.confirm(`确认要"${text}""${row.roleName}"角色吗？`)
+      await ElMessageBox.confirm(`确认要"${text}""${row.roleName}"角色吗？`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
       await changeRoleStatus(row.roleId, row.status)
-      proxy.$modal.msgSuccess(`${text}成功`)
+      ElMessage.success(`${text}成功`)
     } catch (e) {
       if (e !== 'cancel') {
         row.status = row.status === '0' ? '1' : '0'
@@ -453,11 +460,11 @@ const role = reactive({
         if (role.form.roleId != undefined) {
           role.form.menuIds = role.getMenuAllCheckedKeys()
           await updateRole(role.form)
-          proxy.$modal.msgSuccess('修改成功')
+          ElMessage.success('修改成功')
         } else {
           role.form.menuIds = role.getMenuAllCheckedKeys()
           await addRole(role.form)
-          proxy.$modal.msgSuccess('新增成功')
+          ElMessage.success('新增成功')
         }
         role.open = false
         role.getList()
@@ -505,7 +512,7 @@ const role = reactive({
       try {
         role.form.deptIds = role.getDeptAllCheckedKeys()
         await dataScope(role.form)
-        proxy.$modal.msgSuccess('修改成功')
+        ElMessage.success('修改成功') 
         role.openDataScope = false
         role.getList()
       } catch (e) {
