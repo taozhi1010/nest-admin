@@ -992,6 +992,22 @@
         ]
       }
     },
+    "/system/dict/data/all": {
+      "get": {
+        "operationId": "DictController_findAllDictData",
+        "summary": "字典数据-全部【走缓存】",
+        "description": "一次性获取所有字典类型及其对应的字典数据，便于前端初始化时使用",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "字典管理"
+        ]
+      }
+    },
     "/system/dict/type/export": {
       "post": {
         "operationId": "DictController_export",
