@@ -34,7 +34,7 @@
       <el-table-column label="手机" prop="phonenumber" :show-overflow-tooltip="true" />
       <el-table-column align="center" label="状态" prop="status">
         <template #default="scope">
-          <dict-tag :options="sys_normal_disable" :value="scope.row.status" />
+          <span>{{ getDictLabel('sys_normal_disable', scope.row.status) }}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="创建时间" prop="createTime" width="180">
@@ -66,7 +66,7 @@ const { closeOpenPage } = useTab()
 
 // ==================== 实例和字典 ====================
 const route = useRoute()
-const { sys_normal_disable } = useDict('sys_normal_disable')
+const { sys_normal_disable, getDictLabel } = useDict('sys_normal_disable')
 
 // ==================== 表单引用 ====================
 const selectRef = ref(null)

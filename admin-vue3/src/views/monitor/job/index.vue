@@ -43,7 +43,7 @@
         <el-table-column align="center" label="任务名称" prop="jobName" :show-overflow-tooltip="true" />
         <el-table-column align="center" label="任务组名" prop="jobGroup">
           <template #default="scope">
-            <dict-tag :options="sys_job_group" :value="scope.row.jobGroup" />
+            <span>{{ getDictLabel('sys_job_group', scope.row.jobGroup) }}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" label="调用目标字符串" prop="invokeTarget" :show-overflow-tooltip="true" />
@@ -224,7 +224,7 @@ const router = useRouter()
 import { useDict } from '@/composables/useDict'
 import { selectDictLabel, parseTime, resetForm } from '@/composables/useCommon'
 
-const { sys_job_group, sys_job_status } = useDict('sys_job_group', 'sys_job_status')
+const { sys_job_group, sys_job_status, getDictLabel } = useDict('sys_job_group', 'sys_job_status')
 
 const jobList = ref([])
 const open = ref(false)

@@ -323,7 +323,6 @@ import { useDict } from '@/composables/useDict'
 import { resetForm, addDateRange, download, parseTime } from '@/composables/useCommon'
 
 // ==================== 实例和字典 ====================
-// TODO:数据字典不要用实时引入的方式，要改为一次性获取
 const { sys_normal_disable, sys_user_sex } = useDict('sys_normal_disable', 'sys_user_sex')
 
 // ==================== 表单引用 ====================

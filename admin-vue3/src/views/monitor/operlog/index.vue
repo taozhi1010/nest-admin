@@ -46,14 +46,14 @@
       <el-table-column align="center" label="系统模块" prop="title" :show-overflow-tooltip="true" />
       <el-table-column align="center" label="操作类型" prop="businessType">
         <template #default="scope">
-          <dict-tag :options="sys_oper_type" :value="scope.row.businessType" />
+          <span>{{ getDictLabel('sys_oper_type', scope.row.businessType) }}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="操作人员" prop="operName" :show-overflow-tooltip="true" :sort-orders="['descending', 'ascending']" sortable="custom" width="110" />
       <el-table-column align="center" label="主机" prop="operIp" :show-overflow-tooltip="true" width="130" />
       <el-table-column align="center" label="操作状态" prop="status">
         <template #default="scope">
-          <dict-tag :options="sys_common_status" :value="scope.row.status" />
+          <span>{{ getDictLabel('sys_common_status', scope.row.status) }}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="操作日期" prop="operTime" :sort-orders="['descending', 'ascending']" sortable="custom" width="180">
@@ -128,7 +128,7 @@ import { list, delOperlog, cleanOperlog } from '@/api/monitor/operlog'
 import { useDict } from '@/composables/useDict'
 import { resetForm, addDateRange, selectDictLabel, parseTime } from '@/composables/useCommon'
 
-const { sys_oper_type, sys_common_status } = useDict('sys_oper_type', 'sys_common_status')
+const { sys_oper_type, sys_common_status, getDictLabel } = useDict('sys_oper_type', 'sys_common_status')
 
 const operlogList = ref([])
 const open = ref(false)

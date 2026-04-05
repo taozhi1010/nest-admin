@@ -41,7 +41,7 @@
       <el-table-column align="center" label="岗位排序" prop="postSort" />
       <el-table-column align="center" label="状态" prop="status">
         <template #default="scope">
-          <dict-tag :options="sys_normal_disable" :value="scope.row.status" />
+          <span>{{ getDictLabel('sys_normal_disable', scope.row.status) }}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="创建时间" prop="createTime" width="180">
@@ -96,7 +96,7 @@ import { listPost, addPost, delPost, getPost, updatePost } from '@/api/system/po
 import { useDict } from '@/composables/useDict'
 import { resetForm, download, parseTime } from '@/composables/useCommon'
 
-const { sys_normal_disable } = useDict('sys_normal_disable')
+const { sys_normal_disable, getDictLabel } = useDict('sys_normal_disable')
 
 // 模板引用
 const postRef = ref(null)
