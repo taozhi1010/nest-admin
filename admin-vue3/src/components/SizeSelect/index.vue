@@ -22,7 +22,7 @@ const appStore = useAppStore()
 const size = computed(() => appStore.size)
 const route = useRoute()
 const router = useRouter()
-const { proxy } = getCurrentInstance()
+let loadingInstance = null
 const sizeOptions = ref([
   { label: '较大', value: 'large' },
   { label: '默认', value: 'default' },
@@ -30,7 +30,11 @@ const sizeOptions = ref([
 ])
 
 function handleSetSize(size) {
-  proxy.$modal.loading('正在设置布局大小，请稍候...')
+  loadingInstance = ElLoading.service({
+    lock: true,
+    text: '正在设置布局大小，请稍候...',
+    background: 'rgba(0, 0, 0, 0.7)'
+  })
   appStore.setSize(size)
   setTimeout('window.location.reload()', 1000)
 }
