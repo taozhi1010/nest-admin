@@ -47,6 +47,9 @@ export class UserController {
   @Post('/profile/avatar')
   @UseInterceptors(FileInterceptor('avatarfile'))
   async avatar(@UploadedFile() avatarfile: Express.Multer.File, @User() user: UserDto) {
+    if (!avatarfile) {
+      return ResultData.fail(500, '请上传头像文件');
+    }
     const res = await this.uploadService.singleFileUpload(avatarfile);
     // 使用完整 URL 而不是相对路径
     const imgUrl = res.url;
