@@ -61,6 +61,9 @@ import { allocatedUserList, authUserCancel, authUserCancelAll } from '@/api/syst
 import { useDict } from '@/composables/useDict'
 import { resetForm, parseTime } from '@/composables/useCommon'
 
+// ==================== Composables ====================
+const { closeOpenPage } = useTab()
+
 // ==================== 实例和字典 ====================
 const route = useRoute()
 const { sys_normal_disable } = useDict('sys_normal_disable')
@@ -103,7 +106,6 @@ const authUser = reactive({
 
   // 返回按钮
   handleClose: () => {
-    const { closeOpenPage } = useTab()
     const obj = { path: '/system/role' }
     closeOpenPage(obj)
   },
@@ -128,7 +130,7 @@ const authUser = reactive({
 
   // 打开授权用户表弹窗
   openSelectUser: () => {
-    proxy.$refs['selectRef'].show()
+    selectRef.value.show() 
   },
 
   // 取消授权按钮操作

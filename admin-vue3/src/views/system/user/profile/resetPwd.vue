@@ -20,6 +20,9 @@
 // ==================== 导入区域 ====================
 import { updateUserPwd } from '@/api/system/user'
 
+// ==================== Composables ====================
+const { closePage } = useTab()
+
 // ==================== 实例和字典 ====================
 
 // ==================== 表单引用 ====================
@@ -72,7 +75,6 @@ const resetPwd = reactive({
 
   // 关闭按钮
   close: () => {
-    const { closePage } = useTab()
     closePage()
   }
 })

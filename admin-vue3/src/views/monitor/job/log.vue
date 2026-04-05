@@ -113,6 +113,9 @@ import { listJobLog, delJobLog, cleanJobLog } from '@/api/monitor/jobLog'
 import { useDict } from '@/composables/useDict'
 import { resetForm, addDateRange, download, parseTime } from '@/composables/useCommon'
 
+// ==================== Composables ====================
+const { closeOpenPage } = useTab()
+
 const { sys_common_status, sys_job_group } = useDict('sys_common_status', 'sys_job_group')
 
 const jobLogList = ref([])
@@ -149,7 +152,6 @@ function getList() {
 }
 // 返回按钮
 function handleClose() {
-  const { closeOpenPage } = useTab()
   const obj = { path: '/monitor/job' }
   closeOpenPage(obj)
 }

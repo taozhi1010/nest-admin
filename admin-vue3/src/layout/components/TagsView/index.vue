@@ -44,6 +44,9 @@ import useTagsViewStore from '@/store/modules/tagsView'
 import useSettingsStore from '@/store/modules/settings'
 import usePermissionStore from '@/store/modules/permission'
 
+// ==================== Composables ====================
+const { refreshPage, closePage, closeRightPage, closeLeftPage, closeOtherPage, closeAllPage } = useTab()
+
 const visible = ref(false)
 const top = ref(0)
 const left = ref(0)
@@ -157,14 +160,12 @@ function moveToCurrentTag() {
   })
 }
 function refreshSelectedTag(view) {
-  const { refreshPage } = useTab()
   refreshPage(view)
   if (route.meta.link) {
     useTagsViewStore().delIframeView(route)
   }
 }
 function closeSelectedTag(view) {
-  const { closePage } = useTab()
   closePage(view).then(({ visitedViews }) => {
     if (isActive(view)) {
       toLastView(visitedViews, view)
@@ -172,7 +173,6 @@ function closeSelectedTag(view) {
   })
 }
 function closeRightTags() {
-  const { closeRightPage } = useTab()
   closeRightPage(selectedTag.value).then((visitedViews) => {
     if (!visitedViews.find((i) => i.fullPath === route.fullPath)) {
       toLastView(visitedViews)
@@ -180,7 +180,6 @@ function closeRightTags() {
   })
 }
 function closeLeftTags() {
-  const { closeLeftPage } = useTab()
   closeLeftPage(selectedTag.value).then((visitedViews) => {
     if (!visitedViews.find((i) => i.fullPath === route.fullPath)) {
       toLastView(visitedViews)
@@ -188,14 +187,12 @@ function closeLeftTags() {
   })
 }
 function closeOthersTags() {
-  const { closeOtherPage } = useTab()
   router.push(selectedTag.value).catch(() => {})
   closeOtherPage(selectedTag.value).then(() => {
     moveToCurrentTag()
   })
 }
 function closeAllTags(view) {
-  const { closeAllPage } = useTab()
   closeAllPage().then(({ visitedViews }) => {
     if (affixTags.value.some((tag) => tag.path === route.path)) {
       return

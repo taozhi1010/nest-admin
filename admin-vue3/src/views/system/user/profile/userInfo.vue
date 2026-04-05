@@ -26,6 +26,9 @@
 // ==================== 导入区域 ====================
 import { updateUserProfile } from '@/api/system/user'
 
+// ==================== Composables ====================
+const { closePage } = useTab()
+
 // ==================== Props ====================
 const props = defineProps({
   user: {
@@ -83,7 +86,6 @@ const userInfo = reactive({
 
   // 关闭按钮
   close: () => {
-    const { closePage } = useTab()
     closePage()
   }
 })
