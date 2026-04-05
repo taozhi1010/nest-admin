@@ -75,6 +75,7 @@
 </template>
 
 <script setup name="CacheList">
+import { getCurrentInstance, ref, onUnmounted, onMounted } from 'vue'
 import { listCacheName, listCacheKey, getCacheValue, clearCacheName, clearCacheKey, clearCacheAll } from '@/api/monitor/cache'
 
 const { proxy } = getCurrentInstance()
@@ -86,6 +87,15 @@ const loading = ref(true)
 const subLoading = ref(false)
 const nowCacheName = ref('')
 const tableHeight = ref(window.innerHeight - 200)
+
+// 监听窗口大小变化，动态调整表格高度
+function handleResize() {
+  tableHeight.value = window.innerHeight - 200
+}
+
+onMounted(() => {
+  window.addEventListener('resize', handleResize)
+})
 
 /** 查询缓存名称列表 */
 function getCacheNames() {
@@ -163,4 +173,9 @@ function handleClearCacheAll() {
 }
 
 getCacheNames()
+
+// 组件卸载时清理
+onUnmounted(() => {
+  window.removeEventListener('resize', handleResize)
+})
 </script>

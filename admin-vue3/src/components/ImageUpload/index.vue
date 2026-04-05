@@ -25,6 +25,7 @@
 
 <script setup>
 import { getToken } from '@/utils/auth'
+import { getImageUrl } from '@/utils/image'
 
 const props = defineProps({
   modelValue: [String, Object, Array],
@@ -56,7 +57,7 @@ const number = ref(0)
 const uploadList = ref([])
 const dialogImageUrl = ref('')
 const dialogVisible = ref(false)
-const baseUrl = import.meta.env.VITE_APP_BASE_API
+const baseUrl = import.meta.env.VITE_APP_ENV === 'development' ? '' : import.meta.env.VITE_APP_BASE_API
 const uploadImgUrl = ref(`${import.meta.env.VITE_APP_BASE_API}/common/upload`) // 上传的图片服务器地址
 const headers = ref({ Authorization: `Bearer ${getToken()}` })
 const fileList = ref([])
@@ -71,11 +72,9 @@ watch(
       // 然后将数组转为对象数组
       fileList.value = list.map((item) => {
         if (typeof item === 'string') {
-          if (item.indexOf(baseUrl) === -1) {
-            item = { name: baseUrl + item, url: baseUrl + item }
-          } else {
-            item = { name: item, url: item }
-          }
+          // 使用统一的图片工具方法处理 URL
+          const imageUrl = getImageUrl(item)
+          item = { name: item, url: imageUrl }
         }
         return item
       })
