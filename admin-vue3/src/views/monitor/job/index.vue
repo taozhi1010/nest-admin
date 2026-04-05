@@ -26,9 +26,6 @@
           <el-button v-hasPermi="['monitor:job:add']" icon="Plus" plain type="primary" @click="handleAdd">新增</el-button>
         </el-col>
         <el-col :span="1.5">
-          <el-button v-hasPermi="['monitor:job:edit']" :disabled="single" icon="Edit" plain type="success" @click="handleUpdate">修改</el-button>
-        </el-col>
-        <el-col :span="1.5">
           <el-button v-hasPermi="['monitor:job:remove']" :disabled="multiple" icon="Delete" plain type="danger" @click="handleDelete">删除</el-button>
         </el-col>
         <el-col :span="1.5">
@@ -225,7 +222,7 @@ import { listJob, getJob, delJob, addJob, updateJob, runJob, changeJobStatus } f
 import Crontab from '@/components/Crontab'
 const router = useRouter()
 import { useDict } from '@/composables/useDict'
-import { selectDictLabel, parseTime } from '@/composables/useCommon'
+import { selectDictLabel, parseTime, resetForm } from '@/composables/useCommon'
 
 const { sys_job_group, sys_job_status } = useDict('sys_job_group', 'sys_job_status')
 
@@ -241,6 +238,8 @@ const title = ref('')
 const openView = ref(false)
 const openCron = ref(false)
 const expression = ref('')
+const jobRef = ref()
+const crontabRef = ref()
 
 const data = reactive({
   form: {},
@@ -396,7 +395,7 @@ function handleUpdate(row) {
 }
 /** 提交按钮 */
 function submitForm() {
-  proxy.$refs['jobRef'].validate((valid) => {
+  jobRef.value.validate((valid) => {
     if (valid) {
       if (form.value.jobId != undefined) {
         updateJob(form.value).then((response) => {
