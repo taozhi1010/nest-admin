@@ -158,6 +158,7 @@ import { listData, delData } from '@/api/system/dict/data'
 import { useDict } from '@/composables/useDict'
 import { resetForm, download, parseTime } from '@/composables/useCommon'
 
+const { proxy } = getCurrentInstance()
 const { sys_normal_disable } = useDict('sys_normal_disable')
 
 // 字典组树和列表的ref
@@ -214,15 +215,18 @@ const dictGroup = reactive({
   },
   handleDelete: (row) => {
     const dictIds = row.dictId || dictGroup.selection.map((item) => item.dictId).join(',')
-    proxy.$modal
-      .confirm(`是否确认删除字典编号为"${dictIds}"的数据项？`)
+    ElMessageBox.confirm(`是否确认删除字典编号为"${dictIds}"的数据项？`, '提示', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning'
+    })
       .then(() => {
         loading.value = true
         return delType(dictIds)
       })
       .then(() => {
         dictGroup.request()
-        proxy.$modal.msgSuccess('删除成功')
+        ElMessage.success('删除成功')
       })
   },
   handleExport: () => {
@@ -262,7 +266,7 @@ const dictGroup = reactive({
     loading.value = true
     refreshCache()
       .then(() => {
-        proxy.$modal.msgSuccess('刷新成功')
+        ElMessage.success('刷新成功')
         useDictStore().cleanDict()
       })
       .finally(() => {
@@ -298,14 +302,17 @@ const dictData = reactive({
   },
   handleDelete: (row) => {
     const dictCodes = row.dictCode || dictData.selection.map((item) => item.dictCode).join(',')
-    proxy.$modal
-      .confirm(`是否确认删除字典编码为"${dictCodes}"的数据项？`)
+    ElMessageBox.confirm(`是否确认删除字典编码为"${dictCodes}"的数据项？`, '提示', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning'
+    })
       .then(() => {
         return delData(dictCodes)
       })
       .then(() => {
         dictData.request()
-        proxy.$modal.msgSuccess('删除成功')
+        ElMessage.success('删除成功')
         useDictStore().removeDict(dictData.query.dictType)
       })
   },
