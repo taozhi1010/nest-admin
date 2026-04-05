@@ -27,8 +27,6 @@ export class UserController {
   @RequirePermission('system:user:query')
   @Get('/profile')
   profile(@User() user: UserDto) {
-    console.log('🟢 [profile] 获取用户信息:', user.user.userName);
-    console.log('🟢 [profile] 用户头像:', user.user.avatar);
     return ResultData.ok(user.user);
   }
 
