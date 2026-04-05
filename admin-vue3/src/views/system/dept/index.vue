@@ -206,17 +206,17 @@ function handleUpdate(row) {
 }
 /** 提交按钮 */
 function submitForm() {
-  proxy.$refs['deptRef'].validate((valid) => {
+  deptRef.value.validate((valid) => {
     if (valid) {
       if (form.value.deptId != undefined) {
         updateDept(form.value).then((response) => {
-          proxy.$modal.msgSuccess('修改成功')
+          ElMessage.success('修改成功')
           open.value = false
           getList()
         })
       } else {
         addDept(form.value).then((response) => {
-          proxy.$modal.msgSuccess('新增成功')
+          ElMessage.success('新增成功')
           open.value = false
           getList()
         })
@@ -226,14 +226,17 @@ function submitForm() {
 }
 /** 删除按钮操作 */
 function handleDelete(row) {
-  proxy.$modal
-    .confirm(`是否确认删除名称为"${row.deptName}"的数据项?`)
+  ElMessageBox.confirm(`是否确认删除名称为"${row.deptName}"的数据项?`, '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  })
     .then(function () {
       return delDept(row.deptId)
     })
     .then(() => {
       getList()
-      proxy.$modal.msgSuccess('删除成功')
+      ElMessage.success('删除成功')
     })
     .catch(() => {})
 }
