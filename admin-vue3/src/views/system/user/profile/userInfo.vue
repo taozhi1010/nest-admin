@@ -68,7 +68,9 @@ const userInfo = reactive({
     console.log('=== 调用 updateUserProfile 接口 ===')
     console.log('表单数据:', userInfo.form)
     try {
-      await proxy.$refs.userInfoRef.validate()
+      if (userInfoRef.value) {
+        await userInfoRef.value.validate()
+      }
       // 将表单数据与用户原始数据合并
       const updateData = {
         ...props.user,
