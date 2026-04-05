@@ -53,10 +53,9 @@ manualChunks: (id) => {
     if (id.includes('vue') || id.includes('vue-router') || id.includes('pinia')) {
       return 'vue-vendor'
     }
-    if (id.includes('@kangc/v-md-editor') || id.includes('markdown-it')) {
+    if (id.includes('md-editor-v3') || id.includes('markdown-it')) {
       return 'markdown'
     }
-    if (id.includes('@vueup/vue-quill')) return 'quill'
     return 'vendor'
   }
 }
@@ -214,7 +213,6 @@ Vite 8: ~0.3s (4G 网络)
 - Vue Vendor: 518 KB (Vue + Router + Pinia)
 - ECharts: 419 KB (图表库)
 - Markdown: 按需加载
-- Quill: 按需加载
 - Vendor: 其他第三方库
 
 ---

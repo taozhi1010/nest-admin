@@ -32,8 +32,6 @@ import submitNoEnter from '@/utils/submitNoEnter' //取消回车提交
 import Pagination from '@/components/Pagination'
 // 自定义表格工具组件
 import RightToolbar from '@/components/RightToolbar'
-// 富文本组件
-import Editor from '@/components/Editor'
 // 文件上传组件
 import FileUpload from '@/components/FileUpload'
 // 图片上传组件
@@ -55,7 +53,6 @@ app.component('FileUpload', FileUpload)
 app.component('ImageUpload', ImageUpload)
 app.component('ImagePreview', ImagePreview)
 app.component('RightToolbar', RightToolbar)
-app.component('Editor', Editor)
 
 // 全局注册所有 Element Plus 图标
 Object.keys(ElementPlusIconsVue).forEach((key) => {
@@ -80,14 +77,14 @@ app.use(ElementPlus, {
   size: Cookies.get('size') || 'default'
 })
 
-// 初始化字典数据
-import useDictStore from '@/store/modules/dict'
-const dictStore = useDictStore()
-if (dictStore) {
-  dictStore.initDict().catch(error => {
-    console.error('字典初始化失败:', error)
-  })
-}
+// 初始化字典数据 - 移至登录后执行，避免在未登录时请求接口
+// import useDictStore from '@/store/modules/dict'
+// const dictStore = useDictStore()
+// if (dictStore) {
+//   dictStore.initDict().catch(error => {
+//     console.error('字典初始化失败:', error)
+//   })
+// }
 
 app.mount('#app')
 
