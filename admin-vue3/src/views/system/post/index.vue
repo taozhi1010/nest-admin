@@ -96,7 +96,6 @@ import { listPost, addPost, delPost, getPost, updatePost } from '@/api/system/po
 import { useDict } from '@/composables/useDict'
 import { resetForm, download, parseTime } from '@/composables/useCommon'
 
-const { proxy } = getCurrentInstance()
 const { sys_normal_disable } = useDict('sys_normal_disable')
 
 // 模板引用
@@ -211,10 +210,10 @@ const post = reactive({
       try {
         if (post.form.postId !== undefined) {
           await updatePost(post.form)
-          proxy.$modal.msgSuccess('修改成功')
+          ElMessage.success('修改成功')
         } else {
           await addPost(post.form)
-          proxy.$modal.msgSuccess('新增成功')
+          ElMessage.success('新增成功')
         }
         post.open = false
         post.getList()
@@ -228,9 +227,13 @@ const post = reactive({
   handleDelete: async (row) => {
     const postIds = row.postId || post.ids
     try {
-      await proxy.$modal.confirm(`是否确认删除岗位编号为"${postIds}"的数据项？`)
+      await ElMessageBox.confirm(`是否确认删除岗位编号为"${postIds}"的数据项？`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
       await delPost(postIds)
-      proxy.$modal.msgSuccess('删除成功')
+      ElMessage.success('删除成功')
       post.getList()
     } catch (e) {
       if (e !== 'cancel') {
