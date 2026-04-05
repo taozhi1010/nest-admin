@@ -47,8 +47,6 @@
 import { forceLogout, list as initData } from '@/api/monitor/online'
 import { resetForm, parseTime } from '@/composables/useCommon'
 
-const { proxy } = getCurrentInstance()
-
 const onlineList = ref([])
 const loading = ref(true)
 const total = ref(0)

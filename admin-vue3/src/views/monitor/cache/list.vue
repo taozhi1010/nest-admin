@@ -75,10 +75,8 @@
 </template>
 
 <script setup name="CacheList">
-import { getCurrentInstance, ref, onUnmounted, onMounted } from 'vue'
+import { ref, onUnmounted, onMounted } from 'vue'
 import { listCacheName, listCacheKey, getCacheValue, clearCacheName, clearCacheKey, clearCacheAll } from '@/api/monitor/cache'
-
-const { proxy } = getCurrentInstance()
 
 const cacheNames = ref([])
 const cacheKeys = ref([])
