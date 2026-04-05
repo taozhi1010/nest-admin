@@ -63,7 +63,6 @@
           <el-col :span="24">
             <el-form-item label="上级菜单">
               <el-tree-select v-model="menu.form.parentId" check-strictly :data="menu.menuOptions" placeholder="选择上级菜单" :props="{ value: 'menuId', label: 'menuName', children: 'children' }" value-key="menuId" />
-              />
             </el-form-item>
           </el-col>
           <el-col :span="24">
