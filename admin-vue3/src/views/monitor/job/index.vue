@@ -327,13 +327,16 @@ function handleCommand(command, row) {
 // 任务状态修改
 function handleStatusChange(row) {
   let text = row.status === '0' ? '启用' : '停用'
-  proxy.$modal
-    .confirm(`确认要"${text}""${row.jobName}"任务吗?`)
+  ElMessageBox.confirm(`确认要"${text}""${row.jobName}"任务吗?`, '系统提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  })
     .then(function () {
       return changeJobStatus(row.jobId, row.status)
     })
     .then(() => {
-      proxy.$modal.msgSuccess(`${text}成功`)
+      ElMessage.success(`${text}成功`)
     })
     .catch(function () {
       row.status = row.status === '0' ? '1' : '0'
@@ -341,13 +344,16 @@ function handleStatusChange(row) {
 }
 /* 立即执行一次 */
 function handleRun(row) {
-  proxy.$modal
-    .confirm(`确认要立即执行一次"${row.jobName}"任务吗?`)
+  ElMessageBox.confirm(`确认要立即执行一次"${row.jobName}"任务吗?`, '系统提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  })
     .then(function () {
       return runJob(row.jobId, row.jobGroup)
     })
     .then(() => {
-      proxy.$modal.msgSuccess('执行成功')
+      ElMessage.success('执行成功')
     })
     .catch(() => {})
 }
@@ -394,13 +400,13 @@ function submitForm() {
     if (valid) {
       if (form.value.jobId != undefined) {
         updateJob(form.value).then((response) => {
-          proxy.$modal.msgSuccess('修改成功')
+          ElMessage.success('修改成功')
           open.value = false
           getList()
         })
       } else {
         addJob(form.value).then((response) => {
-          proxy.$modal.msgSuccess('新增成功')
+          ElMessage.success('新增成功')
           open.value = false
           getList()
         })
@@ -411,14 +417,17 @@ function submitForm() {
 /** 删除按钮操作 */
 function handleDelete(row) {
   const jobIds = row.jobId || ids.value
-  proxy.$modal
-    .confirm(`是否确认删除定时任务编号为"${jobIds}"的数据项?`)
+  ElMessageBox.confirm(`是否确认删除定时任务编号为"${jobIds}"的数据项?`, '系统提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  })
     .then(function () {
       return delJob(jobIds)
     })
     .then(() => {
       getList()
-      proxy.$modal.msgSuccess('删除成功')
+      ElMessage.success('删除成功')
     })
     .catch(() => {})
 }
