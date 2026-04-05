@@ -40,7 +40,9 @@
         <el-table-column align="center" label="公告标题" prop="noticeTitle" :show-overflow-tooltip="true" min-width="300">
           <template #default="scope">
             <div style="display: flex; justify-content: center; align-items: center; gap: 8px; width: 100%;">
-              <span>{{ getDictLabel('sys_notice_type', scope.row.noticeType) }}</span>
+              <el-tag :type="getDictTagType('sys_notice_type', scope.row.noticeType)" effect="light" size="small">
+                {{ getDictLabel('sys_notice_type', scope.row.noticeType) }}
+              </el-tag>
               <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ scope.row.noticeTitle
               }}</span>
             </div>
@@ -125,7 +127,7 @@ import { parseTime, resetForm } from '@/composables/useCommon'
 import { useCatTools } from '@/composables/useCatTools'
 import MdEditor from '@/components/MdEditor'
 
-const { sys_notice_status, sys_notice_type } = useDict('sys_notice_status', 'sys_notice_type')
+const { sys_notice_status, sys_notice_type, getDictLabel, getDictTagType } = useDict('sys_notice_status', 'sys_notice_type')
 const { isNullorUndefined } = useCatTools()
 
 // 表单 ref
