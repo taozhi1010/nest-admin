@@ -1,17 +1,51 @@
+import dayjs from 'dayjs'
+import 'dayjs/locale/zh-cn' // 引入中文语言包
+
+// 设置默认语言为中文
+dayjs.locale('zh-cn')
+
 /**
  * 通用js方法封装处理
  * Copyright (c) 2019 ruoyi
  */
 
-// 日期格式化
+// 日期格式化 - 使用 dayjs 替代原生 Date 处理
 export function parseTime(time, pattern) {
   if (arguments.length === 0 || !time) {
     return null
   }
-  const format = pattern || '{y}-{m}-{d} {h}:{i}:{s}'
-  let date
+  
+  // 默认格式映射：将旧格式的占位符转换为 dayjs 格式
+  const formatMap = {
+    '{y}': 'YYYY',
+    '{m}': 'MM',
+    '{d}': 'DD',
+    '{h}': 'HH',
+    '{i}': 'mm',
+    '{s}': 'ss',
+    '{a}': 'ddd' // 星期几的中文表示需要特殊处理
+  }
+  
+  let format = pattern || '{y}-{m}-{d} {h}:{i}:{s}'
+  
+  // 检查是否包含星期几的占位符 {a}
+  const hasWeekday = format.includes('{a}')
+  
+  // 将旧格式转换为 dayjs 格式
+  let dayjsFormat = format
+  Object.keys(formatMap).forEach(key => {
+    if (key !== '{a}') {
+      dayjsFormat = dayjsFormat.replace(new RegExp(key.replace(/[{}]/g, '\\$&'), 'g'), formatMap[key])
+    }
+  })
+  
+  // 移除 {a} 占位符，稍后单独处理
+  dayjsFormat = dayjsFormat.replace(/\{a\}/g, '')
+  
+  // 使用 dayjs 解析时间
+  let dateObj
   if (typeof time === 'object') {
-    date = time
+    dateObj = dayjs(time)
   } else {
     if (typeof time === 'string' && /^[0-9]+$/.test(time)) {
       time = parseInt(time)
@@ -24,36 +58,34 @@ export function parseTime(time, pattern) {
     if (typeof time === 'number' && time.toString().length === 10) {
       time = time * 1000
     }
-    date = new Date(time)
+    dateObj = dayjs(time)
   }
-  const formatObj = {
-    y: date.getFullYear(),
-    m: date.getMonth() + 1,
-    d: date.getDate(),
-    h: date.getHours(),
-    i: date.getMinutes(),
-    s: date.getSeconds(),
-    a: date.getDay()
+  
+  // 如果日期无效，返回 null
+  if (!dateObj.isValid()) {
+    return null
   }
-  const time_str = format.replace(/{(y|m|d|h|i|s|a)+}/g, (result, key) => {
-    let value = formatObj[key]
-    // Note: getDay() returns 0 on Sunday
-    if (key === 'a') {
-      return ['日', '一', '二', '三', '四', '五', '六'][value]
-    }
-    if (result.length > 0 && value < 10) {
-      value = `0${value}`
-    }
-    return value || 0
-  })
-  return time_str
-}
-
-// 表单重置
-export function resetForm(refName) {
-  if (this.$refs[refName]) {
-    this.$refs[refName].resetFields()
+  
+  // 格式化时间
+  let result = dateObj.format(dayjsFormat)
+  
+  // 如果需要处理星期几 {a}
+  if (hasWeekday) {
+    const weekdays = ['日', '一', '二', '三', '四', '五', '六']
+    const weekday = weekdays[dateObj.day()]
+    // 先替换其他占位符
+    let tempResult = format
+    Object.keys(formatMap).forEach(key => {
+      if (key !== '{a}') {
+        const regex = new RegExp(key.replace(/[{}]/g, '\\$&'), 'g')
+        tempResult = tempResult.replace(regex, dateObj.format(formatMap[key]))
+      }
+    })
+    // 最后替换星期几占位符
+    result = tempResult.replace(/\{a\}/g, weekday)
   }
+  
+  return result
 }
 
 // 添加日期范围
@@ -69,50 +101,6 @@ export function addDateRange(params, dateRange, propName) {
     search.params[`end${propName}`] = dateRange[1]
   }
   return search
-}
-
-// 回显数据字典
-export function selectDictLabel(datas, value) {
-  if (value === undefined) {
-    return ''
-  }
-  var actions = []
-  Object.keys(datas).some((key) => {
-    if (datas[key].value == `${value}`) {
-      actions.push(datas[key].label)
-      return true
-    }
-  })
-  if (actions.length === 0) {
-    actions.push(value)
-  }
-  return actions.join('')
-}
-
-// 回显数据字典（字符串数组）
-export function selectDictLabels(datas, value, separator) {
-  if (value === undefined || value.length === 0) {
-    return ''
-  }
-  if (Array.isArray(value)) {
-    value = value.join(',')
-  }
-  var actions = []
-  var currentSeparator = undefined === separator ? ',' : separator
-  var temp = value.split(currentSeparator)
-  Object.keys(value.split(currentSeparator)).some((val) => {
-    var match = false
-    Object.keys(datas).some((key) => {
-      if (datas[key].value == `${temp[val]}`) {
-        actions.push(datas[key].label + currentSeparator)
-        match = true
-      }
-    })
-    if (!match) {
-      actions.push(temp[val] + currentSeparator)
-    }
-  })
-  return actions.join('').substring(0, actions.join('').length - 1)
 }
 
 // 字符串格式化(%s )
