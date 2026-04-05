@@ -88,6 +88,11 @@ export function random(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
+// 判断值是否为 null 或 undefined
+export function isNullorUndefined(value) {
+  return value === null || value === undefined
+}
+
 // 导出所有工具函数
 export const catTools = {
   dateFormat,
@@ -97,7 +102,8 @@ export const catTools = {
   uuid,
   parseUrl,
   formatSize,
-  random
+  random,
+  isNullorUndefined
 }
 
 export default catTools
