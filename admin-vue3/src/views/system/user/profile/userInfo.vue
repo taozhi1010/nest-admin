@@ -34,7 +34,6 @@ const props = defineProps({
 })
 
 // ==================== 实例和字典 ====================
-const { proxy } = getCurrentInstance()
 
 // ==================== 表单引用 ====================
 const userInfoRef = ref(null)
@@ -74,7 +73,7 @@ const userInfo = reactive({
       }
       console.log('提交的数据:', updateData)
       await updateUserProfile(updateData)
-      proxy.$modal.msgSuccess('修改成功')
+      ElMessage.success('修改成功')
     } catch (e) {
       if (e !== false) {
         console.error('保存用户信息失败:', e)
@@ -84,7 +83,8 @@ const userInfo = reactive({
 
   // 关闭按钮
   close: () => {
-    proxy.$tab.closePage()
+    const { closePage } = useTab()
+    closePage()
   }
 })
 

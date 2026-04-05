@@ -63,7 +63,6 @@ import { resetForm, parseTime } from '@/composables/useCommon'
 
 // ==================== 实例和字典 ====================
 const route = useRoute()
-const { proxy } = getCurrentInstance()
 const { sys_normal_disable } = useDict('sys_normal_disable')
 
 // ==================== 表单引用 ====================
@@ -104,8 +103,9 @@ const authUser = reactive({
 
   // 返回按钮
   handleClose: () => {
+    const { closeOpenPage } = useTab()
     const obj = { path: '/system/role' }
-    proxy.$tab.closeOpenPage(obj)
+    closeOpenPage(obj)
   },
 
   // 搜索按钮操作
@@ -134,9 +134,13 @@ const authUser = reactive({
   // 取消授权按钮操作
   cancelAuthUser: async (row) => {
     try {
-      await proxy.$modal.confirm(`确认要取消该用户"${row.userName}"角色吗？`)
+      await ElMessageBox.confirm(`确认要取消该用户"${row.userName}"角色吗？`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
       await authUserCancel({ userId: row.userId, roleId: +authUser.queryParams.roleId })
-      proxy.$modal.msgSuccess('取消授权成功')
+      ElMessage.success('取消授权成功')
       authUser.getList()
     } catch (e) {
       if (e !== 'cancel') {
@@ -150,9 +154,13 @@ const authUser = reactive({
     const roleId = authUser.queryParams.roleId
     const uIds = authUser.userIds.join(',')
     try {
-      await proxy.$modal.confirm('是否取消选中用户授权数据项？')
+      await ElMessageBox.confirm('是否取消选中用户授权数据项？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
       await authUserCancelAll({ roleId: +roleId, userIds: uIds })
-      proxy.$modal.msgSuccess('取消授权成功')
+      ElMessage.success('取消授权成功')
       authUser.getList()
     } catch (e) {
       if (e !== 'cancel') {

@@ -21,7 +21,6 @@
 import { updateUserPwd } from '@/api/system/user'
 
 // ==================== 实例和字典 ====================
-const { proxy } = getCurrentInstance()
 
 // ==================== 表单引用 ====================
 const pwdRef = ref(null)
@@ -63,7 +62,7 @@ const resetPwd = reactive({
     try {
       await proxy.$refs.pwdRef.validate()
       await updateUserPwd(resetPwd.form.oldPassword, resetPwd.form.newPassword)
-      proxy.$modal.msgSuccess('修改成功')
+      ElMessage.success('修改成功')
     } catch (e) {
       if (e !== false) {
         console.error('修改密码失败:', e)
@@ -73,7 +72,8 @@ const resetPwd = reactive({
 
   // 关闭按钮
   close: () => {
-    proxy.$tab.closePage()
+    const { closePage } = useTab()
+    closePage()
   }
 })
 </script>
