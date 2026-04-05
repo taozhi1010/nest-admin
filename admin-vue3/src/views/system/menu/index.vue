@@ -27,7 +27,6 @@
     </el-row>
 
     <el-table v-if="menu.refreshTable" v-loading="menu.loading" :data="menu.menuList" :default-expand-all="menu.isExpandAll" row-key="menuId" :tree-props="{ children: 'children', hasChildren: 'hasChildren' }">
-      >
       <el-table-column label="菜单名称" prop="menuName" :show-overflow-tooltip="true" width="160" />
       <el-table-column align="center" label="图标" prop="icon" width="100">
         <template #default="scope">
