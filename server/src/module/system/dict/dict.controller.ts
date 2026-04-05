@@ -138,6 +138,15 @@ export class DictController {
     return this.dictService.findOneDataType(dictType);
   }
 
+  @ApiOperation({
+    summary: '字典数据-全部【走缓存】',
+    description: '一次性获取所有字典类型及其对应的字典数据，便于前端初始化时使用',
+  })
+  @Get('/data/all')
+  findAllDictData() {
+    return this.dictService.findAllDictData();
+  }
+
   @ApiOperation({ summary: '导出字典组为xlsx文件' })
   @RequirePermission('system:dict:export')
   @Post('/type/export')
