@@ -8,13 +8,19 @@
     :showCodeRowNumber="true"
     :toolbars="toolbars"
     :placeholder="placeholder"
-    :style="{ height }"
+    :height="height"
+    :style="{ minHeight }"
     @onChange="handleChange"
     @onUploadImg="handleUploadImg"
   />
 </template>
 
 <script setup>
+/**
+ * Markdown 编辑器组件
+ * 基于 md-editor-v3 封装
+ * 官方文档: https://imzbf.github.io/md-editor-v3/
+ */
 import { ref, watch } from 'vue'
 import { MdEditor } from 'md-editor-v3'
 import 'md-editor-v3/lib/style.css'
@@ -27,6 +33,10 @@ const props = defineProps({
   height: {
     type: String,
     default: '400px'
+  },
+  minHeight: {
+    type: String,
+    default: '75vh'
   },
   preview: {
     type: Boolean,

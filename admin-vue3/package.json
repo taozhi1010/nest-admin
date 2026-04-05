@@ -12,8 +12,6 @@
   },
   "dependencies": {
     "@element-plus/icons-vue": "2.0.10",
-    "@kangc/v-md-editor": "^2.3.18",
-    "@vueup/vue-quill": "1.1.0",
     "@vueuse/core": "9.5.0",
     "axios": "0.27.2",
     "clipboard": "^2.0.11",

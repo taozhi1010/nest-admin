@@ -2,7 +2,7 @@
 
 ## 简介
 
-`MdEditor` 是一个基于 `@kangc/v-md-editor` 封装的 Markdown 编辑器组件，采用 GitHub 主题，支持编辑、预览、代码高亮等功能。
+`MdEditor` 是一个基于 `md-editor-v3` 封装的 Markdown 编辑器组件，采用 VuePress 主题，支持编辑、预览、代码高亮等功能。
 
 ## 基本用法
 
@@ -200,7 +200,7 @@ const form = reactive({
    - 如需查看渲染效果，请使用 `MdViewer` 组件
 
 4. **依赖**：
-   - 确保项目中已安装 `@kangc/v-md-editor` 和 `highlight.js`
+   - 确保项目中已安装 `md-editor-v3`
 
 ## 相关组件
 
