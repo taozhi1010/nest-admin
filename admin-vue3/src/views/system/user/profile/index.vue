@@ -83,9 +83,6 @@ import dayjs from 'dayjs'
 import { getImageUrl } from '@/utils/image'
 import defAva from '@/assets/images/profile.jpg'
 
-// ==================== 实例和字典 ====================
-const { proxy } = getCurrentInstance()
-
 // ==================== 个人信息管理（集中式管理） ====================
 const profile = reactive({
   // 响应式数据
