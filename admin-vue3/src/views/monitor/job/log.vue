@@ -149,8 +149,9 @@ function getList() {
 }
 // 返回按钮
 function handleClose() {
+  const { closeOpenPage } = useTab()
   const obj = { path: '/monitor/job' }
-  proxy.$tab.closeOpenPage(obj)
+  closeOpenPage(obj)
 }
 /** 搜索按钮操作 */
 function handleQuery() {

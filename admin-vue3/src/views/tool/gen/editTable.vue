@@ -154,8 +154,9 @@ function getFormPromise(form) {
   })
 }
 function close() {
+  const { closeOpenPage } = useTab()
   const obj = { path: '/tool/gen', query: { t: Date.now(), pageNum: route.query.pageNum } }
-  proxy.$tab.closeOpenPage(obj)
+  closeOpenPage(obj)
 }
 
 ;(() => {
