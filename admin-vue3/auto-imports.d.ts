@@ -7,6 +7,9 @@
 export {}
 declare global {
   const EffectScope: typeof import('vue').EffectScope
+  const ElLoading: typeof import('element-plus/es').ElLoading
+  const ElMessage: typeof import('element-plus/es').ElMessage
+  const ElMessageBox: typeof import('element-plus/es').ElMessageBox
   const acceptHMRUpdate: typeof import('pinia').acceptHMRUpdate
   const addDateRange: typeof import('./src/composables/useCommon').addDateRange
   const computed: typeof import('vue').computed
@@ -88,6 +91,7 @@ declare global {
   const useRoute: typeof import('vue-router').useRoute
   const useRouter: typeof import('vue-router').useRouter
   const useSlots: typeof import('vue').useSlots
+  const useTab: typeof import('./src/composables/useTab').useTab
   const useTemplateRef: typeof import('vue').useTemplateRef
   const watch: typeof import('vue').watch
   const watchEffect: typeof import('vue').watchEffect
