@@ -807,7 +807,7 @@ const user = reactive({
       if (e !== 'cancel') {
         console.error('导入失败:', e)
         // 即使报错也显示错误信息
-        proxy.$alert(`<div style='overflow: auto;overflow-x: hidden;max-height: 70vh;padding: 10px 20px 0;'>${e.message || '导入失败，请重试'}</div>`, '导入结果', { dangerouslyUseHTMLString: true })
+        ElMessageBox.alert(`<div style='overflow: auto;overflow-x: hidden;max-height: 70vh;padding: 10px 20px 0;'>${e.message || '导入失败，请重试'}</div>`, '导入结果', { dangerouslyUseHTMLString: true })
       }
     }
   },
