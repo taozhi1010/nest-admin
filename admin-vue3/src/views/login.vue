@@ -52,10 +52,9 @@
 
 <script setup>
 import useUserStore from '@/store/modules/user'
-import useAuthCode from '@/hooks/useAuthCode'
+import { authCodeInfo, getValidateCode, getUserCookie, setUserCookie } from '@/composables/useAuthCode'
 
 const userStore = useUserStore()
-const authCodeInfo = useAuthCode.authCodeInfo
 const route = useRoute()
 const router = useRouter()
 const loginRef = ref()
@@ -92,7 +91,7 @@ function handleLogin() {
       authCodeInfo.loading = true
       loginForm.model.uuid = authCodeInfo.uuid
       // 勾选了需要记住密码设置在 cookie 中设置记住用户名和密码，否则移除
-      useAuthCode.setUserCookie(loginForm.model)
+      setUserCookie(loginForm.model)
 
       // 调用 action 的登录方法
       userStore
@@ -103,7 +102,7 @@ function handleLogin() {
         .catch(() => {
           // 重新获取验证码
           if (authCodeInfo.captchaEnabled) {
-            useAuthCode.getValidateCode(loginForm.model, true)
+            getValidateCode(loginForm.model, true)
           }
         })
         .finally(() => {
@@ -115,11 +114,11 @@ function handleLogin() {
 
 // 刷新验证码
 function handleRefreshCaptcha() {
-  useAuthCode.getValidateCode(loginForm.model, true)
+  getValidateCode(loginForm.model, true)
 }
 
-useAuthCode.getValidateCode(loginForm.model, false)
-loginForm.model = useAuthCode.getUserCookie(loginForm.model)
+getValidateCode(loginForm.model, false)
+loginForm.model = getUserCookie(loginForm.model)
 </script>
 
 <style lang="scss" scoped>

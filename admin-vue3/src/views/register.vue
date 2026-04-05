@@ -25,7 +25,7 @@
         <el-input v-model="registerForm.model.code" auto-complete="off" placeholder="验证码" size="large" style="width: 63%" @keyup.enter="handleRegister">
           <template #prefix><svg-icon class="el-input__icon input-icon" icon-class="validCode" /></template>
         </el-input>
-        <div class="register-code" @click="useAuthCode.getValidateCode(registerForm.model, true)" v-html="authCodeInfo.imgUrl"></div>
+        <div class="register-code" @click="getValidateCode(registerForm.model, true)" v-html="authCodeInfo.imgUrl"></div>
       </el-form-item>
       <el-form-item style="width: 100%">
         <el-button :loading="authCodeInfo.loading" size="large" style="width: 100%" type="primary" @click="handleRegister">
@@ -47,8 +47,7 @@
 <script setup>
 import { ElMessageBox } from 'element-plus'
 import { register } from '@/api/login'
-import useAuthCode from '@/hooks/useAuthCode'
-const authCodeInfo = useAuthCode.authCodeInfo
+import { authCodeInfo, getValidateCode } from '@/composables/useAuthCode'
 
 const router = useRouter()
 const registerRef = ref()
@@ -105,7 +104,7 @@ const handleRegister = () => {
         .catch(() => {
           // 重新获取验证码
           if (authCodeInfo.captchaEnabled) {
-            useAuthCode.getValidateCode(registerForm.model, true)
+            getValidateCode(registerForm.model, true)
           }
         })
         .finally(() => {
@@ -115,7 +114,7 @@ const handleRegister = () => {
   })
 }
 
-useAuthCode.getValidateCode(registerForm.model, false)
+getValidateCode(registerForm.model, false)
 </script>
 
 <style lang="scss" scoped>
