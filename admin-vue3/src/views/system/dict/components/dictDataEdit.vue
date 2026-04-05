@@ -54,7 +54,6 @@ import { addData, updateData } from '@/api/system/dict/data'
 import { useDict } from '@/composables/useDict'
 import { resetForm } from '@/composables/useCommon'
 
-const { proxy } = getCurrentInstance()
 const { sys_normal_disable } = useDict('sys_normal_disable')
 
 // 数据标签回显样式
