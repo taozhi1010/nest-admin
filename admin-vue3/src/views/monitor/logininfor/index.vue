@@ -145,9 +145,13 @@ const logininfor = reactive({
   handleDelete: async (row) => {
     const infoIds = row.infoId || logininfor.ids
     try {
-      await proxy.$modal.confirm(`是否确认删除访问编号为"${infoIds}"的数据项？`)
+      await ElMessageBox.confirm(`是否确认删除访问编号为"${infoIds}"的数据项？`, '系统提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
       await delLogininfor(infoIds)
-      proxy.$modal.msgSuccess('删除成功')
+      ElMessage.success('删除成功')
       logininfor.getList()
     } catch (e) {
       if (e !== 'cancel') {
@@ -159,9 +163,13 @@ const logininfor = reactive({
   // 清空按钮操作
   handleClean: async () => {
     try {
-      await proxy.$modal.confirm('是否确认清空所有登录日志数据项？')
+      await ElMessageBox.confirm('是否确认清空所有登录日志数据项？', '系统提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
       await cleanLogininfor()
-      proxy.$modal.msgSuccess('清空成功')
+      ElMessage.success('清空成功')
       logininfor.getList()
     } catch (e) {
       if (e !== 'cancel') {
@@ -174,9 +182,13 @@ const logininfor = reactive({
   handleUnlock: async () => {
     const username = logininfor.selectName
     try {
-      await proxy.$modal.confirm(`是否确认解锁用户"${username}"数据项？`)
+      await ElMessageBox.confirm(`是否确认解锁用户"${username}"数据项？`, '系统提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
       await unlockLogininfor(username)
-      proxy.$modal.msgSuccess(`用户${username}解锁成功`)
+      ElMessage.success(`用户${username}解锁成功`)
     } catch (e) {
       if (e !== 'cancel') {
         console.error('解锁失败:', e)

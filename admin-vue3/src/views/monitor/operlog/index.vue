@@ -201,27 +201,33 @@ function handleView(row) {
 /** 删除按钮操作 */
 function handleDelete(row) {
   const operIds = row.operId || ids.value
-  proxy.$modal
-    .confirm(`是否确认删除日志编号为"${operIds}"的数据项?`)
+  ElMessageBox.confirm(`是否确认删除日志编号为"${operIds}"的数据项?`, '系统提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  })
     .then(function () {
       return delOperlog(operIds)
     })
     .then(() => {
       getList()
-      proxy.$modal.msgSuccess('删除成功')
+      ElMessage.success('删除成功')
     })
     .catch(() => {})
 }
 /** 清空按钮操作 */
 function handleClean() {
-  proxy.$modal
-    .confirm('是否确认清空所有操作日志数据项?')
+  ElMessageBox.confirm('是否确认清空所有操作日志数据项?', '系统提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  })
     .then(function () {
       return cleanOperlog()
     })
     .then(() => {
       getList()
-      proxy.$modal.msgSuccess('清空成功')
+      ElMessage.success('清空成功')
     })
     .catch(() => {})
 }
