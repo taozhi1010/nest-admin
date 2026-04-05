@@ -158,7 +158,6 @@ import { listData, delData } from '@/api/system/dict/data'
 import { useDict } from '@/composables/useDict'
 import { resetForm, download, parseTime } from '@/composables/useCommon'
 
-const { proxy } = getCurrentInstance()
 const { sys_normal_disable } = useDict('sys_normal_disable')
 
 // 字典组树和列表的ref
