@@ -157,40 +157,46 @@ function moveToCurrentTag() {
   })
 }
 function refreshSelectedTag(view) {
-  proxy.$tab.refreshPage(view)
+  const { refreshPage } = useTab()
+  refreshPage(view)
   if (route.meta.link) {
     useTagsViewStore().delIframeView(route)
   }
 }
 function closeSelectedTag(view) {
-  proxy.$tab.closePage(view).then(({ visitedViews }) => {
+  const { closePage } = useTab()
+  closePage(view).then(({ visitedViews }) => {
     if (isActive(view)) {
       toLastView(visitedViews, view)
     }
   })
 }
 function closeRightTags() {
-  proxy.$tab.closeRightPage(selectedTag.value).then((visitedViews) => {
+  const { closeRightPage } = useTab()
+  closeRightPage(selectedTag.value).then((visitedViews) => {
     if (!visitedViews.find((i) => i.fullPath === route.fullPath)) {
       toLastView(visitedViews)
     }
   })
 }
 function closeLeftTags() {
-  proxy.$tab.closeLeftPage(selectedTag.value).then((visitedViews) => {
+  const { closeLeftPage } = useTab()
+  closeLeftPage(selectedTag.value).then((visitedViews) => {
     if (!visitedViews.find((i) => i.fullPath === route.fullPath)) {
       toLastView(visitedViews)
     }
   })
 }
 function closeOthersTags() {
+  const { closeOtherPage } = useTab()
   router.push(selectedTag.value).catch(() => {})
-  proxy.$tab.closeOtherPage(selectedTag.value).then(() => {
+  closeOtherPage(selectedTag.value).then(() => {
     moveToCurrentTag()
   })
 }
 function closeAllTags(view) {
-  proxy.$tab.closeAllPage().then(({ visitedViews }) => {
+  const { closeAllPage } = useTab()
+  closeAllPage().then(({ visitedViews }) => {
     if (affixTags.value.some((tag) => tag.path === route.path)) {
       return
     }
