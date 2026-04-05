@@ -50,6 +50,9 @@
 import { getAuthRole, updateAuthRole } from '@/api/system/user'
 import { parseTime } from '@/composables/useCommon'
 
+// ==================== Composables ====================
+const { closeOpenPage } = useTab()
+
 // ==================== 实例和字典 ====================
 const route = useRoute()
 
@@ -91,7 +94,6 @@ const authRole = reactive({
 
   // 关闭按钮
   close: () => {
-    const { closeOpenPage } = useTab()
     const obj = { path: '/system/user' }
     closeOpenPage(obj)
   },
