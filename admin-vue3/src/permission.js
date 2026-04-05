@@ -8,6 +8,7 @@ import { isRelogin } from '@/utils/request'
 import useUserStore from '@/store/modules/user'
 import useSettingsStore from '@/store/modules/settings'
 import usePermissionStore from '@/store/modules/permission'
+import useDictStore from '@/store/modules/dict'
 
 NProgress.configure({ showSpinner: false })
 
@@ -29,6 +30,13 @@ router.beforeEach((to, from, next) => {
           .getInfo()
           .then(() => {
             isRelogin.show = false
+            // 初始化字典数据 - 在用户登录后才加载字典
+            const dictStore = useDictStore()
+            if (dictStore && !dictStore.dict.length) {
+              dictStore.initDict().catch(error => {
+                console.error('字典初始化失败:', error)
+              })
+            }
             usePermissionStore()
               .generateRoutes()
               .then((accessRoutes) => {
