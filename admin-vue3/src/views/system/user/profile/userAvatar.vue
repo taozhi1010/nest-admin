@@ -164,7 +164,9 @@ const submitCrop = async () => {
       
       // 创建 FormData
       const formData = new FormData()
-      formData.append('avatarfile', blob)
+      // 生成带时间戳的文件名，确保唯一性
+      const fileName = `avatar_${Date.now()}.png`
+      formData.append('avatarfile', blob, fileName)
       
       // 上传到服务器
       uploadAvatar(formData)
