@@ -2,21 +2,45 @@
 
 ## 📋 概述
 
-本文档记录了 system 目录下尚未完成的 `proxy` 引用重构工作。目前已将 `proxy.$modal` 全部替换为 Element Plus 原生 API（`ElMessage`、`ElMessageBox`），但部分文件仍使用了 `proxy.$refs` 和 `proxy.$tab`，需要进一步重构。
+本文档记录了 system 目录下 `proxy` 引用的重构工作进展。目前已完成大部分重构工作，包括 `proxy.$modal`、`proxy.$refs` 和 `proxy.$tab` 的替换。
 
 ## ✅ 已完成的重构
 
-以下模块已完全移除 `proxy.$modal` 并提交：
+### 1. proxy.$modal 替换（全部完成）
+
+以下模块已完全移除 `proxy.$modal` 并替换为 Element Plus 原生 API：
 
 1. **通知公告模块** - `src/views/system/notice/index.vue`
 2. **参数配置模块** - `src/views/system/config/index.vue`
 3. **字典管理模块** - `src/views/system/dict/` (包含子组件)
 4. **菜单管理模块** - `src/views/system/menu/index.vue`
 5. **岗位管理模块** - `src/views/system/post/index.vue`
+6. **角色管理模块** - `src/views/system/role/index.vue`
+7. **部门管理模块** - `src/views/system/dept/index.vue`
+
+### 2. proxy.$refs 和 proxy.$tab 替换（部分完成）
+
+以下模块已完成 `proxy.$refs` 和 `proxy.$tab` 的重构：
+
+1. ✅ **角色管理模块** - `src/views/system/role/` (所有文件)
+   - `index.vue` - 已移除所有 proxy 引用
+   - `selectUser.vue` - 已移除所有 proxy 引用
+   - `authUser.vue` - 已移除所有 proxy 引用
+
+2. ✅ **部门管理模块** - `src/views/system/dept/index.vue`
+   - 已移除所有 proxy 引用
+
+3. ⏸️ **用户个人资料模块** - `src/views/system/user/profile/` (部分完成)
+   - `userAvatar.vue` - ✅ 已完成（无 proxy 引用）
+   - `userInfo.vue` - ⏸️ 待处理（仍使用 `proxy.$refs.userInfoRef.validate()`）
+   - `resetPwd.vue` - ⏸️ 待处理（仍使用 `proxy.$refs.pwdRef.validate()`）
+
+4. ⏸️ **用户角色授权模块** - `src/views/system/user/authRole.vue`
+   - ⏸️ 待处理（仍使用 `proxy.$refs['roleRef'].toggleRowSelection()`）
 
 ## ⏸️ 待重构的文件
 
-以下文件仍使用了 `proxy.$refs` 或 `proxy.$tab`，需要进一步重构：
+以下文件仍使用了 `proxy.$refs`，需要进一步重构：
 
 ### 1. 用户个人资料模块
 
@@ -27,25 +51,25 @@
 
 #### 当前使用的 Proxy API
 ```javascript
-// userInfo.vue
-proxy.$refs.userInfoRef.validate()
-proxy.$tab.closePage()
+// userInfo.vue (第 71 行)
+await proxy.$refs.userInfoRef.validate()
 
-// resetPwd.vue
-proxy.$refs.pwdRef.validate()
-proxy.$tab.closePage()
+// resetPwd.vue (第 66 行)
+await proxy.$refs.pwdRef.validate()
 ```
 
 #### 重构方案
 ```javascript
-// 使用模板 ref 替代 proxy.$refs
+// userInfo.vue
 const userInfoRef = ref(null)
 await userInfoRef.value.validate()
 
-// 使用 router 替代 proxy.$tab
-import { useRouter } from 'vue-router'
-const router = useRouter()
-router.push('/system/user')
+// resetPwd.vue
+const pwdRef = ref(null)
+await pwdRef.value.validate()
+
+// 注意：这两个文件中的 proxy.$tab.closePage() 已在之前移除
+// 如需关闭页面，可使用 router.back() 或 router.push()
 ```
 
 ---
@@ -57,8 +81,8 @@ router.push('/system/user')
 
 #### 当前使用的 Proxy API
 ```javascript
+// authRole.vue (第 82, 127 行)
 proxy.$refs['roleRef'].toggleRowSelection(row)
-proxy.$tab.closeOpenPage(obj)
 ```
 
 #### 重构方案
@@ -67,81 +91,38 @@ proxy.$tab.closeOpenPage(obj)
 const roleRef = ref(null)
 roleRef.value.toggleRowSelection(row)
 
-// 使用 router
-import { useRouter } from 'vue-router'
-const router = useRouter()
-router.push('/system/user')
+// 注意：该文件中的 proxy.$tab.closeOpenPage() 已在之前移除
+// 如需跳转，可使用 router.push('/system/user')
 ```
 
 ---
 
-### 3. 角色管理模块
+### 3. ~~角色管理模块~~ ✅ 已完成
 
-#### 文件列表
-- `src/views/system/role/index.vue`
-- `src/views/system/role/selectUser.vue`
-- `src/views/system/role/authUser.vue`
+**状态**: 已完成重构，所有文件已移除 proxy 引用
 
-#### 当前使用的 Proxy API
-```javascript
-// selectUser.vue
-proxy.$refs['refTable'].toggleRowSelection(row)
-
-// authUser.vue
-proxy.$refs['selectRef'].show()
-proxy.$tab.closeOpenPage(obj)
-
-// index.vue
-// (已移除 proxy.$modal，但可能还有其他 proxy 使用)
-```
-
-#### 重构方案
-```javascript
-// 使用模板 ref
-const refTable = ref(null)
-refTable.value.toggleRowSelection(row)
-
-const selectRef = ref(null)
-selectRef.value.show()
-
-// 使用 router
-import { useRouter } from 'vue-router'
-const router = useRouter()
-router.push('/system/role')
-```
+- ✅ `src/views/system/role/index.vue`
+- ✅ `src/views/system/role/selectUser.vue`
+- ✅ `src/views/system/role/authUser.vue`
 
 ---
 
-### 4. 部门管理模块
+### 4. ~~部门管理模块~~ ✅ 已完成
 
-#### 文件
-- `src/views/system/dept/index.vue`
+**状态**: 已完成重构，已移除 proxy 引用
 
-#### 当前使用的 Proxy API
-```javascript
-proxy.$refs['deptRef'].validate((valid) => {
-  // ...
-})
-```
-
-#### 重构方案
-```javascript
-// 使用模板 ref
-const deptRef = ref(null)
-deptRef.value.validate((valid) => {
-  // ...
-})
-```
+- ✅ `src/views/system/dept/index.vue`
 
 ---
 
 ## 🎯 重构目标
 
-### 短期目标（本次重构）
-1. ✅ 移除所有 `proxy.$modal` 使用
-2. ⏸️ 移除所有 `proxy.$refs` 使用
-3. ⏸️ 移除所有 `proxy.$tab` 使用
-4. ⏸️ 移除不必要的 `getCurrentInstance()` 调用
+### 短期目标
+1. ✅ 移除所有 `proxy.$modal` 使用（已完成）
+2. ✅ 移除角色管理和部门管理模块的 `proxy.$refs` 使用（已完成）
+3. ⏸️ 移除用户个人资料模块的 `proxy.$refs` 使用（待处理）
+4. ⏸️ 移除用户角色授权模块的 `proxy.$refs` 使用（待处理）
+5. ⏸️ 移除不必要的 `getCurrentInstance()` 调用（待处理）
 
 ### 长期目标
 1. 完全消除对 `proxy` 的依赖
@@ -223,29 +204,23 @@ router.push('/system/user')
 
 ## 🔧 实施步骤
 
-### 第一步：用户个人资料模块
-1. 修改 `userInfo.vue`
-2. 修改 `resetPwd.vue`
-3. 修改 `userAvatar.vue`
+### ~~第一步：用户个人资料模块~~ ⏸️ 待处理
+1. ⏸️ 修改 `userInfo.vue` - 替换 `proxy.$refs.userInfoRef` 为模板 ref
+2. ⏸️ 修改 `resetPwd.vue` - 替换 `proxy.$refs.pwdRef` 为模板 ref
+3. ✅ `userAvatar.vue` - 已完成（无 proxy 引用）
 4. 测试验证
 5. 提交
 
-### 第二步：用户角色授权模块
-1. 修改 `authRole.vue`
+### ~~第二步：用户角色授权模块~~ ⏸️ 待处理
+1. ⏸️ 修改 `authRole.vue` - 替换 `proxy.$refs['roleRef']` 为模板 ref
 2. 测试验证
 3. 提交
 
-### 第三步：角色管理模块
-1. 修改 `selectUser.vue`
-2. 修改 `authUser.vue`
-3. 检查 `index.vue` 是否还有其他 proxy 使用
-4. 测试验证
-5. 提交
+### ~~第三步：角色管理模块~~ ✅ 已完成
+- 所有文件已完成重构
 
-### 第四步：部门管理模块
-1. 修改 `dept/index.vue`
-2. 测试验证
-3. 提交
+### ~~第四步：部门管理模块~~ ✅ 已完成
+- 文件已完成重构
 
 ---
 
@@ -261,19 +236,27 @@ router.push('/system/user')
 
 ## 📊 进度追踪
 
-| 模块 | 状态 | 文件数 | 备注 |
-|------|------|--------|------|
-| 通知公告 | ✅ 完成 | 1 | 已提交 |
-| 参数配置 | ✅ 完成 | 1 | 已提交 |
-| 字典管理 | ✅ 完成 | 3 | 已提交 |
-| 菜单管理 | ✅ 完成 | 1 | 已提交 |
-| 岗位管理 | ✅ 完成 | 1 | 已提交 |
-| 用户个人资料 | ⏸️ 待处理 | 3 | 需移除 proxy.$refs 和 proxy.$tab |
-| 用户角色授权 | ⏸️ 待处理 | 1 | 需移除 proxy.$refs 和 proxy.$tab |
-| 角色管理 | ⏸️ 待处理 | 3 | 需移除 proxy.$refs 和 proxy.$tab |
-| 部门管理 | ⏸️ 待处理 | 1 | 需移除 proxy.$refs |
+| 模块 | proxy.$modal | proxy.$refs | proxy.$tab | 状态 |
+|------|-------------|-------------|------------|------|
+| 通知公告 | ✅ 完成 | - | - | ✅ 已完成 |
+| 参数配置 | ✅ 完成 | - | - | ✅ 已完成 |
+| 字典管理 | ✅ 完成 | - | - | ✅ 已完成 |
+| 菜单管理 | ✅ 完成 | - | - | ✅ 已完成 |
+| 岗位管理 | ✅ 完成 | - | - | ✅ 已完成 |
+| 角色管理 | ✅ 完成 | ✅ 完成 | ✅ 完成 | ✅ 已完成 |
+| 部门管理 | ✅ 完成 | ✅ 完成 | - | ✅ 已完成 |
+| 用户个人资料 | ✅ 完成 | ⏸️ 2个文件 | ✅ 完成 | ⏸️ 部分完成 |
+| 用户角色授权 | ✅ 完成 | ⏸️ 待处理 | ✅ 完成 | ⏸️ 待处理 |
 
-**总计**: 9 个模块，5 个已完成，4 个待处理
+**总计**: 9 个模块
+- ✅ **完全完成**: 7 个模块
+- ⏸️ **部分完成**: 2 个模块（仅剩少量 proxy.$refs 待处理）
+
+### 待处理文件清单（仅 3 个文件）
+
+1. `src/views/system/user/profile/userInfo.vue` - 第 71 行
+2. `src/views/system/user/profile/resetPwd.vue` - 第 66 行
+3. `src/views/system/user/authRole.vue` - 第 82, 127 行
 
 ---
 
@@ -281,6 +264,11 @@ router.push('/system/user')
 
 - **创建时间**: 2026-04-06
 - **最后更新**: 2026-04-06
+- **最新更新内容**: 
+  - ✅ 完成角色管理模块重构（3个文件）
+  - ✅ 完成部门管理模块重构（1个文件）
+  - ✅ 清理未使用的 getCurrentInstance 引用（7个文件）
+  - ⏸️ 剩余 3 个文件待处理（用户个人资料和用户角色授权）
 - **负责人**: AI Assistant
 
 ---
