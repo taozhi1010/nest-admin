@@ -12,7 +12,9 @@ export default function createAutoImport() {
       presetImports: [
         { from: 'dayjs', as: 'dayjs' },
         { from: 'dayjs/plugin/isSameOrBefore', as: 'isSameOrBefore' },
-        { from: 'dayjs/plugin/isSameOrAfter', as: 'isSameOrAfter' }
+        { from: 'dayjs/plugin/isSameOrAfter', as: 'isSameOrAfter' },
+        // Element Plus 常用方法自动导入
+        { from: 'element-plus', imports: ['ElMessage', 'ElMessageBox', 'ElNotification', 'ElLoading'] }
       ],
       // 全局导入，无需手动 import
       injectAtEnd: true
