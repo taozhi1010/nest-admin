@@ -51,6 +51,8 @@ import { VueCropper } from 'vue-cropper'
 import { uploadAvatar } from '@/api/system/user'
 import useUserStore from '@/store/modules/user'
 import { watch } from 'vue'
+import { getImageUrl } from '@/utils/image'
+import defAva from '@/assets/images/profile.jpg'
 
 // ==================== Props ====================
 const props = defineProps({
@@ -79,40 +81,14 @@ const previews = ref({})
 // ==================== 监听 Props 变化 ====================
 // 监听 user prop 变化，更新头像显示
 watch(() => props.user?.avatar, (newAvatar) => {
-  if (newAvatar) {
-    const imgUrl = buildImageUrl(newAvatar)
-    imgSource.value = imgUrl
-    // 同时更新 store，保持一致
-    userStore.avatar = imgUrl
-  }
+  // 如果头像为空，使用默认头像；否则使用 getImageUrl 处理
+  const imgUrl = newAvatar ? getImageUrl(newAvatar) : defAva
+  imgSource.value = imgUrl
+  // 同时更新 store，保持一致
+  userStore.avatar = imgUrl
 }, { immediate: true })
 
 // ==================== 方法定义 ====================
-
-// 拼接完整的图片 URL（处理双斜杠问题）
-const buildImageUrl = (path) => {
-  if (!path) return ''
-  
-  // 如果已经是完整 URL（以 http 或 https 开头），直接返回
-  if (path.startsWith('http://') || path.startsWith('https://')) {
-    return path
-  }
-  
-  const baseUrl = import.meta.env.VITE_APP_BASE_API.replace(/\/$/, '')
-  const normalizedPath = path.startsWith('/') ? path : `/${path}`
-  let url = `${baseUrl}${normalizedPath}`
-  
-  // 从第 3 个字符开始替换所有的双斜杠（保留 http:// 或 https://）
-  if (url.startsWith('http')) {
-    const protocol = url.substring(0, url.indexOf('://') + 3)
-    const rest = url.substring(url.indexOf('://') + 3).replaceAll('//', '/')
-    url = protocol + rest
-  } else {
-    url = url.replaceAll('//', '/')
-  }
-  
-  return url
-}
 
 // 打开裁剪弹窗
 const openDialog = () => {
@@ -197,8 +173,8 @@ const submitCrop = async () => {
           // 后端返回的 data 就是完整的用户对象，包含 avatar 字段
           const avatarPath = response.data.avatar || response.data.imgUrl
           
-          // 获取完整的图片 URL（处理双斜杠问题）
-          const imgUrl = buildImageUrl(avatarPath)
+          // 获取完整的图片 URL（使用统一工具方法）
+          const imgUrl = getImageUrl(avatarPath)
           
           // 1. 先通知父组件更新（这样外部头像会立即刷新）
           emit('updateAvatar', avatarPath)

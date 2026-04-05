@@ -80,36 +80,11 @@ import userInfo from './userInfo'
 import resetPwd from './resetPwd'
 import { getUserProfile } from '@/api/system/user'
 import dayjs from 'dayjs'
+import { getImageUrl } from '@/utils/image'
+import defAva from '@/assets/images/profile.jpg'
 
 // ==================== 实例和字典 ====================
 const { proxy } = getCurrentInstance()
-
-// ==================== 方法定义 ====================
-
-// 拼接完整的图片 URL（处理双斜杠问题）
-const buildImageUrl = (path) => {
-  if (!path) return ''
-  
-  // 如果已经是完整 URL（以 http 或 https 开头），直接返回
-  if (path.startsWith('http://') || path.startsWith('https://')) {
-    return path
-  }
-  
-  const baseUrl = import.meta.env.VITE_APP_BASE_API.replace(/\/$/, '')
-  const normalizedPath = path.startsWith('/') ? path : `/${path}`
-  let url = `${baseUrl}${normalizedPath}`
-  
-  // 从第 3 个字符开始替换所有的双斜杠（保留 http:// 或 https://）
-  if (url.startsWith('http')) {
-    const protocol = url.substring(0, url.indexOf('://') + 3)
-    const rest = url.substring(url.indexOf('://') + 3).replaceAll('//', '/')
-    url = protocol + rest
-  } else {
-    url = url.replaceAll('//', '/')
-  }
-  
-  return url
-}
 
 // ==================== 个人信息管理（集中式管理） ====================
 const profile = reactive({
@@ -128,9 +103,11 @@ const profile = reactive({
       profile.user = response.data
       profile.user.createTime = dayjs(profile.user.createTime).format('YYYY-MM-DD HH:mm:ss')
       
-      // 处理头像路径（使用统一的 URL 构建方法）
-      if (profile.user.avatar) {
-        profile.user.avatar = buildImageUrl(profile.user.avatar)
+      // 处理头像路径：如果后端返回空值则使用默认头像
+      if (profile.user.avatar && profile.user.avatar.trim() !== '') {
+        profile.user.avatar = getImageUrl(profile.user.avatar)
+      } else {
+        profile.user.avatar = defAva
       }
       
       const roles = response.data.roles
@@ -147,7 +124,7 @@ const profile = reactive({
 
   // 更新头像
   updateAvatar: async (url) => {
-    const fullUrl = buildImageUrl(url)
+    const fullUrl = getImageUrl(url)
     profile.user.avatar = fullUrl
     
     // 重新获取用户信息以确保数据完全同步

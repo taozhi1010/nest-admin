@@ -40,11 +40,23 @@ export default defineConfig(({ mode, command }) => {
       host: true,
       open: true,
       proxy: {
-        // https://cn.vitejs.dev/config/#server-proxy
+        // API 请求代理
         '/dev-api': {
           target: 'http://localhost:8080',
           changeOrigin: true,
           rewrite: (p) => p.replace(/^\/dev-api/, '')
+        },
+        // 图片资源代理（开发环境专用）
+        '/uploads': {
+          target: 'http://localhost:8080',
+          changeOrigin: true,
+          // 不重写路径，直接转发到后端的 /uploads
+          // 后端静态资源路径：http://localhost:8080/uploads/avatar/xxx.png
+        },
+        // 头像资源代理（开发环境专用）
+        "/profile":{
+          target: 'http://localhost:8080',
+          changeOrigin: true,
         }
       }
     },
@@ -60,6 +72,10 @@ export default defineConfig(({ mode, command }) => {
       emptyOutDir: true,
       // 启用/禁用 gzip 压缩大小报告
       reportCompressedSize: false,
+      // 减少小文件的生成
+      minify: 'esbuild',
+      target: 'es2015',
+      sourcemap: false,
       rollupOptions: {
         onwarn: () => {
           return
@@ -68,10 +84,10 @@ export default defineConfig(({ mode, command }) => {
           chunkFileNames: outputHash ? 'static/js/[name]-[hash].js' : 'static/js/[name].js',
           entryFileNames: outputHash ? 'static/js/[name]-[hash].js' : 'static/js/[name].js',
           assetFileNames: outputHash ? 'static/[ext]/[name]-[hash].[ext]' : 'static/[ext]/[name].[ext]',
-          // Vite 8 新的代码分割配置
+          // 优化代码分割策略，减少文件碎片化
           manualChunks: (id) => {
             if (id.includes('node_modules')) {
-              // echarts 单独拆分
+              // echarts 单独拆分（大型图表库）
               if (id.includes('echarts')) {
                 return 'echarts'
               }
@@ -79,28 +95,59 @@ export default defineConfig(({ mode, command }) => {
               if (id.includes('element-plus')) {
                 return 'element-plus'
               }
-              // Vue 相关库单独拆分
-              if (id.includes('vue') || id.includes('vue-router') || id.includes('pinia')) {
+              // Vue 相关库合并
+              if (id.includes('vue') || id.includes('vue-router') || id.includes('pinia') || id.includes('@vue')) {
                 return 'vue-vendor'
               }
-              // Markdown 编辑器单独拆分
-              if (id.includes('@kangc/v-md-editor') || id.includes('markdown-it') || id.includes('highlight.js') || id.includes('prismjs')) {
-                return 'markdown'
-              }
-              // Quill 编辑器单独拆分
-              if (id.includes('@vueup/vue-quill')) {
-                return 'quill'
-              }
-              // 其他第三方库合并到 vendor
+              // 所有其他第三方库都合并到 vendor，避免碎片化
               return 'vendor'
+            }
+            
+            // 对于 src 目录下的业务代码，按大模块分组
+            // 系统管理模块 - 合并为一个
+            if (id.includes('src/views/system/') || id.includes('src/api/system/')) {
+              return 'system-module'
+            }
+            // 监控模块
+            if (id.includes('src/views/monitor') || id.includes('src/api/monitor')) {
+              return 'monitor-module'
+            }
+            // 工具模块
+            if (id.includes('src/views/tool') || id.includes('src/api/tool')) {
+              return 'tool-module'
+            }
+            // 游戏模块
+            if (id.includes('src/views/game') || id.includes('src/api/game')) {
+              return 'game-module'
+            }
+            // layout、components、store、router、utils、api、composables、hooks 等全部合并
+            if (id.includes('src/layout') || id.includes('src/components') || 
+                id.includes('src/store') || id.includes('src/router') || 
+                id.includes('src/utils') || id.includes('src/api') ||
+                id.includes('src/composables') || id.includes('src/hooks') ||
+                id.includes('src/directive') || id.includes('src/plugins') ||
+                id.includes('src/settings') || id.includes('src/permission')) {
+              return 'core-app'
+            }
+            // 登录页面单独拆分（首屏需要）
+            if (id.includes('src/views/login')) {
+              return 'login-page'
+            }
+            // 注册、错误页面、重定向合并
+            if (id.includes('src/views/register') || id.includes('src/views/error') || id.includes('src/views/redirect')) {
+              return 'auth-other-pages'
+            }
+            // 首页和个人中心
+            if (id.includes('src/views/index') || id.includes('src/views/system/user/profile')) {
+              return 'dashboard-profile'
+            }
+            // 测试页面
+            if (id.includes('src/views/test')) {
+              return 'test-pages'
             }
           }
         }
       },
-      // 混淆器 boolean | 'terser' | 'esbuild'
-      minify: 'esbuild',
-      target: 'es2015',
-      sourcemap: false
     },
     //fix:error:stdin>:7356:1: warning: "@charset" must be the first rule in the file
     css: {

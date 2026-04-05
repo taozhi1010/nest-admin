@@ -1,5 +1,6 @@
 import { login, logout, getInfo } from '@/api/login'
 import { getToken, setToken, removeToken } from '@/utils/auth'
+import { getUserAvatar } from '@/utils/image'
 import defAva from '@/assets/images/profile.jpg'
 
 const useUserStore = defineStore('user', {
@@ -35,7 +36,7 @@ const useUserStore = defineStore('user', {
         getInfo()
           .then((res) => {
             const user = res.user
-            const avatar = user.avatar == '' || user.avatar == null ? defAva : import.meta.env.VITE_APP_BASE_API + user.avatar
+            const avatar = user.avatar == '' || user.avatar == null ? '' : user.avatar
 
             if (res.roles && res.roles.length > 0) {
               // 验证返回的roles是否是一个非空数组
@@ -45,7 +46,8 @@ const useUserStore = defineStore('user', {
               this.roles = ['ROLE_DEFAULT']
             }
             this.name = user.userName
-            this.avatar = avatar
+            // 使用统一的图片工具方法处理头像
+            this.avatar = getUserAvatar(avatar)
             resolve(res)
           })
           .catch((error) => {

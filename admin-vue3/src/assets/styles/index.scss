@@ -201,6 +201,15 @@ aside {
   }
 }
 
+// 抽屉底部按钮样式
+.drawer-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #e4e7ed;
+}
+
 // 表单中需要解释的字段提示icon样式
 .tips {
   display: flex;

@@ -98,30 +98,43 @@
 </template>
 
 <script setup name="Cache">
+import { getCurrentInstance, ref, onUnmounted } from 'vue'
 import { getCache } from '@/api/monitor/cache'
-import * as echarts from 'echarts/core'
-import { PieChart, GaugeChart } from 'echarts/charts'
-import {
-  TitleComponent,
-  TooltipComponent,
-  LegendComponent
-} from 'echarts/components'
-import { CanvasRenderer } from 'echarts/renderers'
-
-// 注册必须的组件
-echarts.use([
-  TitleComponent,
-  TooltipComponent,
-  LegendComponent,
-  PieChart,
-  GaugeChart,
-  CanvasRenderer
-])
+import * as echarts from 'echarts'
 
 const cache = ref([])
 const commandstats = ref(null)
 const usedmemory = ref(null)
 const { proxy } = getCurrentInstance()
+let commandstatsChart = null
+let usedmemoryChart = null
+
+// 解析内存值（如 "1.23M" -> 1.23, "456K" -> 0.456）
+function parseMemoryValue(memoryStr) {
+  if (!memoryStr) return 0
+  const match = memoryStr.match(/([\d.]+)\s*([KMGT]?B?)/i)
+  if (!match) return parseFloat(memoryStr) || 0
+  
+  const value = parseFloat(match[1])
+  const unit = match[2].toUpperCase()
+  
+  switch (unit) {
+    case 'KB':
+    case 'K':
+      return value / 1024
+    case 'MB':
+    case 'M':
+      return value
+    case 'GB':
+    case 'G':
+      return value * 1024
+    case 'TB':
+    case 'T':
+      return value * 1024 * 1024
+    default:
+      return value
+  }
+}
 
 function getList() {
   proxy.$modal.loading('正在加载缓存监控数据，请稍候！')
@@ -129,7 +142,16 @@ function getList() {
     proxy.$modal.closeLoading()
     cache.value = response.data
 
+    // 销毁旧图表实例
+    if (commandstatsChart) {
+      commandstatsChart.dispose()
+    }
+    if (usedmemoryChart) {
+      usedmemoryChart.dispose()
+    }
+
     const commandstatsIntance = echarts.init(commandstats.value, 'macarons')
+    commandstatsChart = commandstatsIntance
     commandstatsIntance.setOption({
       tooltip: {
         trigger: 'item',
@@ -150,6 +172,7 @@ function getList() {
     })
 
     const usedmemoryInstance = echarts.init(usedmemory.value, 'macarons')
+    usedmemoryChart = usedmemoryInstance
     usedmemoryInstance.setOption({
       tooltip: {
         formatter: `{b} <br/>{a} : ${cache.value.info.used_memory_human}`
@@ -165,7 +188,7 @@ function getList() {
           },
           data: [
             {
-              value: parseFloat(cache.value.info.used_memory_human),
+              value: parseMemoryValue(cache.value.info.used_memory_human),
               name: '内存消耗'
             }
           ]
@@ -176,4 +199,16 @@ function getList() {
 }
 
 getList()
+
+// 组件卸载时清理图表实例
+onUnmounted(() => {
+  if (commandstatsChart) {
+    commandstatsChart.dispose()
+    commandstatsChart = null
+  }
+  if (usedmemoryChart) {
+    usedmemoryChart.dispose()
+    usedmemoryChart = null
+  }
+})
 </script>

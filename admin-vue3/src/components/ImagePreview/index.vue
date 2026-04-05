@@ -10,6 +10,7 @@
 
 <script setup>
 import { isExternal } from '@/utils/validate'
+import { getImageUrl } from '@/utils/image'
 
 const props = defineProps({
   src: {
@@ -31,10 +32,7 @@ const realSrc = computed(() => {
     return
   }
   let real_src = props.src.split(',')[0]
-  if (isExternal(real_src)) {
-    return real_src
-  }
-  return import.meta.env.VITE_APP_BASE_API + real_src
+  return getImageUrl(real_src)
 })
 
 const realSrcList = computed(() => {
@@ -42,14 +40,7 @@ const realSrcList = computed(() => {
     return
   }
   let real_src_list = props.src.split(',')
-  let srcList = []
-  real_src_list.forEach((item) => {
-    if (isExternal(item)) {
-      return srcList.push(item)
-    }
-    return srcList.push(import.meta.env.VITE_APP_BASE_API + item)
-  })
-  return srcList
+  return real_src_list.map((item) => getImageUrl(item))
 })
 
 const realWidth = computed(() => (typeof props.width == 'string' ? props.width : `${props.width}px`))
