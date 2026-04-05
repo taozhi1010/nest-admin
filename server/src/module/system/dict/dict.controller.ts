@@ -123,14 +123,6 @@ export class DictController {
   }
 
   @ApiOperation({
-    summary: '字典数据-详情',
-  })
-  @Get('/data/:id')
-  findOneDictData(@Param('id') dictCode: string) {
-    return this.dictService.findOneDictData(+dictCode);
-  }
-
-  @ApiOperation({
     summary: '字典数据-类型-详情【走缓存】',
   })
   @Get('/data/type/:id')
@@ -145,6 +137,14 @@ export class DictController {
   @Get('/data/all')
   findAllDictData() {
     return this.dictService.findAllDictData();
+  }
+
+  @ApiOperation({
+    summary: '字典数据-详情',
+  })
+  @Get('/data/:id')
+  findOneDictData(@Param('id') dictCode: string) {
+    return this.dictService.findOneDictData(+dictCode);
   }
 
   @ApiOperation({ summary: '导出字典组为xlsx文件' })
