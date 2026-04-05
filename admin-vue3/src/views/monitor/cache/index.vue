@@ -105,7 +105,7 @@ import * as echarts from 'echarts'
 const cache = ref([])
 const commandstats = ref(null)
 const usedmemory = ref(null)
-const { proxy } = getCurrentInstance()
+let loadingInstance = null
 let commandstatsChart = null
 let usedmemoryChart = null
 
@@ -137,9 +137,16 @@ function parseMemoryValue(memoryStr) {
 }
 
 function getList() {
-  proxy.$modal.loading('正在加载缓存监控数据，请稍候！')
+  loadingInstance = ElLoading.service({
+    lock: true,
+    text: '正在加载缓存监控数据，请稍候！',
+    background: 'rgba(0, 0, 0, 0.7)'
+  })
   getCache().then((response) => {
-    proxy.$modal.closeLoading()
+    if (loadingInstance) {
+      loadingInstance.close()
+      loadingInstance = null
+    }
     cache.value = response.data
 
     // 销毁旧图表实例
