@@ -22,7 +22,7 @@
         <el-table-column label="手机" prop="phonenumber" :show-overflow-tooltip="true" />
         <el-table-column align="center" label="状态" prop="status">
           <template #default="scope">
-            <dict-tag :options="sys_normal_disable" :value="scope.row.status" />
+            <span>{{ getDictLabel('sys_normal_disable', scope.row.status) }}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" label="创建时间" prop="createTime" width="180">
@@ -58,7 +58,7 @@ const props = defineProps({
 const emit = defineEmits(['ok'])
 
 // ==================== 实例和字典 ====================
-const { sys_normal_disable } = useDict('sys_normal_disable')
+const { getDictLabel } = useDict('sys_normal_disable')
 
 // ==================== 表单引用 ====================
 const refTable = ref(null)

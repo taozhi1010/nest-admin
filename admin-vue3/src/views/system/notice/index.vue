@@ -40,7 +40,7 @@
         <el-table-column align="center" label="公告标题" prop="noticeTitle" :show-overflow-tooltip="true" min-width="300">
           <template #default="scope">
             <div style="display: flex; justify-content: center; align-items: center; gap: 8px; width: 100%;">
-              <dict-tag :options="sys_notice_type" :value="scope.row.noticeType" />
+              <span>{{ getDictLabel('sys_notice_type', scope.row.noticeType) }}</span>
               <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ scope.row.noticeTitle
               }}</span>
             </div>
@@ -48,7 +48,7 @@
         </el-table-column>
         <el-table-column align="center" label="状态" prop="status" width="80">
           <template #default="scope">
-            <dict-tag :options="sys_notice_status" :value="scope.row.status" />
+            <span>{{ getDictLabel('sys_notice_status', scope.row.status) }}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" label="创建者" prop="createBy" width="100" />

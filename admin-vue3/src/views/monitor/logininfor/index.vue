@@ -48,7 +48,7 @@
       <el-table-column align="center" label="浏览器" prop="browser" :show-overflow-tooltip="true" />
       <el-table-column align="center" label="登录状态" prop="status">
         <template #default="scope">
-          <dict-tag :options="sys_common_status" :value="scope.row.status" />
+          <span>{{ getDictLabel('sys_common_status', scope.row.status) }}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="描述" prop="msg" :show-overflow-tooltip="true" />
@@ -70,7 +70,7 @@ import { useDict } from '@/composables/useDict'
 import { resetForm, addDateRange, download, parseTime } from '@/composables/useCommon'
 
 const { proxy } = getCurrentInstance()
-const { sys_common_status } = useDict('sys_common_status')
+const { sys_common_status, getDictLabel } = useDict('sys_common_status')
 
 // 登录日志管理
 const logininfor = reactive({

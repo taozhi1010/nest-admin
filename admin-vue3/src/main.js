@@ -40,13 +40,10 @@ import ImageUpload from '@/components/ImageUpload'
 import ImagePreview from '@/components/ImagePreview'
 // 自定义树选择组件
 import TreeSelect from '@/components/TreeSelect'
-// 字典标签组件
-import DictTag from '@/components/DictTag'
 
 const app = createApp(App)
 
 // 全局组件挂载
-app.component('DictTag', DictTag)
 app.component('Pagination', Pagination)
 app.component('TreeSelect', TreeSelect)
 app.component('FileUpload', FileUpload)
