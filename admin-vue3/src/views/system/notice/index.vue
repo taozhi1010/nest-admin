@@ -60,43 +60,43 @@
 
     <pagination v-show="notice.queryParams.total > 0" v-model:limit="notice.queryParams.pageSize" v-model:page="notice.queryParams.pageNum" :total="notice.queryParams.total" @pagination="notice.getList" />
 
-    <!-- 添加或修改公告对话框 -->
-    <el-dialog v-model="notice.open" append-to-body :title="notice.title" width="800px">
+    <!-- 添加或修改公告抽屉 -->
+    <el-drawer v-model="notice.open" :title="notice.title" size="800px" append-to-body>
       <el-form ref="noticeFormRef" v-loading="notice.formLoading" label-width="80px" :model="notice.form" :rules="notice.rules">
         <el-row>
-          <el-col :span="12">
+          <el-col :span="24">
             <el-form-item label="公告标题" prop="noticeTitle">
               <el-input v-model.trim="notice.form.noticeTitle" placeholder="请输入公告标题" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="公告类型" prop="noticeType">
-              <el-select v-model="notice.form.noticeType" placeholder="请选择">
+              <el-select v-model="notice.form.noticeType" placeholder="请选择" style="width: 100%">
                 <el-option v-for="dict in sys_notice_type" :key="dict.value" :label="dict.label" :value="dict.value" />
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="24">
-            <el-form-item label="状态">
+          <el-col :span="12">
+            <el-form-item label="状态" prop="status">
               <el-radio-group v-model="notice.form.status">
                 <el-radio v-for="dict in sys_notice_status" :key="dict.value" :label="dict.value">{{ dict.label }}</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
           <el-col :span="24">
-            <el-form-item label="内容">
-              <editor v-model="notice.form.noticeContent" :min-height="192" />
+            <el-form-item label="内容" prop="noticeContent">
+              <MdEditor v-model="notice.form.noticeContent" height="400px" @change="handleContentChange" />
             </el-form-item>
           </el-col>
         </el-row>
       </el-form>
       <template #footer>
-        <div class="dialog-footer">
+        <div class="drawer-footer">
           <el-button :loading="notice.formLoading" type="primary" @click="notice.handleSubmit">确 定</el-button>
           <el-button @click="notice.handleCancel">取 消</el-button>
         </div>
       </template>
-    </el-dialog>
+    </el-drawer>
     </div>
   </div>
 </template>
@@ -107,6 +107,7 @@ import { listNotice, getNotice, delNotice, addNotice, updateNotice } from '@/api
 import { useDict } from '@/composables/useDict'
 import { parseTime, resetForm } from '@/composables/useCommon'
 import { useCatTools } from '@/composables/useCatTools'
+import MdEditor from '@/components/MdEditor'
 
 const { proxy } = getCurrentInstance()
 const { sys_notice_status, sys_notice_type } = useDict('sys_notice_status', 'sys_notice_type')
@@ -143,7 +144,8 @@ const notice = reactive({
   // 表单验证规则
   rules: {
     noticeTitle: [{ required: true, message: '请输入公告标题', trigger: 'blur' }],
-    noticeType: [{ required: true, message: '请选择公告类型', trigger: 'change' }]
+    noticeType: [{ required: true, message: '请选择公告类型', trigger: 'change' }],
+    noticeContent: [{ required: true, message: '请输入公告内容', trigger: 'blur' }]
   },
 
   // 方法集合
@@ -244,6 +246,11 @@ const notice = reactive({
     nextTick(() => {
       noticeFormRef.value?.resetFields()
     })
+  },
+
+  // Markdown 内容变化
+  handleContentChange: ({ text, html }) => {
+    console.log('公告内容变化:', { text, html })
   },
 
   // 删除操作
