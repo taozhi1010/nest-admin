@@ -96,6 +96,7 @@ const theme = ref(settingsStore.theme)
 const sideTheme = ref(settingsStore.sideTheme)
 const storeSettings = computed(() => settingsStore)
 const predefineColors = ref(['#409EFF', '#ff4500', '#ff8c00', '#ffd700', '#90ee90', '#00ced1', '#1e90ff', '#c71585'])
+let loadingInstance = null
 
 /** 是否需要topnav */
 const topNav = computed({
@@ -149,7 +150,11 @@ function handleTheme(val) {
   sideTheme.value = val
 }
 function saveSetting() {
-  proxy.$modal.loading('正在保存到本地，请稍候...')
+  loadingInstance = ElLoading.service({
+    lock: true,
+    text: '正在保存到本地，请稍候...',
+    background: 'rgba(0, 0, 0, 0.7)'
+  })
   let layoutSetting = {
     topNav: storeSettings.value.topNav,
     tagsView: storeSettings.value.tagsView,
@@ -160,10 +165,19 @@ function saveSetting() {
     theme: storeSettings.value.theme
   }
   localStorage.setItem('layout-setting', JSON.stringify(layoutSetting))
-  setTimeout(proxy.$modal.closeLoading(), 1000)
+  setTimeout(() => {
+    if (loadingInstance) {
+      loadingInstance.close()
+      loadingInstance = null
+    }
+  }, 1000)
 }
 function resetSetting() {
-  proxy.$modal.loading('正在清除设置缓存并刷新，请稍候...')
+  loadingInstance = ElLoading.service({
+    lock: true,
+    text: '正在清除设置缓存并刷新，请稍候...',
+    background: 'rgba(0, 0, 0, 0.7)'
+  })
   localStorage.removeItem('layout-setting')
   setTimeout('window.location.reload()', 1000)
 }
