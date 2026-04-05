@@ -323,7 +323,6 @@ import { useDict } from '@/composables/useDict'
 import { resetForm, addDateRange, download, parseTime } from '@/composables/useCommon'
 
 // ==================== 实例和字典 ====================
-const { proxy } = getCurrentInstance()
 // TODO:数据字典不要用实时引入的方式，要改为一次性获取
 const { sys_normal_disable, sys_user_sex } = useDict('sys_normal_disable', 'sys_user_sex')
 
@@ -497,9 +496,13 @@ const user = reactive({
   handleDelete: async (row) => {
     const userIds = row.userId || user.ids
     try {
-      await proxy.$modal.confirm(`是否确认删除用户编号为"${userIds}"的数据项？`)
+      await ElMessageBox.confirm(`是否确认删除用户编号为"${userIds}"的数据项？`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
       await delUser(userIds)
-      proxy.$modal.msgSuccess('删除成功')
+      ElMessage.success('删除成功')
       user.getList()
     } catch (e) {
       if (e !== 'cancel') {
@@ -523,9 +526,13 @@ const user = reactive({
   handleStatusChange: async (row) => {
     let text = row.status === '0' ? '启用' : '停用'
     try {
-      await proxy.$modal.confirm(`确认要"${text}""${row.userName}"用户吗？`)
+      await ElMessageBox.confirm(`确认要"${text}""${row.userName}"用户吗？`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
       await changeUserStatus(row.userId, row.status)
-      proxy.$modal.msgSuccess(`${text}成功`)
+      ElMessage.success(`${text}成功`)
     } catch (e) {
       if (e !== 'cancel') {
         row.status = row.status === '0' ? '1' : '0'
@@ -540,14 +547,18 @@ const user = reactive({
     const text = newStatus === '0' ? '启用' : '停用'
 
     try {
-      await proxy.$modal.confirm(`确认要"${text}""${row.userName}"用户吗？`)
+      await ElMessageBox.confirm(`确认要"${text}""${row.userName}"用户吗？`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
       // 设置列表 loading 状态
       user.loading = true
       // 调用接口更新状态
       await changeUserStatus(row.userId, newStatus)
       // 更新本地数据
       row.status = newStatus
-      proxy.$modal.msgSuccess(`${text}成功`)
+      ElMessage.success(`${text}成功`)
     } catch (e) {
       if (e !== 'cancel') {
         console.error('状态修改失败:', e)
@@ -581,7 +592,7 @@ const user = reactive({
         userId: user.authRoleForm.userId,
         roleIds: user.authRoleForm.roleIds.join(',')
       })
-      proxy.$modal.msgSuccess('分配成功')
+      ElMessage.success('分配成功')
       user.authRoleOpen = false
       user.getList()
     } catch (e) {
@@ -601,7 +612,7 @@ const user = reactive({
   // 重置密码按钮操作
   handleResetPwd: async (row) => {
     try {
-      const { value } = await proxy.$prompt(`请输入"${row.userName}"的新密码`, '提示', {
+      const { value } = await ElMessageBox.prompt(`请输入"${row.userName}"的新密码`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         closeOnClickModal: false,
@@ -609,7 +620,7 @@ const user = reactive({
         inputErrorMessage: '用户密码长度必须介于 5 和 20 之间'
       })
       await resetUserPwd(row.userId, value)
-      proxy.$modal.msgSuccess(`修改成功，新密码是：${value}`)
+      ElMessage.success(`修改成功，新密码是：${value}`)
     } catch (e) {
       if (e !== 'cancel') {
         console.error('重置密码失败:', e)
@@ -645,7 +656,7 @@ const user = reactive({
 
     // 检查扩展名
     if (!allowedExtensions.includes(fileExtension)) {
-      proxy.$modal.msgError('仅支持上传 Excel 文件 (.xlsx 或 .xls 格式)')
+      ElMessage.error('仅支持上传 Excel 文件 (.xlsx 或 .xls 格式)')
       // 清空已上传的文件列表
       uploadRef.value?.clearFiles()
       user.upload.file = null
@@ -737,13 +748,13 @@ const user = reactive({
       // 导入成功提示：全部成功或部分成功
       if (success > 0 && error === 0) {
         // 全部成功 - 隐藏错误详情和表单，直接刷新列表
-        proxy.$modal.msgSuccess(`导入成功，共导入 ${success} 条数据`)
+        ElMessage.success(`导入成功，共导入 ${success} 条数据`)
         user.importResultVisible = false
         user.getList()
         return
       } else if (success > 0 && error > 0) {
         // 部分成功 - 显示详细结果
-        proxy.$modal.msgWarning(`导入完成，成功 ${success} 条，失败 ${error} 条`)
+        ElMessage.warning(`导入完成，成功 ${success} 条，失败 ${error} 条`)
       }
     } else if (Array.isArray(importData)) {
       // 兼容旧接口格式：数组形式
@@ -776,7 +787,7 @@ const user = reactive({
   // 提交上传文件
   submitFileForm: async () => {
     if (!user.upload.file) {
-      proxy.$modal.msgWarning('请选择文件')
+      ElMessage.warning('请选择文件')
       return
     }
 
@@ -917,10 +928,10 @@ const user = reactive({
       try {
         if (user.form.userId != undefined) {
           await updateUser(user.form)
-          proxy.$modal.msgSuccess('修改成功')
+          ElMessage.success('修改成功')
         } else {
           await addUser(user.form)
-          proxy.$modal.msgSuccess('新增成功')
+          ElMessage.success('新增成功')
         }
         user.open = false
         user.getList()
