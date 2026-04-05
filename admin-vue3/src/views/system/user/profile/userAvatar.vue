@@ -67,7 +67,6 @@ const emit = defineEmits(['updateAvatar'])
 
 // ==================== 实例和字典 ====================
 const userStore = useUserStore()
-const { proxy } = getCurrentInstance()
 
 // ==================== 表单引用 ====================
 const cropperRef = ref(null)
@@ -112,14 +111,14 @@ const closeDialog = () => {
 const handleFileSelect = (file) => {
   // 验证文件类型
   if (!file.type.startsWith('image/')) {
-    proxy.$modal.msgError('文件格式错误，请上传图片类型，如：JPG，PNG 后缀的文件。')
+    ElMessage.error('文件格式错误，请上传图片类型，如：JPG，PNG 后缀的文件。')
     return false
   }
   
   // 验证文件大小（2MB 以内）
   const maxSize = 2 * 1024 * 1024 // 2MB
   if (file.size > maxSize) {
-    proxy.$modal.msgError('头像图片大小不能超过 2MB！')
+    ElMessage.error('头像图片大小不能超过 2MB！')
     return false
   }
   
@@ -158,7 +157,7 @@ const submitCrop = async () => {
   return new Promise((resolve, reject) => {
     cropperRef.value?.getCropBlob((blob) => {
       if (!blob) {
-        proxy.$modal.msgError('裁剪图片失败')
+        ElMessage.error('裁剪图片失败')
         reject(new Error('裁剪失败'))
         return
       }
@@ -189,12 +188,12 @@ const submitCrop = async () => {
           closeDialog()
           
           // 5. 显示成功提示
-          proxy.$modal.msgSuccess('修改成功')
+          ElMessage.success('修改成功')
           resolve(response)
         })
         .catch((error) => {
           console.error('上传头像失败:', error)
-          proxy.$modal.msgError('上传头像失败，请重试')
+          ElMessage.error('上传头像失败，请重试')
           reject(error)
         })
     })

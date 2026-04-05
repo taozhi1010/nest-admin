@@ -52,7 +52,6 @@ import { parseTime } from '@/composables/useCommon'
 
 // ==================== 实例和字典 ====================
 const route = useRoute()
-const { proxy } = getCurrentInstance()
 
 // ==================== 表单引用 ====================
 const roleRef = ref(null)
@@ -92,8 +91,9 @@ const authRole = reactive({
 
   // 关闭按钮
   close: () => {
+    const { closeOpenPage } = useTab()
     const obj = { path: '/system/user' }
-    proxy.$tab.closeOpenPage(obj)
+    closeOpenPage(obj)
   },
 
   // 提交按钮
@@ -102,7 +102,7 @@ const authRole = reactive({
       const userId = authRole.form.userId
       const rIds = authRole.roleIds.join(',')
       await updateAuthRole({ userId: userId, roleIds: rIds })
-      proxy.$modal.msgSuccess('授权成功')
+      ElMessage.success('授权成功')
       authRole.close()
     } catch (e) {
       console.error('授权失败:', e)
