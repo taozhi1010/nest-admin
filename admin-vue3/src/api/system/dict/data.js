@@ -50,3 +50,11 @@ export function delData(dictCode) {
     method: 'delete'
   })
 }
+
+// 获取所有字典数据
+export function getAllDicts() {
+  return request({
+    url: '/system/dict/data/all',
+    method: 'get'
+  })
+}
