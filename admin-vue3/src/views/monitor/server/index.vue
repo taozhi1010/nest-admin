@@ -231,14 +231,21 @@
 import { getServer } from '@/api/monitor/server'
 
 const server = ref({})
-const { proxy } = getCurrentInstance()
+let loadingInstance = null
 
 function getList() {
-  proxy.$modal.loading('正在加载服务监控数据，请稍候！')
+  loadingInstance = ElLoading.service({
+    lock: true,
+    text: '正在加载服务监控数据，请稍候！',
+    background: 'rgba(0, 0, 0, 0.7)'
+  })
   getServer().then((response) => {
     console.log(response)
     server.value = response.data
-    proxy.$modal.closeLoading()
+    if (loadingInstance) {
+      loadingInstance.close()
+      loadingInstance = null
+    }
   })
 }
 

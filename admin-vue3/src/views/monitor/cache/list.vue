@@ -109,13 +109,13 @@ function getCacheNames() {
 /** 刷新缓存名称列表 */
 function refreshCacheNames() {
   getCacheNames()
-  proxy.$modal.msgSuccess('刷新缓存列表成功')
+  ElMessage.success('刷新缓存列表成功')
 }
 
 /** 清理指定名称缓存 */
 function handleClearCacheName(row) {
   clearCacheName(row.cacheName).then((response) => {
-    proxy.$modal.msgSuccess(`清理缓存名称[${row.cacheName}]成功`)
+    ElMessage.success(`清理缓存名称[${row.cacheName}]成功`)
     getCacheKeys()
   })
 }
@@ -137,13 +137,13 @@ function getCacheKeys(row) {
 /** 刷新缓存键名列表 */
 function refreshCacheKeys() {
   getCacheKeys()
-  proxy.$modal.msgSuccess('刷新键名列表成功')
+  ElMessage.success('刷新键名列表成功')
 }
 
 /** 清理指定键名缓存 */
 function handleClearCacheKey(cacheKey) {
   clearCacheKey(cacheKey).then((response) => {
-    proxy.$modal.msgSuccess(`清理缓存键名[${cacheKey}]成功`)
+    ElMessage.success(`清理缓存键名[${cacheKey}]成功`)
     getCacheKeys()
   })
 }
@@ -168,7 +168,7 @@ function handleCacheValue(cacheKey) {
 /** 清理全部缓存 */
 function handleClearCacheAll() {
   clearCacheAll().then((response) => {
-    proxy.$modal.msgSuccess('清理全部缓存成功')
+    ElMessage.success('清理全部缓存成功')
   })
 }
 
