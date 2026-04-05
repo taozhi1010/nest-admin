@@ -54,6 +54,7 @@ import { addData, updateData } from '@/api/system/dict/data'
 import { useDict } from '@/composables/useDict'
 import { resetForm } from '@/composables/useCommon'
 
+const { proxy } = getCurrentInstance()
 const { sys_normal_disable } = useDict('sys_normal_disable')
 
 // 数据标签回显样式
@@ -100,14 +101,14 @@ const form = reactive({
         form.loading = true
         if (form.model.dictCode != undefined) {
           updateData(form.model).then(() => {
-            proxy.$modal.msgSuccess('修改成功')
+            ElMessage.success('修改成功')
             form.reset()
             dialogTableVisible.value = false
             emit('refresh')
           })
         } else {
           addData(form.model).then(() => {
-            proxy.$modal.msgSuccess('新增成功')
+            ElMessage.success('新增成功')
             form.reset()
             dialogTableVisible.value = false
             emit('refresh')
