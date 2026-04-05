@@ -240,7 +240,6 @@ import { ClickOutside as vClickOutside } from 'element-plus'
 import { useDict } from '@/composables/useDict'
 import { resetForm, handleTree, parseTime } from '@/composables/useCommon'
 
-const { proxy } = getCurrentInstance()
 const { sys_show_hide, sys_normal_disable } = useDict('sys_show_hide', 'sys_normal_disable')
 
 // 表单 ref
@@ -394,10 +393,10 @@ const menu = reactive({
       try {
         if (menu.form.menuId != undefined) {
           await updateMenu(menu.form)
-          proxy.$modal.msgSuccess('修改成功')
+          ElMessage.success('修改成功')
         } else {
           await addMenu(menu.form)
-          proxy.$modal.msgSuccess('新增成功')
+          ElMessage.success('新增成功')
         }
         menu.open = false
         menu.getList()
@@ -410,9 +409,13 @@ const menu = reactive({
   // 删除按钮操作
   handleDelete: async (row) => {
     try {
-      await proxy.$modal.confirm(`是否确认删除名称为"${row.menuName}"的数据项？`)
+      await ElMessageBox.confirm(`是否确认删除名称为"${row.menuName}"的数据项？`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
       await delMenu(row.menuId)
-      proxy.$modal.msgSuccess('删除成功')
+      ElMessage.success('删除成功')
       menu.getList()
     } catch (e) {
       if (e !== 'cancel') {
