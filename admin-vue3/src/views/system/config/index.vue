@@ -116,7 +116,6 @@ import { listConfig, addConfig, delConfig, getConfig, updateConfig } from '@/api
 import { useDict } from '@/composables/useDict'
 import { resetForm, download, parseTime } from '@/composables/useCommon'
 
-const { proxy } = getCurrentInstance()
 const { sys_yes_no } = useDict('sys_yes_no')
 
 // 表单 ref
@@ -232,10 +231,10 @@ const config = reactive({
       try {
         if (config.form.configId !== undefined) {
           await updateConfig(config.form)
-          proxy.$modal.msgSuccess('修改成功')
+          ElMessage.success('修改成功')
         } else {
           await addConfig(config.form)
-          proxy.$modal.msgSuccess('新增成功')
+          ElMessage.success('新增成功')
         }
         config.open = false
         config.getList()
@@ -249,9 +248,13 @@ const config = reactive({
   handleDelete: async (row) => {
     const configIds = row.configId || config.ids
     try {
-      await proxy.$modal.confirm(`是否确认删除参数编号为"${configIds}"的数据项？`)
+      await ElMessageBox.confirm(`是否确认删除参数编号为"${configIds}"的数据项？`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
       await delConfig(configIds)
-      proxy.$modal.msgSuccess('删除成功')
+      ElMessage.success('删除成功')
       config.getList()
     } catch (e) {
       if (e !== 'cancel') {
