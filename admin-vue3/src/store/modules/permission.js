@@ -1,4 +1,4 @@
-import auth from '@/plugins/auth'
+import { useAuth } from '@/composables/useAuth'
 import router, { constantRoutes, dynamicRoutes } from '@/router'
 import { getRouters } from '@/api/menu'
 import Layout from '@/layout/index'
@@ -110,13 +110,14 @@ function filterChildren(childrenMap, lastRouter = false) {
 // 动态路由遍历，验证是否具备权限
 export function filterDynamicRoutes(routes) {
   const res = []
+  const { hasPermiOr, hasRoleOr } = useAuth()
   routes.forEach((route) => {
     if (route.permissions) {
-      if (auth.hasPermiOr(route.permissions)) {
+      if (hasPermiOr(route.permissions)) {
         res.push(route)
       }
     } else if (route.roles) {
-      if (auth.hasRoleOr(route.roles)) {
+      if (hasRoleOr(route.roles)) {
         res.push(route)
       }
     }

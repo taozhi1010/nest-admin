@@ -13,7 +13,7 @@
   "dependencies": {
     "@element-plus/icons-vue": "2.0.10",
     "@vueuse/core": "9.5.0",
-    "axios": "0.27.2",
+    "axios": "1.14.0",
     "clipboard": "^2.0.11",
     "codemirror": "^5.65.21",
     "dayjs": "^1.11.13",
@@ -42,6 +42,7 @@
     "@vue/compiler-sfc": "^3.5.31",
     "@vue/tsconfig": "^0.7.0",
     "esbuild": "^0.27.0",
+    "fast-glob": "^3.3.3",
     "sass": "^1.99.0",
     "typescript": "^5.8.3",
     "unplugin-auto-import": "^21.0.0",

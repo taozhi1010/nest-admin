@@ -14,7 +14,9 @@ export default function createAutoImport() {
         { from: 'dayjs/plugin/isSameOrBefore', as: 'isSameOrBefore' },
         { from: 'dayjs/plugin/isSameOrAfter', as: 'isSameOrAfter' },
         // Element Plus 常用方法自动导入
-        { from: 'element-plus', imports: ['ElMessage', 'ElMessageBox', 'ElNotification', 'ElLoading'] }
+        { from: 'element-plus', imports: ['ElMessage', 'ElMessageBox', 'ElNotification', 'ElLoading'] },
+        // 权限验证组合式函数自动导入
+        { from: '@/composables/useAuth', imports: ['useAuth'] }
       ],
       // 全局导入，无需手动 import
       injectAtEnd: true

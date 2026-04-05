@@ -12,6 +12,7 @@ declare global {
   const ElMessageBox: typeof import('element-plus/es').ElMessageBox
   const acceptHMRUpdate: typeof import('pinia').acceptHMRUpdate
   const addDateRange: typeof import('./src/composables/useCommon').addDateRange
+  const authCodeInfo: typeof import('./src/composables/useAuthCode').authCodeInfo
   const computed: typeof import('vue').computed
   const createApp: typeof import('vue').createApp
   const createPinia: typeof import('pinia').createPinia
@@ -25,6 +26,8 @@ declare global {
   const getCurrentInstance: typeof import('vue').getCurrentInstance
   const getCurrentScope: typeof import('vue').getCurrentScope
   const getCurrentWatcher: typeof import('vue').getCurrentWatcher
+  const getUserCookie: typeof import('./src/composables/useAuthCode').getUserCookie
+  const getValidateCode: typeof import('./src/composables/useAuthCode').getValidateCode
   const h: typeof import('vue').h
   const handleTree: typeof import('./src/composables/useCommon').handleTree
   const inject: typeof import('vue').inject
@@ -67,6 +70,7 @@ declare global {
   const selectDictLabels: typeof import('./src/composables/useCommon').selectDictLabels
   const setActivePinia: typeof import('pinia').setActivePinia
   const setMapStoreSuffix: typeof import('pinia').setMapStoreSuffix
+  const setUserCookie: typeof import('./src/composables/useAuthCode').setUserCookie
   const shallowReactive: typeof import('vue').shallowReactive
   const shallowReadonly: typeof import('vue').shallowReadonly
   const shallowRef: typeof import('vue').shallowRef
@@ -78,6 +82,7 @@ declare global {
   const triggerRef: typeof import('vue').triggerRef
   const unref: typeof import('vue').unref
   const useAttrs: typeof import('vue').useAttrs
+  const useAuth: typeof import('./src/composables/useAuth').default
   const useCatTools: typeof import('./src/composables/useCatTools').useCatTools
   const useCommon: typeof import('./src/composables/useCommon').useCommon
   const useCssModule: typeof import('vue').useCssModule
@@ -103,4 +108,10 @@ declare global {
   // @ts-ignore
   export type { Component, Slot, Slots, ComponentPublicInstance, ComputedRef, DirectiveBinding, ExtractDefaultPropTypes, ExtractPropTypes, ExtractPublicPropTypes, InjectionKey, PropType, Ref, ShallowRef, MaybeRef, MaybeRefOrGetter, VNode, WritableComputedRef } from 'vue'
   import('vue')
+  // @ts-ignore
+  export type { AuthResult } from './src/composables/useAuth'
+  import('./src/composables/useAuth')
+  // @ts-ignore
+  export type { LoginForm, CaptchaResponse, AuthCodeInfo } from './src/composables/useAuthCode'
+  import('./src/composables/useAuthCode')
 }

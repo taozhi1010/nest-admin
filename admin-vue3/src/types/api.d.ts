@@ -22,3 +22,19 @@ export interface PageQuery {
   pageNum?: number
   pageSize?: number
 }
+
+/**
+ * 用户权限信息
+ */
+export interface UserAuthInfo {
+  permissions: string[]  // 权限列表
+  roles: string[]        // 角色列表
+}
+
+/**
+ * 权限验证结果
+ */
+export interface AuthValidationResult {
+  hasPermission: boolean  // 是否具有权限
+  hasRole: boolean        // 是否具有角色
+}
