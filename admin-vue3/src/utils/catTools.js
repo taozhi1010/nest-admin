@@ -1,33 +1,34 @@
 /**
- * catTools - 全局工具函数库
- * 提供常用的工具方法
+ * catTools - 本地工具函数库
+ * 提供 npm cat-tools 库未包含的本地工具方法
+ * TODO:未来会继续整合相关方法到npm库中，避免重复代码
+ * 
+ * 注意：isNullorUndefined 等通用函数请使用 npm cat-tools 库
  */
 
 import dayjs from 'dayjs'
 
-// 日期格式化
+/**
+ * 日期格式化（基于 dayjs）
+ * @param {Date|string|number} date - 日期对象、字符串或时间戳
+ * @param {string} format - 格式化模板，默认 'YYYY-MM-DD HH:mm:ss'
+ * @returns {string} 格式化后的日期字符串
+ * @example
+ * dateFormat(new Date(), 'YYYY-MM-DD') // '2024-01-01'
+ */
 export function dateFormat(date, format = 'YYYY-MM-DD HH:mm:ss') {
   if (!date) return ''
   return dayjs(date).format(format)
 }
 
-// 深拷贝
-export function deepClone(obj) {
-  if (obj === null || typeof obj !== 'object') return obj
-  if (obj instanceof Date) return new Date(obj.getTime())
-  if (obj instanceof Array) return obj.map(item => deepClone(item))
-  if (obj instanceof Object) {
-    const clonedObj = {}
-    for (const key in obj) {
-      if (obj.hasOwnProperty(key)) {
-        clonedObj[key] = deepClone(obj[key])
-      }
-    }
-    return clonedObj
-  }
-}
-
-// 防抖函数
+/**
+ * 防抖函数
+ * @param {Function} fn - 要执行的函数
+ * @param {number} delay - 延迟时间（毫秒），默认 300ms
+ * @returns {Function} 防抖处理后的函数
+ * @example
+ * const debouncedFn = debounce(() => console.log('executed'), 500)
+ */
 export function debounce(fn, delay = 300) {
   let timer = null
   return function (...args) {
@@ -38,7 +39,14 @@ export function debounce(fn, delay = 300) {
   }
 }
 
-// 节流函数
+/**
+ * 节流函数
+ * @param {Function} fn - 要执行的函数
+ * @param {number} delay - 延迟时间（毫秒），默认 300ms
+ * @returns {Function} 节流处理后的函数
+ * @example
+ * const throttledFn = throttle(() => console.log('executed'), 500)
+ */
 export function throttle(fn, delay = 300) {
   let lastTime = 0
   return function (...args) {
@@ -50,7 +58,12 @@ export function throttle(fn, delay = 300) {
   }
 }
 
-// 生成 UUID
+/**
+ * 生成 UUID v4
+ * @returns {string} UUID 字符串
+ * @example
+ * uuid() // 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
+ */
 export function uuid() {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
     const r = Math.random() * 16 | 0
@@ -59,7 +72,13 @@ export function uuid() {
   })
 }
 
-// 解析 URL 参数
+/**
+ * 解析 URL 参数
+ * @param {string} url - URL 字符串
+ * @returns {Object} 参数对象
+ * @example
+ * parseUrl('http://example.com?name=test&age=18') // { name: 'test', age: '18' }
+ */
 export function parseUrl(url) {
   const params = {}
   const queryString = url.split('?')[1]
@@ -74,7 +93,14 @@ export function parseUrl(url) {
   return params
 }
 
-// 格式化文件大小
+/**
+ * 格式化文件大小
+ * @param {number} bytes - 字节数
+ * @returns {string} 格式化后的大小字符串
+ * @example
+ * formatSize(1024) // '1 KB'
+ * formatSize(1048576) // '1 MB'
+ */
 export function formatSize(bytes) {
   if (bytes === 0) return '0 B'
   const k = 1024
@@ -83,27 +109,27 @@ export function formatSize(bytes) {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
 }
 
-// 随机数
+/**
+ * 生成指定范围内的随机整数
+ * @param {number} min - 最小值（包含）
+ * @param {number} max - 最大值（包含）
+ * @returns {number} 随机整数
+ * @example
+ * random(1, 10) // 1-10 之间的随机整数
+ */
 export function random(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
-// 判断值是否为 null 或 undefined
-export function isNullorUndefined(value) {
-  return value === null || value === undefined
-}
-
-// 导出所有工具函数
+// 导出所有工具函数（移除了与 npm cat-tools 重复的 isNullorUndefined）
 export const catTools = {
   dateFormat,
-  deepClone,
   debounce,
   throttle,
   uuid,
   parseUrl,
   formatSize,
-  random,
-  isNullorUndefined
+  random
 }
 
 export default catTools
