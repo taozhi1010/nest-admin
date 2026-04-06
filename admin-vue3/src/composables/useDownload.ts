@@ -1,4 +1,4 @@
-﻿import { download } from '@/utils/request'
+﻿import { download } from './useRequest'
 
 /**
  * 文件下载 Composable
