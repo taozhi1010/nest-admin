@@ -1,7 +1,7 @@
 <template>
   <!-- 授权用户 -->
   <el-dialog v-model="selectUser.visible" append-to-body title="选择用户" top="5vh" width="800px">
-    <el-form ref="selectUser.queryRef" :inline="true" :model="selectUser.queryParams">
+    <el-form ref="selectUser.queryRef" v-no-enter :inline="true" :model="selectUser.queryParams">
       <el-form-item label="用户账号" prop="userName">
         <el-input v-model.trim="selectUser.queryParams.userName" clearable placeholder="请输入用户账号" style="width: 200px" @keyup.enter="selectUser.handleQuery" />
       </el-form-item>
@@ -82,13 +82,6 @@ const selectUser = reactive({
   },
 
   // 方法集合
-  // 显示弹框
-  show: () => {
-    selectUser.queryParams.roleId = props.roleId
-    selectUser.getList()
-    selectUser.visible = true
-  },
-
   // 选择行
   clickRow: (row) => {
     refTable.value.toggleRowSelection(row)
@@ -144,6 +137,13 @@ const selectUser = reactive({
     }
   }
 })
+
+// 显示弹框
+const show = () => {
+  selectUser.queryParams.roleId = props.roleId
+  selectUser.getList()
+  selectUser.visible = true
+}
 
 // ==================== 暴露方法 ====================
 defineExpose({

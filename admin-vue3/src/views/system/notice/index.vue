@@ -2,7 +2,7 @@
   <!-- 通知公告 -->
   <div class="app-container">
     <div class="main-card">
-      <el-form v-show="notice.showSearch" ref="queryRef" :inline="true" :model="notice.queryParams">
+      <el-form v-show="notice.showSearch" ref="queryRef" v-no-enter :inline="true" :model="notice.queryParams">
         <el-form-item label="公告标题" prop="noticeTitle">
           <el-input v-model.trim="notice.queryParams.noticeTitle" clearable placeholder="请输入公告标题"
             @keyup.enter="notice.onSearch" />
@@ -75,9 +75,9 @@
         v-model:page="notice.queryParams.pageNum" :total="notice.queryParams.total" @pagination="notice.getList" />
 
       <!-- 添加或修改公告抽屉 -->
-      <el-drawer v-model="notice.open" :title="notice.title" size="calc(100% - 200px)" append-to-body class="notice-drawer">
+      <el-drawer v-model="notice.open" :title="notice.title" append-to-body class="drawer-full-width notice-drawer">
         <div class="drawer-content">
-          <el-form ref="noticeFormRef" v-loading="notice.formLoading" label-width="80px" :model="notice.form"
+          <el-form ref="noticeFormRef" v-no-enter v-loading="notice.formLoading" label-width="80px" :model="notice.form"
             :rules="notice.rules" class="notice-form">
             <el-row :gutter="20">
               <el-col :span="12">

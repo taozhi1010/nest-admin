@@ -1,6 +1,6 @@
 <template>
-  <div class="app-container">
-    <el-form v-show="authUser.showSearch" ref="authUser.queryRef" :inline="true" :model="authUser.queryParams">
+  <div class="auth-user-container">
+    <el-form v-show="authUser.showSearch" ref="authUser.queryRef" v-no-enter :inline="true" :model="authUser.queryParams">
       <el-form-item label="用户账号" prop="userName">
         <el-input v-model.trim="authUser.queryParams.userName" clearable placeholder="请输入用户账号" style="width: 240px" @keyup.enter="authUser.handleQuery" />
       </el-form-item>
@@ -64,8 +64,17 @@ import { resetForm, parseTime } from '@/composables/useCommon'
 // ==================== Composables ====================
 const { closeOpenPage } = useTab()
 
+// ==================== Props 和 Emits ====================
+const props = defineProps({
+  roleId: {
+    type: [Number, String],
+    required: true
+  }
+})
+
+const emit = defineEmits(['close'])
+
 // ==================== 实例和字典 ====================
-const route = useRoute()
 const { sys_normal_disable, getDictLabel } = useDict('sys_normal_disable')
 
 // ==================== 表单引用 ====================
@@ -86,7 +95,7 @@ const authUser = reactive({
   queryParams: {
     pageNum: 1,
     pageSize: 10,
-    roleId: route.params.roleId,
+    roleId: undefined,
     userName: undefined,
     phonenumber: undefined
   },
@@ -106,8 +115,7 @@ const authUser = reactive({
 
   // 返回按钮
   handleClose: () => {
-    const obj = { path: '/system/role' }
-    closeOpenPage(obj)
+    emit('close')
   },
 
   // 搜索按钮操作
@@ -172,6 +180,21 @@ const authUser = reactive({
   }
 })
 
-// ==================== 初始化加载 ====================
-authUser.getList()
+// ==================== 监听 roleId 变化 ====================
+watch(
+  () => props.roleId,
+  (newVal) => {
+    if (newVal) {
+      authUser.queryParams.roleId = newVal
+      authUser.getList()
+    }
+  },
+  { immediate: true }
+)
 </script>
+
+<style scoped>
+.auth-user-container {
+  padding: 0 20px;
+}
+</style>
