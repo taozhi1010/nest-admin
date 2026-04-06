@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-form v-show="showSearch" ref="queryRef" :inline="true" :model="queryParams">
+    <el-form v-show="showSearch" ref="queryRef" v-no-enter :inline="true" :model="queryParams">
       <el-form-item label="文章标题" prop="title">
         <el-input v-model="queryParams.title" clearable placeholder="请输入文章标题" style="width: 200px" @keyup.enter="handleQuery" />
       </el-form-item>
@@ -59,7 +59,7 @@
 
     <!-- 添加或修改文章对话框 -->
     <el-dialog v-model="open" append-to-body :title="title" width="700px">
-      <el-form ref="ArticleRef" label-width="80px" :model="form" :rules="rules">
+      <el-form ref="ArticleRef" v-no-enter label-width="80px" :model="form" :rules="rules">
         <el-form-item label="文章标题" prop="title">
           <el-input v-model="form.title" clearable maxlength="25" placeholder="请输入文章标题" show-word-limit />
         </el-form-item>

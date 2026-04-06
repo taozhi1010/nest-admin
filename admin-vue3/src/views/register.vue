@@ -4,7 +4,7 @@
   </div>
 
   <div class="register">
-    <el-form ref="registerRef" class="register-form" :model="registerForm.model" :rules="registerForm.rules">
+    <el-form ref="registerRef" v-no-enter class="register-form" :model="registerForm.model" :rules="registerForm.rules">
       <h3 class="title">nest-admin后台管理系统</h3>
       <el-form-item prop="username">
         <el-input v-model="registerForm.model.username" auto-complete="off" placeholder="账号" size="large" type="text">

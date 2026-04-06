@@ -2,7 +2,7 @@
   <!-- 参数设置 -->
   <div class="app-container">
     <div class="main-card">
-      <el-form v-show="config.showSearch" ref="config.queryRef" :inline="true" label-width="68px" :model="config.queryParams">
+      <el-form v-show="config.showSearch" ref="config.queryRef" v-no-enter :inline="true" label-width="68px" :model="config.queryParams">
         <el-form-item label="参数名称" prop="configName">
         <el-input v-model.trim="config.queryParams.configName" clearable placeholder="请输入参数名称" style="width: 160px" @keyup.enter="config.handleQuery" />
       </el-form-item>
@@ -72,7 +72,7 @@
 
   <!-- 添加或修改参数配置对话框 -->
   <el-dialog v-model="config.open" append-to-body :title="config.title" width="600px">
-    <el-form ref="configFormRef" v-loading="config.formLoading" label-width="120px" :model="config.form" :rules="config.rules">
+    <el-form ref="configFormRef" v-no-enter v-loading="config.formLoading" label-width="120px" :model="config.form" :rules="config.rules">
       <el-form-item label="参数名称" prop="configName">
         <el-input v-model.trim="config.form.configName" placeholder="请输入参数名称" />
       </el-form-item>

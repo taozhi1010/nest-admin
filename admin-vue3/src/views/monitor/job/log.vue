@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-form v-show="showSearch" ref="queryRef" :inline="true" label-width="68px" :model="queryParams">
+    <el-form v-show="showSearch" ref="queryRef" v-no-enter :inline="true" label-width="68px" :model="queryParams">
       <el-form-item label="任务名称" prop="jobName">
         <el-input v-model="queryParams.jobName" clearable placeholder="请输入任务名称" style="width: 240px" @keyup.enter="handleQuery" />
       </el-form-item>

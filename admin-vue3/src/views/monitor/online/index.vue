@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div class="main-card">
-      <el-form ref="queryRef" :inline="true" :model="queryParams">
+      <el-form ref="queryRef" v-no-enter :inline="true" :model="queryParams">
         <el-form-item label="登录地址" prop="ipaddr">
           <el-input v-model="queryParams.ipaddr" clearable placeholder="请输入登录地址" style="width: 200px" @keyup.enter="handleQuery" />
         </el-form-item>

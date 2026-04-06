@@ -1,5 +1,5 @@
 <template>
-  <el-form ref="pwdRef" label-width="80px" :model="resetPwd.form" :rules="resetPwd.rules">
+  <el-form ref="pwdRef" v-no-enter label-width="80px" :model="resetPwd.form" :rules="resetPwd.rules">
     <el-form-item label="旧密码" prop="oldPassword">
       <el-input v-model.trim="resetPwd.form.oldPassword" placeholder="请输入旧密码" show-password type="password" />
     </el-form-item>
