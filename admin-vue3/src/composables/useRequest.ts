@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
 import { ElNotification, ElMessageBox, ElMessage, ElLoading } from 'element-plus'
 import { getToken } from '@/utils/auth'
 import errorCode from '@/utils/errorCode'
@@ -7,33 +7,52 @@ import cache from '@/plugins/cache'
 import { saveAs } from 'file-saver'
 import useUserStore from '@/store/modules/user'
 
-let downloadLoadingInstance
+// 定义类型
+interface RequestConfig extends AxiosRequestConfig {
+  isToken?: boolean
+  repeatSubmit?: boolean
+  showMsg?: boolean
+}
+
+interface SessionObj {
+  url: string
+  data: string
+  time: number
+}
+
+interface DownloadConfig extends AxiosRequestConfig {
+  transformRequest?: Array<(data: any) => string>
+}
+
 // 是否显示重新登录
 export let isRelogin = { show: false }
 
-axios.defaults.headers['Content-Type'] = 'application/json;charset=utf-8'
-// 创建axios实例
-const service = axios.create({
-  // axios中请求配置有baseURL选项，表示请求URL公共部分
-  baseURL: import.meta.env.VITE_APP_BASE_API,
-  // 超时
+// 创建 axios 实例
+const service: AxiosInstance = axios.create({
+  baseURL: (import.meta as any).env.VITE_APP_BASE_API,
   timeout: 10000
 })
 
-// request拦截器
+// 设置默认请求头
+service.defaults.headers['Content-Type'] = 'application/json;charset=utf-8'
+
+// request 拦截器
 service.interceptors.request.use(
-  (config) => {
+  (config: AxiosRequestConfig) => {
     // 是否需要设置 token
-    const isToken = (config.headers || {}).isToken === false
+    const isToken = (config.headers as RequestConfig).isToken === false
     // 是否需要防止数据重复提交
-    const isRepeatSubmit = (config.headers || {}).repeatSubmit === false
+    const isRepeatSubmit = (config.headers as RequestConfig).repeatSubmit === false
+    
     if (getToken() && !isToken) {
       config.headers['Authorization'] = `Bearer ${getToken()}` // 让每个请求携带自定义token 请根据实际情况自行修改
     }
+    
     // 如果是 FormData 类型（文件上传），删除 Content-Type 让浏览器自动设置 multipart/form-data
     if (config.data instanceof FormData) {
       delete config.headers['Content-Type']
     }
+    
     // get请求映射params参数
     if (config.method === 'get' && config.params) {
       let url = `${config.url}?${tansParams(config.params)}`
@@ -41,20 +60,24 @@ service.interceptors.request.use(
       config.params = {}
       config.url = url
     }
+    
     if (!isRepeatSubmit && (config.method === 'post' || config.method === 'put')) {
       const requestObj = {
         url: config.url,
         data: typeof config.data === 'object' ? JSON.stringify(config.data) : config.data,
         time: new Date().getTime()
       }
-      const sessionObj = cache.session.getJSON('sessionObj')
-      if (sessionObj === undefined || sessionObj === null || sessionObj === '') {
+      
+      const sessionObj = cache.session.getJSON('sessionObj') as SessionObj | null
+      
+      if (sessionObj === undefined || sessionObj === null) {
         cache.session.setJSON('sessionObj', requestObj)
       } else {
         const s_url = sessionObj.url // 请求地址
         const s_data = sessionObj.data // 请求数据
         const s_time = sessionObj.time // 请求时间
         const interval = 1000 // 间隔时间(ms)，小于此时间视为重复提交
+        
         if (s_data === requestObj.data && requestObj.time - s_time < interval && s_url === requestObj.url) {
           const message = '数据正在处理，请勿重复提交'
           console.warn(`[${s_url}]: ${message}`)
@@ -64,33 +87,41 @@ service.interceptors.request.use(
         }
       }
     }
+    
     return config
   },
   (error) => {
     console.log(error)
-    Promise.reject(error)
+    return Promise.reject(error)
   }
 )
 
 // 响应拦截器
 service.interceptors.response.use(
-  (res) => {
+  (res: AxiosResponse) => {
     // 未设置状态码则默认成功状态
     const code = res.data.code || 200
     // 获取错误信息
-    const msg = errorCode[code] || res.data.msg || errorCode['default']
+    const msg = errorCode[code as keyof typeof errorCode] || res.data.msg || errorCode['default']
+    
     // 二进制数据则直接返回
     if (res.request.responseType === 'blob' || res.request.responseType === 'arraybuffer') {
       return res.data
     }
+    
     // 是否需要显示错误提示（默认显示）
-    const showMessage = res.config.showMsg !== false
+    const config = res.config as RequestConfig
+    const showMessage = config.showMsg !== false
 
     switch (code) {
       case 401:
         if (!isRelogin.show) {
           isRelogin.show = true
-          ElMessageBox.confirm('登录状态已过期，您可以继续留在该页面，或者重新登录', '系统提示', { confirmButtonText: '重新登录', cancelButtonText: '取消', type: 'warning' })
+          ElMessageBox.confirm('登录状态已过期，您可以继续留在该页面，或者重新登录', '系统提示', { 
+            confirmButtonText: '重新登录', 
+            cancelButtonText: '取消', 
+            type: 'warning' 
+          })
             .then(() => {
               isRelogin.show = false
               useUserStore()
@@ -144,8 +175,10 @@ service.interceptors.response.use(
 )
 
 // 通用下载方法
-export function download(url, params, filename, config) {
+export function download(url: string, params: any, filename: string, config?: DownloadConfig) {
+  let downloadLoadingInstance: ReturnType<typeof ElLoading.service>
   downloadLoadingInstance = ElLoading.service({ text: '正在下载数据，请稍候', background: 'rgba(0, 0, 0, 0.7)' })
+  
   return service
     .post(url, params, {
       transformRequest: [
@@ -157,7 +190,7 @@ export function download(url, params, filename, config) {
       responseType: 'blob',
       ...config
     })
-    .then(async (data) => {
+    .then(async (data: any) => {
       const isBlob = blobValidate(data)
       if (isBlob) {
         const blob = new Blob([data])
@@ -165,7 +198,7 @@ export function download(url, params, filename, config) {
       } else {
         const resText = await data.text()
         const rspObj = JSON.parse(resText)
-        const errMsg = errorCode[rspObj.code] || rspObj.msg || errorCode['default']
+        const errMsg = errorCode[rspObj.code as keyof typeof errorCode] || rspObj.msg || errorCode['default']
         ElMessage.error(errMsg)
       }
       downloadLoadingInstance.close()
@@ -175,6 +208,18 @@ export function download(url, params, filename, config) {
       ElMessage.error('下载文件出现错误，请联系管理员！')
       downloadLoadingInstance.close()
     })
+}
+
+/**
+ * HTTP 请求 Composable
+ * @example
+ * const { request, download } = useRequest()
+ */
+export function useRequest() {
+  return {
+    request: service,
+    download
+  }
 }
 
 export default service
