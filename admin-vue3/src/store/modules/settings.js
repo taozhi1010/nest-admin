@@ -1,5 +1,5 @@
 import defaultSettings from '@/settings'
-import { useDynamicTitle } from '@/utils/dynamicTitle'
+import { useDynamicTitle } from '@/composables/useDynamicTitle'
 
 const { sideTheme, showSettings, topNav, tagsView, fixedHeader, sidebarLogo, dynamicTitle, title: defaultTitle } = defaultSettings
 
@@ -28,7 +28,8 @@ const useSettingsStore = defineStore('settings', {
     // 设置网页标题
     setTitle(title) {
       this.title = title
-      useDynamicTitle()
+      const { updateTitle } = useDynamicTitle()
+      updateTitle()
     }
   }
 })
