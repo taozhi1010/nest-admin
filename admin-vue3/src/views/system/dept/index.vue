@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div class="main-card">
-      <el-form v-show="showSearch" ref="queryRef" :inline="true" :model="queryParams">
+      <el-form v-show="showSearch" ref="queryRef" v-no-enter :inline="true" :model="queryParams">
       <el-form-item label="部门名称" prop="deptName">
         <el-input v-model="queryParams.deptName" clearable placeholder="请输入部门名称" style="width: 200px" @keyup.enter="handleQuery" />
       </el-form-item>
@@ -50,7 +50,7 @@
 
     <!-- 添加或修改部门对话框 -->
     <el-dialog v-model="open" append-to-body :title="title" width="600px">
-      <el-form ref="deptRef" label-width="80px" :model="form" :rules="rules">
+      <el-form ref="deptRef" v-no-enter label-width="80px" :model="form" :rules="rules">
         <el-row>
           <el-col v-if="form.parentId !== 0" :span="24">
             <el-form-item label="上级部门" prop="parentId">

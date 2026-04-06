@@ -16,7 +16,7 @@
       </el-col>
       <!--用户数据-->
       <el-col :span="20" :xs="24">
-        <el-form v-show="user.showSearch" ref="user.queryRef" :inline="true" label-width="68px"
+        <el-form v-show="user.showSearch" ref="user.queryRef" v-no-enter :inline="true" label-width="68px"
           :model="user.queryParams">
           <el-form-item label="用户账号" prop="userName">
             <el-input v-model.trim="user.queryParams.userName" clearable placeholder="请输入用户账号" style="width: 240px"
@@ -113,7 +113,7 @@
 
     <!-- 添加或修改用户配置对话框 -->
     <el-dialog v-model="user.open" append-to-body :title="user.title" width="600px">
-      <el-form ref="userRef" label-width="80px" :model="user.form" :rules="user.rules">
+      <el-form ref="userRef" v-no-enter label-width="80px" :model="user.form" :rules="user.rules">
         <el-row>
           <el-col :span="12">
             <el-form-item v-if="user.form.userId == undefined" label="用户账号" prop="userName">

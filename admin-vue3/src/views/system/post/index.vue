@@ -2,7 +2,7 @@
   <!-- 岗位管理 -->
   <div class="app-container">
     <div class="main-card">
-      <el-form v-show="post.showSearch" ref="post.queryRef" :inline="true" :model="post.queryParams">
+      <el-form v-show="post.showSearch" ref="post.queryRef" v-no-enter :inline="true" :model="post.queryParams">
       <el-form-item label="岗位编码" prop="postCode">
         <el-input v-model.trim="post.queryParams.postCode" clearable placeholder="请输入岗位编码" style="width: 200px" @keyup.enter="post.handleQuery" />
       </el-form-item>
@@ -61,7 +61,7 @@
 
     <!-- 添加或修改岗位对话框 -->
     <el-dialog v-model="post.open" append-to-body :title="post.title" width="500px">
-      <el-form ref="postRef" label-width="80px" :model="post.form" :rules="post.rules">
+      <el-form ref="postRef" v-no-enter label-width="80px" :model="post.form" :rules="post.rules">
         <el-form-item label="岗位名称" prop="postName">
           <el-input v-model.trim="post.form.postName" placeholder="请输入岗位名称" />
         </el-form-item>

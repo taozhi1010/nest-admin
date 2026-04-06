@@ -4,7 +4,7 @@
   </div>
 
   <div class="login">
-    <el-form ref="loginRef" class="login-form" :model="loginForm.model" :rules="loginForm.rules">
+    <el-form ref="loginRef" v-no-enter class="login-form" :model="loginForm.model" :rules="loginForm.rules">
       <h3 class="title">nest-admin后台管理系统</h3>
       <el-form-item prop="username">
         <el-input v-model.trim="loginForm.model.username" auto-complete="off" maxlength="10" placeholder="账号" size="large" type="text">

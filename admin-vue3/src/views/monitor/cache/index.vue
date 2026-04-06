@@ -178,6 +178,13 @@ function getList() {
       ]
     })
 
+    const maxMemoryValue = parseMemoryValue(cache.value.info.maxmemory_human)
+    const usedMemoryValue = parseMemoryValue(cache.value.info.used_memory_human)
+    
+    // TODO: 当前使用已用内存的2倍作为临时方案，后续需后端返回真实的机器内存上限（如 server.mem.total）
+    // 如果内存上限为0（未限制），则根据已用内存动态设置上限
+    const gaugeMax = maxMemoryValue > 0 ? maxMemoryValue : Math.max(usedMemoryValue * 2, 100)
+    
     const usedmemoryInstance = echarts.init(usedmemory.value, 'macarons')
     usedmemoryChart = usedmemoryInstance
     usedmemoryInstance.setOption({
@@ -189,13 +196,13 @@ function getList() {
           name: '峰值',
           type: 'gauge',
           min: 0,
-          max: 1000,
+          max: gaugeMax,
           detail: {
             formatter: cache.value.info.used_memory_human
           },
           data: [
             {
-              value: parseMemoryValue(cache.value.info.used_memory_human),
+              value: usedMemoryValue,
               name: '内存消耗'
             }
           ]

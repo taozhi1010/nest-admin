@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div class="main-card">
-      <el-form v-show="menu.showSearch" ref="queryRef" :inline="true" :model="menu.queryParams">
+      <el-form v-show="menu.showSearch" ref="queryRef" v-no-enter :inline="true" :model="menu.queryParams">
       <el-form-item label="菜单名称" prop="menuName">
         <el-input v-model.trim="menu.queryParams.menuName" clearable placeholder="请输入菜单名称" style="width: 200px" @keyup.enter="menu.handleQuery" />
       </el-form-item>
@@ -57,7 +57,7 @@
 
     <!-- 添加或修改菜单对话框 -->
     <el-dialog v-model="menu.open" append-to-body :title="menu.title" width="680px">
-      <el-form ref="menuRef" label-width="100px" :model="menu.form" :rules="menu.rules">
+      <el-form ref="menuRef" v-no-enter label-width="100px" :model="menu.form" :rules="menu.rules">
         <el-row>
           <el-col :span="24">
             <el-form-item label="上级菜单">

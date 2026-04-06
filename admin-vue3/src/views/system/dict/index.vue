@@ -30,7 +30,7 @@
 
     <el-card v-loading="loading" class="dict-table" shadow="never">
       <div v-if="dictGroup.selectNode.dictId === 0">
-        <el-form ref="queryDictGroupRef" :inline="true" :model="dictGroup.query">
+        <el-form ref="queryDictGroupRef" v-no-enter :inline="true" :model="dictGroup.query">
           <el-form-item label="字典名称" prop="menuName">
             <el-input v-model="dictGroup.query.dictName" clearable placeholder="请输入字典名称" style="width: 200px" @keyup.enter="dictGroup.handleRefresh" />
           </el-form-item>
