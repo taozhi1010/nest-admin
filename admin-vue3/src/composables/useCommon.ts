@@ -1,5 +1,5 @@
 ﻿import { parseTime as _parseTime, addDateRange as _addDateRange, handleTree as _handleTree } from '@/utils/ruoyi'
-import { download as _download } from '@/utils/request'
+import { download as _download } from './useRequest'
 import type { FormInstance } from 'element-plus'
 import { getCurrentInstance } from 'vue'
 
