@@ -44,6 +44,9 @@ $--color-info: #909399;
 
 $base-sidebar-width: 200px;
 
+// 抽屉通用宽度（与菜单栏互补）
+$base-drawer-width: calc(100% - #{$base-sidebar-width});
+
 // the :export directive is the magic sauce for webpack
 // https://www.bluematador.com/blog/how-to-share-variables-between-js-and-sass
 :export {

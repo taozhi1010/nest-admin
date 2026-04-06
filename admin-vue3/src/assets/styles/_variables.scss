@@ -30,3 +30,6 @@ $--color-danger: #F56C6C;
 $--color-info: #909399;
 
 $base-sidebar-width: 200px;
+
+// 抽屉通用宽度（与菜单栏互补）
+$base-drawer-width: calc(100% - #{$base-sidebar-width});

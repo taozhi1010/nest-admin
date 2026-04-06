@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div class="main-card">
-      <el-form v-show="role.showSearch" ref="role.queryRef" :inline="true" label-width="68px" :model="role.queryParams">
+      <el-form v-show="role.showSearch" ref="role.queryRef" v-no-enter :inline="true" label-width="68px" :model="role.queryParams">
       <el-form-item label="角色名称" prop="roleName">
         <el-input v-model.trim="role.queryParams.roleName" clearable placeholder="请输入角色名称" style="width: 240px" @keyup.enter="role.handleQuery" />
       </el-form-item>
@@ -73,7 +73,7 @@
 
     <!-- 添加或修改角色配置对话框 -->
     <el-dialog v-model="role.open" append-to-body :title="role.title" width="500px">
-      <el-form ref="roleRef" label-width="100px" :model="role.form" :rules="role.rules">
+      <el-form ref="roleRef" v-no-enter label-width="100px" :model="role.form" :rules="role.rules">
         <el-form-item label="角色名称" prop="roleName">
           <el-input v-model.trim="role.form.roleName" placeholder="请输入角色名称" />
         </el-form-item>
@@ -142,24 +142,33 @@
         </div>
       </template>
     </el-dialog>
+
+    <!-- 分配用户抽屉 -->
+    <el-drawer v-model="role.openAuthUser" append-to-body class="drawer-full-width" direction="rtl" title="分配用户">
+      <auth-user ref="authUserRef" :role-id="role.authUserId" @close="role.handleCloseAuthUser" />
+    </el-drawer>
     </div>
   </div>
 </template>
 
 <script setup name="Role">
 // ==================== 导入区域 ====================
+import { useRouter } from 'vue-router'
+import AuthUser from './authUser.vue'
 import { addRole, changeRoleStatus, dataScope, delRole, getRole, listRole, updateRole, deptTreeSelect } from '@/api/system/role'
 import { roleMenuTreeselect, treeselect as menuTreeselect } from '@/api/system/menu'
 import { useDict } from '@/composables/useDict'
 import { resetForm, addDateRange, download, parseTime } from '@/composables/useCommon'
 
 // ==================== 实例和字典 ====================
+const router = useRouter()
 const { sys_normal_disable } = useDict('sys_normal_disable')
 
 // ==================== 表单引用 ====================
 const roleRef = ref(null)
 const menuRef = ref(null)
 const deptRef = ref(null)
+const authUserRef = ref(null)
 
 // ==================== 角色管理（集中式管理） ====================
 const role = reactive({
@@ -182,6 +191,8 @@ const role = reactive({
   deptNodeAll: false,
   deptOptions: [],
   openDataScope: false,
+  openAuthUser: false,
+  authUserId: undefined,
 
   // 数据范围选项
   dataScopeOptions: [
@@ -361,7 +372,14 @@ const role = reactive({
 
   // 分配用户
   handleAuthUser: (row) => {
-    router.push(`/system/role-auth/user/${row.roleId}`)
+    role.authUserId = row.roleId
+    role.openAuthUser = true
+  },
+
+  // 关闭分配用户抽屉
+  handleCloseAuthUser: () => {
+    role.openAuthUser = false
+    role.authUserId = undefined
   },
 
   // 查询菜单树结构
