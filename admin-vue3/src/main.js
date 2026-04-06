@@ -26,8 +26,6 @@ import elementIcons from '@/components/SvgIcon/svgicon'
 
 import './permission' // permission control
 
-import submitNoEnter from '@/utils/submitNoEnter' //取消回车提交
-
 // 分页组件
 import Pagination from '@/components/Pagination'
 // 自定义表格工具组件
@@ -61,7 +59,6 @@ app.use(store)
 app.use(plugins)
 app.use(elementIcons)
 app.component('SvgIcon', SvgIcon)
-app.mixin(submitNoEnter)
 directive(app)
 
 // 全局挂载 dayjs

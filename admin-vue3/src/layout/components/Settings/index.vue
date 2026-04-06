@@ -81,7 +81,7 @@
 import variables from '@/assets/styles/variables.module.scss'
 import axios from 'axios'
 import { ElLoading, ElMessage } from 'element-plus'
-import { useDynamicTitle } from '@/utils/dynamicTitle'
+import { useDynamicTitle } from '@/composables/useDynamicTitle'
 import useAppStore from '@/store/modules/app'
 import useSettingsStore from '@/store/modules/settings'
 import usePermissionStore from '@/store/modules/permission'
@@ -135,7 +135,8 @@ const dynamicTitle = computed({
   set: (val) => {
     settingsStore.changeSetting({ key: 'dynamicTitle', value: val })
     // 动态设置网页标题
-    useDynamicTitle()
+    const { updateTitle } = useDynamicTitle()
+    updateTitle()
   }
 })
 
