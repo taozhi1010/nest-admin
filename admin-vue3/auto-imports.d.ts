@@ -20,7 +20,7 @@ declare global {
   const defineAsyncComponent: typeof import('vue').defineAsyncComponent
   const defineComponent: typeof import('vue').defineComponent
   const defineStore: typeof import('pinia').defineStore
-  const download: typeof import('./src/composables/useCommon').download
+  const download: typeof import('./src/composables/useRequest').download
   const effectScope: typeof import('vue').effectScope
   const getActivePinia: typeof import('pinia').getActivePinia
   const getCurrentInstance: typeof import('vue').getCurrentInstance
@@ -35,6 +35,7 @@ declare global {
   const isReactive: typeof import('vue').isReactive
   const isReadonly: typeof import('vue').isReadonly
   const isRef: typeof import('vue').isRef
+  const isRelogin: typeof import('./src/composables/useRequest').isRelogin
   const isShallow: typeof import('vue').isShallow
   const mapActions: typeof import('pinia').mapActions
   const mapGetters: typeof import('pinia').mapGetters
@@ -89,11 +90,14 @@ declare global {
   const useCssVars: typeof import('vue').useCssVars
   const useDict: typeof import('./src/composables/useDict').useDict
   const useDownload: typeof import('./src/composables/useDownload').useDownload
+  const useDynamicTitle: typeof import('./src/composables/useDynamicTitle').useDynamicTitle
   const useId: typeof import('vue').useId
   const useLink: typeof import('vue-router').useLink
   const useMessage: typeof import('./src/composables/useMessage').useMessage
   const useModel: typeof import('vue').useModel
+  const useRequest: typeof import('./src/composables/useRequest').default
   const useRoute: typeof import('vue-router').useRoute
+  const useRouteSearch: typeof import('./src/composables/useRouteSearch').useRouteSearch
   const useRouter: typeof import('vue-router').useRouter
   const useSlots: typeof import('vue').useSlots
   const useTab: typeof import('./src/composables/useTab').useTab
@@ -114,4 +118,7 @@ declare global {
   // @ts-ignore
   export type { LoginForm, CaptchaResponse, AuthCodeInfo } from './src/composables/useAuthCode'
   import('./src/composables/useAuthCode')
+  // @ts-ignore
+  export type { RouteSearchItem, FuseResult, SearchConfig } from './src/composables/useRouteSearch'
+  import('./src/composables/useRouteSearch')
 }
