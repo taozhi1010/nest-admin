@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div class="main-card">
-      <el-form v-show="showSearch" ref="queryRef" :inline="true" label-width="68px" :model="queryParams">
+      <el-form v-show="showSearch" ref="queryRef" v-no-enter :inline="true" label-width="68px" :model="queryParams">
       <el-form-item label="系统模块" prop="title">
         <el-input v-model="queryParams.title" clearable placeholder="请输入系统模块" style="width: 240px" @keyup.enter="handleQuery" />
       </el-form-item>
@@ -126,7 +126,7 @@
 <script setup name="Operlog">
 import { list, delOperlog, cleanOperlog } from '@/api/monitor/operlog'
 import { useDict } from '@/composables/useDict'
-import { resetForm, addDateRange, selectDictLabel, parseTime } from '@/composables/useCommon'
+import { resetForm, addDateRange, parseTime } from '@/composables/useCommon'
 
 const { sys_oper_type, sys_common_status, getDictLabel } = useDict('sys_oper_type', 'sys_common_status')
 
@@ -169,7 +169,7 @@ function getList() {
 }
 /** 操作日志类型字典翻译 */
 function typeFormat(row, column) {
-  return selectDictLabel(sys_oper_type.value, row.businessType)
+  return getDictLabel('sys_oper_type', row.businessType)
 }
 /** 搜索按钮操作 */
 function handleQuery() {
