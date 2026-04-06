@@ -1,4 +1,4 @@
-﻿import { parseTime as _parseTime, addDateRange as _addDateRange, handleTree as _handleTree, selectDictLabel as _selectDictLabel, selectDictLabels as _selectDictLabels } from '@/utils/ruoyi'
+﻿import { parseTime as _parseTime, addDateRange as _addDateRange, handleTree as _handleTree } from '@/utils/ruoyi'
 import { download as _download } from '@/utils/request'
 import type { FormInstance } from 'element-plus'
 import { getCurrentInstance } from 'vue'
@@ -7,8 +7,6 @@ import { getCurrentInstance } from 'vue'
 export const parseTime = _parseTime
 export const addDateRange = _addDateRange
 export const handleTree = _handleTree
-export const selectDictLabel = _selectDictLabel
-export const selectDictLabels = _selectDictLabels
 export const download = _download
 
 /**
@@ -39,8 +37,6 @@ export function useCommon() {
     resetForm,
     addDateRange,
     handleTree,
-    selectDictLabel,
-    selectDictLabels,
     download
   }
 }

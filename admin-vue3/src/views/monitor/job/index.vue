@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div class="main-card">
-      <el-form v-show="showSearch" ref="queryRef" :inline="true" :model="queryParams">
+      <el-form v-show="showSearch" ref="queryRef" v-no-enter :inline="true" :model="queryParams">
         <el-form-item label="任务名称" prop="jobName">
           <el-input v-model="queryParams.jobName" clearable placeholder="请输入任务名称" style="width: 200px" @keyup.enter="handleQuery" />
         </el-form-item>
@@ -78,7 +78,7 @@
 
       <!-- 添加或修改定时任务对话框 -->
       <el-dialog v-model="open" append-to-body :title="title" width="820px">
-        <el-form ref="jobRef" label-width="120px" :model="form" :rules="rules">
+        <el-form ref="jobRef" v-no-enter label-width="120px" :model="form" :rules="rules">
           <el-row>
             <el-col :span="12">
               <el-form-item label="任务名称" prop="jobName">
@@ -222,7 +222,7 @@ import { listJob, getJob, delJob, addJob, updateJob, runJob, changeJobStatus } f
 import Crontab from '@/components/Crontab'
 const router = useRouter()
 import { useDict } from '@/composables/useDict'
-import { selectDictLabel, parseTime, resetForm } from '@/composables/useCommon'
+import { parseTime, resetForm } from '@/composables/useCommon'
 
 const { sys_job_group, sys_job_status, getDictLabel } = useDict('sys_job_group', 'sys_job_status')
 
@@ -270,7 +270,7 @@ function getList() {
 }
 /** 任务组名字典翻译 */
 function jobGroupFormat(row, column) {
-  return selectDictLabel(sys_job_group.value, row.jobGroup)
+  return getDictLabel('sys_job_group', row.jobGroup)
 }
 /** 取消按钮 */
 function cancel() {
