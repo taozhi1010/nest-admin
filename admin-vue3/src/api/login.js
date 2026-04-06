@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import request from '@/composables/useRequest'
 
 // 登录方法
 export function login(username, password, code, uuid) {
