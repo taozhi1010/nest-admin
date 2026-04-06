@@ -50,7 +50,10 @@
         <el-table-column align="center" label="cron执行表达式" prop="cronExpression" :show-overflow-tooltip="true" />
         <el-table-column align="center" label="状态">
           <template #default="scope">
-            <el-switch v-model="scope.row.status" active-value="0" inactive-value="1" @change="handleStatusChange(scope.row)" />
+            <el-tag :type="scope.row.status === '0' ? 'success' : 'danger'" style="cursor: pointer;"
+              @click="handleStatusClick(scope.row)">
+              {{ scope.row.status === '0' ? '正常' : '暂停' }}
+            </el-tag>
           </template>
         </el-table-column>
         <el-table-column align="center" class-name="small-padding fixed-width" label="操作" width="200">
@@ -339,6 +342,27 @@ function handleStatusChange(row) {
     })
     .catch(function () {
       row.status = row.status === '0' ? '1' : '0'
+    })
+}
+// 点击状态标签切换状态
+function handleStatusClick(row) {
+  const currentStatus = row.status
+  const newStatus = currentStatus === '0' ? '1' : '0'
+  let text = newStatus === '0' ? '启用' : '停用'
+  ElMessageBox.confirm(`确认要"${text}""${row.jobName}"任务吗?`, '系统提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  })
+    .then(function () {
+      return changeJobStatus(row.jobId, newStatus)
+    })
+    .then(() => {
+      ElMessage.success(`${text}成功`)
+      row.status = newStatus
+    })
+    .catch(function () {
+      console.error('状态修改失败')
     })
 }
 /* 立即执行一次 */

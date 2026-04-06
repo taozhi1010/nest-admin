@@ -43,7 +43,10 @@
       <el-table-column label="显示顺序" prop="roleSort" width="100" />
       <el-table-column align="center" label="状态" width="100">
         <template #default="scope">
-          <el-switch v-model="scope.row.status" active-value="0" inactive-value="1" @change="role.handleStatusChange(scope.row)" />
+          <el-tag :type="scope.row.status === '0' ? 'success' : 'danger'" style="cursor: pointer;"
+            @click="role.handleStatusClick(scope.row)">
+            {{ scope.row.status === '0' ? '启用' : '停用' }}
+          </el-tag>
         </template>
       </el-table-column>
       <el-table-column align="center" label="创建时间" prop="createTime">
@@ -365,6 +368,27 @@ const role = reactive({
     } catch (e) {
       if (e !== 'cancel') {
         row.status = row.status === '0' ? '1' : '0'
+        console.error('状态修改失败:', e)
+      }
+    }
+  },
+
+  // 点击状态标签切换状态
+  handleStatusClick: async (row) => {
+    const currentStatus = row.status
+    const newStatus = currentStatus === '0' ? '1' : '0'
+    let text = newStatus === '0' ? '启用' : '停用'
+    try {
+      await ElMessageBox.confirm(`确认要"${text}""${row.roleName}"角色吗？`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+      await changeRoleStatus(row.roleId, newStatus)
+      ElMessage.success(`${text}成功`)
+      row.status = newStatus
+    } catch (e) {
+      if (e !== 'cancel') {
         console.error('状态修改失败:', e)
       }
     }
