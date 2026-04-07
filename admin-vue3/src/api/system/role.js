@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import request from '@/composables/useRequest'
 
 // 查询角色列表
 export function listRole(query) {
@@ -12,7 +12,7 @@ export function listRole(query) {
 // 查询角色详细
 export function getRole(roleId) {
   return request({
-    url: '/system/role/' + roleId,
+    url: `/system/role/${roleId}`,
     method: 'get'
   })
 }
@@ -60,7 +60,7 @@ export function changeRoleStatus(roleId, status) {
 // 删除角色
 export function delRole(roleId) {
   return request({
-    url: '/system/role/' + roleId,
+    url: `/system/role/${roleId}`,
     method: 'delete'
   })
 }
@@ -113,7 +113,7 @@ export function authUserSelectAll(data) {
 // 根据角色ID查询部门树结构
 export function deptTreeSelect(roleId) {
   return request({
-    url: '/system/role/deptTree/' + roleId,
+    url: `/system/role/deptTree/${roleId}`,
     method: 'get'
   })
 }

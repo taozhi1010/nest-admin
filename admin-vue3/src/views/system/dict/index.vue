@@ -2,34 +2,25 @@
   <div class="app-container dict">
     <el-card v-loading="loading" class="dict-tree" shadow="never">
       <div class="dict-tree-header">
-        <el-button v-hasPermi="['system:dict:add']" type="primary" size="mini" icon="el-icon-plus" class="dict-tree-header-item add-btn" @click="dictGroup.handleAdd">添加字典分类</el-button>
-        <el-input v-model="dictGroup.query.dictName" style="width: 200px" placeholder="请输入字典项筛选" class="dict-tree-header-item search-input" />
+        <el-button v-hasPermi="['system:dict:add']" class="dict-tree-header-item add-btn" icon="el-icon-plus" size="mini" type="primary" @click="dictGroup.handleAdd">添加字典分类</el-button>
+        <el-input v-model="dictGroup.query.dictName" class="dict-tree-header-item search-input" placeholder="请输入字典项筛选" style="width: 200px" />
       </div>
 
       <div class="dict-tree-body">
-        <el-tree
-          ref="dictGroupRef"
-          :data="dictGroup.data"
-          node-key="id"
-          :default-expanded-keys="[0]"
-          :default-expand-all="true"
-          :indent="10"
-          :props="dictGroup.props"
-          :filter-node-method="dictGroup.filterNode"
-        >
+        <el-tree ref="dictGroupRef" :data="dictGroup.data" :default-expand-all="true" :default-expanded-keys="[0]" :filter-node-method="dictGroup.filterNode" :indent="10" node-key="id" :props="dictGroup.props">
           <template #default="{ node, data }">
             <span v-if="node.label !== '全部字典项'" class="custom-tree-node" @click="dictGroup.handleNodeSelect(data)">
               <span class="custom-tree-node-text" :title="node.label">{{ node.label }}</span>
               <span class="custom-tree-node-icon">
-                <el-button v-hasPermi="['system:dict:edit']" link type="primary" :title="'编辑'" icon="Edit" @click.stop="dictGroup.handleUpdate(data)" />
-                <el-button v-hasPermi="['system:dict:remove']" link type="primary" :title="'删除'" icon="Delete" @click.stop="dictGroup.handleDelete(data)" />
+                <el-button v-hasPermi="['system:dict:edit']" icon="Edit" link :title="'编辑'" type="primary" @click.stop="dictGroup.handleUpdate(data)" />
+                <el-button v-hasPermi="['system:dict:remove']" icon="Delete" link :title="'删除'" type="primary" @click.stop="dictGroup.handleDelete(data)" />
               </span>
             </span>
 
             <span v-else class="custom-tree-node" @click.stop="dictGroup.handleGroupSelect(data)">
               <span class="custom-tree-node-text" :title="node.label">{{ node.label }}</span>
               <span class="custom-tree-node-icon refresh-icon">
-                <el-button link type="primary" :title="'刷新'" icon="Refresh" @click="dictGroup.handleRefresh" />
+                <el-button icon="Refresh" link :title="'刷新'" type="primary" @click="dictGroup.handleRefresh" />
               </span>
             </span>
           </template>
@@ -39,115 +30,115 @@
 
     <el-card v-loading="loading" class="dict-table" shadow="never">
       <div v-if="dictGroup.selectNode.dictId === 0">
-        <el-form :model="dictGroup.query" ref="queryDictGroupRef" :inline="true">
+        <el-form ref="queryDictGroupRef" v-no-enter :inline="true" :model="dictGroup.query">
           <el-form-item label="字典名称" prop="menuName">
-            <el-input v-model="dictGroup.query.dictName" placeholder="请输入字典名称" clearable style="width: 200px" @keyup.enter="dictGroup.handleRefresh" />
+            <el-input v-model="dictGroup.query.dictName" clearable placeholder="请输入字典名称" style="width: 200px" @keyup.enter="dictGroup.handleRefresh" />
           </el-form-item>
           <el-form-item label="字典类型" prop="status">
-            <el-input v-model="dictGroup.query.dictType" placeholder="请输入字典类型" clearable style="width: 200px" @keyup.enter="dictGroup.handleRefresh" />
+            <el-input v-model="dictGroup.query.dictType" clearable placeholder="请输入字典类型" style="width: 200px" @keyup.enter="dictGroup.handleRefresh" />
           </el-form-item>
           <el-form-item label="状态" prop="status">
-            <el-select v-model="dictGroup.query.status" placeholder="请选择字典状态" clearable style="width: 200px">
+            <el-select v-model="dictGroup.query.status" clearable placeholder="请选择字典状态" style="width: 200px">
               <el-option v-for="dict in sys_normal_disable" :key="dict.value" :label="dict.label" :value="dict.value" />
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" icon="Search" @click="dictGroup.handleRefresh">搜索</el-button>
+            <el-button icon="Search" type="primary" @click="dictGroup.handleRefresh">搜索</el-button>
             <el-button icon="Refresh" @click="dictGroup.handleReset">重置</el-button>
           </el-form-item>
         </el-form>
 
-        <el-row :gutter="10" class="mb8">
+        <el-row class="mb8" :gutter="10">
           <el-col :span="1.5">
-            <el-button v-hasPermi="['system:dict:add']" type="primary" plain icon="Plus" @click="dictGroup.handleAdd">新增</el-button>
+            <el-button v-hasPermi="['system:dict:add']" icon="Plus" plain type="primary" @click="dictGroup.handleAdd">新增</el-button>
           </el-col>
           <el-col :span="1.5">
-            <el-button v-hasPermi="['system:dict:remove']" type="danger" plain icon="Delete" :disabled="multiple" @click="dictGroup.handleDelete">删除</el-button>
+            <el-button v-hasPermi="['system:dict:remove']" :disabled="multiple" icon="Delete" plain type="danger" @click="dictGroup.handleDelete">删除</el-button>
           </el-col>
           <el-col :span="1.5">
-            <el-button v-hasPermi="['system:dict:export']" type="warning" plain icon="Download" @click="dictGroup.handleExport">导出</el-button>
+            <el-button v-hasPermi="['system:dict:export']" icon="Download" plain type="warning" @click="dictGroup.handleExport">导出</el-button>
           </el-col>
           <el-col :span="1.5">
-            <el-button v-hasPermi="['system:dict:remove']" type="warning" plain icon="Refresh" @click="dictGroup.handleRefreshCache">刷新缓存</el-button>
+            <el-button v-hasPermi="['system:dict:remove']" icon="Refresh" plain type="warning" @click="dictGroup.handleRefreshCache">刷新缓存</el-button>
           </el-col>
-          <right-toolbar :show-search="false" @queryTable="dictGroup.handleRefresh" />
+          <right-toolbar :show-search="false" @query-table="dictGroup.handleRefresh" />
         </el-row>
 
         <el-table ref="dictGroupTableRef" :data="dictGroup.data[0].children" max-height="70vh" @selection-change="dictGroup.handleSelectionChange">
-          <el-table-column type="selection" width="55" align="center" />
-          <el-table-column label="字典编号" align="center" prop="dictId" width="100" />
-          <el-table-column label="字典名称" align="center" prop="dictName" :show-overflow-tooltip="true" />
-          <el-table-column label="字典类型" align="center" prop="dictType" :show-overflow-tooltip="true" />
-          <el-table-column label="状态" align="center" prop="status">
+          <el-table-column align="center" type="selection" width="55" />
+          <el-table-column align="center" label="字典编号" prop="dictId" width="100" />
+          <el-table-column align="center" label="字典名称" prop="dictName" :show-overflow-tooltip="true" />
+          <el-table-column align="center" label="字典类型" prop="dictType" :show-overflow-tooltip="true" />
+          <el-table-column align="center" label="状态" prop="status">
             <template #default="scope">
-              <dict-tag :options="sys_normal_disable" :value="scope.row.status" />
+              <span>{{ getDictLabel('sys_normal_disable', scope.row.status) }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="备注" align="center" prop="remark" :show-overflow-tooltip="true" />
-          <el-table-column label="创建时间" align="center" prop="createTime" width="180">
+          <el-table-column align="center" label="备注" prop="remark" :show-overflow-tooltip="true" />
+          <el-table-column align="center" label="创建时间" prop="createTime" width="180">
             <template #default="scope">
               <span>{{ parseTime(scope.row.createTime) }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="操作" align="center" width="160" fixed="right">
+          <el-table-column align="center" fixed="right" label="操作" width="160">
             <template #default="scope">
-              <el-button v-hasPermi="['system:dict:edit']" link type="primary" icon="Edit" @click="dictGroup.handleUpdate(scope.row)">修改</el-button>
-              <el-button v-hasPermi="['system:dict:remove']" link type="primary" icon="Delete" @click="dictGroup.handleDelete(scope.row)">删除</el-button>
+              <el-button v-hasPermi="['system:dict:edit']" icon="Edit" link type="primary" @click="dictGroup.handleUpdate(scope.row)">修改</el-button>
+              <el-button v-hasPermi="['system:dict:remove']" icon="Delete" link type="primary" @click="dictGroup.handleDelete(scope.row)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
       </div>
 
       <div v-else>
-        <el-descriptions :column="4" border>
+        <el-descriptions border :column="4">
           <el-descriptions-item label="字典项">{{ dictGroup.selectNode.dictName }}</el-descriptions-item>
           <el-descriptions-item label="字典编号">{{ dictGroup.selectNode.dictType }}</el-descriptions-item>
           <el-descriptions-item label="状态">
-            <dict-tag :options="sys_normal_disable" :value="dictGroup.selectNode.status" />
+            {{ getDictLabel('sys_normal_disable', dictGroup.selectNode.status) }}
           </el-descriptions-item>
         </el-descriptions>
 
         <el-divider content-position="left">数据字典详情</el-divider>
 
-        <el-row :gutter="10" class="mb8">
+        <el-row class="mb8" :gutter="10">
           <el-col :span="1.5">
-            <el-button v-hasPermi="['system:dict:add']" type="primary" plain icon="Plus" @click="dictData.handleAdd">新增</el-button>
+            <el-button v-hasPermi="['system:dict:add']" icon="Plus" plain type="primary" @click="dictData.handleAdd">新增</el-button>
           </el-col>
           <el-col :span="1.5">
-            <el-button v-hasPermi="['system:dict:remove']" type="danger" plain icon="Delete" :disabled="multiple" @click="dictData.handleDelete">删除</el-button>
+            <el-button v-hasPermi="['system:dict:remove']" :disabled="multiple" icon="Delete" plain type="danger" @click="dictData.handleDelete">删除</el-button>
           </el-col>
           <el-col :span="1.5">
-            <el-button v-hasPermi="['system:dict:export']" type="warning" plain icon="Download" @click="dictData.handleExport">导出</el-button>
+            <el-button v-hasPermi="['system:dict:export']" icon="Download" plain type="warning" @click="dictData.handleExport">导出</el-button>
           </el-col>
-          <right-toolbar :show-search="false" @queryTable="dictData.handleRefresh" />
+          <right-toolbar :show-search="false" @query-table="dictData.handleRefresh" />
         </el-row>
 
         <el-table ref="dictDataRef" :data="dictData.data" @selection-change="dictData.handleSelectionChange">
-          <el-table-column type="selection" width="55" align="center" />
-          <el-table-column label="字典编码" align="center" prop="dictCode" />
-          <el-table-column label="字典标签" align="center" prop="dictLabel">
+          <el-table-column align="center" type="selection" width="55" />
+          <el-table-column align="center" label="字典编码" prop="dictCode" />
+          <el-table-column align="center" label="字典标签" prop="dictLabel">
             <template #default="scope">
               <span v-if="scope.row.listClass == '' || scope.row.listClass == 'default'">{{ scope.row.dictLabel }}</span>
               <el-tag v-else :type="scope.row.listClass == 'primary' ? '' : scope.row.listClass">{{ scope.row.dictLabel }}</el-tag>
             </template>
           </el-table-column>
-          <el-table-column label="字典键值" align="center" prop="dictValue" />
-          <el-table-column label="字典排序" align="center" prop="dictSort" />
-          <el-table-column label="状态" align="center" prop="status">
+          <el-table-column align="center" label="字典键值" prop="dictValue" />
+          <el-table-column align="center" label="字典排序" prop="dictSort" />
+          <el-table-column align="center" label="状态" prop="status">
             <template #default="scope">
-              <dict-tag :options="sys_normal_disable" :value="scope.row.status" />
+              <span>{{ getDictLabel('sys_normal_disable', scope.row.status) }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="备注" align="center" prop="remark" :show-overflow-tooltip="true" />
-          <el-table-column label="创建时间" align="center" prop="createTime" width="180">
+          <el-table-column align="center" label="备注" prop="remark" :show-overflow-tooltip="true" />
+          <el-table-column align="center" label="创建时间" prop="createTime" width="180">
             <template #default="scope">
               <span>{{ parseTime(scope.row.createTime) }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="操作" align="center" width="160" fixed="right">
+          <el-table-column align="center" fixed="right" label="操作" width="160">
             <template #default="scope">
-              <el-button v-hasPermi="['system:dict:edit']" link type="primary" icon="Edit" @click="dictData.handleUpdate(scope.row)">修改</el-button>
-              <el-button v-hasPermi="['system:dict:remove']" link type="primary" icon="Delete" @click="dictData.handleDelete(scope.row)">删除</el-button>
+              <el-button v-hasPermi="['system:dict:edit']" icon="Edit" link type="primary" @click="dictData.handleUpdate(scope.row)">修改</el-button>
+              <el-button v-hasPermi="['system:dict:remove']" icon="Delete" link type="primary" @click="dictData.handleDelete(scope.row)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -155,8 +146,8 @@
     </el-card>
   </div>
 
-  <dictGroupEdit ref="dictGroupEditRef" @refresh="dictGroup.handleRefresh" />
-  <dictDataEdit ref="dictDataEditRef" @refresh="dictData.handleRefresh" />
+  <dict-group-edit ref="dictGroupEditRef" @refresh="dictGroup.handleRefresh" />
+  <dict-data-edit ref="dictDataEditRef" @refresh="dictData.handleRefresh" />
 </template>
 
 <script setup name="Dict">
@@ -164,9 +155,10 @@ import dictGroupEdit from './components/dictGroupEdit'
 import dictDataEdit from './components/dictDataEdit'
 import { listType, delType, refreshCache } from '@/api/system/dict/type'
 import { listData, delData } from '@/api/system/dict/data'
+import { useDict } from '@/composables/useDict'
+import { resetForm, download, parseTime } from '@/composables/useCommon'
 
-const { proxy } = getCurrentInstance()
-const { sys_normal_disable } = proxy.useDict('sys_normal_disable')
+const { sys_normal_disable, getDictLabel } = useDict('sys_normal_disable')
 
 // 字典组树和列表的ref
 const dictGroupRef = ref()
@@ -222,19 +214,22 @@ const dictGroup = reactive({
   },
   handleDelete: (row) => {
     const dictIds = row.dictId || dictGroup.selection.map((item) => item.dictId).join(',')
-    proxy.$modal
-      .confirm('是否确认删除字典编号为"' + dictIds + '"的数据项？')
+    ElMessageBox.confirm(`是否确认删除字典编号为"${dictIds}"的数据项？`, '提示', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning'
+    })
       .then(() => {
         loading.value = true
         return delType(dictIds)
       })
       .then(() => {
         dictGroup.request()
-        proxy.$modal.msgSuccess('删除成功')
+        ElMessage.success('删除成功')
       })
   },
   handleExport: () => {
-    proxy.download(
+    download(
       'system/dict/type/export',
       {
         ...dictGroup.query
@@ -246,7 +241,7 @@ const dictGroup = reactive({
     dictGroup.request()
   },
   handleReset: () => {
-    proxy.resetForm('queryDictGroupRef')
+    resetForm(queryDictGroupRef)
     dictGroup.request()
   },
   handleNodeSelect: (data) => {
@@ -270,7 +265,7 @@ const dictGroup = reactive({
     loading.value = true
     refreshCache()
       .then(() => {
-        proxy.$modal.msgSuccess('刷新成功')
+        ElMessage.success('刷新成功')
         useDictStore().cleanDict()
       })
       .finally(() => {
@@ -306,19 +301,22 @@ const dictData = reactive({
   },
   handleDelete: (row) => {
     const dictCodes = row.dictCode || dictData.selection.map((item) => item.dictCode).join(',')
-    proxy.$modal
-      .confirm('是否确认删除字典编码为"' + dictCodes + '"的数据项？')
+    ElMessageBox.confirm(`是否确认删除字典编码为"${dictCodes}"的数据项？`, '提示', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning'
+    })
       .then(() => {
         return delData(dictCodes)
       })
       .then(() => {
         dictData.request()
-        proxy.$modal.msgSuccess('删除成功')
+        ElMessage.success('删除成功')
         useDictStore().removeDict(dictData.query.dictType)
       })
   },
   handleExport: () => {
-    proxy.download(
+    download(
       'system/dict/data/export',
       {
         ...dictData.query

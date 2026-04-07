@@ -141,7 +141,7 @@ export class DictService {
     //   },
     // });
 
-    // 尝试从Redis缓存中获取字典数据
+    // 尝试从 Redis 缓存中获取字典数据
     let data = await this.redisService.get(`${CacheEnum.SYS_DICT_KEY}${dictType}`);
 
     if (data) {
@@ -157,9 +157,70 @@ export class DictService {
       },
     });
 
-    // 将查询到的数据存入Redis缓存，并返回数据
+    // 将查询到的数据存入 Redis 缓存，并返回数据
     await this.redisService.set(`${CacheEnum.SYS_DICT_KEY}${dictType}`, data);
     return ResultData.ok(data);
+  }
+
+  /**
+   * 获取所有字典数据，按字典类型分组
+   * @returns 返回所有字典数据，格式为 { dictType: [dictDataList] }
+   */
+  async findAllDictData() {
+    try {
+      // 尝试从缓存中获取所有字典数据
+      const keys = await this.redisService.keys(`${CacheEnum.SYS_DICT_KEY}*`);
+
+      if (keys && keys.length > 0) {
+        // 如果缓存中存在，批量获取所有缓存数据
+        const result: Record<string, any[]> = {};
+
+        // 使用 mget 批量获取，提高效率
+        const values = await this.redisService.mget(keys);
+
+        keys.forEach((key, index) => {
+          try {
+            const dictType = key.replace(CacheEnum.SYS_DICT_KEY, '');
+            const data = values[index];
+            if (data) {
+              result[dictType] = data;
+            }
+          } catch (error) {
+            console.error(`解析 redis key 失败: ${key}`, error);
+          }
+        });
+
+        return ResultData.ok(result);
+      }
+
+      // 如果缓存中不存在，从数据库加载
+      await this.loadingDictCache();
+
+      // 重新从缓存中获取
+      const newKeys = await this.redisService.keys(`${CacheEnum.SYS_DICT_KEY}*`);
+      const result: Record<string, any[]> = {};
+
+      if (newKeys && newKeys.length > 0) {
+        const values = await this.redisService.mget(newKeys);
+
+        newKeys.forEach((key, index) => {
+          try {
+            const dictType = key.replace(CacheEnum.SYS_DICT_KEY, '');
+            const data = values[index];
+            if (data) {
+              result[dictType] = data;
+            }
+          } catch (error) {
+            console.error(`解析 redis key 失败: ${key}`, error);
+          }
+        });
+      }
+
+      return ResultData.ok(result);
+    } catch (error) {
+      console.error('获取全部字典数据失败:', error);
+      throw error;
+    }
   }
 
   async findOneDictData(dictCode: number) {

@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import request from '@/composables/useRequest'
 
 // 查询部门列表
 export function listDept(query) {
@@ -12,7 +12,7 @@ export function listDept(query) {
 // 查询部门列表（排除节点）
 export function listDeptExcludeChild(deptId) {
   return request({
-    url: '/system/dept/list/exclude/' + deptId,
+    url: `/system/dept/list/exclude/${deptId}`,
     method: 'get'
   })
 }
@@ -20,7 +20,7 @@ export function listDeptExcludeChild(deptId) {
 // 查询部门详细
 export function getDept(deptId) {
   return request({
-    url: '/system/dept/' + deptId,
+    url: `/system/dept/${deptId}`,
     method: 'get'
   })
 }
@@ -46,7 +46,7 @@ export function updateDept(data) {
 // 删除部门
 export function delDept(deptId) {
   return request({
-    url: '/system/dept/' + deptId,
+    url: `/system/dept/${deptId}`,
     method: 'delete'
   })
 }

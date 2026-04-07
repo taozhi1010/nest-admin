@@ -992,6 +992,22 @@
         ]
       }
     },
+    "/system/dict/data/all": {
+      "get": {
+        "operationId": "DictController_findAllDictData",
+        "summary": "字典数据-全部【走缓存】",
+        "description": "一次性获取所有字典类型及其对应的字典数据，便于前端初始化时使用",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "字典管理"
+        ]
+      }
+    },
     "/system/dict/type/export": {
       "post": {
         "operationId": "DictController_export",
@@ -2336,7 +2352,7 @@
     "/system/user/profile": {
       "get": {
         "operationId": "UserController_profile",
-        "summary": "个人中心-用户信息",
+        "summary": "个人中心 - 用户信息",
         "parameters": [],
         "responses": {
           "200": {
@@ -2384,7 +2400,7 @@
     "/system/user/profile/avatar": {
       "post": {
         "operationId": "UserController_avatar",
-        "summary": "个人中心-上传用户头像",
+        "summary": "个人中心 - 上传用户头像",
         "parameters": [],
         "responses": {
           "201": {
@@ -2804,7 +2820,7 @@
     "/system/user/export": {
       "post": {
         "operationId": "UserController_export",
-        "summary": "导出用户信息数据为xlsx",
+        "summary": "导出用户信息数据为 xlsx",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -2816,6 +2832,55 @@
             }
           }
         },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "用户管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/system/user/importData": {
+      "post": {
+        "operationId": "UserController_importData",
+        "summary": "导入用户信息数据从 xlsx",
+        "parameters": [
+          {
+            "name": "updateSupport",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "用户管理"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/system/user/downloadTemplate": {
+      "post": {
+        "operationId": "UserController_downloadTemplate",
+        "summary": "下载用户导入模板",
+        "parameters": [],
         "responses": {
           "201": {
             "description": ""
@@ -3459,6 +3524,7 @@
     "/monitor/operlog": {
       "post": {
         "operationId": "OperlogController_create",
+        "summary": "创建操作日志",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -3474,35 +3540,31 @@
           "201": {
             "description": ""
           }
-        }
-      }
-    },
-    "/monitor/operlog/clean": {
-      "delete": {
-        "operationId": "OperlogController_removeAll",
-        "summary": "登录日志-清除全部日志",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        }
+        },
+        "tags": [
+          "操作日志管理"
+        ]
       }
     },
     "/monitor/operlog/list": {
       "get": {
         "operationId": "OperlogController_findAll",
+        "summary": "查询操作日志列表",
         "parameters": [],
         "responses": {
           "200": {
             "description": ""
           }
-        }
+        },
+        "tags": [
+          "操作日志管理"
+        ]
       }
     },
     "/monitor/operlog/{id}": {
       "get": {
         "operationId": "OperlogController_findOne",
+        "summary": "获取单个操作日志详情",
         "parameters": [
           {
             "name": "id",
@@ -3517,10 +3579,14 @@
           "200": {
             "description": ""
           }
-        }
+        },
+        "tags": [
+          "操作日志管理"
+        ]
       },
       "patch": {
         "operationId": "OperlogController_update",
+        "summary": "更新操作日志",
         "parameters": [
           {
             "name": "id",
@@ -3545,10 +3611,14 @@
           "200": {
             "description": ""
           }
-        }
+        },
+        "tags": [
+          "操作日志管理"
+        ]
       },
       "delete": {
         "operationId": "OperlogController_remove",
+        "summary": "删除单个操作日志",
         "parameters": [
           {
             "name": "id",
@@ -3563,7 +3633,283 @@
           "200": {
             "description": ""
           }
-        }
+        },
+        "tags": [
+          "操作日志管理"
+        ]
+      }
+    },
+    "/monitor/operlog/clean": {
+      "delete": {
+        "operationId": "OperlogController_removeAll",
+        "summary": "清除全部操作日志",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "操作日志管理"
+        ]
+      }
+    },
+    "/game/article": {
+      "post": {
+        "operationId": "GameArticleController_create",
+        "summary": "游戏文章-创建",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateGameAricleDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "游戏文章"
+        ]
+      },
+      "put": {
+        "operationId": "GameArticleController_update",
+        "summary": "游戏文章-更新",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateGameAricleDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "游戏文章"
+        ]
+      }
+    },
+    "/game/article/guest/list": {
+      "get": {
+        "operationId": "GameArticleController_findGuestAll",
+        "summary": "游戏文章-游客-列表",
+        "parameters": [
+          {
+            "name": "pageNum",
+            "required": true,
+            "in": "query",
+            "description": "当前分页",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": true,
+            "in": "query",
+            "description": "每页数量",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "orderByColumn",
+            "required": false,
+            "in": "query",
+            "description": "排序字段",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "isAsc",
+            "required": false,
+            "in": "query",
+            "description": "排序规则",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "title",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "游戏文章"
+        ]
+      }
+    },
+    "/game/article/guest/detail": {
+      "get": {
+        "operationId": "GameArticleController_findGuestOne",
+        "summary": "游戏文章-详情",
+        "parameters": [
+          {
+            "name": "gameId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "游戏文章"
+        ]
+      }
+    },
+    "/game/article/list": {
+      "get": {
+        "operationId": "GameArticleController_findAll",
+        "summary": "游戏文章-管理员-列表",
+        "parameters": [
+          {
+            "name": "pageNum",
+            "required": true,
+            "in": "query",
+            "description": "当前分页",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": true,
+            "in": "query",
+            "description": "每页数量",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "orderByColumn",
+            "required": false,
+            "in": "query",
+            "description": "排序字段",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "isAsc",
+            "required": false,
+            "in": "query",
+            "description": "排序规则",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "title",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "游戏文章"
+        ]
+      }
+    },
+    "/game/article/{id}": {
+      "get": {
+        "operationId": "GameArticleController_findOne",
+        "summary": "游戏文章-详情",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "游戏文章"
+        ]
+      },
+      "delete": {
+        "operationId": "GameArticleController_remove",
+        "summary": "游戏文章-删除",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "游戏文章"
+        ]
       }
     }
   },
@@ -4728,6 +5074,47 @@
       "UpdateOperlogDto": {
         "type": "object",
         "properties": {}
+      },
+      "CreateGameAricleDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "remark": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "title",
+          "remark",
+          "status"
+        ]
+      },
+      "UpdateGameAricleDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "remark": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "articleId": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "title",
+          "remark",
+          "status"
+        ]
       }
     }
   }

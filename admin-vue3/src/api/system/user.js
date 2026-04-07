@@ -1,5 +1,5 @@
-import request from '@/utils/request'
-import { parseStrEmpty } from "@/utils/ruoyi";
+import request from '@/composables/useRequest'
+import { parseStrEmpty } from '@/utils/ruoyi'
 
 // 查询用户列表
 export function listUser(query) {
@@ -13,7 +13,7 @@ export function listUser(query) {
 // 查询用户详细
 export function getUser(userId) {
   return request({
-    url: '/system/user/' + parseStrEmpty(userId),
+    url: `/system/user/${parseStrEmpty(userId)}`,
     method: 'get'
   })
 }
@@ -39,7 +39,7 @@ export function updateUser(data) {
 // 删除用户
 export function delUser(userId) {
   return request({
-    url: '/system/user/' + userId,
+    url: `/system/user/${userId}`,
     method: 'delete'
   })
 }
@@ -112,7 +112,7 @@ export function uploadAvatar(data) {
 // 查询授权角色
 export function getAuthRole(userId) {
   return request({
-    url: '/system/user/authRole/' + userId,
+    url: `/system/user/authRole/${userId}`,
     method: 'get'
   })
 }
@@ -131,5 +131,16 @@ export function deptTreeSelect() {
   return request({
     url: '/system/user/deptTree',
     method: 'get'
+  })
+}
+
+// 用户导入
+export function importData(data, config) {
+  return request({
+    url: '/system/user/importData',
+    method: 'post',
+    data: data,
+    params: config?.params, // 支持 URL 查询参数
+    showMsg: false // 不自动显示错误消息，由组件自行处理
   })
 }

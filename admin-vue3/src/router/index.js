@@ -48,7 +48,7 @@ export const constantRoutes = [
     hidden: true
   },
   {
-    path: "/:pathMatch(.*)*",
+    path: '/:pathMatch(.*)*',
     component: () => import('@/views/error/404'),
     hidden: true
   },
@@ -131,16 +131,39 @@ export const dynamicRoutes = [
     ]
   },
   {
-    path: '/tool/gen-edit',
+    path: '/tool/error-page',
     component: Layout,
-    hidden: true,
-    permissions: ['tool:gen:edit'],
+    hidden: false,
+    alwaysShow: true,
+    permissions: ['tool:error:list'],
+    meta: { title: '错误页面', icon: 'error' },
     children: [
       {
-        path: 'index/:tableId(\\d+)',
-        component: () => import('@/views/tool/gen/editTable'),
-        name: 'GenEdit',
-        meta: { title: '修改生成配置', activeMenu: '/tool/gen' }
+        path: '401',
+        component: () => import('@/views/error/401'),
+        name: 'Error401',
+        meta: { title: '401 未授权', icon: 'error' }
+      },
+      {
+        path: '404',
+        component: () => import('@/views/error/404'),
+        name: 'Error404',
+        meta: { title: '404 未找到', icon: 'error' }
+      }
+    ]
+  },
+  {
+    path: '/test/auth-demo',
+    component: Layout,
+    hidden: false,
+    permissions: ['system:user:list'],
+    meta: { title: '权限演示', icon: 'lock' },
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/test/AuthDemo.vue'),
+        name: 'AuthDemo',
+        meta: { title: '权限验证示例', icon: 'lock' }
       }
     ]
   }
@@ -155,7 +178,7 @@ const router = createRouter({
     } else {
       return { top: 0 }
     }
-  },
-});
+  }
+})
 
-export default router;
+export default router

@@ -5,6 +5,8 @@ import isLeapYear from 'dayjs/plugin/isLeapYear'; // 导入插件
 import timezone from 'dayjs/plugin/timezone'; // 导入插件
 import utc from 'dayjs/plugin/utc'; // 导入插件
 import 'dayjs/locale/zh-cn'; // 导入本地化语言
+import * as ExcelJS from 'exceljs';
+import { Response } from 'express';
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.extend(isLeapYear); // 使用插件
@@ -76,6 +78,26 @@ export function GetNowDate() {
  */
 export function FormatDate(date: Date, format = 'YYYY-MM-DD HH:mm:ss') {
   return date && dayjs(date).format(format);
+}
+
+/**
+ * 格式化对象中的时间字段
+ * @param obj 对象
+ * @param fields 需要格式化的时间字段名数组
+ * @returns
+ */
+export function FormatObjectDate<T extends Record<string, any>>(obj: T, fields: string[] = ['createTime', 'updateTime']): T {
+  if (!obj || typeof obj !== 'object') {
+    return obj;
+  }
+
+  const result: any = { ...obj };
+  fields.forEach((field) => {
+    if (result[field]) {
+      result[field] = dayjs(result[field]).format('YYYY-MM-DD HH:mm:ss');
+    }
+  });
+  return result as T;
 }
 
 /**
@@ -195,4 +217,138 @@ export function mergeDeep(target, ...sources) {
   }
 
   return mergeDeep(target, ...sources);
+}
+
+/**
+ * Excel 模板配置项
+ */
+export interface ExcelTemplateConfig {
+  /** 工作表名称 */
+  sheetName?: string;
+  /** 表头配置 */
+  columns: Array<{
+    /** 表头标题 */
+    header: string;
+    /** 列键名 */
+    key: string;
+    /** 列宽 */
+    width?: number;
+    /** 是否必填（在标题后加*号） */
+    required?: boolean;
+    /** 数据验证下拉选项 */
+    validation?: string[];
+  }>;
+  /** 示例数据 */
+  exampleData?: Record<string, any>;
+  /** 文件名 */
+  fileName?: string;
+}
+
+/**
+ * 生成并下载 Excel 模板
+ * @param res - Express Response 对象
+ * @param config - 模板配置
+ * @example
+ * // 用户导入模板示例
+ * const config: ExcelTemplateConfig = {
+ *   sheetName: '用户数据',
+ *   columns: [
+ *     { header: '用户账号*', key: 'userName', width: 20, required: true },
+ *     { header: '用户昵称*', key: 'nickName', width: 20, required: true },
+ *     { header: '部门 ID', key: 'deptId', width: 15 },
+ *     { header: '性别', key: 'sex', width: 10, validation: ['男', '女', '未知'] },
+ *   ],
+ *   exampleData: {
+ *     userName: 'zhangsan',
+ *     nickName: '张三',
+ *     sex: '男',
+ *   },
+ *   fileName: '用户导入模板.xlsx',
+ * };
+ * await createExcelTemplate(res, config);
+ */
+export async function createExcelTemplate(res: Response, config: ExcelTemplateConfig): Promise<void> {
+  const workbook = new ExcelJS.Workbook();
+  const worksheet = workbook.addWorksheet(config.sheetName || 'Sheet1');
+
+  // 设置表头
+  worksheet.columns = config.columns.map((col) => ({
+    header: col.header,
+    key: col.key,
+    width: col.width || 15,
+  }));
+
+  // 设置表头样式
+  const headerStyle: any = {
+    font: {
+      size: 10,
+      bold: true,
+      color: { argb: 'ffffff' },
+    },
+    alignment: { vertical: 'middle', horizontal: 'center' },
+    fill: {
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: { argb: '808080' },
+    },
+    border: {
+      top: { style: 'thin', color: { argb: '9e9e9e' } },
+      left: { style: 'thin', color: { argb: '9e9e9e' } },
+      bottom: { style: 'thin', color: { argb: '9e9e9e' } },
+      right: { style: 'thin', color: { argb: '9e9e9e' } },
+    },
+  };
+
+  // 设置第一行（表头）样式
+  const headerRow = worksheet.getRow(1);
+  headerRow.eachCell((cell) => {
+    cell.style = headerStyle;
+  });
+
+  // 添加示例数据（第二行）
+  if (config.exampleData) {
+    const exampleRow = worksheet.addRow(config.exampleData);
+
+    // 设置示例数据样式（灰色背景表示示例）
+    exampleRow.eachCell((cell) => {
+      cell.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'f0f0f0' },
+      };
+      cell.font = { color: { argb: '666666' } };
+    });
+  }
+
+  // 设置列宽和对齐方式
+  worksheet.columns.forEach((column) => {
+    column.alignment = { vertical: 'middle', horizontal: 'center' };
+  });
+
+  // 添加数据验证（下拉选项）- 从第二行开始
+  const rowCount = worksheet.rowCount;
+  if (rowCount > 1) {
+    config.columns.forEach((col, index) => {
+      if (col.validation && col.validation.length > 0) {
+        const columnLetter = String.fromCharCode(65 + index); // A, B, C...
+        for (let i = 2; i <= rowCount; i++) {
+          worksheet.getCell(`${columnLetter}${i}`).dataValidation = {
+            type: 'list',
+            allowBlank: false,
+            formulae: [col.validation.join(',')],
+          };
+        }
+      }
+    });
+  }
+
+  // 设置文件属性
+  const buffer = await workbook.xlsx.writeBuffer();
+  const fileName = config.fileName || 'template.xlsx';
+  res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+  // 对文件名进行 URL 编码，支持中文
+  res.setHeader('Content-Disposition', `attachment;filename="${encodeURIComponent(fileName)}"`);
+  res.setHeader('Access-Control-Expose-Headers', 'Content-Disposition');
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.end(buffer, 'binary');
 }

@@ -1,24 +1,27 @@
 import useDictStore from '@/store/modules/dict'
-import { getDicts } from '@/api/system/dict/data'
 
 /**
  * 获取字典数据
+ * TODO:后续会把这里的集成方式修改掉
  */
 export function useDict(...args) {
-  const res = ref({});
+  const res = ref({})
+  const dictStore = useDictStore()
+  
   return (() => {
     args.forEach((dictType, index) => {
-      res.value[dictType] = [];
-      const dicts = useDictStore().getDict(dictType);
+      res.value[dictType] = []
+      // 尝试从 store 中获取已缓存的字典
+      const dicts = dictStore.getDict(dictType)
       if (dicts) {
-        res.value[dictType] = dicts;
+        res.value[dictType] = dicts
       } else {
-        getDicts(dictType).then(resp => {
-          res.value[dictType] = resp.data.map(p => ({ label: p.dictLabel, value: p.dictValue, elTagType: p.listClass, elTagClass: p.cssClass }))
-          useDictStore().setDict(dictType, res.value[dictType]);
+        // 如果未缓存，异步加载
+        dictStore.loadDict(dictType).then((data) => {
+          res.value[dictType] = data
         })
       }
     })
-    return toRefs(res.value);
+    return toRefs(res.value)
   })()
 }

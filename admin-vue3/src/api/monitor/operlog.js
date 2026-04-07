@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import request from '@/composables/useRequest'
 
 // 查询操作日志列表
 export function list(query) {
@@ -12,7 +12,7 @@ export function list(query) {
 // 删除操作日志
 export function delOperlog(operId) {
   return request({
-    url: '/monitor/operlog/' + operId,
+    url: `/monitor/operlog/${operId}`,
     method: 'delete'
   })
 }

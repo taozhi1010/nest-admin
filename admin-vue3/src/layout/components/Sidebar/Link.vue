@@ -1,6 +1,6 @@
 <template>
   <component :is="type" v-bind="linkProps()">
-    <slot />
+    <slot></slot>
   </component>
 </template>
 

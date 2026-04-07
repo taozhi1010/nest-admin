@@ -51,38 +51,38 @@ export class genTableCloumnUpdate {
   })
   @IsOptional()
   @IsNumber()
-  columnId:number;
+  columnId: number;
   @IsOptional()
   @IsString()
-  columnComment?:string;
+  columnComment?: string;
   @IsOptional()
   @IsString()
-  javaType?:string;
+  javaType?: string;
   @IsOptional()
   @IsString()
-  javaField?:string;
+  javaField?: string;
   @IsOptional()
   @IsString()
-  isInsert?:string;
+  isInsert?: string;
   @IsOptional()
   @IsString()
-  isEdit?:string;
+  isEdit?: string;
   @IsOptional()
   @IsString()
-  isList?:string;
+  isList?: string;
   @IsOptional()
   @IsString()
-  isQuery?:string;
+  isQuery?: string;
   @IsOptional()
   @IsString()
-  queryType?:string;
+  queryType?: string;
   @IsOptional()
   @IsString()
-  isRequired?:string;
+  isRequired?: string;
   @IsOptional()
   @IsString()
-  htmlType?:string;
+  htmlType?: string;
   @IsOptional()
   @IsString()
-  dictType?:string;
+  dictType?: string;
 }

@@ -42,6 +42,9 @@ export class CreateLoginlogDto {
   @IsString()
   @IsEnum(StatusEnum)
   status?: string;
+
+  @IsOptional()
+  loginTime?: Date;
 }
 
 export class UpdateLoginlogDto extends CreateLoginlogDto {

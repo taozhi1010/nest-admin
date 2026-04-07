@@ -1,20 +1,12 @@
 <template>
   <div class="navbar">
-    <hamburger id="hamburger-container" :is-active="appStore.sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
-    <breadcrumb id="breadcrumb-container" class="breadcrumb-container" v-if="!settingsStore.topNav" />
-    <top-nav id="topmenu-container" class="topmenu-container" v-if="settingsStore.topNav" />
+    <hamburger id="hamburger-container" class="hamburger-container" :is-active="appStore.sidebar.opened" @toggle-click="toggleSideBar" />
+    <breadcrumb v-if="!settingsStore.topNav" id="breadcrumb-container" class="breadcrumb-container" />
+    <top-nav v-if="settingsStore.topNav" id="topmenu-container" class="topmenu-container" />
 
     <div class="right-menu">
       <template v-if="appStore.device !== 'mobile'">
         <header-search id="header-search" class="right-menu-item" />
-
-        <el-tooltip content="源码地址" effect="dark" placement="bottom">
-          <ruo-yi-git id="ruoyi-git" class="right-menu-item hover-effect" />
-        </el-tooltip>
-
-        <el-tooltip content="文档地址" effect="dark" placement="bottom">
-          <ruo-yi-doc id="ruoyi-doc" class="right-menu-item hover-effect" />
-        </el-tooltip>
 
         <screenfull id="screenfull" class="right-menu-item hover-effect" />
 
@@ -23,9 +15,9 @@
         </el-tooltip>
       </template>
       <div class="avatar-container">
-        <el-dropdown @command="handleCommand" class="right-menu-item hover-effect" trigger="click">
+        <el-dropdown class="right-menu-item hover-effect" trigger="click" @command="handleCommand">
           <div class="avatar-wrapper">
-            <img :src="userStore.avatar" class="user-avatar" />
+            <img class="user-avatar" :src="userStore.avatar" />
             <el-icon><caret-bottom /></el-icon>
           </div>
           <template #dropdown>
@@ -36,7 +28,7 @@
               <el-dropdown-item command="setLayout">
                 <span>布局设置</span>
               </el-dropdown-item>
-              <el-dropdown-item divided command="logout">
+              <el-dropdown-item command="logout" divided>
                 <span>退出登录</span>
               </el-dropdown-item>
             </el-dropdown-menu>
@@ -55,8 +47,6 @@ import Hamburger from '@/components/Hamburger'
 import Screenfull from '@/components/Screenfull'
 import SizeSelect from '@/components/SizeSelect'
 import HeaderSearch from '@/components/HeaderSearch'
-import RuoYiGit from '@/components/RuoYi/Git'
-import RuoYiDoc from '@/components/RuoYi/Doc'
 import useAppStore from '@/store/modules/app'
 import useUserStore from '@/store/modules/user'
 import useSettingsStore from '@/store/modules/settings'
@@ -71,14 +61,14 @@ function toggleSideBar() {
 
 function handleCommand(command) {
   switch (command) {
-    case "setLayout":
-      setLayout();
-      break;
-    case "logout":
-      logout();
-      break;
+    case 'setLayout':
+      setLayout()
+      break
+    case 'logout':
+      logout()
+      break
     default:
-      break;
+      break
   }
 }
 
@@ -87,20 +77,22 @@ function logout() {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'
-  }).then(() => {
-    userStore.logOut().then(() => {
-      location.href = '/index';
+  })
+    .then(() => {
+      userStore.logOut().then(() => {
+        location.href = '/index'
+      })
     })
-  }).catch(() => { });
+    .catch(() => {})
 }
 
 const emits = defineEmits(['setLayout'])
 function setLayout() {
-  emits('setLayout');
+  emits('setLayout')
 }
 </script>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 .navbar {
   height: 50px;
   overflow: hidden;

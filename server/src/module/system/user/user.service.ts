@@ -3,15 +3,16 @@ import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { RedisService } from 'src/module/common/redis/redis.service';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 import { Response } from 'express';
-import { GetNowDate, GenerateUUID, Uniq } from 'src/common/utils/index';
+import { GetNowDate, GenerateUUID, Uniq, createExcelTemplate } from 'src/common/utils/index';
 import { ExportTable } from 'src/common/utils/export';
+import * as ExcelJS from 'exceljs';
 
 import { CacheEnum, DelFlagEnum, StatusEnum, DataScopeEnum } from 'src/common/enum/index';
 import { LOGIN_TOKEN_EXPIRESIN, SYS_USER_TYPE } from 'src/common/constant/index';
 import { ResultData } from 'src/common/utils/result';
-import { CreateUserDto, UpdateUserDto, ListUserDto, ChangeStatusDto, ResetPwdDto, AllocatedListDto, UpdateProfileDto, UpdatePwdDto } from './dto/index';
+import { CreateUserDto, UpdateUserDto, ListUserDto, ChangeStatusDto, ResetPwdDto, AllocatedListDto, UpdateProfileDto, UpdatePwdDto, ImportUserDto } from './dto/index';
 import { RegisterDto, LoginDto } from '../../main/dto/index';
 import { AuthUserCancelDto, AuthUserCancelAllDto, AuthUserSelectAllDto } from '../role/dto/index';
 
@@ -27,6 +28,7 @@ import { ConfigService } from '../config/config.service';
 import { SysRoleEntity } from '../role/entities/role.entity';
 import { SysMenuEntity } from '../menu/entities/menu.entity';
 import { UserType } from './dto/user';
+import { UserDto } from './user.decorator';
 import { ClientInfoDto } from 'src/common/decorators/common.decorator';
 import { Cacheable, CacheEvict } from 'src/common/decorators/redis.decorator';
 import { Captcha } from 'src/common/decorators/captcha.decorator';
@@ -232,21 +234,23 @@ export class UserService {
    * @param updateUserDto
    * @returns
    */
-  @CacheEvict(CacheEnum.SYS_USER_KEY, '{userId}')
+  @CacheEvict(CacheEnum.SYS_USER_KEY, '{updateUserDto.userId}')
   async update(updateUserDto: UpdateUserDto, userId: number) {
     //不能修改超级管理员
     if (updateUserDto.userId === 1) throw new BadRequestException('非法操作！');
 
     //过滤掉设置超级管理员角色
-    updateUserDto.roleIds = updateUserDto.roleIds.filter((v) => v !== 1);
+    if (updateUserDto.roleIds && Array.isArray(updateUserDto.roleIds)) {
+      updateUserDto.roleIds = updateUserDto.roleIds.filter((v) => v !== 1);
+    }
 
     //当前用户不能修改自己的状态
     if (updateUserDto.userId === userId) {
       delete updateUserDto.status;
     }
 
-    if (updateUserDto?.postIds?.length > 0) {
-      //用户已有岗位,先删除所有关联岗位
+    if (updateUserDto?.postIds !== undefined) {
+      //用户已有岗位，先删除所有关联岗位
       const hasPostId = await this.sysUserWithPostEntityRep.findOne({
         where: {
           userId: updateUserDto.userId,
@@ -259,18 +263,21 @@ export class UserService {
           userId: updateUserDto.userId,
         });
       }
-      const postEntity = this.sysUserWithPostEntityRep.createQueryBuilder('postEntity');
-      const postValues = updateUserDto.postIds.map((id) => {
-        return {
-          userId: updateUserDto.userId,
-          postId: id,
-        };
-      });
-      postEntity.insert().values(postValues).execute();
+      // 只有当 postIds 不为空时才插入新记录
+      if (updateUserDto.postIds && updateUserDto.postIds.length > 0) {
+        const postEntity = this.sysUserWithPostEntityRep.createQueryBuilder('postEntity');
+        const postValues = updateUserDto.postIds.map((id) => {
+          return {
+            userId: updateUserDto.userId,
+            postId: id,
+          };
+        });
+        postEntity.insert().values(postValues).execute();
+      }
     }
 
-    if (updateUserDto?.roleIds?.length > 0) {
-      //用户已有角色,先删除所有关联角色
+    if (updateUserDto?.roleIds !== undefined) {
+      //用户已有角色，先删除所有关联角色
       const hasRoletId = await this.sysUserWithRoleEntityRep.findOne({
         where: {
           userId: updateUserDto.userId,
@@ -282,14 +289,17 @@ export class UserService {
           userId: updateUserDto.userId,
         });
       }
-      const roleEntity = this.sysUserWithRoleEntityRep.createQueryBuilder('roleEntity');
-      const roleValues = updateUserDto.roleIds.map((id) => {
-        return {
-          userId: updateUserDto.userId,
-          roleId: id,
-        };
-      });
-      roleEntity.insert().values(roleValues).execute();
+      // 只有当 roleIds 不为空时才插入新记录
+      if (updateUserDto.roleIds && updateUserDto.roleIds.length > 0) {
+        const roleEntity = this.sysUserWithRoleEntityRep.createQueryBuilder('roleEntity');
+        const roleValues = updateUserDto.roleIds.map((id) => {
+          return {
+            userId: updateUserDto.userId,
+            roleId: id,
+          };
+        });
+        roleEntity.insert().values(roleValues).execute();
+      }
     }
 
     delete updateUserDto.password;
@@ -554,6 +564,7 @@ export class UserService {
    * @param body
    * @returns
    */
+  @CacheEvict(CacheEnum.SYS_USER_KEY, '{body.userId}')
   async resetPwd(body: ResetPwdDto) {
     if (body.userId === 1) {
       return ResultData.fail(500, '系统用户不能重置密码');
@@ -669,6 +680,7 @@ export class UserService {
    * @param changeStatusDto
    * @returns
    */
+  @CacheEvict(CacheEnum.SYS_USER_KEY, '{changeStatusDto.userId}')
   async changeStatus(changeStatusDto: ChangeStatusDto) {
     const userData = await this.userRepo.findOne({
       where: {
@@ -830,16 +842,92 @@ export class UserService {
   }
 
   /**
-   * 个人中心-用户信息
+   * 个人中心 - 用户信息
    * @param user
    * @returns
    */
   async updateProfile(user: UserType, updateProfileDto: UpdateProfileDto) {
-    await this.userRepo.update({ userId: user.user.userId }, updateProfileDto);
+    // 只允许更新允许的字段
+    const allowedFields = {
+      nickName: updateProfileDto.nickName,
+      email: updateProfileDto.email,
+      phonenumber: updateProfileDto.phonenumber,
+      sex: updateProfileDto.sex,
+      avatar: updateProfileDto.avatar,
+    };
+
+    await this.userRepo.update({ userId: user.user.userId }, allowedFields);
+
+    // 更新 Redis 中的用户信息
     const userData = await this.redisService.get(`${CacheEnum.LOGIN_TOKEN_KEY}${user.token}`);
-    userData.user = Object.assign(userData.user, updateProfileDto);
-    await this.redisService.set(`${CacheEnum.LOGIN_TOKEN_KEY}${user.token}`, userData);
+    if (userData) {
+      userData.user = Object.assign(userData.user, allowedFields);
+      await this.redisService.set(`${CacheEnum.LOGIN_TOKEN_KEY}${user.token}`, userData);
+    }
+
     return ResultData.ok();
+  }
+
+  /**
+   * 个人中心 - 更新用户头像
+   * @param userId 用户 ID
+   * @param avatarUrl 头像 URL
+   * @param token 当前用户的 token（可选）
+   */
+  async updateUserAvatar(userId: number, avatarUrl: string, token?: string) {
+    try {
+      // 方式 2: 使用 queryRunner 显式事务
+      const queryRunner = this.userRepo.manager.connection.createQueryRunner();
+      await queryRunner.connect();
+      await queryRunner.startTransaction();
+
+      try {
+        // 查询用户
+        const user = await queryRunner.manager.findOne(UserEntity, { where: { userId } });
+        if (!user) {
+          throw new Error(`用户 ${userId} 不存在`);
+        }
+
+        // 修改头像
+        user.avatar = avatarUrl;
+
+        // 保存
+        await queryRunner.manager.save(user);
+
+        // 提交事务
+        await queryRunner.commitTransaction();
+
+        // 再次查询确认（直接查数据库）
+        const verifyUser = await this.userRepo.findOne({ where: { userId } });
+      } catch (error) {
+        // 回滚事务
+        await queryRunner.rollbackTransaction();
+        console.error('❌ [updateUserAvatar] 事务回滚:', error);
+        throw error;
+      } finally {
+        await queryRunner.release();
+      }
+
+      // 更新 Redis 中的用户信息 - 只更新当前 token 对应的数据
+      if (token) {
+        const cacheKey = `${CacheEnum.LOGIN_TOKEN_KEY}${token}`;
+        const userData = await this.redisService.get(cacheKey);
+
+        if (userData && userData.user?.userId === userId) {
+          userData.user.avatar = avatarUrl;
+
+          const setResult = await this.redisService.set(cacheKey, userData);
+
+          // 验证是否真的更新了
+          const verifyData = await this.redisService.get(cacheKey);
+        } else {
+          console.warn('⚠️ [updateUserAvatar] 未找到匹配的 token 数据');
+        }
+      }
+    } catch (error) {
+      console.error('❌ [updateUserAvatar] 更新失败:', error);
+      throw error;
+    }
   }
 
   /**
@@ -862,7 +950,7 @@ export class UserService {
   }
 
   /**
-   * 导出用户信息数据为xlsx
+   * 导出用户信息数据为 xlsx
    * @param res
    */
   async export(res: Response, body: ListUserDto, user: UserType['user']) {
@@ -874,18 +962,285 @@ export class UserService {
       data: list.data.list,
       header: [
         { title: '用户序号', dataIndex: 'userId' },
-        { title: '登录名称', dataIndex: 'userName' },
+        { title: '用户账号', dataIndex: 'userName' },
         { title: '用户昵称', dataIndex: 'nickName' },
         { title: '用户邮箱', dataIndex: 'email' },
         { title: '手机号码', dataIndex: 'phonenumber' },
         { title: '用户性别', dataIndex: 'sex' },
         { title: '账号状态', dataIndex: 'status' },
-        { title: '最后登录IP', dataIndex: 'loginIp' },
+        { title: '最后登录 IP', dataIndex: 'loginIp' },
         { title: '最后登录时间', dataIndex: 'loginDate', width: 20 },
         { title: '部门', dataIndex: 'dept.deptName' },
         { title: '部门负责人', dataIndex: 'dept.leader' },
       ],
     };
     ExportTable(options, res);
+  }
+
+  /**
+   * 从 Excel 导入用户数据
+   * @param file - Excel 文件
+   * @param updateSupport - 是否更新已存在的用户数据（true:更新，false:跳过）
+   * @param user - 当前操作用户
+   * @returns 导入结果
+   */
+  async importData(file: Express.Multer.File, updateSupport: boolean, user: UserDto) {
+    try {
+      // 读取 Excel 文件
+      const workbook = new ExcelJS.Workbook();
+      // @ts-expect-error - 处理 Multer Buffer 类型兼容性问题
+      await workbook.xlsx.load(file.buffer);
+
+      const worksheet = workbook.getWorksheet(1); // 获取第一个工作表
+
+      if (!worksheet || worksheet.rowCount < 2) {
+        return ResultData.fail(500, 'Excel 文件为空或格式不正确');
+      }
+
+      // 定义表头映射（第一行为表头）
+      const headerMapping: Record<number, string> = {};
+      const expectedHeaders: Record<string, string> = {
+        用户账号: 'userName',
+        用户昵称: 'nickName',
+        '部门 ID': 'deptId',
+        部门名称: 'deptName',
+        用户邮箱: 'email',
+        手机号码: 'phonenumber',
+        性别: 'sex',
+        帐号状态: 'status',
+        备注: 'remark',
+      };
+
+      // 解析表头
+      worksheet.getRow(1).eachCell((cell, colNumber) => {
+        const header = cell.value?.toString()?.trim();
+        if (header && expectedHeaders[header]) {
+          headerMapping[colNumber] = expectedHeaders[header];
+        }
+      });
+
+      // 验证必要字段是否存在
+      if (!headerMapping || Object.keys(headerMapping).length === 0) {
+        return ResultData.fail(500, 'Excel 表头格式不正确，请检查是否包含必要的列');
+      }
+
+      const successData: any[] = [];
+      const errorData: any[] = [];
+      const salt = bcrypt.genSaltSync(10);
+      const defaultPassword = await bcrypt.hashSync('123456', salt); // 默认密码
+
+      // 从第二行开始解析数据
+      for (let rowNumber = 2; rowNumber <= worksheet.rowCount; rowNumber++) {
+        const row = worksheet.getRow(rowNumber);
+        const userData: any = {};
+        const rowErrors: string[] = []; // 收集当前行的所有错误
+
+        // 根据表头映射解析每列数据
+        row.eachCell((cell, colNumber) => {
+          const key = headerMapping[colNumber];
+          if (key) {
+            let value = cell.value?.toString()?.trim();
+
+            // 处理空值
+            if (!value || value === '') {
+              if (key === 'userName' || key === 'nickName') {
+                // 必填字段
+                value = null;
+                rowErrors.push(`${key === 'userName' ? '用户账号' : '用户昵称'}不能为空`);
+              } else {
+                value = undefined;
+              }
+            }
+
+            // 特殊字段处理
+            if (key === 'deptId' && value) {
+              const deptId = parseInt(value);
+              if (isNaN(deptId)) {
+                rowErrors.push(`部门 ID 格式不正确（应为数字）：${value}`);
+              } else {
+                userData.deptId = deptId;
+              }
+            } else if (key === 'sex' && value) {
+              // 性别转换：男->0, 女->1, 未知->2
+              if (['男', '女', '未知'].includes(value)) {
+                userData.sex = value === '男' ? '0' : value === '女' ? '1' : '2';
+              } else {
+                rowErrors.push(`性别格式不正确（应为：男/女/未知）：${value}`);
+              }
+            } else if (key === 'status' && value) {
+              // 状态转换：正常->0, 停用->1
+              if (['正常', '停用'].includes(value)) {
+                userData.status = value === '正常' ? '0' : value === '停用' ? '1' : '0';
+              } else {
+                rowErrors.push(`帐号状态格式不正确（应为：正常/停用）：${value}`);
+              }
+            } else if (key === 'email' && value) {
+              // 邮箱格式验证
+              const emailRegex = /^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/;
+              if (!emailRegex.test(value)) {
+                rowErrors.push(`邮箱格式不正确：${value}`);
+              } else {
+                userData[key] = value;
+              }
+            } else if (key === 'phonenumber' && value) {
+              // 手机号格式验证（简单验证 11 位数字）
+              const phoneRegex = /^1[3-9]\d{9}$/;
+              if (!phoneRegex.test(value)) {
+                rowErrors.push(`手机号码格式不正确（应为 11 位数字）：${value}`);
+              } else {
+                userData[key] = value;
+              }
+            } else if (key === 'userName' || key === 'nickName') {
+              userData[key] = value;
+            } else {
+              userData[key] = value;
+            }
+          }
+        });
+
+        // 跳过空行（整行都为空）
+        if (!userData.userName && !userData.nickName && rowErrors.length === 0) {
+          continue;
+        }
+
+        // 如果有字段错误，直接记录错误
+        if (rowErrors.length > 0) {
+          errorData.push({
+            row: rowNumber,
+            data: userData,
+            error: rowErrors.join('；'),
+          });
+          continue;
+        }
+
+        // 必填字段验证（再次检查）
+        if (!userData.userName || !userData.nickName) {
+          const missingFields = [];
+          if (!userData.userName) missingFields.push('用户账号');
+          if (!userData.nickName) missingFields.push('用户昵称');
+          errorData.push({
+            row: rowNumber,
+            data: userData,
+            error: `缺少必填字段：${missingFields.join('、')}`,
+          });
+          continue;
+        }
+
+        try {
+          // 检查用户账号是否已存在
+          const existUser = await this.userRepo.findOne({
+            where: { userName: userData.userName },
+          });
+
+          if (existUser) {
+            if (updateSupport) {
+              // 更新已有用户
+              await this.userRepo.update(
+                { userId: existUser.userId },
+                {
+                  ...userData,
+                  userType: SYS_USER_TYPE.CUSTOM,
+                  updateBy: user.username,
+                  updateTime: new Date(),
+                },
+              );
+              successData.push({
+                row: rowNumber,
+                data: userData,
+                message: '更新成功',
+              });
+            } else {
+              // 不更新，跳过
+              errorData.push({
+                row: rowNumber,
+                data: userData,
+                error: `用户账号 ${userData.userName} 已存在（如要更新请设置 updateSupport=1）`,
+              });
+            }
+          } else {
+            // 创建新用户
+            const newUser = await this.userRepo.save({
+              ...userData,
+              password: defaultPassword, // 使用默认密码
+              userType: SYS_USER_TYPE.CUSTOM,
+              createBy: user.username,
+              createTime: new Date(),
+              delFlag: DelFlagEnum.NORMAL,
+              status: userData.status || '0', // 默认正常
+              sex: userData.sex || '0', // 默认男
+            });
+
+            successData.push({
+              row: rowNumber,
+              data: userData,
+              message: '导入成功',
+            });
+          }
+        } catch (error) {
+          errorData.push({
+            row: rowNumber,
+            data: userData,
+            error: `数据库操作失败：${error.message}`,
+          });
+        }
+      }
+
+      // 返回导入结果
+      const result = {
+        success: successData.length,
+        error: errorData.length,
+        total: successData.length + errorData.length,
+        // 成功行号列表
+        successRowNums: successData.map((item) => item.row),
+        // 失败行号列表
+        errorRowNums: errorData.map((item) => item.row),
+        details: {
+          successData,
+          errorData,
+        },
+      };
+
+      // 无论是否有错误，都返回 200 状态码
+      if (errorData.length > 0) {
+        return ResultData.ok(result, `导入完成，成功 ${successData.length} 条，失败 ${errorData.length} 条`);
+      }
+
+      return ResultData.ok(result, `导入成功，共 ${successData.length} 条记录`);
+    } catch (error) {
+      return ResultData.fail(500, `导入失败：${error.message}`);
+    }
+  }
+
+  /**
+   * 下载用户导入模板
+   * @param res
+   */
+  async downloadTemplate(res: Response): Promise<void> {
+    const config = {
+      sheetName: '用户数据',
+      fileName: '用户导入模板.xlsx',
+      columns: [
+        { header: '用户账号', key: 'userName', width: 20, required: true },
+        { header: '用户昵称', key: 'nickName', width: 20, required: true },
+        { header: '部门 ID', key: 'deptId', width: 15 },
+        { header: '用户邮箱', key: 'email', width: 25 },
+        { header: '手机号码', key: 'phonenumber', width: 15 },
+        { header: '性别', key: 'sex', width: 10, validation: ['男', '女', '未知'] },
+        { header: '帐号状态', key: 'status', width: 15, validation: ['正常', '停用'] },
+        { header: '备注', key: 'remark', width: 30 },
+      ],
+      exampleData: {
+        userName: 'zhangsan',
+        nickName: '张三',
+        deptId: 100,
+        email: 'zhangsan@example.com',
+        phonenumber: '13800138000',
+        sex: '男',
+        status: '正常',
+        remark: '示例数据，请删除后填写实际数据',
+      },
+    };
+
+    await createExcelTemplate(res, config);
   }
 }

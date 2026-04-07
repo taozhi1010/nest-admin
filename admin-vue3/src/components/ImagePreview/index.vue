@@ -1,11 +1,5 @@
 <template>
-  <el-image
-    :src="`${realSrc}`"
-    fit="cover"
-    :style="`width:${realWidth};height:${realHeight};`"
-    :preview-src-list="realSrcList"
-    append-to-body="true"
-  >
+  <el-image append-to-body="true" fit="cover" :preview-src-list="realSrcList" :src="`${realSrc}`" :style="`width:${realWidth};height:${realHeight};`">
     <template #error>
       <div class="image-slot">
         <el-icon><picture-filled /></el-icon>
@@ -15,56 +9,43 @@
 </template>
 
 <script setup>
-import { isExternal } from "@/utils/validate";
+import { isExternal } from '@/utils/validate'
+import { getImageUrl } from '@/utils/image'
 
 const props = defineProps({
   src: {
     type: String,
-    default: ""
+    default: ''
   },
   width: {
     type: [Number, String],
-    default: ""
+    default: ''
   },
   height: {
     type: [Number, String],
-    default: ""
+    default: ''
   }
-});
+})
 
 const realSrc = computed(() => {
   if (!props.src) {
-    return;
+    return
   }
-  let real_src = props.src.split(",")[0];
-  if (isExternal(real_src)) {
-    return real_src;
-  }
-  return import.meta.env.VITE_APP_BASE_API + real_src;
-});
+  let real_src = props.src.split(',')[0]
+  return getImageUrl(real_src)
+})
 
 const realSrcList = computed(() => {
   if (!props.src) {
-    return;
+    return
   }
-  let real_src_list = props.src.split(",");
-  let srcList = [];
-  real_src_list.forEach(item => {
-    if (isExternal(item)) {
-      return srcList.push(item);
-    }
-    return srcList.push(import.meta.env.VITE_APP_BASE_API + item);
-  });
-  return srcList;
-});
+  let real_src_list = props.src.split(',')
+  return real_src_list.map((item) => getImageUrl(item))
+})
 
-const realWidth = computed(() =>
-  typeof props.width == "string" ? props.width : `${props.width}px`
-);
+const realWidth = computed(() => (typeof props.width == 'string' ? props.width : `${props.width}px`))
 
-const realHeight = computed(() =>
-  typeof props.height == "string" ? props.height : `${props.height}px`
-);
+const realHeight = computed(() => (typeof props.height == 'string' ? props.height : `${props.height}px`))
 </script>
 
 <style lang="scss" scoped>

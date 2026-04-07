@@ -130,6 +130,18 @@ ls redis.conf
 requirepass 123456
 ```
 
+有时候，接口请求会报如下错误。
+
+`READONLY You can‘t write against a read only replica.`
+
+此时，无论怎么重启都无效，因为连接的是从节点，从节点只有读的权限，没有写的权限。
+
+这时候，我们只需要额外配置一下redis配置，即可解决问题。
+
+```
+slave-read-only no
+```
+
 
 
 ### 启动redis
@@ -236,3 +248,5 @@ redis的部署与使用并非什么麻烦事儿，但是没有一个靠谱的文
 [通义千问](https://tongyi.aliyun.com/qianwen/)
 
 [【原文】【转】腾讯云OpenCloudOS部署redis | 远川的个人博客 (crazystudent13.cn)](https://crazystudent13.cn/2024/09/14/【转】腾讯云OpenCloudOS部署redis/)
+
+[READONLY You can‘t write against a read only replica._readonly you can't write against a read only repli-CSDN博客](https://blog.csdn.net/huojiahui22/article/details/122448293)

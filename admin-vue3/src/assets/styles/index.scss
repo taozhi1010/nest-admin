@@ -1,10 +1,10 @@
-@import './variables.module.scss';
-@import './mixin.scss';
-@import './transition.scss';
-@import './element-ui.scss';
-@import './sidebar.scss';
-@import './btn.scss';
-@import './ruoyi.scss';
+@use './_variables.scss' as *;
+@use './mixin.scss' as *;
+@use './transition.scss' as *;
+@use './element-ui.scss' as *;
+@use './sidebar.scss' as *;
+@use './btn.scss' as *;
+@use './ruoyi.scss' as *;
 
 * {
   margin: 0;
@@ -129,6 +129,19 @@ aside {
 //main-container全局样式
 .app-container {
   padding: 20px;
+  background-color: #f0f2f5;
+  min-height: calc(100vh - 84px); // 减去顶部导航栏高度
+  
+  // 卡片容器样式
+  .main-card {
+    background: #fff;
+    border-radius: 4px;
+    padding: 20px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+    min-height: calc(100vh - 144px); // 最小高度：窗口高度 - 顶部导航栏 - 上下 padding
+    height: calc(100vh - 144px); // 撑满当前窗口（留出底边距）
+    overflow: auto; // 内容超出时显示滚动条
+  }
 }
 
 .components-container {
@@ -186,6 +199,21 @@ aside {
     vertical-align: middle;
     margin-bottom: 10px;
   }
+}
+
+// 抽屉底部按钮样式
+.drawer-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #e4e7ed;
+}
+
+// 抽屉通用宽度（与菜单栏互补）
+.drawer-full-width.el-drawer {
+  width: calc(100vw - #{$base-sidebar-width}) !important;
+  max-width: calc(100vw - #{$base-sidebar-width}) !important;
 }
 
 // 表单中需要解释的字段提示icon样式

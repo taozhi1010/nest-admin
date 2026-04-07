@@ -1,41 +1,37 @@
 <template>
   <div id="tags-view-container" class="tags-view-container">
     <scroll-pane ref="scrollPaneRef" class="tags-view-wrapper" @scroll="handleScroll">
-      <router-link
-        v-for="tag in visitedViews"
-        :key="tag.path"
-        :data-path="tag.path"
-        :class="isActive(tag) ? 'active' : ''"
-        :to="{ path: tag.path, query: tag.query, fullPath: tag.fullPath }"
-        class="tags-view-item"
-        :style="activeStyle(tag)"
-        @click.middle="!isAffix(tag) ? closeSelectedTag(tag) : ''"
-        @contextmenu.prevent="openMenu(tag, $event)"
-      >
+      <router-link v-for="tag in visitedViews" :key="tag.path" class="tags-view-item" :class="isActive(tag) ? 'active' : ''" :data-path="tag.path" :style="activeStyle(tag)" :to="{ path: tag.path, query: tag.query, fullPath: tag.fullPath }" @click.middle="!isAffix(tag) ? closeSelectedTag(tag) : ''" @contextmenu.prevent="openMenu(tag, $event)">
         {{ tag.title }}
         <span v-if="!isAffix(tag)" @click.prevent.stop="closeSelectedTag(tag)">
-          <close class="el-icon-close" style="width: 1em; height: 1em;vertical-align: middle;" />
+          <close class="el-icon-close" style="width: 1em; height: 1em; vertical-align: middle" />
         </span>
       </router-link>
     </scroll-pane>
-    <ul v-show="visible" :style="{ left: left + 'px', top: top + 'px' }" class="contextmenu">
+    <ul v-show="visible" class="contextmenu" :style="{ left: left + 'px', top: top + 'px' }">
       <li @click="refreshSelectedTag(selectedTag)">
-        <refresh-right style="width: 1em; height: 1em;" /> 刷新页面
+        <refresh-right style="width: 1em; height: 1em" />
+        刷新页面
       </li>
       <li v-if="!isAffix(selectedTag)" @click="closeSelectedTag(selectedTag)">
-        <close style="width: 1em; height: 1em;" /> 关闭当前
+        <close style="width: 1em; height: 1em" />
+        关闭当前
       </li>
       <li @click="closeOthersTags">
-        <circle-close style="width: 1em; height: 1em;" /> 关闭其他
+        <circle-close style="width: 1em; height: 1em" />
+        关闭其他
       </li>
       <li v-if="!isFirstView()" @click="closeLeftTags">
-        <back style="width: 1em; height: 1em;" /> 关闭左侧
+        <back style="width: 1em; height: 1em" />
+        关闭左侧
       </li>
       <li v-if="!isLastView()" @click="closeRightTags">
-        <right style="width: 1em; height: 1em;" /> 关闭右侧
+        <right style="width: 1em; height: 1em" />
+        关闭右侧
       </li>
       <li @click="closeAllTags(selectedTag)">
-        <circle-close style="width: 1em; height: 1em;" /> 全部关闭
+        <circle-close style="width: 1em; height: 1em" />
+        全部关闭
       </li>
     </ul>
   </div>
@@ -48,20 +44,23 @@ import useTagsViewStore from '@/store/modules/tagsView'
 import useSettingsStore from '@/store/modules/settings'
 import usePermissionStore from '@/store/modules/permission'
 
-const visible = ref(false);
-const top = ref(0);
-const left = ref(0);
-const selectedTag = ref({});
-const affixTags = ref([]);
-const scrollPaneRef = ref(null);
+// ==================== Composables ====================
+const { refreshPage, closePage, closeRightPage, closeLeftPage, closeOtherPage, closeAllPage } = useTab()
 
-const { proxy } = getCurrentInstance();
-const route = useRoute();
-const router = useRouter();
+const visible = ref(false)
+const top = ref(0)
+const left = ref(0)
+const selectedTag = ref({})
+const affixTags = ref([])
+const scrollPaneRef = ref(null)
 
-const visitedViews = computed(() => useTagsViewStore().visitedViews);
-const routes = computed(() => usePermissionStore().routes);
-const theme = computed(() => useSettingsStore().theme);
+const { proxy } = getCurrentInstance()
+const route = useRoute()
+const router = useRouter()
+
+const visitedViews = computed(() => useTagsViewStore().visitedViews)
+const routes = computed(() => usePermissionStore().routes)
+const theme = computed(() => useSettingsStore().theme)
 
 watch(route, () => {
   addTags()
@@ -83,11 +82,11 @@ function isActive(r) {
   return r.path === route.path
 }
 function activeStyle(tag) {
-  if (!isActive(tag)) return {};
+  if (!isActive(tag)) return {}
   return {
-    "background-color": theme.value,
-    "border-color": theme.value
-  };
+    'background-color': theme.value,
+    'border-color': theme.value
+  }
 }
 function isAffix(tag) {
   return tag.meta && tag.meta.affix
@@ -108,9 +107,9 @@ function isLastView() {
 }
 function filterAffixTags(routes, basePath = '') {
   let tags = []
-  routes.forEach(route => {
+  routes.forEach((route) => {
     if (route.meta && route.meta.affix) {
-      const tagPath = getNormalPath(basePath + '/' + route.path)
+      const tagPath = getNormalPath(`${basePath}/${route.path}`)
       tags.push({
         fullPath: tagPath,
         path: tagPath,
@@ -128,12 +127,12 @@ function filterAffixTags(routes, basePath = '') {
   return tags
 }
 function initTags() {
-  const res = filterAffixTags(routes.value);
-  affixTags.value = res;
+  const res = filterAffixTags(routes.value)
+  affixTags.value = res
   for (const tag of res) {
     // Must have tag name
     if (tag.name) {
-       useTagsViewStore().addVisitedView(tag)
+      useTagsViewStore().addVisitedView(tag)
     }
   }
 }
@@ -142,7 +141,7 @@ function addTags() {
   if (name) {
     useTagsViewStore().addView(route)
     if (route.meta.link) {
-      useTagsViewStore().addIframeView(route);
+      useTagsViewStore().addIframeView(route)
     }
   }
   return false
@@ -151,7 +150,7 @@ function moveToCurrentTag() {
   nextTick(() => {
     for (const r of visitedViews.value) {
       if (r.path === route.path) {
-        scrollPaneRef.value.moveToTarget(r);
+        scrollPaneRef.value.moveToTarget(r)
         // when query is different then update
         if (r.fullPath !== route.fullPath) {
           useTagsViewStore().updateVisitedView(route)
@@ -161,41 +160,41 @@ function moveToCurrentTag() {
   })
 }
 function refreshSelectedTag(view) {
-  proxy.$tab.refreshPage(view);
+  refreshPage(view)
   if (route.meta.link) {
-    useTagsViewStore().delIframeView(route);
+    useTagsViewStore().delIframeView(route)
   }
 }
 function closeSelectedTag(view) {
-  proxy.$tab.closePage(view).then(({ visitedViews }) => {
+  closePage(view).then(({ visitedViews }) => {
     if (isActive(view)) {
       toLastView(visitedViews, view)
     }
   })
 }
 function closeRightTags() {
-  proxy.$tab.closeRightPage(selectedTag.value).then(visitedViews => {
-    if (!visitedViews.find(i => i.fullPath === route.fullPath)) {
+  closeRightPage(selectedTag.value).then((visitedViews) => {
+    if (!visitedViews.find((i) => i.fullPath === route.fullPath)) {
       toLastView(visitedViews)
     }
   })
 }
 function closeLeftTags() {
-  proxy.$tab.closeLeftPage(selectedTag.value).then(visitedViews => {
-    if (!visitedViews.find(i => i.fullPath === route.fullPath)) {
+  closeLeftPage(selectedTag.value).then((visitedViews) => {
+    if (!visitedViews.find((i) => i.fullPath === route.fullPath)) {
       toLastView(visitedViews)
     }
   })
 }
 function closeOthersTags() {
-  router.push(selectedTag.value).catch(() => { });
-  proxy.$tab.closeOtherPage(selectedTag.value).then(() => {
+  router.push(selectedTag.value).catch(() => {})
+  closeOtherPage(selectedTag.value).then(() => {
     moveToCurrentTag()
   })
 }
 function closeAllTags(view) {
-  proxy.$tab.closeAllPage().then(({ visitedViews }) => {
-    if (affixTags.value.some(tag => tag.path === route.path)) {
+  closeAllPage().then(({ visitedViews }) => {
+    if (affixTags.value.some((tag) => tag.path === route.path)) {
       return
     }
     toLastView(visitedViews, view)
@@ -210,7 +209,7 @@ function toLastView(visitedViews, view) {
     // you can adjust it according to your needs.
     if (view.name === 'Dashboard') {
       // to reload home page
-      router.replace({ path: '/redirect' + view.fullPath })
+      router.replace({ path: `/redirect${view.fullPath}` })
     } else {
       router.push('/')
     }
@@ -241,13 +240,15 @@ function handleScroll() {
 }
 </script>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 .tags-view-container {
   height: 34px;
   width: 100%;
   background: #fff;
   border-bottom: 1px solid #d8dce5;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.12), 0 0 3px 0 rgba(0, 0, 0, 0.04);
+  box-shadow:
+    0 1px 3px 0 rgba(0, 0, 0, 0.12),
+    0 0 3px 0 rgba(0, 0, 0, 0.04);
   .tags-view-wrapper {
     .tags-view-item {
       display: inline-block;
@@ -273,7 +274,7 @@ function handleScroll() {
         color: #fff;
         border-color: #42b983;
         &::before {
-          content: "";
+          content: '';
           background: #fff;
           display: inline-block;
           width: 8px;

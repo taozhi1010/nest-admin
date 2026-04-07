@@ -298,6 +298,12 @@ exit；
 mysql -u root -p
 ```
 
+当然，如果你足够的自信，我们也可以直接重启数据库即可。
+
+```bash
+sudo systemctl restart  mysqld.service
+```
+
 
 
 ## 结语

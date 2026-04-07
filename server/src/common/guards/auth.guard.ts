@@ -28,6 +28,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     }
 
     const isInWhiteList = this.checkWhiteList(ctx);
+    console.log('isInWhiteList', isInWhiteList);
     if (isInWhiteList) {
       await this.jumpActivate(ctx);
       return true;

@@ -22,7 +22,7 @@ export class UserController {
   ) {}
 
   @ApiOperation({
-    summary: '个人中心-用户信息',
+    summary: '个人中心 - 用户信息',
   })
   @RequirePermission('system:user:query')
   @Get('/profile')
@@ -41,14 +41,23 @@ export class UserController {
   }
 
   @ApiOperation({
-    summary: '个人中心-上传用户头像',
+    summary: '个人中心 - 上传用户头像',
   })
   @RequirePermission('system:user:edit')
   @Post('/profile/avatar')
   @UseInterceptors(FileInterceptor('avatarfile'))
   async avatar(@UploadedFile() avatarfile: Express.Multer.File, @User() user: UserDto) {
+    if (!avatarfile) {
+      return ResultData.fail(500, '请上传头像文件');
+    }
     const res = await this.uploadService.singleFileUpload(avatarfile);
-    return ResultData.ok({ imgUrl: res.fileName });
+    // 使用完整 URL 而不是相对路径
+    const imgUrl = res.url;
+
+    // 将头像 URL 保存到用户信息表，并传入当前 token
+    await this.userService.updateUserAvatar(user.user.userId, imgUrl, user.token);
+
+    return ResultData.ok({ imgUrl });
   }
 
   @ApiOperation({
@@ -183,10 +192,25 @@ export class UserController {
     return this.userService.remove(menuIds);
   }
 
-  @ApiOperation({ summary: '导出用户信息数据为xlsx' })
+  @ApiOperation({ summary: '导出用户信息数据为 xlsx' })
   @RequirePermission('system:user:export')
   @Post('/export')
   async export(@Res() res: Response, @Body() body: ListUserDto, @User() user: UserDto): Promise<void> {
     return this.userService.export(res, body, user.user);
+  }
+
+  @ApiOperation({ summary: '导入用户信息数据从 xlsx' })
+  @RequirePermission('system:user:add')
+  @Post('/importData')
+  @UseInterceptors(FileInterceptor('file'))
+  async importData(@UploadedFile() file: Express.Multer.File, @Query('updateSupport') updateSupport: string, @User() user: UserDto) {
+    return this.userService.importData(file, updateSupport === '1', user);
+  }
+
+  @ApiOperation({ summary: '下载用户导入模板' })
+  @RequirePermission('system:user:add')
+  @Post('/downloadTemplate')
+  async downloadTemplate(@Res() res: Response): Promise<void> {
+    return this.userService.downloadTemplate(res);
   }
 }

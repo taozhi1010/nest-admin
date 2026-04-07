@@ -1,3 +1,5 @@
+@use './_variables.scss' as *;
+
 #app {
 
   .main-container {
@@ -58,6 +60,12 @@
       display: inline-block;
       width: 100%;
       overflow: hidden;
+
+      // 排除 sidebar-logo-link
+      &.sidebar-logo-link {
+        width: auto;
+        overflow: visible;
+      }
     }
 
     .svg-icon {

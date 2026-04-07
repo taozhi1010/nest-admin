@@ -84,7 +84,10 @@ export class RedisService {
   async mget(keys: string[]): Promise<any[]> {
     if (!keys) return null;
     const list = await this.client.mget(keys);
-    return list.map((item) => JSON.parse(item));
+    return list.map((item) => {
+      if (!item) return null;
+      return JSON.parse(item);
+    });
   }
 
   /**
@@ -94,6 +97,7 @@ export class RedisService {
   async get(key: string): Promise<any> {
     if (!key || key === '*') return null;
     const res = await this.client.get(key);
+    if (!res) return null;
     return JSON.parse(res);
   }
 

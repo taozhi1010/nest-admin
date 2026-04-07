@@ -205,3 +205,56 @@ export class UpdatePwdDto {
   @Length(0, 200)
   newPassword: string;
 }
+
+/**
+ * Excel 导入用户数据 DTO
+ */
+export class ImportUserDto {
+  /** 用户账号 */
+  @ApiProperty({ required: true })
+  @IsString()
+  @Length(0, 30)
+  userName: string;
+
+  /** 用户昵称 */
+  @ApiProperty({ required: true })
+  @IsString()
+  @Length(0, 30)
+  nickName: string;
+
+  /** 部门 ID */
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsNumberString()
+  deptId?: string;
+
+  /** 用户邮箱 */
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsEmail()
+  email?: string;
+
+  /** 手机号码 */
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  phonenumber?: string;
+
+  /** 性别 */
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  sex?: string;
+
+  /** 帐号状态 */
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  status?: string;
+
+  /** 备注 */
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  remark?: string;
+}

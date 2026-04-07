@@ -24,7 +24,7 @@ export class LoginlogService {
   }
 
   /**
-   * 日志列表-分页
+   * 日志列表 - 分页
    * @param query
    * @returns
    */
@@ -48,13 +48,21 @@ export class LoginlogService {
       entity.andWhere('entity.loginTime BETWEEN :start AND :end', { start: query.params.beginTime, end: query.params.endTime });
     }
 
+    // 排序处理 - 默认按登录时间倒序排列
     if (query.orderByColumn && query.isAsc) {
       const key = query.isAsc === 'ascending' ? 'ASC' : 'DESC';
       entity.orderBy(`entity.${query.orderByColumn}`, key);
+    } else {
+      // 默认按登录时间倒序
+      entity.orderBy('entity.loginTime', 'DESC');
     }
 
+    // 分页处理 - 确保总是执行分页
     if (query.pageSize && query.pageNum) {
-      entity.skip(query.pageSize * (query.pageNum - 1)).take(query.pageSize);
+      entity.skip((query.pageNum - 1) * query.pageSize).take(query.pageSize);
+    } else {
+      // 如果没有分页参数，使用默认值
+      entity.skip(0).take(10);
     }
 
     const [list, total] = await entity.getManyAndCount();

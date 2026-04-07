@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import request from '@/composables/useRequest'
 
 // 查询定时任务调度列表
 export function listJob(query) {
@@ -12,7 +12,7 @@ export function listJob(query) {
 // 查询定时任务调度详细
 export function getJob(jobId) {
   return request({
-    url: '/monitor/job/' + jobId,
+    url: `/monitor/job/${jobId}`,
     method: 'get'
   })
 }
@@ -38,7 +38,7 @@ export function updateJob(data) {
 // 删除定时任务调度
 export function delJob(jobId) {
   return request({
-    url: '/monitor/job/' + jobId,
+    url: `/monitor/job/${jobId}`,
     method: 'delete'
   })
 }
@@ -55,7 +55,6 @@ export function changeJobStatus(jobId, status) {
     data: data
   })
 }
-
 
 // 定时任务立即执行一次
 export function runJob(jobId, jobGroup) {

@@ -9,11 +9,21 @@ import { HttpExceptionsFilter } from 'src/common/filters/http-exceptions-filter'
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { join } from 'path';
-import { writeFileSync } from 'fs';
+import { setupApiDocs } from 'src/common/utils/api-docs';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     cors: true, // 开启跨域访问
+  });
+
+  // 配置 CORS 选项
+  app.enableCors({
+    origin: true, // 允许所有来源（开发环境）
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'istoken'],
+    exposedHeaders: ['Content-Disposition'],
+    credentials: true, // 允许携带 cookie
+    maxAge: 3600, // 预检请求缓存时间
   });
   const config = app.get(ConfigService);
   // 设置访问频率
@@ -30,7 +40,7 @@ async function bootstrap() {
   const baseDirPath = join(rootPath, config.get('app.file.location'));
   app.useStaticAssets(baseDirPath, {
     prefix: '/profile/',
-    maxAge: 86400000 * 365,
+    maxAge: 0, // 头像等动态资源不缓存，确保实时更新
   });
 
   app.setGlobalPrefix(prefix);
@@ -39,33 +49,38 @@ async function bootstrap() {
   app.useGlobalFilters(new HttpExceptionsFilter());
 
   // web 安全，防常见漏洞
-  // 注意： 开发环境如果开启 nest static module 需要将 crossOriginResourcePolicy 设置为 false 否则 静态资源 跨域不可访问
-  app.use(helmet({ crossOriginOpenerPolicy: { policy: 'same-origin-allow-popups' }, crossOriginResourcePolicy: false }));
-
-  const swaggerOptions = new DocumentBuilder()
-    .setTitle('Nest-Admin')
-    .setDescription('Nest-Admin 接口文档')
-    .setVersion('2.0.0')
-    .addBearerAuth(
-      {
-        type: 'http',
-        scheme: 'bearer',
-        bearerFormat: 'JWT',
+  // 注意：开发环境如果开启 nest static module 需要将 crossOriginResourcePolicy 设置为 false 否则静态资源 跨域不可访问
+  app.use(
+    helmet({
+      crossOriginOpenerPolicy: { policy: 'same-origin-allow-popups' },
+      crossOriginResourcePolicy: false,
+      contentSecurityPolicy: {
+        directives: {
+          defaultSrc: [`'self'`],
+          styleSrc: [`'self'`, `'unsafe-inline'`, 'cdn.redoc.ly', 'fonts.googleapis.com'],
+          fontSrc: [`'self'`, 'fonts.gstatic.com', 'cdn.redoc.ly'],
+          scriptSrc: [`'self'`, `'unsafe-inline'`, 'cdn.redoc.ly'],
+          imgSrc: [`'self'`, 'data:', 'cdn.redoc.ly'],
+          frameAncestors: [`'self'`, 'http://localhost:*', 'https://localhost:*'], // 允许本地任意端口嵌套
+        },
       },
-      'token',
-    )
-    .build();
-  const document = SwaggerModule.createDocument(app, swaggerOptions);
-  // 保存OpenAPI规范文件
-  writeFileSync(join(process.cwd(), 'openApi.json'), JSON.stringify(document, null, 2));
+    }),
+  );
 
-  // 项目依赖当前文档功能，最好不要改变当前地址
-  // 生产环境使用 nginx 可以将当前文档地址 屏蔽外部访问
-  SwaggerModule.setup(`${prefix}/swagger-ui`, app, document, {
-    swaggerOptions: {
-      persistAuthorization: true,
-    },
-    customSiteTitle: 'Nest-Admin API Docs',
+  // 设置 API 文档（Swagger UI + Redoc）
+  setupApiDocs(app, prefix, '#1890ff');
+
+  // 为 Swagger UI 和 Redoc 静态资源添加 CORS 头
+  app.use('/swagger-ui*', (req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET, OPTIONS');
+    next();
+  });
+
+  app.use('/docs*', (req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET, OPTIONS');
+    next();
   });
 
   // 获取真实 ip
@@ -74,6 +89,15 @@ async function bootstrap() {
   const port = config.get<number>('app.port') || 8080;
   await app.listen(port);
 
-  console.log(`Nest-Admin 服务启动成功`, '\n', '服务地址', `http://localhost:${port}${prefix}/`, '\n', 'swagger 文档地址', `http://localhost:${port}${prefix}/swagger-ui/`);
+  console.log(
+    `\n========================================`,
+    `\n✅ Nest-Admin 服务启动成功`,
+    `\n========================================`,
+    `\n📍 服务地址：http://localhost:${port}${prefix}/`,
+    `\n📖 Swagger UI: http://localhost:${port}${prefix}/swagger-ui/`,
+    `\n📚 Redoc 文档：http://localhost:${port}${prefix}/docs`,
+    `\n🔧 Apifox 导入：http://localhost:${port}/openapi.json`,
+    `\n========================================\n`,
+  );
 }
 bootstrap();

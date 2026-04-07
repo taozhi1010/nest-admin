@@ -1,0 +1,370 @@
+// 搜索模态框遮罩
+.search-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 10vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  overflow-y: auto;
+}
+
+// 搜索模态框主体
+.search-modal {
+  position: relative;
+  width: 100%;
+  max-width: 680px;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  animation: modalFadeIn 0.2s ease-out;
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.98) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+// 搜索输入框包装器
+.search-input-wrapper {
+  display: flex;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #e5e7eb;
+  background: #fff;
+
+  .search-icon {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    color: #9ca3af;
+    margin-right: 12px;
+  }
+
+  .search-input {
+    flex: 1;
+    height: 32px;
+    font-size: 16px;
+    color: #111827;
+    background: transparent;
+    border: none;
+    outline: none;
+    
+    &::placeholder {
+      color: #9ca3af;
+    }
+  }
+
+  .kbd {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 28px;
+    height: 28px;
+    padding: 0 6px;
+    font-size: 12px;
+    font-family: inherit;
+    color: #6b7280;
+    background: #f3f4f6;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.05);
+    flex-shrink: 0;
+    margin-left: 12px;
+  }
+}
+
+// 搜索结果列表
+.search-results {
+  max-height: 400px;
+  overflow-y: auto;
+  padding: 8px;
+
+  .result-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    margin-bottom: 4px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background-color 0.15s ease;
+
+    &:hover,
+    &.active {
+      background-color: #f0f9ff;
+    }
+
+    &.active {
+      background-color: #e0f2fe;
+    }
+
+    .result-content {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+
+      .result-breadcrumb {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 4px;
+        margin-bottom: 4px;
+
+        .breadcrumb-item {
+          font-size: 14px;
+          font-weight: 500;
+          color: #111827;
+          white-space: nowrap;
+        }
+
+        .breadcrumb-separator {
+          color: #9ca3af;
+          font-size: 12px;
+        }
+      }
+
+      .result-path {
+        font-size: 12px;
+        color: #6b7280;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
+
+    .result-icon {
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      color: #9ca3af;
+      margin-left: 12px;
+    }
+  }
+}
+
+// 空状态
+.search-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+
+  .empty-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    margin-bottom: 16px;
+    color: #d1d5db;
+  }
+
+  .empty-text {
+    font-size: 14px;
+    color: #9ca3af;
+    margin: 0;
+  }
+}
+
+// 页脚
+.search-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  background: #f9fafb;
+  border-top: 1px solid #e5e7eb;
+
+  .footer-hints {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    .hint-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+
+      .kbd {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 24px;
+        height: 24px;
+        padding: 0 6px;
+        font-size: 11px;
+        font-family: inherit;
+        color: #6b7280;
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 4px;
+        box-shadow: 0 1px 0 rgba(0, 0, 0, 0.05);
+      }
+
+      .hint-text {
+        font-size: 12px;
+        color: #6b7280;
+      }
+    }
+  }
+
+  .footer-brand {
+    .brand-text {
+      font-size: 12px;
+      color: #9ca3af;
+    }
+  }
+}
+
+// 过渡动画
+.search-modal-enter-active,
+.search-modal-leave-active {
+  transition: opacity 0.2s ease;
+
+  .search-modal {
+    transition: transform 0.2s ease, opacity 0.2s ease;
+  }
+}
+
+.search-modal-enter-from,
+.search-modal-leave-to {
+  opacity: 0;
+
+  .search-modal {
+    transform: scale(0.98) translateY(-10px);
+    opacity: 0;
+  }
+}
+
+// 响应式适配
+@media (max-width: 768px) {
+  .search-modal-overlay {
+    padding-top: 0;
+    align-items: flex-start;
+  }
+
+  .search-modal {
+    max-width: 100%;
+    margin: 0;
+    border-radius: 0;
+    min-height: 100vh;
+  }
+
+  .search-results {
+    max-height: calc(100vh - 200px);
+  }
+}
+
+// 深色模式支持（可选）
+@media (prefers-color-scheme: dark) {
+  .search-modal {
+    background: #1f2937;
+    border-color: #374151;
+  }
+
+  .search-input-wrapper {
+    border-bottom-color: #374151;
+    background: #1f2937;
+
+    .search-icon {
+      color: #9ca3af;
+    }
+
+    .search-input {
+      color: #f9fafb;
+      
+      &::placeholder {
+        color: #6b7280;
+      }
+    }
+
+    .kbd {
+      color: #d1d5db;
+      background: #374151;
+      border-color: #4b5563;
+    }
+  }
+
+  .search-results {
+    .result-item {
+      &:hover,
+      &.active {
+        background-color: #374151;
+      }
+
+      &.active {
+        background-color: #4b5563;
+      }
+
+      .result-content {
+        .result-breadcrumb {
+          .breadcrumb-item {
+            color: #f9fafb;
+          }
+
+          .breadcrumb-separator {
+            color: #6b7280;
+          }
+        }
+
+        .result-path {
+          color: #9ca3af;
+        }
+      }
+
+      .result-icon {
+        color: #6b7280;
+      }
+    }
+  }
+
+  .search-empty {
+    .empty-icon {
+      color: #4b5563;
+    }
+
+    .empty-text {
+      color: #6b7280;
+    }
+  }
+
+  .search-footer {
+    background: #111827;
+    border-top-color: #374151;
+
+    .footer-hints {
+      .hint-item {
+        .kbd {
+          color: #d1d5db;
+          background: #374151;
+          border-color: #4b5563;
+        }
+
+        .hint-text {
+          color: #9ca3af;
+        }
+      }
+    }
+
+    .footer-brand {
+      .brand-text {
+        color: #6b7280;
+      }
+    }
+  }
+}

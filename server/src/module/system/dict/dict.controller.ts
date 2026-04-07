@@ -123,19 +123,28 @@ export class DictController {
   }
 
   @ApiOperation({
-    summary: '字典数据-详情',
-  })
-  @Get('/data/:id')
-  findOneDictData(@Param('id') dictCode: string) {
-    return this.dictService.findOneDictData(+dictCode);
-  }
-
-  @ApiOperation({
     summary: '字典数据-类型-详情【走缓存】',
   })
   @Get('/data/type/:id')
   findOneDataType(@Param('id') dictType: string) {
     return this.dictService.findOneDataType(dictType);
+  }
+
+  @ApiOperation({
+    summary: '字典数据-全部【走缓存】',
+    description: '一次性获取所有字典类型及其对应的字典数据，便于前端初始化时使用',
+  })
+  @Get('/data/all')
+  findAllDictData() {
+    return this.dictService.findAllDictData();
+  }
+
+  @ApiOperation({
+    summary: '字典数据-详情',
+  })
+  @Get('/data/:id')
+  findOneDictData(@Param('id') dictCode: string) {
+    return this.dictService.findOneDictData(+dictCode);
   }
 
   @ApiOperation({ summary: '导出字典组为xlsx文件' })

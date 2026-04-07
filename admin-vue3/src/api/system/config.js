@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import request from '@/composables/useRequest'
 
 // 查询参数列表
 export function listConfig(query) {
@@ -12,7 +12,7 @@ export function listConfig(query) {
 // 查询参数详细
 export function getConfig(configId) {
   return request({
-    url: '/system/config/' + configId,
+    url: `/system/config/${configId}`,
     method: 'get'
   })
 }
@@ -20,7 +20,7 @@ export function getConfig(configId) {
 // 根据参数键名查询参数值
 export function getConfigKey(configKey) {
   return request({
-    url: '/system/config/configKey/' + configKey,
+    url: `/system/config/configKey/${configKey}`,
     method: 'get'
   })
 }
@@ -46,7 +46,7 @@ export function updateConfig(data) {
 // 删除参数配置
 export function delConfig(configId) {
   return request({
-    url: '/system/config/' + configId,
+    url: `/system/config/${configId}`,
     method: 'delete'
   })
 }
