@@ -2,7 +2,6 @@ import useDictStore from '@/store/modules/dict'
 
 /**
  * 获取字典数据
- * TODO:后续会把这里的集成方式修改掉
  */
 export function useDict(...args) {
   const res = ref({})
