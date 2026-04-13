@@ -71,15 +71,6 @@ app.use(ElementPlus, {
   size: Cookies.get('size') || 'default'
 })
 
-// 初始化字典数据 - 移至登录后执行，避免在未登录时请求接口
-// import useDictStore from '@/store/modules/dict'
-// const dictStore = useDictStore()
-// if (dictStore) {
-//   dictStore.initDict().catch(error => {
-//     console.error('字典初始化失败:', error)
-//   })
-// }
-
 app.mount('#app')
 
 // 移除 loading 动画

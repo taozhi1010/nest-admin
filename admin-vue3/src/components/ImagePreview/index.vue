@@ -1,5 +1,5 @@
 <template>
-  <el-image append-to-body="true" fit="cover" :preview-src-list="realSrcList" :src="`${realSrc}`" :style="`width:${realWidth};height:${realHeight};`">
+  <el-image append-to-body="true" fit="cover" :preview-src-list="realSrcList" :src="`${realSrc}`" :style="imageStyle">
     <template #error>
       <div class="image-slot">
         <el-icon><picture-filled /></el-icon>
@@ -9,7 +9,6 @@
 </template>
 
 <script setup>
-import { isExternal } from '@/utils/validate'
 import { getImageUrl } from '@/utils/image'
 
 const props = defineProps({
@@ -46,6 +45,11 @@ const realSrcList = computed(() => {
 const realWidth = computed(() => (typeof props.width == 'string' ? props.width : `${props.width}px`))
 
 const realHeight = computed(() => (typeof props.height == 'string' ? props.height : `${props.height}px`))
+
+const imageStyle = computed(() => ({
+  width: realWidth.value,
+  height: realHeight.value
+}))
 </script>
 
 <style lang="scss" scoped>
