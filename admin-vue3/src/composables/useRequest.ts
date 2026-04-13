@@ -1,4 +1,4 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
+import axios, { type AxiosInstance, type InternalAxiosRequestConfig, type AxiosResponse } from 'axios'
 import { ElNotification, ElMessageBox, ElMessage, ElLoading } from 'element-plus'
 import { getToken } from '@/utils/auth'
 import errorCode from '@/utils/errorCode'
@@ -7,8 +7,9 @@ import cache from '@/plugins/cache'
 import { saveAs } from 'file-saver'
 import useUserStore from '@/store/modules/user'
 
-// 定义类型
-interface RequestConfig extends AxiosRequestConfig {
+// ==================== 类型定义 ====================
+
+interface RequestConfig extends InternalAxiosRequestConfig {
   isToken?: boolean
   repeatSubmit?: boolean
   showMsg?: boolean
@@ -20,8 +21,10 @@ interface SessionObj {
   time: number
 }
 
-interface DownloadConfig extends AxiosRequestConfig {
+interface DownloadConfig {
   transformRequest?: Array<(data: any) => string>
+  headers?: Record<string, string>
+  responseType?: 'blob' | 'arraybuffer'
 }
 
 // 是否显示重新登录
@@ -38,11 +41,13 @@ service.defaults.headers['Content-Type'] = 'application/json;charset=utf-8'
 
 // request 拦截器
 service.interceptors.request.use(
-  (config: AxiosRequestConfig) => {
+  (config: InternalAxiosRequestConfig) => {
+    const requestConfig = config as RequestConfig
+    
     // 是否需要设置 token
-    const isToken = (config.headers as RequestConfig).isToken === false
+    const isToken = requestConfig.isToken === false
     // 是否需要防止数据重复提交
-    const isRepeatSubmit = (config.headers as RequestConfig).repeatSubmit === false
+    const isRepeatSubmit = requestConfig.repeatSubmit === false
     
     if (getToken() && !isToken) {
       config.headers['Authorization'] = `Bearer ${getToken()}` // 让每个请求携带自定义token 请根据实际情况自行修改
@@ -62,10 +67,10 @@ service.interceptors.request.use(
     }
     
     if (!isRepeatSubmit && (config.method === 'post' || config.method === 'put')) {
-      const requestObj = {
-        url: config.url,
-        data: typeof config.data === 'object' ? JSON.stringify(config.data) : config.data,
-        time: new Date().getTime()
+      const requestObj: SessionObj = {
+        url: config.url || '',
+        data: typeof config.data === 'object' ? JSON.stringify(config.data) : String(config.data || ''),
+        time: Date.now()
       }
       
       const sessionObj = cache.session.getJSON('sessionObj') as SessionObj | null
@@ -110,8 +115,8 @@ service.interceptors.response.use(
     }
     
     // 是否需要显示错误提示（默认显示）
-    const config = res.config as RequestConfig
-    const showMessage = config.showMsg !== false
+    const requestConfig = res.config as RequestConfig
+    const showMessage = requestConfig.showMsg !== false
 
     switch (code) {
       case 401:
@@ -160,16 +165,19 @@ service.interceptors.response.use(
     }
   },
   (error) => {
-    console.log(`err${error}`)
+    console.error('Request error:', error)
     let { message } = error
-    if (message == 'Network Error') {
+    
+    if (message === 'Network Error') {
       message = '后端接口连接异常'
     } else if (message.includes('timeout')) {
       message = '系统接口请求超时'
     } else if (message.includes('Request failed with status code')) {
-      message = `系统接口${message.substr(message.length - 3)}异常`
+      const statusCode = message.slice(-3)
+      message = `系统接口${statusCode}异常`
     }
-    ElMessage({ message: message, type: 'error', duration: 5 * 1000 })
+    
+    ElMessage({ message, type: 'error', duration: 5000 })
     return Promise.reject(error)
   }
 )
