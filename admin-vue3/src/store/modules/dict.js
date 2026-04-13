@@ -1,138 +1,129 @@
 import { getDicts, getAllDicts } from '@/api/system/dict/data'
 import { optionselect } from '@/api/system/dict/type'
 
+// ==================== 工具函数 ====================
+
+/**
+ * 格式化字典数据
+ * @param {Array} dictDataList - 原始字典数据列表
+ * @returns {Array} 格式化后的字典数据
+ */
+function formatDictData(dictDataList) {
+  return dictDataList.map((item) => ({
+    label: item.dictLabel,
+    value: item.dictValue,
+    elTagType: item.listClass,
+    elTagClass: item.cssClass
+  }))
+}
+
+// ==================== Store 定义 ====================
+
 const useDictStore = defineStore('dict', {
   state: () => ({
-    dict: new Array(),
-    loadedTypes: new Set() // 记录已加载的字典类型
+    dict: [], // 字典缓存数组 [{ key: dictType, value: dictData[] }]
+    loadedTypes: new Set() // 已加载的字典类型集合
   }),
   actions: {
-    // 获取字典
-    getDict(_key) {
-      if (_key == null && _key == '') {
-        return null
-      }
-      try {
-        for (let i = 0; i < this.dict.length; i++) {
-          if (this.dict[i].key == _key) {
-            return this.dict[i].value
-          }
-        }
-      } catch (e) {
-        return null
+    /**
+     * 获取字典数据
+     * @param {string} key - 字典类型
+     * @returns {Array|null} 字典数据数组
+     */
+    getDict(key) {
+      if (!key) return null
+      const item = this.dict.find((d) => d.key === key)
+      return item ? item.value : null
+    },
+    /**
+     * 设置字典数据
+     * @param {string} key - 字典类型
+     * @param {Array} value - 字典数据数组
+     */
+    setDict(key, value) {
+      if (!key) return
+      
+      const existingIndex = this.dict.findIndex((item) => item.key === key)
+      if (existingIndex !== -1) {
+        // 更新已存在的字典
+        this.dict[existingIndex].value = value
+      } else {
+        // 添加新字典
+        this.dict.push({ key, value })
       }
     },
-    // 设置字典
-    setDict(_key, value) {
-      if (_key !== null && _key !== '') {
-        // 检查是否已存在，如果存在则更新
-        const existingIndex = this.dict.findIndex(item => item.key === _key)
-        if (existingIndex !== -1) {
-          this.dict[existingIndex].value = value
-        } else {
-          this.dict.push({
-            key: _key,
-            value: value
-          })
-        }
+    /**
+     * 删除字典
+     * @param {string} key - 字典类型
+     * @returns {boolean} 是否删除成功
+     */
+    removeDict(key) {
+      const index = this.dict.findIndex((item) => item.key === key)
+      if (index !== -1) {
+        this.dict.splice(index, 1)
+        return true
       }
+      return false
     },
-    // 删除字典
-    removeDict(_key) {
-      var bln = false
-      try {
-        for (let i = 0; i < this.dict.length; i++) {
-          if (this.dict[i].key == _key) {
-            this.dict.splice(i, 1)
-            return true
-          }
-        }
-      } catch (e) {
-        bln = false
-      }
-      return bln
-    },
-    // 清空字典
+    /**
+     * 清空所有字典
+     */
     cleanDict() {
-      this.dict = new Array()
+      this.dict = []
       this.loadedTypes.clear()
     },
-    // 标记字典类型为已加载
+    /**
+     * 标记字典类型为已加载
+     * @param {string} dictType - 字典类型
+     */
     markTypeAsLoaded(dictType) {
       this.loadedTypes.add(dictType)
     },
-    // 检查字典类型是否已加载
+    /**
+     * 检查字典类型是否已加载
+     * @param {string} dictType - 字典类型
+     * @returns {boolean} 是否已加载
+     */
     isTypeLoaded(dictType) {
       return this.loadedTypes.has(dictType)
     },
-    // 异步加载单个字典
+    /**
+     * 异步加载单个字典
+     * @param {string} dictType - 字典类型
+     * @returns {Promise<Array>} 字典数据数组
+     */
     async loadDict(dictType) {
+      // 如果已加载，直接返回缓存
       if (this.isTypeLoaded(dictType)) {
         return this.getDict(dictType)
       }
       
       try {
         const resp = await getDicts(dictType)
-        const dictData = resp.data.map((p) => ({ 
-          label: p.dictLabel, 
-          value: p.dictValue, 
-          elTagType: p.listClass, 
-          elTagClass: p.cssClass 
-        }))
+        const dictData = formatDictData(resp.data)
         this.setDict(dictType, dictData)
         this.markTypeAsLoaded(dictType)
         return dictData
       } catch (error) {
-        console.error(`加载字典 ${dictType} 失败:`, error)
+        console.error(`[字典] 加载失败 (${dictType}):`, error)
         return []
       }
     },
-    // 初始字典 - 一次性加载所有字典
+    /**
+     * 初始化字典 - 一次性加载所有字典
+     */
     async initDict() {
       try {
-        // 调用新接口一次性获取所有字典数据
         const response = await getAllDicts()
         const allDicts = response.data || {}
         
         // 处理不同的返回格式
         if (Array.isArray(allDicts)) {
-          // 格式 A: 返回的是字典项数组 [{dictType, dictLabel, dictValue, ...}]
-          const groupedDicts = {}
-          allDicts.forEach(item => {
-            const dictType = item.dictType
-            if (dictType) {
-              if (!groupedDicts[dictType]) {
-                groupedDicts[dictType] = []
-              }
-              groupedDicts[dictType].push(item)
-            }
-          })
-          
-          // 处理分组后的数据
-          for (const [dictType, dictDataList] of Object.entries(groupedDicts)) {
-            const formattedDictData = dictDataList.map((p) => ({ 
-              label: p.dictLabel, 
-              value: p.dictValue, 
-              elTagType: p.listClass, 
-              elTagClass: p.cssClass 
-            }))
-            this.setDict(dictType, formattedDictData)
-            this.markTypeAsLoaded(dictType)
-          }
+          // 格式 A: 返回字典项数组 [{dictType, dictLabel, dictValue, ...}]
+          this.processArrayDicts(allDicts)
         } else if (typeof allDicts === 'object') {
-          // 格式 B: 返回的是对象 {dictType: [items]}
-          for (const [dictType, dictDataList] of Object.entries(allDicts)) {
-            if (dictType && Array.isArray(dictDataList)) {
-              const formattedDictData = dictDataList.map((p) => ({ 
-                label: p.dictLabel, 
-                value: p.dictValue, 
-                elTagType: p.listClass, 
-                elTagClass: p.cssClass 
-              }))
-              this.setDict(dictType, formattedDictData)
-              this.markTypeAsLoaded(dictType)
-            }
-          }
+          // 格式 B: 返回对象 {dictType: [items]}
+          this.processObjectDicts(allDicts)
         }
         
         console.log('[字典] 全量加载完成，已缓存', this.dict.length, '个字典类型')
@@ -143,10 +134,49 @@ const useDictStore = defineStore('dict', {
       }
     },
     
-    // 回退方案：原有的字典加载方式
+    /**
+     * 处理数组格式的字典数据
+     */
+    processArrayDicts(allDicts) {
+      const groupedDicts = {}
+      
+      // 按 dictType 分组
+      allDicts.forEach((item) => {
+        const dictType = item.dictType
+        if (dictType) {
+          if (!groupedDicts[dictType]) {
+            groupedDicts[dictType] = []
+          }
+          groupedDicts[dictType].push(item)
+        }
+      })
+      
+      // 处理每个字典类型
+      Object.entries(groupedDicts).forEach(([dictType, dictDataList]) => {
+        const formattedDictData = formatDictData(dictDataList)
+        this.setDict(dictType, formattedDictData)
+        this.markTypeAsLoaded(dictType)
+      })
+    },
+    
+    /**
+     * 处理对象格式的字典数据
+     */
+    processObjectDicts(allDicts) {
+      Object.entries(allDicts).forEach(([dictType, dictDataList]) => {
+        if (dictType && Array.isArray(dictDataList)) {
+          const formattedDictData = formatDictData(dictDataList)
+          this.setDict(dictType, formattedDictData)
+          this.markTypeAsLoaded(dictType)
+        }
+      })
+    },
+    
+    /**
+     * 回退方案：原有的字典加载方式
+     */
     async initDictFallback() {
       try {
-        // 获取所有字典类型
         const response = await optionselect()
         const dictTypes = response.data || []
         
