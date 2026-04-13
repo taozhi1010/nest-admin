@@ -152,21 +152,6 @@ export const dynamicRoutes = [
       }
     ]
   },
-  {
-    path: '/test/auth-demo',
-    component: Layout,
-    hidden: false,
-    permissions: ['system:user:list'],
-    meta: { title: '权限演示', icon: 'lock' },
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/test/AuthDemo.vue'),
-        name: 'AuthDemo',
-        meta: { title: '权限验证示例', icon: 'lock' }
-      }
-    ]
-  }
 ]
 
 const router = createRouter({
