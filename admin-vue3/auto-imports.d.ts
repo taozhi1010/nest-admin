@@ -10,6 +10,7 @@ declare global {
   const ElLoading: typeof import('element-plus/es').ElLoading
   const ElMessage: typeof import('element-plus/es').ElMessage
   const ElMessageBox: typeof import('element-plus/es').ElMessageBox
+  const ElNotification: typeof import('element-plus/es').ElNotification
   const acceptHMRUpdate: typeof import('pinia').acceptHMRUpdate
   const addDateRange: typeof import('./src/composables/useCommon').addDateRange
   const authCodeInfo: typeof import('./src/composables/useAuthCode').authCodeInfo
