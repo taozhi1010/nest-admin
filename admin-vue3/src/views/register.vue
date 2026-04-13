@@ -45,7 +45,6 @@
 </template>
 
 <script setup>
-import { ElMessageBox } from 'element-plus'
 import { register } from '@/api/login'
 import { authCodeInfo, getValidateCode } from '@/composables/useAuthCode'
 

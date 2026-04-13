@@ -80,7 +80,6 @@
 <script setup>
 import variables from '@/assets/styles/variables.module.scss'
 import axios from 'axios'
-import { ElLoading, ElMessage } from 'element-plus'
 import { useDynamicTitle } from '@/composables/useDynamicTitle'
 import useAppStore from '@/store/modules/app'
 import useSettingsStore from '@/store/modules/settings'
