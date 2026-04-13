@@ -36,14 +36,11 @@ import FileUpload from '@/components/FileUpload'
 import ImageUpload from '@/components/ImageUpload'
 // 图片预览组件
 import ImagePreview from '@/components/ImagePreview'
-// 自定义树选择组件
-import TreeSelect from '@/components/TreeSelect'
 
 const app = createApp(App)
 
 // 全局组件挂载
 app.component('Pagination', Pagination)
-app.component('TreeSelect', TreeSelect)
 app.component('FileUpload', FileUpload)
 app.component('ImageUpload', ImageUpload)
 app.component('ImagePreview', ImagePreview)
