@@ -13,16 +13,20 @@ declare global {
   const ElNotification: typeof import('element-plus/es').ElNotification
   const acceptHMRUpdate: typeof import('pinia').acceptHMRUpdate
   const addDateRange: typeof import('./src/composables/useCommon').addDateRange
+  const alphabetsSchema: typeof import('./src/composables/useValidator').alphabetsSchema
   const authCodeInfo: typeof import('./src/composables/useAuthCode').authCodeInfo
   const computed: typeof import('vue').computed
   const createApp: typeof import('vue').createApp
+  const createNumberRangeSchema: typeof import('./src/composables/useValidator').createNumberRangeSchema
   const createPinia: typeof import('pinia').createPinia
+  const createRegexSchema: typeof import('./src/composables/useValidator').createRegexSchema
   const customRef: typeof import('vue').customRef
   const defineAsyncComponent: typeof import('vue').defineAsyncComponent
   const defineComponent: typeof import('vue').defineComponent
   const defineStore: typeof import('pinia').defineStore
   const download: typeof import('./src/composables/useRequest').download
   const effectScope: typeof import('vue').effectScope
+  const emailSchema: typeof import('./src/composables/useValidator').emailSchema
   const getActivePinia: typeof import('pinia').getActivePinia
   const getCurrentInstance: typeof import('vue').getCurrentInstance
   const getCurrentScope: typeof import('vue').getCurrentScope
@@ -32,12 +36,17 @@ declare global {
   const h: typeof import('vue').h
   const handleTree: typeof import('./src/composables/useCommon').handleTree
   const inject: typeof import('vue').inject
+  const isArray: typeof import('./src/composables/useValidator').isArray
+  const isExternal: typeof import('./src/composables/useValidator').isExternal
+  const isHttp: typeof import('./src/composables/useValidator').isHttp
   const isProxy: typeof import('vue').isProxy
   const isReactive: typeof import('vue').isReactive
   const isReadonly: typeof import('vue').isReadonly
   const isRef: typeof import('vue').isRef
   const isRelogin: typeof import('./src/composables/useRequest').isRelogin
   const isShallow: typeof import('vue').isShallow
+  const isString: typeof import('./src/composables/useValidator').isString
+  const lowerCaseSchema: typeof import('./src/composables/useValidator').lowerCaseSchema
   const mapActions: typeof import('pinia').mapActions
   const mapGetters: typeof import('pinia').mapGetters
   const mapState: typeof import('pinia').mapState
@@ -68,6 +77,7 @@ declare global {
   const ref: typeof import('vue').ref
   const resetForm: typeof import('./src/composables/useCommon').resetForm
   const resolveComponent: typeof import('vue').resolveComponent
+  const safeValidate: typeof import('./src/composables/useValidator').safeValidate
   const selectDictLabel: typeof import('./src/composables/useCommon').selectDictLabel
   const selectDictLabels: typeof import('./src/composables/useCommon').selectDictLabels
   const setActivePinia: typeof import('pinia').setActivePinia
@@ -83,6 +93,8 @@ declare global {
   const toValue: typeof import('vue').toValue
   const triggerRef: typeof import('vue').triggerRef
   const unref: typeof import('vue').unref
+  const upperCaseSchema: typeof import('./src/composables/useValidator').upperCaseSchema
+  const urlSchema: typeof import('./src/composables/useValidator').urlSchema
   const useAttrs: typeof import('vue').useAttrs
   const useAuth: typeof import('./src/composables/useAuth').default
   const useCatTools: typeof import('./src/composables/useCatTools').useCatTools
@@ -103,6 +115,13 @@ declare global {
   const useSlots: typeof import('vue').useSlots
   const useTab: typeof import('./src/composables/useTab').useTab
   const useTemplateRef: typeof import('vue').useTemplateRef
+  const usernameSchema: typeof import('./src/composables/useValidator').usernameSchema
+  const validAlphabets: typeof import('./src/composables/useValidator').validAlphabets
+  const validEmail: typeof import('./src/composables/useValidator').validEmail
+  const validLowerCase: typeof import('./src/composables/useValidator').validLowerCase
+  const validURL: typeof import('./src/composables/useValidator').validURL
+  const validUpperCase: typeof import('./src/composables/useValidator').validUpperCase
+  const validUsername: typeof import('./src/composables/useValidator').validUsername
   const watch: typeof import('vue').watch
   const watchEffect: typeof import('vue').watchEffect
   const watchPostEffect: typeof import('vue').watchPostEffect

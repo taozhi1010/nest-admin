@@ -82,7 +82,7 @@
 import { ref, nextTick, onMounted, onUnmounted } from 'vue'
 import { useRouteSearch } from '@/composables/useRouteSearch'
 import { Search, Guide } from '@element-plus/icons-vue'
-import { isHttp } from '@/utils/validate'
+import { isHttp } from '@/composables/useValidator'
 import { useRouter } from 'vue-router'
 
 // 使用搜索 composable

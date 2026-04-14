@@ -23,7 +23,7 @@
 </template>
 
 <script setup>
-import { isExternal } from '@/utils/validate'
+import { isExternal } from '@/composables/useValidator'
 import AppLink from './Link'
 import { getNormalPath } from '@/utils/ruoyi'
 

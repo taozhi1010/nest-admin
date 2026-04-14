@@ -36,7 +36,15 @@ export default function createAutoImport() {
         // cat-tools 工具函数自动导入
         { from: 'cat-tools', imports: ['catTools'] },
         // cat-tools Composable 自动导入
-        { from: '@/composables/useCatTools', imports: ['useCatTools'] }
+        { from: '@/composables/useCatTools', imports: ['useCatTools'] },
+        // 验证工具组合式函数自动导入
+        { from: '@/composables/useValidator', imports: [
+          'isExternal', 'isHttp', 'validURL', 'validUsername', 
+          'validLowerCase', 'validUpperCase', 'validAlphabets', 
+          'validEmail', 'isString', 'isArray', 'safeValidate',
+          'urlSchema', 'emailSchema', 'usernameSchema',
+          'lowerCaseSchema', 'upperCaseSchema', 'alphabetsSchema'
+        ] }
       ],
       // 全局导入，无需手动 import
       injectAtEnd: true
