@@ -58,6 +58,19 @@ export class UserService {
    * @returns
    */
   async create(createUserDto: CreateUserDto) {
+    // 检查用户账号是否已存在
+    const existUser = await this.userRepo.findOne({
+      where: {
+        userName: createUserDto.userName,
+        delFlag: '0',
+      },
+      select: ['userId', 'userName'],
+    });
+
+    if (existUser) {
+      throw new BadRequestException(`新增用户'${createUserDto.userName}'失败，登录账号已存在`);
+    }
+
     const salt = bcrypt.genSaltSync(10);
     if (createUserDto.password) {
       createUserDto.password = await bcrypt.hashSync(createUserDto.password, salt);
