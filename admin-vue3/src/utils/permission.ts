@@ -2,23 +2,19 @@ import useUserStore from '@/store/modules/user'
 
 /**
  * 字符权限校验
- * @param {Array} value 校验值
- * @returns {Boolean}
+ * @param value 校验值
+ * @returns 是否有权限
  */
-export function checkPermi(value) {
+export function checkPermi(value: string[]): boolean {
   if (value && value instanceof Array && value.length > 0) {
     const permissions = useUserStore().permissions
-    const permissionDatas = value
     const all_permission = '*:*:*'
 
     const hasPermission = permissions.some((permission) => {
-      return all_permission === permission || permissionDatas.includes(permission)
+      return all_permission === permission || value.includes(permission)
     })
 
-    if (!hasPermission) {
-      return false
-    }
-    return true
+    return hasPermission
   } else {
     console.error(`need roles! Like checkPermi="['system:user:add','system:user:edit']"`)
     return false
@@ -27,23 +23,19 @@ export function checkPermi(value) {
 
 /**
  * 角色权限校验
- * @param {Array} value 校验值
- * @returns {Boolean}
+ * @param value 校验值
+ * @returns 是否有角色
  */
-export function checkRole(value) {
+export function checkRole(value: string[]): boolean {
   if (value && value instanceof Array && value.length > 0) {
     const roles = useUserStore().roles
-    const permissionRoles = value
     const super_admin = 'admin'
 
     const hasRole = roles.some((role) => {
-      return super_admin === role || permissionRoles.includes(role)
+      return super_admin === role || value.includes(role)
     })
 
-    if (!hasRole) {
-      return false
-    }
-    return true
+    return hasRole
   } else {
     console.error(`need roles! Like checkRole="['admin','editor']"`)
     return false

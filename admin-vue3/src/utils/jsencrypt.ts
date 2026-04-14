@@ -2,7 +2,9 @@ import JSEncrypt from 'jsencrypt'
 
 // 密钥对生成 http://web.chacuo.net/netrsakeypair
 
-const publicKey = 'MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAKoR8mX0rGKLqzcWmOzbfj64K8ZIgOdH\n' + 'nzkXSOVOZbFu/TJhZ7rFAN+eaGkl3C4buccQd/EjEsj9ir7ijT7h96MCAwEAAQ=='
+const publicKey =
+  'MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAKoR8mX0rGKLqzcWmOzbfj64K8ZIgOdH\n' +
+  'nzkXSOVOZbFu/TJhZ7rFAN+eaGkl3C4buccQd/EjEsj9ir7ijT7h96MCAwEAAQ=='
 
 const privateKey =
   'MIIBVAIBADANBgkqhkiG9w0BAQEFAASCAT4wggE6AgEAAkEAqhHyZfSsYourNxaY\n' +
@@ -14,16 +16,24 @@ const privateKey =
   'YhovyloRYsM+IS9h/0BzlEAuO0ktMQIgSPT3aFAgJYwKpqRYKlLDVcflZFCKY7u3\n' +
   'UP8iWi1Qw0Y='
 
-// 加密
-export function encrypt(txt) {
+/**
+ * RSA 加密
+ * @param txt 待加密的文本
+ * @returns 加密后的字符串
+ */
+export function encrypt(txt: string): string | false {
   const encryptor = new JSEncrypt()
-  encryptor.setPublicKey(publicKey) // 设置公钥
-  return encryptor.encrypt(txt) // 对数据进行加密
+  encryptor.setPublicKey(publicKey)
+  return encryptor.encrypt(txt)
 }
 
-// 解密
-export function decrypt(txt) {
+/**
+ * RSA 解密
+ * @param txt 待解密的文本
+ * @returns 解密后的字符串
+ */
+export function decrypt(txt: string): string | false {
   const encryptor = new JSEncrypt()
-  encryptor.setPrivateKey(privateKey) // 设置私钥
-  return encryptor.decrypt(txt) // 对数据进行解密
+  encryptor.setPrivateKey(privateKey)
+  return encryptor.decrypt(txt)
 }
