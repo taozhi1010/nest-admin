@@ -1,10 +1,32 @@
-﻿import { parseTime as _parseTime, addDateRange as _addDateRange, handleTree as _handleTree } from '@/utils/ruoyi'
+﻿import { addDateRange as _addDateRange, handleTree as _handleTree } from '@/utils/ruoyi'
 import { download as _download } from './useRequest'
 import type { FormInstance } from 'element-plus'
 import { getCurrentInstance } from 'vue'
+import dayjs from 'dayjs'
+
+// 格式映射：兼容旧的 {y} 格式
+const formatMap: Record<string, string> = {
+  '{y}': 'YYYY',
+  '{m}': 'MM',
+  '{d}': 'DD',
+  '{h}': 'HH',
+  '{i}': 'mm',
+  '{s}': 'ss',
+}
+
+/**
+ * 日期格式化（使用 dayjs）
+ */
+export function parseTime(time: any, pattern = '{y}-{m}-{d} {h}:{i}:{s}') {
+  if (arguments.length === 0 || !time) return null
+  let format = pattern
+  for (const k in formatMap) {
+    format = format.replace(new RegExp(k.replace(/[{}]/g, '\\$&'), 'g'), formatMap[k])
+  }
+  return dayjs(time).format(format)
+}
 
 // 单独导出各个工具函数
-export const parseTime = _parseTime
 export const addDateRange = _addDateRange
 export const handleTree = _handleTree
 export const download = _download
