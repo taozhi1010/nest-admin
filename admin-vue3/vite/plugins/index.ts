@@ -7,24 +7,29 @@
  * 3. 统一管理插件注册顺序
  */
 import vue from '@vitejs/plugin-vue'
+import type { PluginOption } from 'vite'
 
 import createAutoImport from './auto-import'
 import createSvgIcon from './svg-icon'
 import createCompression from './compression'
 import createSetupExtend from './setup-extend'
 
+interface ViteEnv {
+  [key: string]: any
+}
+
 /**
  * 创建 Vite 插件集合
- * @param {Object} viteEnv - Vite 环境变量
- * @param {boolean} isBuild - 是否为生产构建
- * @returns {Array} Vite 插件数组
+ * @param viteEnv - Vite 环境变量
+ * @param isBuild - 是否为生产构建
+ * @returns Vite 插件数组
  */
-export default function createVitePlugins(viteEnv, isBuild = false) {
+export default function createVitePlugins(viteEnv: ViteEnv, isBuild: boolean = false): PluginOption[] {
   // 基础 Vue 插件
-  const vitePlugins = [vue()]
+  const vitePlugins: PluginOption[] = [vue()]
   
   // 添加自动导入插件
-  vitePlugins.push([...createAutoImport()])
+  vitePlugins.push(...createAutoImport())
   
   // 添加 setup 语法糖扩展插件
   vitePlugins.push(createSetupExtend())
@@ -33,6 +38,9 @@ export default function createVitePlugins(viteEnv, isBuild = false) {
   vitePlugins.push(createSvgIcon(isBuild))
   
   // 仅在生产构建时添加压缩插件
-  isBuild && vitePlugins.push(...createCompression(viteEnv))
+  if (isBuild) {
+    vitePlugins.push(...createCompression(viteEnv))
+  }
+  
   return vitePlugins
 }

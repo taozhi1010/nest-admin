@@ -7,20 +7,23 @@
 export {}
 declare global {
   const EffectScope: typeof import('vue').EffectScope
-  const ElLoading: typeof import('element-plus/es').ElLoading
-  const ElMessage: typeof import('element-plus/es').ElMessage
-  const ElMessageBox: typeof import('element-plus/es').ElMessageBox
-  const ElNotification: typeof import('element-plus/es').ElNotification
+  const ElLoading: typeof import('element-plus').ElLoading
+  const ElMessage: typeof import('element-plus').ElMessage
+  const ElMessageBox: typeof import('element-plus').ElMessageBox
+  const ElNotification: typeof import('element-plus').ElNotification
   const acceptHMRUpdate: typeof import('pinia').acceptHMRUpdate
   const addDateRange: typeof import('./src/composables/useCommon').addDateRange
   const alphabetsSchema: typeof import('./src/composables/useValidator').alphabetsSchema
   const authCodeInfo: typeof import('./src/composables/useAuthCode').authCodeInfo
+  const catTools: typeof import('cat-tools').catTools
   const computed: typeof import('vue').computed
   const createApp: typeof import('vue').createApp
   const createNumberRangeSchema: typeof import('./src/composables/useValidator').createNumberRangeSchema
   const createPinia: typeof import('pinia').createPinia
   const createRegexSchema: typeof import('./src/composables/useValidator').createRegexSchema
   const customRef: typeof import('vue').customRef
+  const dayjs: typeof import('dayjs').default
+  const default: typeof import('dayjs/plugin/isSameOrAfter').default
   const defineAsyncComponent: typeof import('vue').defineAsyncComponent
   const defineComponent: typeof import('vue').defineComponent
   const defineStore: typeof import('pinia').defineStore

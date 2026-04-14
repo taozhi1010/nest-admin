@@ -7,16 +7,20 @@
  * 3. 根据环境变量配置选择压缩方式
  */
 import compression from 'vite-plugin-compression'
+import type { PluginOption } from 'vite'
+
+interface BuildEnv {
+  VITE_BUILD_COMPRESS?: string
+}
 
 /**
  * 创建压缩插件配置
- * @param {Object} env - 环境变量对象
- * @param {string} env.VITE_BUILD_COMPRESS - 压缩类型配置（gzip,brotli）
- * @returns {Array} 压缩插件数组
+ * @param env - 环境变量对象
+ * @returns 压缩插件数组
  */
-export default function createCompression(env) {
+export default function createCompression(env: BuildEnv): PluginOption[] {
   const { VITE_BUILD_COMPRESS } = env
-  const plugin = []
+  const plugin: PluginOption[] = []
   
   if (VITE_BUILD_COMPRESS) {
     const compressList = VITE_BUILD_COMPRESS.split(',')
