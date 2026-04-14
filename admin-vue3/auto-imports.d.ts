@@ -31,6 +31,7 @@ declare global {
   const getCurrentInstance: typeof import('vue').getCurrentInstance
   const getCurrentScope: typeof import('vue').getCurrentScope
   const getCurrentWatcher: typeof import('vue').getCurrentWatcher
+  const getNormalPath: typeof import('./src/composables/useCommon').getNormalPath
   const getUserCookie: typeof import('./src/composables/useAuthCode').getUserCookie
   const getValidateCode: typeof import('./src/composables/useAuthCode').getValidateCode
   const h: typeof import('vue').h
