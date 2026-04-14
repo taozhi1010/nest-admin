@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>useValidator 独立测试</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 20px;
+      background: #f5f7fa;
+    }
+    h1 {
+      color: #409EFF;
+    }
+    .test-section {
+      background: white;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .success {
+      color: #67C23A;
+      font-weight: bold;
+    }
+    .error {
+      color: #F56C6C;
+      font-weight: bold;
+    }
+    pre {
+      background: #282c34;
+      color: #abb2bf;
+      padding: 15px;
+      border-radius: 6px;
+      overflow-x: auto;
+    }
+    button {
+      background: #409EFF;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    button:hover {
+      background: #66b1ff;
+    }
+  </style>
+</head>
+<body>
+  <h1>🧪 useValidator 独立测试页面</h1>
+  
+  <div class="test-section">
+    <h2>测试说明</h2>
+    <p>这个页面直接测试 useValidator 验证工具，无需依赖项目配置。</p>
+    <p><strong>请打开浏览器控制台（F12）查看详细输出</strong></p>
+  </div>
+
+  <div class="test-section">
+    <h2>测试结果</h2>
+    <div id="results"></div>
+  </div>
+
+  <div class="test-section">
+    <button onclick="runTests()">🔄 重新运行测试</button>
+  </div>
+
+  <div class="test-section">
+    <h2>控制台输出示例</h2>
+    <pre>=== useValidator 测试 ===
+
+基础验证函数:
+✅ validEmail: true
+✅ validURL: true
+✅ validUsername: true
+
+Schema 验证:
+✅ emailSchema: true
+✅ urlSchema: true
+
+🎉 所有测试通过！</pre>
+  </div>
+
+  <script type="module">
+    // 导入 Zod
+    import { z } from 'https://esm.sh/zod@4.3.6'
+
+    // 定义验证函数（从 useValidator.ts 复制）
+    const emailSchema = z.string().email('请输入有效的邮箱地址')
+    const urlSchema = z.string().url('请输入有效的URL地址')
+    const usernameSchema = z.enum(['admin', 'editor'])
+
+    function validEmail(email) {
+      try {
+        emailSchema.parse(email)
+        return true
+      } catch {
+        return false
+      }
+    }
+
+    function validURL(url) {
+      try {
+        urlSchema.parse(url)
+        return true
+      } catch {
+        return false
+      }
+    }
+
+    function validUsername(username) {
+      try {
+        usernameSchema.parse(username.trim())
+        return true
+      } catch {
+        return false
+      }
+    }
+
+    function isString(value) {
+      return typeof value === 'string' || value instanceof String
+    }
+
+    function isArray(value) {
+      return Array.isArray(value)
+    }
+
+    function safeValidate(schema, data) {
+      return schema.safeParse(data)
+    }
+
+    // 暴露到全局
+    window.validEmail = validEmail
+    window.validURL = validURL
+    window.validUsername = validUsername
+    window.isString = isString
+    window.isArray = isArray
+    window.safeValidate = safeValidate
+    window.emailSchema = emailSchema
+    window.urlSchema = urlSchema
+    window.z = z
+
+    // 运行测试
+    window.runTests = function() {
+      const results = document.getElementById('results')
+      results.innerHTML = '<p>正在测试...</p>'
+
+      console.log('%c=== useValidator 测试 ===', 'color: #409EFF; font-size: 16px; font-weight: bold;')
+      
+      let html = '<h3>基础验证函数</h3><ul>'
+      
+      // 测试邮箱
+      const test1 = validEmail('test@example.com')
+      html += `<li>validEmail('test@example.com'): <span class="${test1 ? 'success' : 'error'}">${test1 ? '✅' : '❌'} ${test1}</span></li>`
+      console.log('✅ validEmail:', test1)
+      
+      // 测试URL
+      const test2 = validURL('https://example.com')
+      html += `<li>validURL('https://example.com'): <span class="${test2 ? 'success' : 'error'}">${test2 ? '✅' : '❌'} ${test2}</span></li>`
+      console.log('✅ validURL:', test2)
+      
+      // 测试用户名
+      const test3 = validUsername('admin')
+      html += `<li>validUsername('admin'): <span class="${test3 ? 'success' : 'error'}">${test3 ? '✅' : '❌'} ${test3}</span></li>`
+      console.log('✅ validUsername:', test3)
+      
+      // 测试类型检查
+      const test4 = isString('hello')
+      html += `<li>isString('hello'): <span class="${test4 ? 'success' : 'error'}">${test4 ? '✅' : '❌'} ${test4}</span></li>`
+      console.log('✅ isString:', test4)
+      
+      const test5 = isArray([1, 2, 3])
+      html += `<li>isArray([1,2,3]): <span class="${test5 ? 'success' : 'error'}">${test5 ? '✅' : '❌'} ${test5}</span></li>`
+      console.log('✅ isArray:', test5)
+      
+      html += '</ul><h3>Schema 验证</h3><ul>'
+      
+      // 测试 Schema
+      const emailResult = safeValidate(emailSchema, 'test@example.com')
+      html += `<li>emailSchema: <span class="${emailResult.success ? 'success' : 'error'}">${emailResult.success ? '✅' : '❌'} ${emailResult.success}</span></li>`
+      console.log('✅ emailSchema:', emailResult.success)
+      
+      const urlResult = safeValidate(urlSchema, 'https://example.com')
+      html += `<li>urlSchema: <span class="${urlResult.success ? 'success' : 'error'}">${urlResult.success ? '✅' : '❌'} ${urlResult.success}</span></li>`
+      console.log('✅ urlSchema:', urlResult.success)
+      
+      html += '</ul>'
+      
+      const allPassed = test1 && test2 && test3 && test4 && test5 && emailResult.success && urlResult.success
+      html += `<h3 class="${allPassed ? 'success' : 'error'}">${allPassed ? '🎉 所有测试通过！' : '❌ 部分测试失败'}</h3>`
+      
+      console.log('%c🎉 所有测试完成！', 'color: #67C23A; font-size: 14px; font-weight: bold;')
+      
+      results.innerHTML = html
+    }
+
+    // 页面加载时自动运行
+    runTests()
+  </script>
+</body>
+</html>

@@ -5,7 +5,7 @@
 </template>
 
 <script setup>
-import { isExternal } from '@/utils/validate'
+import { isExternal } from '@/composables/useValidator'
 
 const props = defineProps({
   to: {
