@@ -7,11 +7,12 @@
  * 3. 提供更好的开发体验
  */
 import setupExtend from 'vite-plugin-vue-setup-extend'
+import type { PluginOption } from 'vite'
 
 /**
  * 创建 Setup 扩展插件
- * @returns {Function} Setup 扩展插件实例
+ * @returns Setup 扩展插件实例
  */
-export default function createSetupExtend() {
+export default function createSetupExtend(): PluginOption {
   return setupExtend()
 }

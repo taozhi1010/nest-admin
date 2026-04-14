@@ -8,13 +8,14 @@
  */
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
 import path from 'path'
+import type { PluginOption } from 'vite'
 
 /**
  * 创建 SVG 图标插件配置
- * @param {boolean} isBuild - 是否为生产构建
- * @returns {Function} SVG 图标插件实例
+ * @param isBuild - 是否为生产构建
+ * @returns SVG 图标插件实例
  */
-export default function createSvgIcon(isBuild) {
+export default function createSvgIcon(isBuild: boolean): PluginOption {
   return createSvgIconsPlugin({
     iconDirs: [path.resolve(process.cwd(), 'src/assets/icons/svg')], // SVG 图标目录
     symbolId: 'icon-[dir]-[name]', // symbol ID 命名规则

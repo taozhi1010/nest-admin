@@ -1,6 +1,6 @@
-import { createWebHistory, createRouter } from 'vue-router'
+import { createWebHistory, createRouter, RouteRecordRaw } from 'vue-router'
 /* Layout */
-import Layout from '@/layout'
+import Layout from '@/layout/index.vue'
 
 /**
  * Note: 路由配置项
@@ -24,8 +24,27 @@ import Layout from '@/layout'
   }
  */
 
+// 扩展路由元信息类型
+interface AppRouteMeta {
+  title?: string
+  icon?: string
+  noCache?: boolean
+  breadcrumb?: boolean
+  activeMenu?: string
+  affix?: boolean
+}
+
+// 扩展路由记录类型，添加自定义属性
+interface AppRouteRecordRaw extends Omit<RouteRecordRaw, 'meta' | 'children'> {
+  hidden?: boolean
+  permissions?: string[]
+  alwaysShow?: boolean
+  meta?: AppRouteMeta
+  children?: AppRouteRecordRaw[]
+}
+
 // 公共路由
-export const constantRoutes = [
+export const constantRoutes: AppRouteRecordRaw[] = [
   {
     path: '/redirect',
     component: Layout,
@@ -39,22 +58,22 @@ export const constantRoutes = [
   },
   {
     path: '/login',
-    component: () => import('@/views/login'),
+    component: () => import('@/views/login.vue'),
     hidden: true
   },
   {
     path: '/register',
-    component: () => import('@/views/register'),
+    component: () => import('@/views/register.vue'),
     hidden: true
   },
   {
     path: '/:pathMatch(.*)*',
-    component: () => import('@/views/error/404'),
+    component: () => import('@/views/error/404.vue'),
     hidden: true
   },
   {
     path: '/401',
-    component: () => import('@/views/error/401'),
+    component: () => import('@/views/error/401.vue'),
     hidden: true
   },
   {
@@ -64,7 +83,7 @@ export const constantRoutes = [
     children: [
       {
         path: '/index',
-        component: () => import('@/views/index'),
+        component: () => import('@/views/index.vue'),
         name: 'Index',
         meta: { title: '首页', icon: 'dashboard', affix: true }
       }
@@ -78,7 +97,7 @@ export const constantRoutes = [
     children: [
       {
         path: 'profile',
-        component: () => import('@/views/system/user/profile/index'),
+        component: () => import('@/views/system/user/profile/index.vue'),
         name: 'Profile',
         meta: { title: '个人中心', icon: 'user' }
       }
@@ -87,7 +106,7 @@ export const constantRoutes = [
 ]
 
 // 动态路由，基于用户权限动态去加载
-export const dynamicRoutes = [
+export const dynamicRoutes: AppRouteRecordRaw[] = [
   {
     path: '/system/user-auth',
     component: Layout,
@@ -96,7 +115,7 @@ export const dynamicRoutes = [
     children: [
       {
         path: 'role/:userId(\\d+)',
-        component: () => import('@/views/system/user/authRole'),
+        component: () => import('@/views/system/user/authRole.vue'),
         name: 'AuthRole',
         meta: { title: '分配角色', activeMenu: '/system/user' }
       }
@@ -110,7 +129,7 @@ export const dynamicRoutes = [
     children: [
       {
         path: 'user/:roleId(\\d+)',
-        component: () => import('@/views/system/role/authUser'),
+        component: () => import('@/views/system/role/authUser.vue'),
         name: 'AuthUser',
         meta: { title: '分配用户', activeMenu: '/system/role' }
       }
@@ -124,7 +143,7 @@ export const dynamicRoutes = [
     children: [
       {
         path: 'index/:jobId(\\d+)',
-        component: () => import('@/views/monitor/job/log'),
+        component: () => import('@/views/monitor/job/log.vue'),
         name: 'JobLog',
         meta: { title: '调度日志', activeMenu: '/monitor/job' }
       }
@@ -140,23 +159,23 @@ export const dynamicRoutes = [
     children: [
       {
         path: '401',
-        component: () => import('@/views/error/401'),
+        component: () => import('@/views/error/401.vue'),
         name: 'Error401',
         meta: { title: '401 未授权', icon: 'error' }
       },
       {
         path: '404',
-        component: () => import('@/views/error/404'),
+        component: () => import('@/views/error/404.vue'),
         name: 'Error404',
         meta: { title: '404 未找到', icon: 'error' }
       }
     ]
-  },
+  }
 ]
 
 const router = createRouter({
   history: createWebHistory(),
-  routes: constantRoutes,
+  routes: constantRoutes as RouteRecordRaw[],
   scrollBehavior(to, from, savedPosition) {
     if (savedPosition) {
       return savedPosition

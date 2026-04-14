@@ -1,13 +1,14 @@
 import { defineConfig, loadEnv } from 'vite'
 import path from 'path'
+import type { UserConfig, ConfigEnv } from 'vite'
 
-import createVitePlugins from './vite/plugins'
+import createVitePlugins from './vite/plugins/index'
 
 // 打包后的文件是否开启 hash
 const outputHash = true
 
 // https://vitejs.dev/config/
-export default defineConfig(({ mode, command }) => {
+export default defineConfig(({ mode, command }: ConfigEnv): UserConfig => {
   // 从项目根目录加载环境变量（Vite 默认行为）
   const env = loadEnv(mode, process.cwd())
   const { VITE_APP_ENV } = env
@@ -164,9 +165,7 @@ export default defineConfig(({ mode, command }) => {
         ]
       },
       preprocessorOptions: {
-        scss: {
-          sassOptions: { outputStyle: 'compressed' }
-        }
+        scss: {}
       },
       devSourcemap: true
     }
