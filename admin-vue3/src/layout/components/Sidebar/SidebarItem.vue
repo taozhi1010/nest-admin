@@ -25,7 +25,7 @@
 <script setup>
 import { isExternal } from '@/composables/useValidator'
 import AppLink from './Link'
-import { getNormalPath } from '@/utils/ruoyi'
+import { getNormalPath } from '@/composables/useCommon'
 
 const props = defineProps({
   // route object

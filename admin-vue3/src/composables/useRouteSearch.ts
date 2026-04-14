@@ -1,6 +1,6 @@
 import { ref, computed, watchEffect } from 'vue'
 import Fuse from 'fuse.js'
-import { getNormalPath } from '@/utils/ruoyi'
+import { getNormalPath } from './useCommon'
 import { isHttp } from './useValidator'
 import usePermissionStore from '@/store/modules/permission'
 
