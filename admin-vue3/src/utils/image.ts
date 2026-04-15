@@ -1,4 +1,4 @@
-import defAva from '@/assets/images/profile.jpg'
+import defAva from '@/assets/images/avatar.png'
 
 /**
  * 图片资源统一处理工具
