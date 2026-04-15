@@ -35,6 +35,7 @@ declare global {
   const getCurrentScope: typeof import('vue').getCurrentScope
   const getCurrentWatcher: typeof import('vue').getCurrentWatcher
   const getNormalPath: typeof import('./src/composables/useCommon').getNormalPath
+  const getRouteLoading: typeof import('./src/composables/useRouteLoading').getRouteLoading
   const getUserCookie: typeof import('./src/composables/useAuthCode').getUserCookie
   const getValidateCode: typeof import('./src/composables/useAuthCode').getValidateCode
   const h: typeof import('vue').h
@@ -81,11 +82,13 @@ declare global {
   const ref: typeof import('vue').ref
   const resetForm: typeof import('./src/composables/useCommon').resetForm
   const resolveComponent: typeof import('vue').resolveComponent
+  const routeLoading: typeof import('./src/composables/useRouteLoading').routeLoading
   const safeValidate: typeof import('./src/composables/useValidator').safeValidate
   const selectDictLabel: typeof import('./src/composables/useCommon').selectDictLabel
   const selectDictLabels: typeof import('./src/composables/useCommon').selectDictLabels
   const setActivePinia: typeof import('pinia').setActivePinia
   const setMapStoreSuffix: typeof import('pinia').setMapStoreSuffix
+  const setRouteLoading: typeof import('./src/composables/useRouteLoading').setRouteLoading
   const setUserCookie: typeof import('./src/composables/useAuthCode').setUserCookie
   const shallowReactive: typeof import('vue').shallowReactive
   const shallowReadonly: typeof import('vue').shallowReadonly
@@ -115,6 +118,7 @@ declare global {
   const useModel: typeof import('vue').useModel
   const useRequest: typeof import('./src/composables/useRequest').default
   const useRoute: typeof import('vue-router').useRoute
+  const useRouteLoading: typeof import('./src/composables/useRouteLoading').default
   const useRouteSearch: typeof import('./src/composables/useRouteSearch').useRouteSearch
   const useRouter: typeof import('vue-router').useRouter
   const useSlots: typeof import('vue').useSlots

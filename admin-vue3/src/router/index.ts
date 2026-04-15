@@ -185,4 +185,20 @@ const router = createRouter({
   }
 })
 
+// 全局路由错误处理
+router.onError((error) => {
+  console.error('路由错误:', error)
+  
+  // 检查是否是组件加载失败
+  const isChunkLoadError = error.message?.includes('Failed to fetch') || 
+                          error.message?.includes('loading chunk') ||
+                          error.message?.includes('Importing a module script failed')
+  
+  if (isChunkLoadError) {
+    // 组件加载失败，可能是网络问题或资源不存在
+    console.warn('页面组件加载失败，可能是网络问题或文件不存在')
+    // 这里可以添加重试逻辑或跳转到错误页面
+  }
+})
+
 export default router

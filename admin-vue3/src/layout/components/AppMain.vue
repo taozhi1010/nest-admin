@@ -1,5 +1,13 @@
 <template>
   <section class="app-main">
+    <!-- 路由加载状态提示 -->
+    <div v-if="routeLoading" class="route-loading-overlay">
+      <div class="loading-content">
+        <el-icon class="is-loading"><Loading /></el-icon>
+        <span>页面加载中...</span>
+      </div>
+    </div>
+    
     <router-view v-slot="{ Component, route }">
       <!-- <transition name="fade-transform" mode="out-in"> -->
       <keep-alive :include="tagsViewStore.cachedViews">
@@ -12,8 +20,10 @@
 </template>
 
 <script setup>
+import { Loading } from '@element-plus/icons-vue'
 import iframeToggle from './IframeToggle/index'
 import useTagsViewStore from '@/store/modules/tagsView'
+import { routeLoading } from '@/composables/useRouteLoading'
 
 const tagsViewStore = useTagsViewStore()
 </script>
@@ -39,6 +49,33 @@ const tagsViewStore = useTagsViewStore()
 
   .fixed-header + .app-main {
     padding-top: 84px;
+  }
+}
+
+// 路由加载状态遮罩层
+.route-loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  
+  .loading-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    color: #409eff;
+    font-size: 14px;
+    
+    .el-icon {
+      font-size: 32px;
+    }
   }
 }
 </style>
