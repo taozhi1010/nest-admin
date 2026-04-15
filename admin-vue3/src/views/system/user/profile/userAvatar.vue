@@ -52,7 +52,7 @@ import { uploadAvatar } from '@/api/system/user'
 import useUserStore from '@/store/modules/user'
 import { watch } from 'vue'
 import { getImageUrl } from '@/utils/image'
-import defAva from '@/assets/images/profile.jpg'
+import defAva from '@/assets/images/avatar.png'
 
 // ==================== Props ====================
 const props = defineProps({
