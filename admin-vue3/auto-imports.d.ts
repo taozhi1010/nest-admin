@@ -102,6 +102,7 @@ declare global {
   const useAttrs: typeof import('vue').useAttrs
   const useAuth: typeof import('./src/composables/useAuth').default
   const useCatTools: typeof import('./src/composables/useCatTools').useCatTools
+  const useClipboard: typeof import('./src/composables/useClipboard').useClipboard
   const useCommon: typeof import('./src/composables/useCommon').useCommon
   const useCssModule: typeof import('vue').useCssModule
   const useCssVars: typeof import('vue').useCssVars
