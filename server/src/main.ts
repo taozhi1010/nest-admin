@@ -50,8 +50,9 @@ async function bootstrap() {
       createProxyMiddleware({
         target: minioDomain,
         changeOrigin: true,
-        pathRewrite: {
-          '^/profile/': '/', // 将 /profile/avatars/xxx.png 转发到 MinIO 的 /avatars/xxx.png
+        pathRewrite: (path, req) => {
+          // 将 /profile/avatars/xxx.png 转换为 /avatars/xxx.png
+          return path.replace(/^\/profile\//, '/');
         },
       }),
     );
