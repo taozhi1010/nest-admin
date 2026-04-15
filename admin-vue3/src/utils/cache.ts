@@ -1,5 +1,18 @@
-const sessionCache = {
-  set(key, value) {
+/**
+ * 缓存工具
+ * 提供 sessionStorage 和 localStorage 的封装
+ */
+
+interface StorageCache {
+  set(key: string, value: string): void
+  get(key: string): string | null
+  setJSON(key: string, jsonValue: any): void
+  getJSON<T = any>(key: string): T | null
+  remove(key: string): void
+}
+
+const sessionCache: StorageCache = {
+  set(key: string, value: string): void {
     if (!sessionStorage) {
       return
     }
@@ -7,7 +20,7 @@ const sessionCache = {
       sessionStorage.setItem(key, value)
     }
   },
-  get(key) {
+  get(key: string): string | null {
     if (!sessionStorage) {
       return null
     }
@@ -16,23 +29,25 @@ const sessionCache = {
     }
     return sessionStorage.getItem(key)
   },
-  setJSON(key, jsonValue) {
+  setJSON(key: string, jsonValue: any): void {
     if (jsonValue != null) {
       this.set(key, JSON.stringify(jsonValue))
     }
   },
-  getJSON(key) {
+  getJSON<T = any>(key: string): T | null {
     const value = this.get(key)
     if (value != null) {
-      return JSON.parse(value)
+      return JSON.parse(value) as T
     }
+    return null
   },
-  remove(key) {
+  remove(key: string): void {
     sessionStorage.removeItem(key)
   }
 }
-const localCache = {
-  set(key, value) {
+
+const localCache: StorageCache = {
+  set(key: string, value: string): void {
     if (!localStorage) {
       return
     }
@@ -40,7 +55,7 @@ const localCache = {
       localStorage.setItem(key, value)
     }
   },
-  get(key) {
+  get(key: string): string | null {
     if (!localStorage) {
       return null
     }
@@ -49,18 +64,19 @@ const localCache = {
     }
     return localStorage.getItem(key)
   },
-  setJSON(key, jsonValue) {
+  setJSON(key: string, jsonValue: any): void {
     if (jsonValue != null) {
       this.set(key, JSON.stringify(jsonValue))
     }
   },
-  getJSON(key) {
+  getJSON<T = any>(key: string): T | null {
     const value = this.get(key)
     if (value != null) {
-      return JSON.parse(value)
+      return JSON.parse(value) as T
     }
+    return null
   },
-  remove(key) {
+  remove(key: string): void {
     localStorage.removeItem(key)
   }
 }

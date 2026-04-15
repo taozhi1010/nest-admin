@@ -14,9 +14,6 @@ import store from './store'
 import router from './router'
 import directive from './directive' // directive
 
-// 注册指令
-import plugins from './plugins' // plugins
-
 // svg 图标
 import 'virtual:svg-icons-register'
 import SvgIcon from '@/components/SvgIcon'
@@ -51,7 +48,6 @@ Object.keys(ElementPlusIconsVue).forEach((key) => {
 
 app.use(router)
 app.use(store)
-app.use(plugins)
 app.use(elementIcons)
 app.component('SvgIcon', SvgIcon)
 directive(app)
