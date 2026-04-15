@@ -1,12 +1,41 @@
+import { defineStore } from 'pinia'
 import defaultSettings from '@/settings'
 import { useDynamicTitle } from '@/composables/useDynamicTitle'
 
 const { sideTheme, showSettings, topNav, tagsView, fixedHeader, sidebarLogo, dynamicTitle, title: defaultTitle } = defaultSettings
 
-const storageSetting = JSON.parse(localStorage.getItem('layout-setting')) || ''
+interface LayoutSetting {
+  theme?: string
+  sideTheme?: string
+  topNav?: boolean
+  tagsView?: boolean
+  fixedHeader?: boolean
+  sidebarLogo?: boolean
+  dynamicTitle?: boolean
+}
+
+interface SettingsState {
+  title: string
+  theme: string
+  sideTheme: string
+  showSettings: boolean
+  topNav: boolean
+  tagsView: boolean
+  fixedHeader: boolean
+  sidebarLogo: boolean
+  dynamicTitle: boolean
+}
+
+const storageSetting: LayoutSetting = (() => {
+  try {
+    return JSON.parse(localStorage.getItem('layout-setting') || '{}')
+  } catch {
+    return {}
+  }
+})()
 
 const useSettingsStore = defineStore('settings', {
-  state: () => ({
+  state: (): SettingsState => ({
     title: defaultTitle || 'nest-admin 后台管理系统',
     theme: storageSetting.theme || '#409EFF',
     sideTheme: storageSetting.sideTheme || sideTheme,
@@ -19,14 +48,14 @@ const useSettingsStore = defineStore('settings', {
   }),
   actions: {
     // 修改布局设置
-    changeSetting(data) {
+    changeSetting(data: { key: keyof SettingsState; value: any }) {
       const { key, value } = data
-      if (this.hasOwnProperty(key)) {
+      if (key in this) {
         this[key] = value
       }
     },
     // 设置网页标题
-    setTitle(title) {
+    setTitle(title: string) {
       this.title = title
       const { updateTitle } = useDynamicTitle()
       updateTitle()
