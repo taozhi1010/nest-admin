@@ -80,7 +80,7 @@ const usePermissionStore = defineStore('permission', {
 })
 
 // 遍历后台传来的路由字符串，转换为组件对象
-function filterAsyncRouter(asyncRouterMap: any[], lastRouter = false, type = false): any[] {
+function filterAsyncRouter(asyncRouterMap: any[], lastRouter = false, type = false): RouteRecordRaw[] {
   return asyncRouterMap.filter((route) => {
     if (type && route.children) {
       route.children = filterChildren(route.children)
@@ -104,11 +104,11 @@ function filterAsyncRouter(asyncRouterMap: any[], lastRouter = false, type = fal
       delete route['redirect']
     }
     return true
-  })
+  }) as RouteRecordRaw[]
 }
 
-function filterChildren(childrenMap: any[], lastRouter: any = false): any[] {
-  const children: any[] = []
+function filterChildren(childrenMap: any[], lastRouter: any = false): RouteRecordRaw[] {
+  const children: RouteRecordRaw[] = []
   childrenMap.forEach((el, index) => {
     if (el.children && el.children.length) {
       if (el.component === 'ParentView' && !lastRouter) {
@@ -132,7 +132,7 @@ function filterChildren(childrenMap: any[], lastRouter: any = false): any[] {
 }
 
 // 动态路由遍历，验证是否具备权限
-export function filterDynamicRoutes(routes: RouteRecordRaw[]): RouteRecordRaw[] {
+export function filterDynamicRoutes(routes: any[]): RouteRecordRaw[] {
   const res: RouteRecordRaw[] = []
   const { hasPermiOr, hasRoleOr } = useAuth()
   routes.forEach((route) => {
