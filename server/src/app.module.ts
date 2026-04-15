@@ -13,6 +13,7 @@ import { SystemModule } from './module/system/system.module';
 import { CommonModule } from './module/common/common.module';
 import { MonitorModule } from './module/monitor/monitor.module';
 import { GameModule } from './module/game/game.module';
+import { MinioModule } from './module/common/minio/minio.module';
 
 @Global()
 @Module({
@@ -46,6 +47,7 @@ import { GameModule } from './module/game/game.module';
     SystemModule,
     MonitorModule,
     GameModule,
+    MinioModule,
   ],
   providers: [
     {

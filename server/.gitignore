@@ -19,6 +19,8 @@ lerna-debug.log*
 /.nyc_output
 /server/src/config/prod.yml
 /server/src/config/test.yml
+/server/src/config/env/dev.yml
+/server/src/config/env/prod.yml
 
 # Upload folder (local test files)
 /upload

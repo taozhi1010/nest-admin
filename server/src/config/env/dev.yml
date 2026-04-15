@@ -7,7 +7,9 @@ app:
     dir: '../logs'
   # 文件相关
   file:
-    # 是否为本地文件服务或cos
+    # 存储类型: local(本地), cos(腾讯云), minio(MinIO)
+    storageType: 'minio'
+    # 是否为本地文件服务或cos（保留兼容）
     isLocal: true
     # location 文件上传后存储目录，相对路径（相对本项目根目录）或绝对路径
     location: '../upload'
@@ -17,7 +19,17 @@ app:
     serveRoot: '/profile'
     # 文件大小限制，单位M
     maxSize: 10
-# 腾讯云cos配置
+# MinIO 对象存储配置
+minio:
+  endPoint: '111.229.29.214'
+  port: 9000
+  useSSL: false
+  accessKey: 'minio_3mb6wK'
+  secretKey: 'minio_r3zNXd'
+  bucket: 'avatars'
+  region: 'us-east-1'
+  domain: 'http://111.229.29.214:9000'
+# 腾讯云cos配置（保留兼容）
 cos:
   secretId: ''
   secretKey: ''

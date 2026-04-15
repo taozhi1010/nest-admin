@@ -10,6 +10,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { join } from 'path';
 import { setupApiDocs } from 'src/common/utils/api-docs';
+import { createProxyMiddleware } from 'http-proxy-middleware';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
@@ -38,10 +39,29 @@ async function bootstrap() {
 
   const rootPath = process.cwd();
   const baseDirPath = join(rootPath, config.get('app.file.location'));
-  app.useStaticAssets(baseDirPath, {
-    prefix: '/profile/',
-    maxAge: 0, // 头像等动态资源不缓存，确保实时更新
-  });
+
+  // 判断存储类型，如果是 minio 则使用代理，否则使用本地静态资源
+  const storageType = config.get<string>('app.file.storageType');
+  if (storageType === 'minio') {
+    // MinIO 代理配置
+    const minioDomain = config.get<string>('minio.domain');
+    app.use(
+      '/profile/',
+      createProxyMiddleware({
+        target: minioDomain,
+        changeOrigin: true,
+        pathRewrite: {
+          '^/profile/': '/', // 将 /profile/avatars/xxx.png 转发到 MinIO 的 /avatars/xxx.png
+        },
+      }),
+    );
+  } else {
+    // 本地静态资源
+    app.useStaticAssets(baseDirPath, {
+      prefix: '/profile/',
+      maxAge: 0, // 头像等动态资源不缓存，确保实时更新
+    });
+  }
 
   app.setGlobalPrefix(prefix);
   // 全局验证
