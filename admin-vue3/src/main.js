@@ -1,5 +1,4 @@
 ﻿import { createApp } from 'vue'
-import dayjs from 'dayjs'
 
 import Cookies from 'js-cookie'
 
@@ -17,7 +16,6 @@ import directive from './directive' // directive
 
 // 注册指令
 import plugins from './plugins' // plugins
-import { download } from '@/composables/useRequest'
 
 // svg 图标
 import 'virtual:svg-icons-register'
@@ -58,10 +56,6 @@ app.use(elementIcons)
 app.component('SvgIcon', SvgIcon)
 directive(app)
 
-// 全局挂载 dayjs
-app.config.globalProperties.$dayjs = dayjs
-
-// 使用 element-plus 并且设置全局的大小
 app.use(ElementPlus, {
   locale: locale,
   // 支持 large、default、small
