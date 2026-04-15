@@ -23,7 +23,9 @@ export class MinioService {
   }
 
   /**
-   * 确保存储桶存在（如果不存在就创建）
+   * 确保存储桶存在并设置为公开访问
+   * - 如果不存在就创建
+   * - 如果已存在则强制设置为公开访问
    */
   async ensureBucketExists(): Promise<void> {
     const exists = await this.minioClient.bucketExists(this.bucketName);
@@ -31,6 +33,22 @@ export class MinioService {
       await this.minioClient.makeBucket(this.bucketName, this.configService.get<string>('minio.region', 'us-east-1'));
       console.log(`✅ MinIO 存储桶 '${this.bucketName}' 已创建`);
     }
+
+    // 无论是否新创建，都设置为公开访问策略（允许匿名读取）
+    const policy = {
+      Version: '2012-10-17',
+      Statement: [
+        {
+          Sid: 'PublicRead',
+          Effect: 'Allow',
+          Principal: '*',
+          Action: ['s3:GetObject'],
+          Resource: [`arn:aws:s3:::${this.bucketName}/*`],
+        },
+      ],
+    };
+    await this.minioClient.setBucketPolicy(this.bucketName, JSON.stringify(policy));
+    console.log(`✅ MinIO 存储桶 '${this.bucketName}' 已设置为公开访问`);
   }
 
   /**
