@@ -11,6 +11,7 @@ import path from 'path';
 import iconv from 'iconv-lite';
 import COS from 'cos-nodejs-sdk-v5';
 import Mime from 'mime-types';
+import { MinioService } from '../common/minio/minio.service';
 
 @Injectable()
 export class UploadService {
@@ -25,14 +26,17 @@ export class UploadService {
     ChunkSize: 1024 * 1024 * 8, // 控制分片大小，单位 B，在同园区上传可以设置较大的分片大小
   });
   private isLocal: boolean;
+  private storageType: string;
   constructor(
     @InjectRepository(SysUploadEntity)
     private readonly sysUploadEntityRep: Repository<SysUploadEntity>,
     @Inject(ConfigService)
     private config: ConfigService,
+    private readonly minioService: MinioService,
   ) {
     this.thunkDir = 'thunk';
     this.isLocal = this.config.get('app.file.isLocal');
+    this.storageType = this.config.get('app.file.storageType') || 'local';
   }
 
   /**
@@ -46,7 +50,9 @@ export class UploadService {
       return ResultData.fail(500, `文件大小不能超过${this.config.get('app.file.maxSize')}MB`);
     }
     let res;
-    if (this.isLocal) {
+    if (this.storageType === 'minio') {
+      res = await this.saveFileToMinio(file);
+    } else if (this.isLocal) {
       res = await this.saveFileLocal(file);
     } else {
       const targetDir = this.config.get('cos.location');
@@ -239,26 +245,59 @@ export class UploadService {
     const fileName = serveRoot + relativeFilePath;
 
     // 构建 URL（只返回相对路径，前端会自动拼接域名）
-    const url = fileName;  // 返回 /profile/blob_xxx.png 格式
+    const url = fileName; // 返回 /profile/blob_xxx.png 格式
 
     return {
       fileName: fileName,
       newFileName: newFileName,
-      url: url,  // 返回 /profile/blob_xxx.png 格式
+      url: url, // 返回 /profile/blob_xxx.png 格式
+    };
+  }
+
+  /**
+   * 保存文件到 MinIO
+   * @param file
+   */
+  async saveFileToMinio(file: Express.Multer.File) {
+    // 对文件名转码
+    const originalname = iconv.decode(Buffer.from(file.originalname, 'binary'), 'utf8');
+    const ext = Mime.extension(file.mimetype);
+    // 重新生成文件名加上时间戳
+    const newFileName = this.getNewFileName(originalname) + '.' + ext;
+
+    // 上传到 MinIO
+    const url = await this.minioService.uploadFile(file.buffer, newFileName, file.mimetype);
+
+    return {
+      fileName: newFileName,
+      newFileName: newFileName,
+      url: url,
     };
   }
   /**
    * 生成新的文件名
-   * @param originalname
-   * @returns
+   * @param originalname 原始文件名
+   * @returns 带时间戳的新文件名
    */
   getNewFileName(originalname: string): string {
     if (!originalname) {
       return originalname;
     }
-    const newFileNameArr = originalname.split('.');
-    newFileNameArr[newFileNameArr.length - 1] = `${newFileNameArr[newFileNameArr.length - 1]}_${new Date().getTime()}`;
-    return newFileNameArr.join('.');
+    // 只取文件名部分，不包含扩展名
+    const nameParts = originalname.split('.');
+    if (nameParts.length > 1) {
+      nameParts.pop(); // 移除扩展名
+    }
+    let fileName = nameParts.join('.');
+
+    // 检查文件名是否已经包含时间戳（格式：name_1234567890123）
+    // 避免前端已经加了时间戳，后端又加一次导致重复
+    const timestampRegex = /_\d{13}$/;
+    if (!timestampRegex.test(fileName)) {
+      fileName = `${fileName}_${new Date().getTime()}`;
+    }
+
+    return fileName;
   }
 
   /**
