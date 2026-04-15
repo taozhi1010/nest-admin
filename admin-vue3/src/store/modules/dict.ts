@@ -1,14 +1,38 @@
+import { defineStore } from 'pinia'
 import { getDicts, getAllDicts } from '@/api/system/dict/data'
 import { optionselect } from '@/api/system/dict/type'
+
+// ==================== 类型定义 ====================
+
+interface DictItem {
+  label: string
+  value: string
+  elTagType?: string
+  elTagClass?: string
+}
+
+interface DictData {
+  key: string
+  value: DictItem[]
+}
+
+interface RawDictItem {
+  dictLabel: string
+  dictValue: string
+  listClass?: string
+  cssClass?: string
+  dictType?: string
+  type?: string
+}
 
 // ==================== 工具函数 ====================
 
 /**
  * 格式化字典数据
- * @param {Array} dictDataList - 原始字典数据列表
- * @returns {Array} 格式化后的字典数据
+ * @param dictDataList - 原始字典数据列表
+ * @returns 格式化后的字典数据
  */
-function formatDictData(dictDataList) {
+function formatDictData(dictDataList: RawDictItem[]): DictItem[] {
   return dictDataList.map((item) => ({
     label: item.dictLabel,
     value: item.dictValue,
@@ -21,26 +45,27 @@ function formatDictData(dictDataList) {
 
 const useDictStore = defineStore('dict', {
   state: () => ({
-    dict: [], // 字典缓存数组 [{ key: dictType, value: dictData[] }]
-    loadedTypes: new Set() // 已加载的字典类型集合
+    dict: [] as DictData[], // 字典缓存数组 [{ key: dictType, value: dictData[] }]
+    loadedTypes: new Set<string>() // 已加载的字典类型集合
   }),
   actions: {
     /**
      * 获取字典数据
-     * @param {string} key - 字典类型
-     * @returns {Array|null} 字典数据数组
+     * @param key - 字典类型
+     * @returns 字典数据数组
      */
-    getDict(key) {
+    getDict(key: string): DictItem[] | null {
       if (!key) return null
       const item = this.dict.find((d) => d.key === key)
       return item ? item.value : null
     },
+    
     /**
      * 设置字典数据
-     * @param {string} key - 字典类型
-     * @param {Array} value - 字典数据数组
+     * @param key - 字典类型
+     * @param value - 字典数据数组
      */
-    setDict(key, value) {
+    setDict(key: string, value: DictItem[]) {
       if (!key) return
       
       const existingIndex = this.dict.findIndex((item) => item.key === key)
@@ -52,12 +77,13 @@ const useDictStore = defineStore('dict', {
         this.dict.push({ key, value })
       }
     },
+    
     /**
      * 删除字典
-     * @param {string} key - 字典类型
-     * @returns {boolean} 是否删除成功
+     * @param key - 字典类型
+     * @returns 是否删除成功
      */
-    removeDict(key) {
+    removeDict(key: string): boolean {
       const index = this.dict.findIndex((item) => item.key === key)
       if (index !== -1) {
         this.dict.splice(index, 1)
@@ -65,6 +91,7 @@ const useDictStore = defineStore('dict', {
       }
       return false
     },
+    
     /**
      * 清空所有字典
      */
@@ -72,30 +99,33 @@ const useDictStore = defineStore('dict', {
       this.dict = []
       this.loadedTypes.clear()
     },
+    
     /**
      * 标记字典类型为已加载
-     * @param {string} dictType - 字典类型
+     * @param dictType - 字典类型
      */
-    markTypeAsLoaded(dictType) {
+    markTypeAsLoaded(dictType: string) {
       this.loadedTypes.add(dictType)
     },
+    
     /**
      * 检查字典类型是否已加载
-     * @param {string} dictType - 字典类型
-     * @returns {boolean} 是否已加载
+     * @param dictType - 字典类型
+     * @returns 是否已加载
      */
-    isTypeLoaded(dictType) {
+    isTypeLoaded(dictType: string): boolean {
       return this.loadedTypes.has(dictType)
     },
+    
     /**
      * 异步加载单个字典
-     * @param {string} dictType - 字典类型
-     * @returns {Promise<Array>} 字典数据数组
+     * @param dictType - 字典类型
+     * @returns 字典数据数组
      */
-    async loadDict(dictType) {
+    async loadDict(dictType: string): Promise<DictItem[]> {
       // 如果已加载，直接返回缓存
       if (this.isTypeLoaded(dictType)) {
-        return this.getDict(dictType)
+        return this.getDict(dictType) || []
       }
       
       try {
@@ -109,6 +139,7 @@ const useDictStore = defineStore('dict', {
         return []
       }
     },
+    
     /**
      * 初始化字典 - 一次性加载所有字典
      */
@@ -137,8 +168,8 @@ const useDictStore = defineStore('dict', {
     /**
      * 处理数组格式的字典数据
      */
-    processArrayDicts(allDicts) {
-      const groupedDicts = {}
+    processArrayDicts(allDicts: RawDictItem[]) {
+      const groupedDicts: Record<string, RawDictItem[]> = {}
       
       // 按 dictType 分组
       allDicts.forEach((item) => {
@@ -162,7 +193,7 @@ const useDictStore = defineStore('dict', {
     /**
      * 处理对象格式的字典数据
      */
-    processObjectDicts(allDicts) {
+    processObjectDicts(allDicts: Record<string, RawDictItem[]>) {
       Object.entries(allDicts).forEach(([dictType, dictDataList]) => {
         if (dictType && Array.isArray(dictDataList)) {
           const formattedDictData = formatDictData(dictDataList)
@@ -181,7 +212,7 @@ const useDictStore = defineStore('dict', {
         const dictTypes = response.data || []
         
         // 并发加载所有字典
-        const promises = dictTypes.map(async (dictType) => {
+        const promises = dictTypes.map(async (dictType: any) => {
           const type = dictType.dictType || dictType.type
           if (type) {
             await this.loadDict(type)
