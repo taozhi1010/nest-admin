@@ -11,7 +11,8 @@ import path from 'path';
 import iconv from 'iconv-lite';
 import COS from 'cos-nodejs-sdk-v5';
 import Mime from 'mime-types';
-import { MinioService } from '../common/minio/minio.service';
+import { FileStorageFactory } from '../common/file-storage/file-storage.factory';
+import { UploadResult } from '../common/file-storage/interfaces/file-storage.interface';
 
 @Injectable()
 export class UploadService {
@@ -32,7 +33,7 @@ export class UploadService {
     private readonly sysUploadEntityRep: Repository<SysUploadEntity>,
     @Inject(ConfigService)
     private config: ConfigService,
-    private readonly minioService: MinioService,
+    private readonly fileStorageFactory: FileStorageFactory,
   ) {
     this.thunkDir = 'thunk';
     this.isLocal = this.config.get('app.file.isLocal');
@@ -44,20 +45,15 @@ export class UploadService {
    * @param file
    * @returns
    */
-  async singleFileUpload(file: Express.Multer.File) {
+  async singleFileUpload(file: Express.Multer.File): Promise<UploadResult | any> {
     const fileSize = (file.size / 1024 / 1024).toFixed(2);
     if (fileSize > this.config.get('app.file.maxSize')) {
       return ResultData.fail(500, `文件大小不能超过${this.config.get('app.file.maxSize')}MB`);
     }
-    let res;
-    if (this.storageType === 'minio') {
-      res = await this.saveFileToMinio(file);
-    } else if (this.isLocal) {
-      res = await this.saveFileLocal(file);
-    } else {
-      const targetDir = this.config.get('cos.location');
-      res = await this.saveFileCos(targetDir, file);
-    }
+
+    // 使用文件存储工厂统一处理上传
+    const res = await this.fileStorageFactory.uploadFile(file.buffer, file.originalname, file.mimetype);
+
     const uploadId = GenerateUUID();
     await this.sysUploadEntityRep.save({ uploadId, ...res, ext: path.extname(res.newFileName), size: file.size });
     return res;
@@ -254,26 +250,6 @@ export class UploadService {
     };
   }
 
-  /**
-   * 保存文件到 MinIO
-   * @param file
-   */
-  async saveFileToMinio(file: Express.Multer.File) {
-    // 对文件名转码
-    const originalname = iconv.decode(Buffer.from(file.originalname, 'binary'), 'utf8');
-    const ext = Mime.extension(file.mimetype);
-    // 重新生成文件名加上时间戳
-    const newFileName = this.getNewFileName(originalname) + '.' + ext;
-
-    // 上传到 MinIO
-    const url = await this.minioService.uploadFile(file.buffer, newFileName, file.mimetype);
-
-    return {
-      fileName: newFileName,
-      newFileName: newFileName,
-      url: url,
-    };
-  }
   /**
    * 生成新的文件名
    * @param originalname 原始文件名

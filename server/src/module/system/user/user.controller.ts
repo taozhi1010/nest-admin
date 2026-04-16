@@ -51,8 +51,15 @@ export class UserController {
       return ResultData.fail(500, '请上传头像文件');
     }
     const res = await this.uploadService.singleFileUpload(avatarfile);
-    // 使用完整 URL 而不是相对路径
-    const imgUrl = res.url;
+
+    // 检查是否上传失败（返回的是错误信息）
+    if (res.code && res.code !== 200) {
+      return res; // 返回错误信息
+    }
+
+    // TypeScript 类型守卫：确保 res 是 UploadResult 类型
+    const uploadResult = res as any;
+    const imgUrl = uploadResult.url;
 
     // 将头像 URL 保存到用户信息表，并传入当前 token
     await this.userService.updateUserAvatar(user.user.userId, imgUrl, user.token);
