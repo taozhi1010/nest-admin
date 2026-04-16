@@ -51,6 +51,7 @@ declare global {
   const isRelogin: typeof import('./src/composables/useRequest').isRelogin
   const isShallow: typeof import('vue').isShallow
   const isString: typeof import('./src/composables/useValidator').isString
+  const isValidBlob: typeof import('./src/composables/useValidator').isValidBlob
   const lowerCaseSchema: typeof import('./src/composables/useValidator').lowerCaseSchema
   const mapActions: typeof import('pinia').mapActions
   const mapGetters: typeof import('pinia').mapGetters

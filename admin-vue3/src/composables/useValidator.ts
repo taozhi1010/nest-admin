@@ -162,6 +162,16 @@ export function isArray<T>(value: unknown): value is T[] {
 }
 
 /**
+ * 验证 Blob 是否为有效的文件流（非 JSON 错误响应）
+ * 用于文件下载场景，判断后端返回的是文件还是错误信息
+ * @param blob - Blob 对象
+ * @returns 如果 type 不是 application/json 则返回 true（表示是有效文件）
+ */
+export function isValidBlob(blob: Blob): boolean {
+  return blob.type !== 'application/json'
+}
+
+/**
  * Zod 验证辅助函数
  * 安全地验证数据，返回结果对象
  * @param schema - Zod schema

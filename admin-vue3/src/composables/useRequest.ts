@@ -5,6 +5,7 @@ import errorCode from '@/utils/errorCode'
 import cache from '@/utils/cache'
 import { saveAs } from 'file-saver'
 import useUserStore from '@/store/modules/user'
+import { isValidBlob } from './useValidator'
 
 // ==================== 类型定义 ====================
 
@@ -60,14 +61,6 @@ function paramsToQueryString(params: Record<string, any>): string {
   })
   
   return searchParams.toString()
-}
-
-/**
- * 验证是否为blob格式
- * 替代原 ruoyi.js 中的 blobValidate 方法
- */
-function blobValidate(data: Blob): boolean {
-  return data.type !== 'application/json'
 }
 
 // 创建 axios 实例
@@ -242,7 +235,7 @@ export function download(url: string, params: any, filename: string, config?: Do
       ...config
     })
     .then(async (data: any) => {
-      const isBlob = blobValidate(data)
+      const isBlob = isValidBlob(data)
       if (isBlob) {
         const blob = new Blob([data])
         saveAs(blob, filename)
