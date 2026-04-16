@@ -17,10 +17,15 @@ lerna-debug.log*
 # Tests
 /coverage
 /.nyc_output
+
+# Config files (sensitive information)
 /server/src/config/prod.yml
 /server/src/config/test.yml
 /server/src/config/env/dev.yml
 /server/src/config/env/prod.yml
+
+# Lingma AI skills and cache
+/.lingma
 
 # Upload folder (local test files)
 /upload
