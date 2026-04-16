@@ -2,7 +2,6 @@ import axios, { type AxiosInstance, type InternalAxiosRequestConfig, type AxiosR
 import { ElNotification, ElMessageBox, ElMessage, ElLoading } from 'element-plus'
 import { getToken } from '@/utils/auth'
 import errorCode from '@/utils/errorCode'
-import { tansParams, blobValidate } from '@/utils/ruoyi'
 import cache from '@/utils/cache'
 import { saveAs } from 'file-saver'
 import useUserStore from '@/store/modules/user'
@@ -29,6 +28,47 @@ interface DownloadConfig {
 
 // 是否显示重新登录
 export let isRelogin = { show: false }
+
+// ==================== 工具函数 ====================
+
+/**
+ * 将参数对象转换为查询字符串
+ * 替代原 ruoyi.js 中的 tansParams 方法
+ * @param params 参数对象
+ * @returns 查询字符串（不带开头的 ?）
+ */
+function paramsToQueryString(params: Record<string, any>): string {
+  const searchParams = new URLSearchParams()
+  
+  function appendValue(key: string, value: any) {
+    if (value === null || value === undefined || value === '') {
+      return
+    }
+    
+    if (typeof value === 'object' && !Array.isArray(value)) {
+      // 处理嵌套对象，如 {user: {name: 'test'}} -> user[name]=test
+      Object.keys(value).forEach(subKey => {
+        appendValue(`${key}[${subKey}]`, value[subKey])
+      })
+    } else {
+      searchParams.append(key, String(value))
+    }
+  }
+  
+  Object.keys(params).forEach(key => {
+    appendValue(key, params[key])
+  })
+  
+  return searchParams.toString()
+}
+
+/**
+ * 验证是否为blob格式
+ * 替代原 ruoyi.js 中的 blobValidate 方法
+ */
+function blobValidate(data: Blob): boolean {
+  return data.type !== 'application/json'
+}
 
 // 创建 axios 实例
 const service: AxiosInstance = axios.create({
@@ -60,8 +100,11 @@ service.interceptors.request.use(
     
     // get请求映射params参数
     if (config.method === 'get' && config.params) {
-      let url = `${config.url}?${tansParams(config.params)}`
-      url = url.slice(0, -1)
+      let url = `${config.url}?${paramsToQueryString(config.params)}`
+      // 移除末尾的 & 符号（如果有的话）
+      if (url.endsWith('&')) {
+        url = url.slice(0, -1)
+      }
       config.params = {}
       config.url = url
     }
@@ -191,7 +234,7 @@ export function download(url: string, params: any, filename: string, config?: Do
     .post(url, params, {
       transformRequest: [
         (params) => {
-          return tansParams(params)
+          return paramsToQueryString(params)
         }
       ],
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
