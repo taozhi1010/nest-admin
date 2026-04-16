@@ -5,12 +5,6 @@ import errorCode from '@/utils/errorCode'
 import { ElMessage } from 'element-plus'
 import { isValidBlob } from './useValidator'
 
-// ==================== 类型定义 ====================
-
-interface DownloadOptions {
-  isDelete?: boolean
-}
-
 // ==================== 工具函数 ====================
 
 /**

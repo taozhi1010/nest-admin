@@ -4,7 +4,6 @@ import { reactive } from 'vue'
 import { getCodeImg } from '@/api/login'
 import { useCatTools } from '@/composables/useCatTools'
 import { ElMessage } from 'element-plus'
-import type { ApiResponse } from '@/types/api'
 
 // ==================== 类型定义 ====================
 
@@ -149,7 +148,7 @@ const getUserCookie = (data: LoginForm): LoginForm => {
 
   const form: LoginForm = {
     username: isNullorUndefined(cookieData.username) ? data.username : cookieData.username,
-    password: isNullorUndefined(cookieData.password) ? data.password : decrypt(cookieData.password),
+    password: isNullorUndefined(cookieData.password) ? data.password : (decrypt(cookieData.password) || ''),
     rememberMe: isNullorUndefined(cookieData.rememberMe) ? false : Boolean(cookieData.rememberMe)
   }
 
