@@ -1,7 +1,10 @@
+/**
+ * 标签页视图管理
+ * 管理已访问页面的标签页列表和缓存，支持标签页的增删改查操作
+ */
 import { defineStore } from 'pinia'
-import type { RouteLocationNormalized } from 'vue-router'
 
-interface TagView {
+export interface TagView {
   title?: string
   path: string
   name?: string

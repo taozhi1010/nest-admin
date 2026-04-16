@@ -1,3 +1,7 @@
+/**
+ * 字典数据管理
+ * 管理系统字典数据，支持按需加载和全量加载，提供字典标签获取功能
+ */
 import { defineStore } from 'pinia'
 import { getDicts, getAllDicts } from '@/api/system/dict/data'
 import { optionselect } from '@/api/system/dict/type'

@@ -19,10 +19,10 @@ lerna-debug.log*
 /.nyc_output
 
 # Config files (sensitive information)
-/server/src/config/prod.yml
-/server/src/config/test.yml
-/server/src/config/env/dev.yml
-/server/src/config/env/prod.yml
+src/config/prod.yml
+src/config/test.yml
+src/config/env/dev.yml
+src/config/env/prod.yml
 
 # Lingma AI skills and cache
 /.lingma

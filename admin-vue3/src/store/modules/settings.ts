@@ -1,3 +1,7 @@
+/**
+ * 系统设置管理
+ * 管理主题、布局、标签页等个性化配置，支持持久化存储
+ */
 import { defineStore } from 'pinia'
 import defaultSettings from '@/settings'
 import { useDynamicTitle } from '@/composables/useDynamicTitle'

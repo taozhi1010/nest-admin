@@ -1,3 +1,7 @@
+/**
+ * 用户信息管理
+ * 管理用户登录状态、个人信息、角色和权限等认证相关数据
+ */
 import { defineStore } from 'pinia'
 import { login, logout, getInfo } from '@/api/login'
 import { getToken, setToken, removeToken } from '@/utils/auth'

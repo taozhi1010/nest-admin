@@ -1,3 +1,7 @@
+/**
+ * 权限路由管理
+ * 根据用户角色动态生成可访问的路由菜单，实现前端权限控制
+ */
 import { defineStore } from 'pinia'
 import { useAuth } from '@/composables/useAuth'
 import router, { constantRoutes, dynamicRoutes } from '@/router'
