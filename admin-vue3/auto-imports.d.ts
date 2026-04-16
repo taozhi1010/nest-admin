@@ -75,6 +75,7 @@ declare global {
   const onUnmounted: typeof import('vue').onUnmounted
   const onUpdated: typeof import('vue').onUpdated
   const onWatcherCleanup: typeof import('vue').onWatcherCleanup
+  const parseStrEmpty: typeof import('./src/composables/useCommon').parseStrEmpty
   const parseTime: typeof import('./src/composables/useCommon').parseTime
   const provide: typeof import('vue').provide
   const reactive: typeof import('vue').reactive

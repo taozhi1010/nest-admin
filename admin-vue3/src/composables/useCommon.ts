@@ -1,5 +1,4 @@
-﻿import { addDateRange as _addDateRange } from '@/utils/ruoyi'
-import { download as _download } from './useRequest'
+﻿import { download as _download } from './useRequest'
 import type { FormInstance } from 'element-plus'
 import { getCurrentInstance } from 'vue'
 import dayjs from 'dayjs'
@@ -73,8 +72,54 @@ export function parseTime(time: any, pattern = '{y}-{m}-{d} {h}:{i}:{s}') {
   return dayjs(time).format(format)
 }
 
+/**
+ * 添加日期范围参数
+ * 替代原 ruoyi.js 中的 addDateRange 方法
+ * @param params 查询参数对象
+ * @param dateRange 日期范围数组 [开始时间, 结束时间]
+ * @param propName 属性名称前缀（可选）
+ * @returns 添加了日期范围的参数对象
+ */
+export function addDateRange(
+  params: any,
+  dateRange: string[],
+  propName?: string
+) {
+  const search = params
+  search.params =
+    typeof search.params === 'object' &&
+    search.params !== null &&
+    !Array.isArray(search.params)
+      ? search.params
+      : {}
+  
+  const range = Array.isArray(dateRange) ? dateRange : []
+  
+  if (typeof propName === 'undefined') {
+    search.params['beginTime'] = range[0]
+    search.params['endTime'] = range[1]
+  } else {
+    search.params[`begin${propName}`] = range[0]
+    search.params[`end${propName}`] = range[1]
+  }
+  
+  return search
+}
+
+/**
+ * 转换字符串，将 undefined、null 等转化为空字符串
+ * 替代原 ruoyi.js 中的 parseStrEmpty 方法
+ * @param str 待转换的字符串
+ * @returns 转换后的字符串
+ */
+export function parseStrEmpty(str: any): string {
+  if (!str || str === 'undefined' || str === 'null') {
+    return ''
+  }
+  return String(str)
+}
+
 // 单独导出各个工具函数
-export const addDateRange = _addDateRange
 export const download = _download
 
 /**

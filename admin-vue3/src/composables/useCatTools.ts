@@ -6,7 +6,7 @@ import { catTools as localCatTools } from '@/utils/catTools'
  * 提供全局工具函数的 Composable 封装
  * 整合了 npm cat-tools 库和本地工具函数
  * @example
- * const { dateFormat, debounce, throttle, isNullorUndefined, deepCopy } = useCatTools()
+ * const { dateFormat, uuid, isNullorUndefined, deepCopy } = useCatTools()
  */
 export function useCatTools() {
   return {
@@ -19,28 +19,9 @@ export function useCatTools() {
     dateFormat: localCatTools.dateFormat,
 
     /**
-     * 防抖函数
-     * @param fn - 要执行的函数
-     * @param delay - 延迟时间（毫秒）
-     */
-    debounce: localCatTools.debounce,
-
-    /**
-     * 节流函数
-     * @param fn - 要执行的函数
-     * @param delay - 延迟时间（毫秒）
-     */
-    throttle: localCatTools.throttle,
-
-    /**
      * 生成 UUID
      */
     uuid: localCatTools.uuid,
-
-    /**
-     * 解析 URL 参数
-     */
-    parseUrl: localCatTools.parseUrl,
 
     /**
      * 格式化文件大小

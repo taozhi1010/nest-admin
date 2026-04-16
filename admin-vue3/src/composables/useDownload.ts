@@ -2,7 +2,6 @@
 import { saveAs } from 'file-saver'
 import { getToken } from '@/utils/auth'
 import errorCode from '@/utils/errorCode'
-import { blobValidate } from '@/utils/ruoyi'
 import { ElMessage } from 'element-plus'
 
 // ==================== 类型定义 ====================
@@ -12,6 +11,14 @@ interface DownloadOptions {
 }
 
 // ==================== 工具函数 ====================
+
+/**
+ * 验证是否为blob格式
+ * 替代原 ruoyi.js 中的 blobValidate 方法
+ */
+function blobValidate(data: Blob): boolean {
+  return data.type !== 'application/json'
+}
 
 /**
  * 处理下载错误信息
