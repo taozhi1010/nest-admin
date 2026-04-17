@@ -1,0 +1,87 @@
+# 生产环境配置
+# 注意：请根据实际情况修改以下配置项
+
+app:
+  port: 8080                    # 服务端口
+  prefix: ''                    # API访问前缀
+  file:
+    storageType: ''             # 文件存储类型：minio | rustfs | local
+    location: ''                # 本地存储路径
+    domain: ''                  # 文件访问域名
+    serveRoot: ''               # 文件虚拟路径
+    maxSize: 10                 # 文件大小限制 (MB)
+
+# MinIO 对象存储配置
+minio:
+  endPoint: ''                  # MinIO 服务器地址
+  port: 9000                    # MinIO API 端口
+  useSSL: false                 # 是否使用 SSL
+  accessKey: ''                 # MinIO Access Key
+  secretKey: ''                 # MinIO Secret Key
+  bucket: ''                    # 存储桶名称
+  region: ''                    # 区域
+  domain: ''                    # MinIO 访问域名
+
+# 腾讯云cos配置（保留兼容）
+cos:
+  secretId: ''                  # 腾讯云 Secret ID
+  secretKey: ''                 # 腾讯云 Secret Key
+  bucket: ''                    # COS 存储桶名称
+  region: ''                    # COS 区域
+  domain: ''                    # COS 访问域名
+
+# 数据库配置
+db:
+  mysql:
+    host: ''                    # 数据库地址
+    username: ''                # 数据库用户名
+    password: ''                # 数据库密码
+    database: ''                # 数据库名称
+    port: 3306                  # 数据库端口
+    charset: 'utf8mb4'          # 字符集
+    logger: 'file'              # 日志类型
+    synchronize: false          # 生产环境必须设为 false
+    logging: false              # 生产环境建议关闭 SQL 日志
+
+# redis 配置
+redis:
+  host: ''                      # Redis 地址
+  password: ''                  # Redis 密码
+  port: 6379                    # Redis 端口
+  db: 0                         # Redis 数据库编号
+  keyPrefix: ''                 # Key 前缀
+
+# jwt 配置
+jwt:
+  secretkey: ''                 # JWT 密钥（生产环境必须修改为复杂密钥）
+  expiresin: '24h'              # Token 过期时间
+  refreshExpiresIn: '7d'        # 刷新 Token 过期时间
+
+# 日志配置
+log:
+  dir: 'logs'                   # 日志目录
+  level: 'warn'                 # 生产环境建议设为 warn 或 error
+  maxFiles: '30d'               # 日志保留天数
+  maxSize: '20m'                # 日志文件大小限制
+
+# swagger 配置
+swagger:
+  enable: false                 # 生产环境建议关闭 Swagger
+  path: 'api-docs'              # Swagger 文档路径
+
+# 权限配置 - 白名单路由（不需要 token 验证的接口）
+perm:
+  router:
+    whitelist:
+      - path: '/login'
+        method: 'POST'
+      - path: '/register'
+        method: 'POST'
+      - path: '/captchaImage'
+        method: 'GET'
+      - path: '/logout'
+        method: 'POST'
+      - path: '/swagger-ui(.*)'
+      - path: '/docs(.*)'
+      - path: '/openapi.json'
+      - path: '/profile/(.*)'

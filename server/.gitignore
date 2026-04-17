@@ -18,12 +18,6 @@ lerna-debug.log*
 /coverage
 /.nyc_output
 
-# Config files (sensitive information)
-src/config/prod.yml
-src/config/test.yml
-src/config/env/dev.yml
-src/config/env/prod.yml
-
 # Lingma AI skills and cache
 /.lingma
 
