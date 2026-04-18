@@ -1,4 +1,4 @@
-import defAva from '@/assets/images/avatar.png'
+import defAva from '@/assets/images/avatar.webp'
 
 /**
  * 图片资源统一处理工具
