@@ -2,7 +2,7 @@ app:
   port: 8080                    # 服务端口
   prefix: ''                    # API访问前缀
   file:
-    storageType: 'local'        # 文件存储类型：minio | rustfs | local
+    storageType: 'minio'        # 文件存储类型：minio | rustfs | local
     location: '../upload'       # 本地存储路径（仅当 storageType=local 时有效）
     domain: 'http://localhost:8080'  # 文件访问域名
     serveRoot: '/profile'       # 文件虚拟路径
