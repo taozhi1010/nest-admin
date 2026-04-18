@@ -1,8 +1,8 @@
 <template>
   <div class="swagger-container">
     <div class="section-header">
-      <h3 class="section-title">接口文档</h3>
-      <p class="section-desc">多种文档视图，满足不同使用场景</p>
+      <h3 class="section-title">服务工具导航</h3>
+      <p class="section-desc">接口文档与实用工具集合</p>
     </div>
     <el-row :gutter="20">
       <el-col :lg="8" :md="12" :sm="24" :xs="24">
@@ -60,12 +60,55 @@
         </el-card>
       </el-col>
     </el-row>
+
+    <div class="section-header" style="margin-top: 40px;">
+      <h3 class="section-title">实用工具</h3>
+      <p class="section-desc">在线图片格式转换工具</p>
+    </div>
+    <el-row :gutter="20">
+      <el-col :lg="8" :md="12" :sm="24" :xs="24">
+        <el-card class="api-doc-card" @click="openTool('https://cloudconvert.com/png-to-webp')">
+          <div class="doc-card-content">
+            <div class="doc-icon primary">
+              <el-icon :size="40">
+                <Picture />
+              </el-icon>
+            </div>
+            <div class="doc-info">
+              <h4 class="doc-name">CloudConvert</h4>
+              <p class="doc-desc">PNG 转 WebP，免费快速，支持批量转换</p>
+            </div>
+            <div class="doc-action">
+              <el-button type="primary" size="small" icon="TopRight">使用</el-button>
+            </div>
+          </div>
+        </el-card>
+      </el-col>
+      <el-col :lg="8" :md="12" :sm="24" :xs="24">
+        <el-card class="api-doc-card" @click="openTool('https://convertio.co/zh/png-webp/')">
+          <div class="doc-card-content">
+            <div class="doc-icon success">
+              <el-icon :size="40">
+                <PictureFilled />
+              </el-icon>
+            </div>
+            <div class="doc-info">
+              <h4 class="doc-name">Convertio</h4>
+              <p class="doc-desc">中文界面，操作简单，支持拖拽上传</p>
+            </div>
+            <div class="doc-action">
+              <el-button type="success" size="small" icon="TopRight">使用</el-button>
+            </div>
+          </div>
+        </el-card>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
 <script setup name="Swagger">
 import { ref } from 'vue'
-import { Document, Promotion, Link } from '@element-plus/icons-vue'
+import { Document, Promotion, Link, Picture, PictureFilled } from '@element-plus/icons-vue'
 
 const activeTab = ref('swagger')
 const baseUrl = import.meta.env.VITE_APP_BASE_API
@@ -80,6 +123,10 @@ const redocUrl = ref(`${apiBaseUrl}/docs`)
 const apifoxJsonUrl = ref(`${apiBaseUrl}/openapi.json`)
 
 function openApiDoc(url) {
+  window.open(url, '_blank')
+}
+
+function openTool(url) {
   window.open(url, '_blank')
 }
 </script>
