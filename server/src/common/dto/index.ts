@@ -18,7 +18,7 @@ export class DateParamsDTO {
  * 分页 DTO
  */
 export class PagingDto {
-  @ApiProperty({ required: true, description: '当前分页', default: 1 })
+  @ApiProperty({ required: false, description: '当前分页', default: 1 })
   @IsOptional()
   @Transform(({ value }) => {
     // 转换为数字，默认值为 1
@@ -27,7 +27,7 @@ export class PagingDto {
   })
   pageNum?: number;
 
-  @ApiProperty({ required: true, description: '每页数量', default: 10 })
+  @ApiProperty({ required: false, description: '每页数量', default: 10 })
   @IsOptional()
   @Transform(({ value }) => {
     // 转换为数字，默认值为 10

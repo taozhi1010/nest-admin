@@ -1,5 +1,5 @@
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-import { BaseEntity } from 'src/common/entities/base';
+import { DeleteStatusEntity } from 'src/common/entities/base';
 import { ApiProperty } from '@nestjs/swagger';
 
 /**
@@ -9,7 +9,22 @@ import { ApiProperty } from '@nestjs/swagger';
 @Entity('post_article', {
   comment: '文章库',
 })
-export class PostArticleEntity extends BaseEntity {
+export class PostArticleEntity extends DeleteStatusEntity {
+  @ApiProperty({ type: String, description: '创建者' })
+  @Column({ type: 'varchar', name: 'create_by', length: 64, default: '', comment: '创建者' })
+  public createBy: string;
+
+  @CreateDateColumn({ type: 'datetime', name: 'create_time', default: null, comment: '创建时间' })
+  public createTime: Date;
+
+  @Column({ type: 'varchar', name: 'update_by', length: 64, default: '', comment: '更新者' })
+  public updateBy: string;
+
+  @UpdateDateColumn({ type: 'datetime', name: 'update_time', default: null, comment: '更新时间' })
+  public updateTime: Date;
+
+  @Column({ type: 'varchar', name: 'remark', length: 500, default: null, comment: '备注' })
+  public remark: string;
   @ApiProperty({ type: String, description: '文章ID' })
   @PrimaryGeneratedColumn('uuid', { name: 'id', comment: '文章ID' })
   public id: string;

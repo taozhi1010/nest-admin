@@ -107,7 +107,7 @@ export class PostArticleService {
    */
   async update(updateDto: UpdatePostArticleDto) {
     const { id, ...updateData } = updateDto;
-    
+
     const article = await this.postArticleRepository.findOne({
       where: { id, delFlag: '0' },
     });
