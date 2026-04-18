@@ -10,14 +10,14 @@ app:
 
 # MinIO 对象存储配置
 minio:
-  endPoint: '127.0.0.1'         # MinIO 服务器地址
+  endPoint: 'your-minio-host'    # MinIO 服务器地址
   port: 9000                     # MinIO API 端口
   useSSL: false                  # 是否使用 SSL
-  accessKey: ''                  # MinIO Access Key
-  secretKey: ''                  # MinIO Secret Key
+  accessKey: 'your-minio-access-key'      # MinIO Access Key
+  secretKey: 'your-minio-secret-key'      # MinIO Secret Key
   bucket: 'avatars'              # 存储桶名称
   region: 'us-east-1'            # 区域
-  domain: 'http://127.0.0.1:9000' # MinIO 访问域名
+  domain: 'http://your-minio-host:9000' # MinIO 访问域名
 
 # 腾讯云cos配置（保留兼容）
 cos:
@@ -30,23 +30,33 @@ cos:
 # 数据库配置
 db:
   mysql:
-    host: '127.0.0.1'            # 数据库地址
+    host: 'your-mysql-host'      # 数据库地址
     username: 'root'             # 数据库用户名
-    password: ''                 # 数据库密码
-    database: 'nest_admin'       # 数据库名称
+    password: 'your-mysql-password'     # 数据库密码
+    database: 'nest-db'          # 数据库名称
     port: 3306                   # 数据库端口
     charset: 'utf8mb4'           # 字符集
     logger: 'file'               # 日志类型
     synchronize: false           # 是否自动同步表结构（生产环境请设为 false）
     logging: true                # 是否开启 SQL 日志
+    extra:
+      connectionLimit: 10        # 连接池最大连接数
+      connectTimeout: 10000      # 连接超时时间（毫秒）
+      timeout: 10000             # 查询超时时间（毫秒）
+      acquireTimeout: 10000      # 获取连接超时时间（毫秒）
+      waitForConnections: true   # 等待可用连接
 
 # redis 配置
 redis:
-  host: '127.0.0.1'              # Redis 地址
-  password: ''                   # Redis 密码
+  host: 'your-redis-host'        # Redis 地址
+  password: 'your-redis-password'       # Redis 密码
   port: 6379                     # Redis 端口
-  db: 0                          # Redis 数据库编号
+  db: 2                          # Redis 数据库编号
   keyPrefix: ''                  # Key 前缀
+  retryStrategy:                 # 重连策略
+    maxRetries: 5                # 最大重试次数
+    retryDelay: 3000             # 重试延迟（毫秒）
+  enableOfflineQueue: true       # 启用离线队列
 
 # jwt 配置
 jwt:
