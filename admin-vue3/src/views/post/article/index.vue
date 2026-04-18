@@ -18,13 +18,13 @@
 
     <el-row class="mb8" :gutter="10">
       <el-col :span="1.5">
-        <el-button v-hasPermi="['game:Article:add']" icon="Plus" plain type="primary" @click="handleAdd">新增</el-button>
+        <el-button v-hasPermi="['post:Article:add']" icon="Plus" plain type="primary" @click="handleAdd">新增</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button v-hasPermi="['game:Article:edit']" :disabled="single" icon="Edit" plain type="success" @click="handleUpdate">修改</el-button>
+        <el-button v-hasPermi="['post:Article:edit']" :disabled="single" icon="Edit" plain type="success" @click="handleUpdate">修改</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button v-hasPermi="['game:Article:remove']" :disabled="multiple" icon="Delete" plain type="danger" @click="handleDelete">删除</el-button>
+        <el-button v-hasPermi="['post:Article:remove']" :disabled="multiple" icon="Delete" plain type="danger" @click="handleDelete">删除</el-button>
       </el-col>
       <right-toolbar v-model:show-search="showSearch" @query-table="getList" />
     </el-row>
@@ -49,8 +49,8 @@
       <el-table-column align="center" class-name="small-padding fixed-width" fixed="right" label="操作" width="240">
         <template #default="scope">
           <el-button icon="View" link type="primary" @click="table.handlePreview(scope.row)">预览</el-button>
-          <el-button v-hasPermi="['game:Article:edit']" icon="Edit" link type="primary" @click="handleUpdate(scope.row)">修改</el-button>
-          <el-button v-hasPermi="['game:Article:remove']" icon="Delete" link type="primary" @click="handleDelete(scope.row)">删除</el-button>
+          <el-button v-hasPermi="['post:Article:edit']" icon="Edit" link type="primary" @click="handleUpdate(scope.row)">修改</el-button>
+          <el-button v-hasPermi="['post:Article:remove']" icon="Delete" link type="primary" @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -89,7 +89,7 @@
 </template>
 
 <script setup name="Article">
-import { listArticle, addArticle, delArticle, getArticle, updateArticle } from '@/api/game/article'
+import { listArticle, addArticle, delArticle, getArticle, updateArticle } from '@/api/post/article'
 import Preview from './components/Preview'
 import { useDict } from '@/composables/useDict'
 import { resetForm } from '@/composables/useCommon'
