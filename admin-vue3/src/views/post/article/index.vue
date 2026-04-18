@@ -1,8 +1,9 @@
 <template>
   <div class="app-container">
-    <el-form v-show="showSearch" ref="queryRef" v-no-enter :inline="true" :model="queryParams">
+    <div class="main-card">
+      <el-form v-show="showSearch" ref="queryRef" v-no-enter :inline="true" :model="queryParams">
       <el-form-item label="文章标题" prop="title">
-        <el-input v-model="queryParams.title" clearable placeholder="请输入文章标题" style="width: 200px" @keyup.enter="handleQuery" />
+        <el-input v-model="queryParams.title" clearable placeholder="请输入文章标题" @keyup.enter="handleQuery" />
       </el-form-item>
       <!-- todo: 状态字典翻译,数据字典有问题，目前的数据字典改完数据之后，前端的数据字典没有及时修改数据键值 -->
       <!-- <el-form-item label="状态" prop="status">
@@ -31,9 +32,9 @@
 
     <el-table v-loading="loading" :data="ArticleList" @selection-change="handleSelectionChange">
       <el-table-column align="center" type="selection" width="55" />
-      <el-table-column align="left" label="文章标题" prop="title" show-overflow-tooltip />
-      <el-table-column align="center" label="文章简介" prop="remark" show-overflow-tooltip />
-      <el-table-column align="center" label="文章作者" prop="author" />
+      <el-table-column align="left" label="文章标题" prop="title" show-overflow-tooltip min-width="200" />
+      <el-table-column align="center" label="文章简介" prop="remark" show-overflow-tooltip min-width="200" />
+      <el-table-column align="center" label="文章作者" prop="author" width="120" />
       <el-table-column v-if="false" align="center" label="状态" prop="status">
         <template #default="scope">
           <!-- <dict-tag :options="sys_article_status" :value="scope.row.status" /> -->
@@ -50,7 +51,7 @@
         <template #default="scope">
           <el-button icon="View" link type="primary" @click="table.handlePreview(scope.row)">预览</el-button>
           <el-button v-hasPermi="['post:Article:edit']" icon="Edit" link type="primary" @click="handleUpdate(scope.row)">修改</el-button>
-          <el-button v-hasPermi="['post:Article:remove']" icon="Delete" link type="primary" @click="handleDelete(scope.row)">删除</el-button>
+          <el-button v-hasPermi="['post:Article:remove']" icon="Delete" link type="danger" @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -58,8 +59,8 @@
     <pagination v-show="total > 0" v-model:limit="queryParams.pageSize" v-model:page="queryParams.pageNum" :total="total" @pagination="getList" />
 
     <!-- 添加或修改文章对话框 -->
-    <el-dialog v-model="open" append-to-body :title="title" width="700px">
-      <el-form ref="ArticleRef" v-no-enter label-width="80px" :model="form" :rules="rules">
+    <el-dialog v-model="open" append-to-body :title="title" width="600px">
+      <el-form ref="ArticleRef" v-no-enter label-width="100px" :model="form" :rules="rules">
         <el-form-item label="文章标题" prop="title">
           <el-input v-model="form.title" clearable maxlength="25" placeholder="请输入文章标题" show-word-limit />
         </el-form-item>
@@ -85,6 +86,7 @@
     </el-dialog>
 
     <preview ref="PreviewRef" />
+    </div>
   </div>
 </template>
 

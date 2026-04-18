@@ -1,11 +1,12 @@
 <template>
   <div class="app-container">
-    <el-form v-show="showSearch" ref="queryRef" v-no-enter :inline="true" :model="queryParams">
+    <div class="main-card">
+      <el-form v-show="showSearch" ref="queryRef" v-no-enter :inline="true" :model="queryParams">
       <el-form-item label="专栏名称" prop="name">
-        <el-input v-model="queryParams.name" clearable placeholder="请输入专栏名称" style="width: 200px" @keyup.enter="handleQuery" />
+        <el-input v-model="queryParams.name" clearable placeholder="请输入专栏名称" @keyup.enter="handleQuery" />
       </el-form-item>
       <el-form-item label="状态" prop="status">
-        <el-select v-model="queryParams.status" placeholder="专栏状态" clearable style="width: 200px">
+        <el-select v-model="queryParams.status" placeholder="专栏状态" clearable>
           <el-option label="启用" value="0" />
           <el-option label="禁用" value="1" />
         </el-select>
@@ -31,8 +32,8 @@
 
     <el-table v-loading="loading" :data="subjectList" @selection-change="handleSelectionChange">
       <el-table-column align="center" type="selection" width="55" />
-      <el-table-column align="left" label="专栏名称" prop="name" show-overflow-tooltip />
-      <el-table-column align="center" label="专栏简介" prop="description" show-overflow-tooltip />
+      <el-table-column align="left" label="专栏名称" prop="name" show-overflow-tooltip min-width="200" />
+      <el-table-column align="center" label="专栏简介" prop="description" show-overflow-tooltip min-width="200" />
       <el-table-column align="center" label="封面图片" prop="coverImage" width="120">
         <template #default="scope">
           <el-image v-if="scope.row.coverImage" :src="scope.row.coverImage" fit="cover" style="width: 80px; height: 60px" />
@@ -53,7 +54,7 @@
       <el-table-column align="center" class-name="small-padding fixed-width" fixed="right" label="操作" width="180">
         <template #default="scope">
           <el-button v-hasPermi="['post:subject:edit']" icon="Edit" link type="primary" @click="handleUpdate(scope.row)">修改</el-button>
-          <el-button v-hasPermi="['post:subject:remove']" icon="Delete" link type="primary" @click="handleDelete(scope.row)">删除</el-button>
+          <el-button v-hasPermi="['post:subject:remove']" icon="Delete" link type="danger" @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -89,6 +90,7 @@
         </div>
       </template>
     </el-dialog>
+    </div>
   </div>
 </template>
 

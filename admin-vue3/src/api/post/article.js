@@ -10,9 +10,9 @@ export function listArticle(query) {
 }
 
 // 查询文章详细
-export function getArticle(articleId) {
+export function getArticle(id) {
   return request({
-    url: `/post/article/${articleId}`,
+    url: `/post/article/${id}`,
     method: 'get'
   })
 }
@@ -36,9 +36,34 @@ export function updateArticle(data) {
 }
 
 // 删除文章
-export function delArticle(articleId) {
+export function delArticle(id) {
   return request({
-    url: `/post/article/${articleId}`,
+    url: `/post/article/${id}`,
     method: 'delete'
+  })
+}
+
+// 提交审核
+export function submitAudit(id) {
+  return request({
+    url: `/post/article/submitAudit/${id}`,
+    method: 'post'
+  })
+}
+
+// 审核文章
+export function auditArticle(data) {
+  return request({
+    url: '/post/article/audit',
+    method: 'post',
+    data: data
+  })
+}
+
+// 发布文章
+export function publishArticle(id) {
+  return request({
+    url: `/post/article/publish/${id}`,
+    method: 'post'
   })
 }
