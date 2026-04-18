@@ -21,6 +21,10 @@ lerna-debug.log*
 # Lingma AI skills and cache
 /.lingma
 
+# 本地个人配置文件（包含敏感信息，不要提交）
+# 使用时复制 dev.yml 为 dev.local.yml，在此文件中填写真实配置
+dev.local.yml
+
 # Upload folder (local test files)
 /upload
 
