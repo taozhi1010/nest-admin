@@ -126,6 +126,7 @@ create table sys_role (
 -- ----------------------------
 insert into sys_role values('1', '超级管理员',  'admin',  1, 1, 1, 1, '0', '0', 'admin', sysdate(), '', null, '超级管理员');
 insert into sys_role values('2', '普通角色',    'common', 2, 2, 1, 1, '0', '0', 'admin', sysdate(), '', null, '普通角色');
+insert into sys_role values('3', '编辑角色',    'editor', 3, 2, 1, 1, '0', '0', 'admin', sysdate(), '', null, '负责文章审核和公告发布');
 
 
 -- ----------------------------
@@ -164,6 +165,7 @@ insert into sys_menu values('1', '系统管理', '0', '1', 'system',           n
 insert into sys_menu values('2', '系统监控', '0', '2', 'monitor',          null, '', 1, 0, 'M', '0', '0', '', 'monitor',  'admin', sysdate(), '', null, '系统监控目录', '0');
 insert into sys_menu values('3', '系统工具', '0', '3', 'tool',             null, '', 1, 0, 'M', '0', '0', '', 'tool',     'admin', sysdate(), '', null, '系统工具目录', '0');
 insert into sys_menu values('4', 'nest-admin官网', '0', '4', 'https://nest-admin.dooring.vip', null, '', 0, 0, 'M', '0', '0', '', 'guide',    'admin', sysdate(), '', null, 'nest-admin官网地址', '0');
+insert into sys_menu values('5', '内容管理', '0', '5', 'content',          null, '', 1, 0, 'M', '0', '0', '', 'documentation', 'admin', sysdate(), '', null, '内容管理目录', '0');
 -- 二级菜单
 insert into sys_menu values('100', '用户管理', '1', '1', 'user', 'system/user/index', '', '1', '0', 'C', '0', '0', 'system:user:list', 'user', 'admin', sysdate(), '', null, '用户管理菜单', '0');
 insert into sys_menu values('101', '角色管理', '1', '2', 'role', 'system/role/index', '', '1', '0', 'C', '0', '0', 'system:role:list', 'peoples', 'admin', sysdate(), '', null, '角色管理菜单', '0');
@@ -179,9 +181,11 @@ insert into sys_menu values('110', '定时任务', '2', '2', 'job', 'monitor/job
 insert into sys_menu values('112', '服务监控', '2', '4', 'server', 'monitor/server/index', '', '1', '0', 'C', '0', '0', 'monitor:server:list', 'server', 'admin', sysdate(), '', null, '服务监控菜单', '0');
 insert into sys_menu values('113', '缓存监控', '2', '5', 'cache', 'monitor/cache/index', '', '1', '0', 'C', '0', '0', 'monitor:cache:list', 'redis', 'admin', sysdate(), '', null, '缓存监控菜单', '0');
 insert into sys_menu values('114', '缓存列表', '2', '6', 'cacheList', 'monitor/cache/list', '', '1', '0', 'C', '0', '0', 'monitor:cache:list', 'redis-list', 'admin', sysdate(), '', null, '缓存列表菜单', '0');
-insert into sys_menu values('115', '表单构建', '3', '1', 'build', 'tool/build/index', '', '1', '0', 'C', '0', '0', 'tool:build:list', 'build', 'admin', sysdate(), '', null, '表单构建菜单', '0');
-insert into sys_menu values('116', '代码生成', '3', '2', 'gen', 'tool/gen/index', '', '1', '0', 'C', '0', '0', 'tool:gen:list', 'code', 'admin', sysdate(), '', null, '代码生成菜单', '0');
+
 insert into sys_menu values('117', '系统接口', '3', '3', 'swagger', 'tool/swagger/index', '', '1', '0', 'C', '0', '0', 'tool:swagger:list', 'swagger', 'admin', sysdate(), '', null, '系统接口菜单', '0');
+-- 内容管理二级菜单
+insert into sys_menu values('200', '文章管理', '5', '1', 'article', 'post/article/index', '', '1', '0', 'C', '0', '0', 'post:article:list', 'form', 'admin', sysdate(), '', null, '文章管理菜单', '0');
+insert into sys_menu values('201', '专栏管理', '5', '2', 'subject', 'post/subject/index', '', '1', '0', 'C', '0', '0', 'post:subject:list', 'tree-table', 'admin', sysdate(), '', null, '专栏管理菜单', '0');
 -- 三级菜单
 insert into sys_menu values('500', '操作日志', '108', '1', 'operlog', 'monitor/operlog/index', '', '1', '0', 'C', '0', '0', 'monitor:operlog:list', 'form', 'admin', sysdate(), '', null, '操作日志菜单', '0');
 insert into sys_menu values('501', '登录日志', '108', '2', 'logininfor', 'monitor/logininfor/index', '', '1', '0', 'C', '0', '0', 'monitor:logininfor:list', 'logininfor', 'admin', sysdate(), '', null, '登录日志菜单', '0');
@@ -252,13 +256,20 @@ insert into sys_menu values('1051', '任务修改', '110', '3', '#', '', '', '1'
 insert into sys_menu values('1052', '任务删除', '110', '4', '#', '', '', '1', '0', 'F', '0', '0', 'monitor:job:remove', '#', 'admin', sysdate(), '', null, '', '0');
 insert into sys_menu values('1053', '状态修改', '110', '5', '#', '', '', '1', '0', 'F', '0', '0', 'monitor:job:changeStatus', '#', 'admin', sysdate(), '', null, '', '0');
 insert into sys_menu values('1054', '任务导出', '110', '6', '#', '', '', '1', '0', 'F', '0', '0', 'monitor:job:export', '#', 'admin', sysdate(), '', null, '', '0');
--- 代码生成按钮
-insert into sys_menu values('1055', '生成查询', '116', '1', '#', '', '', '1', '0', 'F', '0', '0', 'tool:gen:query', '#', 'admin', sysdate(), '', null, '', '0');
-insert into sys_menu values('1056', '生成修改', '116', '2', '#', '', '', '1', '0', 'F', '0', '0', 'tool:gen:edit', '#', 'admin', sysdate(), '', null, '', '0');
-insert into sys_menu values('1057', '生成删除', '116', '3', '#', '', '', '1', '0', 'F', '0', '0', 'tool:gen:remove', '#', 'admin', sysdate(), '', null, '', '0');
-insert into sys_menu values('1058', '导入代码', '116', '4', '#', '', '', '1', '0', 'F', '0', '0', 'tool:gen:import', '#', 'admin', sysdate(), '', null, '', '0');
-insert into sys_menu values('1059', '预览代码', '116', '5', '#', '', '', '1', '0', 'F', '0', '0', 'tool:gen:preview', '#', 'admin', sysdate(), '', null, '', '0');
-insert into sys_menu values('1060', '生成代码', '116', '6', '#', '', '', '1', '0', 'F', '0', '0', 'tool:gen:code', '#', 'admin', sysdate(), '', null, '', '0');
+-- 文章管理按钮
+insert into sys_menu values('2000', '文章查询', '200', '1', '#', '', '', '1', '0', 'F', '0', '0', 'post:article:query', '#', 'admin', sysdate(), '', null, '', '0');
+insert into sys_menu values('2001', '文章新增', '200', '2', '#', '', '', '1', '0', 'F', '0', '0', 'post:article:add', '#', 'admin', sysdate(), '', null, '', '0');
+insert into sys_menu values('2002', '文章修改', '200', '3', '#', '', '', '1', '0', 'F', '0', '0', 'post:article:edit', '#', 'admin', sysdate(), '', null, '', '0');
+insert into sys_menu values('2003', '文章删除', '200', '4', '#', '', '', '1', '0', 'F', '0', '0', 'post:article:remove', '#', 'admin', sysdate(), '', null, '', '0');
+insert into sys_menu values('2004', '提交审核', '200', '5', '#', '', '', '1', '0', 'F', '0', '0', 'post:article:submitAudit', '#', 'admin', sysdate(), '', null, '', '0');
+insert into sys_menu values('2005', '文章审核', '200', '6', '#', '', '', '1', '0', 'F', '0', '0', 'post:article:audit', '#', 'admin', sysdate(), '', null, '', '0');
+insert into sys_menu values('2006', '发布文章', '200', '7', '#', '', '', '1', '0', 'F', '0', '0', 'post:article:publish', '#', 'admin', sysdate(), '', null, '', '0');
+-- 专栏管理按钮
+insert into sys_menu values('2010', '专栏查询', '201', '1', '#', '', '', '1', '0', 'F', '0', '0', 'post:subject:query', '#', 'admin', sysdate(), '', null, '', '0');
+insert into sys_menu values('2011', '专栏新增', '201', '2', '#', '', '', '1', '0', 'F', '0', '0', 'post:subject:add', '#', 'admin', sysdate(), '', null, '', '0');
+insert into sys_menu values('2012', '专栏修改', '201', '3', '#', '', '', '1', '0', 'F', '0', '0', 'post:subject:edit', '#', 'admin', sysdate(), '', null, '', '0');
+insert into sys_menu values('2013', '专栏删除', '201', '4', '#', '', '', '1', '0', 'F', '0', '0', 'post:subject:remove', '#', 'admin', sysdate(), '', null, '', '0');
+
 
 
 -- ----------------------------
@@ -309,8 +320,7 @@ insert into sys_role_menu values ('2', '110');
 insert into sys_role_menu values ('2', '112');
 insert into sys_role_menu values ('2', '113');
 insert into sys_role_menu values ('2', '114');
-insert into sys_role_menu values ('2', '115');
-insert into sys_role_menu values ('2', '116');
+
 insert into sys_role_menu values ('2', '117');
 insert into sys_role_menu values ('2', '500');
 insert into sys_role_menu values ('2', '501');
@@ -369,12 +379,36 @@ insert into sys_role_menu values ('2', '1051');
 insert into sys_role_menu values ('2', '1052');
 insert into sys_role_menu values ('2', '1053');
 insert into sys_role_menu values ('2', '1054');
-insert into sys_role_menu values ('2', '1055');
-insert into sys_role_menu values ('2', '1056');
-insert into sys_role_menu values ('2', '1057');
-insert into sys_role_menu values ('2', '1058');
-insert into sys_role_menu values ('2', '1059');
-insert into sys_role_menu values ('2', '1060');
+-- 内容管理菜单权限（普通角色）
+insert into sys_role_menu values ('2', '5');
+insert into sys_role_menu values ('2', '200');
+insert into sys_role_menu values ('2', '201');
+insert into sys_role_menu values ('2', '2000');
+insert into sys_role_menu values ('2', '2001');
+insert into sys_role_menu values ('2', '2002');
+insert into sys_role_menu values ('2', '2003');
+insert into sys_role_menu values ('2', '2004');
+insert into sys_role_menu values ('2', '2005');
+insert into sys_role_menu values ('2', '2006');
+insert into sys_role_menu values ('2', '2010');
+insert into sys_role_menu values ('2', '2011');
+insert into sys_role_menu values ('2', '2012');
+insert into sys_role_menu values ('2', '2013');
+
+-- 编辑角色菜单权限(只包含文章审核和通知公告相关权限)
+insert into sys_role_menu values ('3', '1');
+insert into sys_role_menu values ('3', '107');
+insert into sys_role_menu values ('3', '5');
+insert into sys_role_menu values ('3', '200');
+insert into sys_role_menu values ('3', '201');
+insert into sys_role_menu values ('3', '1035');
+insert into sys_role_menu values ('3', '1036');
+insert into sys_role_menu values ('3', '1037');
+insert into sys_role_menu values ('3', '1038');
+insert into sys_role_menu values ('3', '2000');
+insert into sys_role_menu values ('3', '2005');
+insert into sys_role_menu values ('3', '2010');
+
 
 -- ----------------------------
 -- 8、角色和部门关联表  角色1-N部门
@@ -471,6 +505,10 @@ insert into sys_dict_type values(7, '通知类型', 'sys_notice_type', '0', 'adm
 insert into sys_dict_type values(8, '通知状态', 'sys_notice_status', '0', 'admin', sysdate(), '', null, '通知状态列表', '0');
 insert into sys_dict_type values(9, '操作类型', 'sys_oper_type', '0', 'admin', sysdate(), '', null, '操作类型列表', '0');
 insert into sys_dict_type values(10, '系统状态', 'sys_common_status', '0', 'admin', sysdate(), '', null, '登录状态列表', '0');
+insert into sys_dict_type values(11, '文章发布状态', 'post_article_publish_status', '0', 'admin', sysdate(), '', null, '文章发布状态列表', '0');
+insert into sys_dict_type values(12, '文章审核状态', 'post_article_audit_status', '0', 'admin', sysdate(), '', null, '文章审核状态列表', '0');
+insert into sys_dict_type values(13, '专栏发布状态', 'post_subject_publish_status', '0', 'admin', sysdate(), '', null, '专栏发布状态列表', '0');
+insert into sys_dict_type values(14, '专栏审核状态', 'post_subject_audit_status', '0', 'admin', sysdate(), '', null, '专栏审核状态列表', '0');
 
 
 -- ----------------------------
@@ -526,6 +564,25 @@ insert into sys_dict_data values(26, 8,  '生成代码', '8',       'sys_oper_ty
 insert into sys_dict_data values(27, 9,  '清空数据', '9',       'sys_oper_type',       '',   'danger',  'N', '0', 'admin', sysdate(), '', null, '清空操作', '0');
 insert into sys_dict_data values(28, 1,  '成功',     '0',       'sys_common_status',   '',   'primary', 'N', '0', 'admin', sysdate(), '', null, '正常状态', '0');
 insert into sys_dict_data values(29, 2,  '失败',     '1',       'sys_common_status',   '',   'danger',  'N', '0', 'admin', sysdate(), '', null, '停用状态', '0');
+-- 文章发布状态（包含草稿）
+insert into sys_dict_data values(30, 1,  '草稿',     '0',       'post_article_publish_status', '',   'info',    'N', '0', 'admin', sysdate(), '', null, '文章-发布状态-草稿', '0');
+insert into sys_dict_data values(31, 2,  '待发布',   '1',       'post_article_publish_status', '',   'warning', 'N', '0', 'admin', sysdate(), '', null, '文章-发布状态-待发布', '0');
+insert into sys_dict_data values(32, 3,  '已发布',   '2',       'post_article_publish_status', '',   'success', 'Y', '0', 'admin', sysdate(), '', null, '文章-发布状态-已发布', '0');
+insert into sys_dict_data values(33, 4,  '已下架',   '3',       'post_article_publish_status', '',   'danger',  'N', '0', 'admin', sysdate(), '', null, '文章-发布状态-已下架', '0');
+-- 文章审核状态
+insert into sys_dict_data values(34, 1,  '未提交',   '0',       'post_article_audit_status',   '',   'info',    'N', '0', 'admin', sysdate(), '', null, '文章-审核状态-未提交', '0');
+insert into sys_dict_data values(35, 2,  '审核中',   '1',       'post_article_audit_status',   '',   'warning', 'N', '0', 'admin', sysdate(), '', null, '文章-审核状态-审核中', '0');
+insert into sys_dict_data values(36, 3,  '审核通过', '2',       'post_article_audit_status',   '',   'success', 'Y', '0', 'admin', sysdate(), '', null, '文章-审核状态-审核通过', '0');
+insert into sys_dict_data values(37, 4,  '审核拒绝', '3',       'post_article_audit_status',   '',   'danger',  'N', '0', 'admin', sysdate(), '', null, '文章-审核状态-审核拒绝', '0');
+-- 专栏发布状态（无草稿）
+insert into sys_dict_data values(38, 1,  '待发布',   '1',       'post_subject_publish_status', '',   'warning', 'N', '0', 'admin', sysdate(), '', null, '专栏-发布状态-待发布', '0');
+insert into sys_dict_data values(39, 2,  '已发布',   '2',       'post_subject_publish_status', '',   'success', 'Y', '0', 'admin', sysdate(), '', null, '专栏-发布状态-已发布', '0');
+insert into sys_dict_data values(40, 3,  '已下架',   '3',       'post_subject_publish_status', '',   'danger',  'N', '0', 'admin', sysdate(), '', null, '专栏-发布状态-已下架', '0');
+-- 专栏审核状态
+insert into sys_dict_data values(41, 1,  '未提交',   '0',       'post_subject_audit_status',   '',   'info',    'N', '0', 'admin', sysdate(), '', null, '专栏-审核状态-未提交', '0');
+insert into sys_dict_data values(42, 2,  '审核中',   '1',       'post_subject_audit_status',   '',   'warning', 'N', '0', 'admin', sysdate(), '', null, '专栏-审核状态-审核中', '0');
+insert into sys_dict_data values(43, 3,  '审核通过', '2',       'post_subject_audit_status',   '',   'success', 'Y', '0', 'admin', sysdate(), '', null, '专栏-审核状态-审核通过', '0');
+insert into sys_dict_data values(44, 4,  '审核拒绝', '3',       'post_subject_audit_status',   '',   'danger',  'N', '0', 'admin', sysdate(), '', null, '专栏-审核状态-审核拒绝', '0');
 
 
 -- ----------------------------
@@ -740,76 +797,69 @@ create table sys_upload (
 ) engine=innodb comment = '文件上传记录';
 
 
--- ----------------------------
--- 21、游戏库表
--- ----------------------------
-drop table if exists game_info;
-create table game_info (
-  id              varchar(64)   not null                   comment '游戏 id',
-  name_zh         varchar(64)   not null                   comment '游戏中文名',
-  name_en         varchar(64)   not null                   comment '游戏英文名',
-  `desc`          varchar(255)  default null               comment '游戏简介',
-  cover           varchar(255)  default null               comment '游戏封面',
-  desc_cover_url  varchar(255)  default null               comment '游戏描述图片',
-  game_type       varchar(64)   default null               comment '游戏类型',
-  version         varchar(32)   default null               comment '当前版本号',
-  language        varchar(32)   default null               comment '支持语言（数据字典 game_language）',
-  online          char(1)       default '0'                comment '是否支持联机（1：是，0：否）',
-  age_range       varchar(32)   default null               comment '适龄区间',
-  sale_platform   varchar(128)  default null               comment '发售平台',
-  operate_system  varchar(128)  default null               comment '操作系统',
-  release_date    datetime      default null               comment '发售日期',
-  price           decimal(10,2) default null               comment '最近价格',
-  lowest_price    decimal(10,2) default null               comment '史上最低价格',
-  game_studio     varchar(128)  default null               comment '游戏开发商',
-  create_time     datetime      default current_timestamp  comment '创建时间',
-  remark          varchar(500)  default null               comment '备注',
-  del_flag        char(1)       default '0'                comment '删除标志（0 代表存在 1 代表删除）',
-  primary key (id)
-) engine=innodb comment = '游戏库';
-
-
 
 -- ----------------------------
--- 22、游戏文章库
+-- 22、文章库
 -- ----------------------------
-drop table if exists game_article;
-create table game_article (
+drop table if exists post_article;
+create table post_article (
   id            varchar(64)   not null                   comment '文章 id',
   title         varchar(64)   not null                   comment '文章标题',
   `desc`        varchar(255)  default null               comment '文章简介',
   subject_id    varchar(64)   not null                   comment '专栏 id',
+  user_id       int             not null                   comment '作者用户ID',
   content       longtext      default null               comment '文章内容',
   cover         varchar(255)  default null               comment '封面',
-  author        varchar(64)   default null               comment '作者',
+  author        varchar(64)   default null               comment '作者昵称',
   publish_time  datetime      default null               comment '发布时间',
-  like_num      varchar(64)   default '0'                comment '点赞数',
-  read_num      varchar(64)   default '0'                comment '阅读数',
-  comment_num   varchar(64)   default '0'                comment '评论数',
-  status        char(1)       default '0'                comment '发布状态（0 草稿 1 发布 2 下架 3 审核中）',
+  like_num      int           default '0'                comment '点赞数',
+  read_num      int           default '0'                comment '阅读数',
+  comment_num   int           default '0'                comment '评论数',
+  publish_status char(1)      default '0'                comment '发布状态（0 草稿 1 待发布 2 已发布 3 已下架）',
+  audit_status  char(1)       default '0'                comment '审核状态（0 未提交 1 审核中 2 审核通过 3 审核拒绝）',
+  scheduled_publish_time datetime     default null               comment '定时发布时间',
+  audit_user_id int           default null               comment '审核人ID',
+  audit_time    datetime      default null               comment '审核时间',
+  audit_remark  varchar(500)  default null               comment '审核备注',
   sort          int(11)       default null               comment '排序',
   create_time   datetime      default current_timestamp  comment '创建时间',
   update_time   datetime      default current_timestamp  on update current_timestamp comment '更新时间',
   del_flag      char(1)       default '0'                comment '删除标志（0 代表存在 1 代表删除）',
-  primary key (id)
+  primary key (id),
+  key idx_user_id (user_id),
+  key idx_subject_id (subject_id),
+  key idx_publish_status (publish_status),
+  key idx_audit_status (audit_status),
+  key idx_scheduled_publish_time (scheduled_publish_time)
 ) engine=innodb comment = '文章库';
 
 
 
 -- ----------------------------
--- 23、游戏专栏库
+-- 23、专栏库
 -- ----------------------------
-drop table if exists game_subject;
-create table game_subject (
+drop table if exists post_subject;
+create table post_subject (
   id            varchar(64)   not null                   comment '专栏 id',
   title         varchar(64)   not null                   comment '专栏标题',
   `desc`        varchar(255)  default null               comment '专栏简介',
+  user_id       int             not null                   comment '创建者用户ID',
   cover         varchar(255)  default null               comment '专栏封面',
-  author        varchar(64)   default null               comment '作者',
-  status        char(1)       default '0'                comment '发布状态（0 草稿 1 发布 2 下架 3 审核中）',
+  author        varchar(64)   default null               comment '作者昵称',
+  article_count int           default '0'                comment '文章数量',
+  publish_status char(1)      default '0'                comment '发布状态（0 草稿 1 待发布 2 已发布 3 已下架）',
+  audit_status  char(1)       default '0'                comment '审核状态（0 未提交 1 审核中 2 审核通过 3 审核拒绝）',
+  scheduled_publish_time datetime     default null               comment '定时发布时间',
+  audit_user_id int           default null               comment '审核人ID',
+  audit_time    datetime      default null               comment '审核时间',
+  audit_remark  varchar(500)  default null               comment '审核备注',
   sort          int(11)       default null               comment '排序',
   create_time   datetime      default current_timestamp  comment '创建时间',
   update_time   datetime      default current_timestamp  on update current_timestamp comment '更新时间',
   del_flag      char(1)       default '0'                comment '删除标志（0 代表存在 1 代表删除）',
-  primary key (id)
+  primary key (id),
+  key idx_user_id (user_id),
+  key idx_publish_status (publish_status),
+  key idx_audit_status (audit_status),
+  key idx_scheduled_publish_time (scheduled_publish_time)
 ) engine=innodb comment = '专栏库';
