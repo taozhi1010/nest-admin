@@ -22,9 +22,7 @@ lerna-debug.log*
 /.lingma
 
 # Environment configuration files (sensitive information)
-src/config/env/dev.yml
-src/config/env/prod.yml
-src/config/env/test.yml
+src/config/env/*.yml
 
 # Upload folder (local test files)
 /upload
