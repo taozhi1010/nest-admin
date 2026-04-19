@@ -187,15 +187,14 @@ const subject = reactive({
 
   // 表单重置
   reset: () => {
-    subject.form = {
-      id: undefined,
-      title: undefined,
-      desc: undefined,
-      cover: undefined,
-      publishStatus: '0',
-      auditStatus: '0',
-      sort: 0
-    }
+    // 逐个属性赋值，保持响应式引用
+    subject.form.id = undefined
+    subject.form.title = undefined
+    subject.form.desc = undefined
+    subject.form.cover = undefined
+    subject.form.publishStatus = '0'
+    subject.form.auditStatus = '0'
+    subject.form.sort = 0
     nextTick(() => {
       if (subjectRef.value) {
         subjectRef.value.clearValidate()
