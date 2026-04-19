@@ -157,6 +157,9 @@ import ArticleForm from './components/ArticleForm'
 import { useDict } from '@/composables/useDict'
 import { resetForm } from '@/composables/useCommon'
 import { useSubject } from '@/composables/useSubject'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const { post_article_publish_status, post_article_audit_status, post_subject_publish_status, post_subject_audit_status, getDictLabel, getDictTagType } = useDict('post_article_publish_status', 'post_article_audit_status', 'post_subject_publish_status', 'post_subject_audit_status')
 
@@ -408,5 +411,14 @@ const handleSubjectRowClick = (row) => {
   100% {
     transform: rotate(360deg);
   }
+}
+
+// 自定义 tooltip 宽度，使其更窄更易于阅读
+:deep(.el-tooltip__popper) {
+  max-width: 300px !important;
+}
+
+:deep(.el-popper.is-light) {
+  max-width: 300px !important;
 }
 </style>

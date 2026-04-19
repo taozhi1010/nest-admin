@@ -1,5 +1,18 @@
 <template>
   <el-drawer v-model="open" :title="title" size="50%">
+    <template #header>
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <span>{{ title }}</span>
+        <el-button 
+          v-if="formData.id || formData.articleId"
+          type="primary" 
+          icon="Edit" 
+          @click="handleOpenEditor"
+        >
+          在编辑器中打开
+        </el-button>
+      </div>
+    </template>
     <el-tabs v-model="activeTab">
       <!-- 基本信息 Tab -->
       <el-tab-pane label="基本信息" name="basic">
@@ -78,6 +91,9 @@ import { addArticle, updateArticle } from '@/api/post/article'
 import { useDict } from '@/composables/useDict'
 import ImageUploadCover from '@/components/ImageUploadCover/index.vue'
 import MdViewer from '@/components/MdViewer/index.vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const props = defineProps({
   modelValue: {
@@ -267,6 +283,23 @@ defineExpose({
     Object.assign(formData, data)
   }
 })
+
+// 打开编辑器页面
+const handleOpenEditor = () => {
+  const articleId = formData.id || formData.articleId
+  
+  if (!articleId) {
+    ElMessage.warning('请先保存文章后再使用编辑器')
+    return
+  }
+  
+  // 在新窗口打开编辑器页面
+  const routeUrl = router.resolve({
+    path: '/post/article-editor',
+    query: { id: articleId }
+  })
+  window.open(routeUrl.href, '_blank')
+}
 </script>
 
 <style lang="scss" scoped>
