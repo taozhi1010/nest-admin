@@ -1,9 +1,9 @@
 <template>
   <!-- 添加或修改数据字典内容配置 -->
-  <el-dialog v-model="dialogTableVisible" append-to-body :title="form.title" width="600px">
-    <el-form ref="formRef" v-no-enter label-width="100px" :model="form.model" :rules="form.rules">
+  <el-dialog v-model="dialogTableVisible" append-to-body :title="form.title" width="680px">
+    <el-form ref="formRef" v-no-enter label-width="110px" :model="form.model" :rules="form.rules">
       <el-form-item label="字典类型">
-        <el-input v-model="form.model.dictType" :disabled="true" />
+        <el-input v-model="form.model.dictType" :disabled="true" class="dict-type-input" />
       </el-form-item>
       <el-form-item label="数据标签" prop="dictLabel">
         <el-input v-model="form.model.dictLabel" placeholder="请输入数据标签" />
@@ -21,14 +21,15 @@
       </el-form-item>
       <el-form-item prop="cssClass">
         <template #label>
-          <el-tooltip :content="tips" effect="dark" placement="top-start">
-            <div class="tips">
-              <question-filled class="tips-icon" :size="'14px'" />
-            </div>
-          </el-tooltip>
-          <span style="width: 80px">样式属性</span>
+          <span class="label-with-tip">
+            <span>样式属性</span>
+            <el-tooltip :content="tips" effect="dark" placement="top">
+              <el-icon class="tip-icon">
+                <QuestionFilled />
+              </el-icon>
+            </el-tooltip>
+          </span>
         </template>
-
         <el-input v-model="form.model.cssClass" placeholder="请输入样式属性" />
       </el-form-item>
       <el-form-item label="状态" prop="status">
@@ -140,3 +141,42 @@ defineExpose({
   handleDialogOpen
 })
 </script>
+
+<style scoped lang="scss">
+.dict-type-input {
+  :deep(.el-input__inner) {
+    background-color: #f5f7fa;
+    color: #606266;
+    cursor: not-allowed;
+  }
+}
+
+.label-with-tip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  
+  .tip-icon {
+    font-size: 14px;
+    color: #909399;
+    cursor: pointer;
+    transition: color 0.3s;
+    
+    &:hover {
+      color: #409eff;
+    }
+  }
+}
+
+:deep(.el-form-item__label) {
+  font-weight: 500;
+}
+
+:deep(.el-dialog__body) {
+  padding: 20px 24px;
+}
+
+:deep(.el-input-number) {
+  width: 100%;
+}
+</style>
