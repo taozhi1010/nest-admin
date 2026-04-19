@@ -1,39 +1,31 @@
 <template>
-  <div class="markdown-body">
-    <MdEditor v-model="content" :preview="true" :previewOnly="true" :toolbars="[]" />
+  <div class="markdown-viewer">
+    <MdPreview :modelValue="content" />
   </div>
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
-import { MdEditor } from 'md-editor-v3'
-import 'md-editor-v3/lib/style.css'
+import { computed } from 'vue'
+import { MdPreview } from 'md-editor-v3'
+import 'md-editor-v3/lib/preview.css'
 
 const props = defineProps({
-  value: {
+  modelValue: {
     type: String,
     default: ''
   }
 })
 
-const content = ref(props.value)
-
-watch(() => props.value, (newVal) => {
-  content.value = newVal
-})
+// 使用计算属性直接绑定，保持响应式
+const content = computed(() => props.modelValue)
 </script>
 
-<style lang="scss">
-.markdown-body {
+<style lang="scss" scoped>
+.markdown-viewer {
+  width: 100%;
+  min-height: 200px;
+  padding: 16px;
   box-sizing: border-box;
-  min-width: 200px;
-  max-width: 980px;
-  margin: 0 auto;
-}
-
-@media (max-width: 767px) {
-  .markdown-body {
-    padding: 15px;
-  }
+  overflow-x: auto;
 }
 </style>
