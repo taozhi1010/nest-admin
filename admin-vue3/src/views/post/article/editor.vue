@@ -139,6 +139,7 @@ const loading = ref(false)
 const isEdit = ref(false)
 const subjectList = ref([])
 const sidebarCollapsed = ref(false) // 侧面板收起状态
+const saveTimer = ref(null) // 防抖定时器
 
 // 初始化默认标题
 setTitle('文章新建 - 编辑器')
@@ -170,6 +171,15 @@ onMounted(() => {
   subject.getList().then(() => {
     subjectList.value = subject.state.list
   })
+})
+
+// 组件卸载时清理定时器
+import { onUnmounted } from 'vue'
+onUnmounted(() => {
+  if (saveTimer.value) {
+    clearTimeout(saveTimer.value)
+    saveTimer.value = null
+  }
 })
 
 // 加载文章信息
@@ -248,111 +258,135 @@ const validateForm = () => {
   return true
 }
 
-// 保存草稿
+// 保存草稿(带防抖)
 const handleSaveDraft = async () => {
-  if (!validateForm()) {
-    return
+  // 清除之前的定时器
+  if (saveTimer.value) {
+    clearTimeout(saveTimer.value)
   }
 
-  loading.value = true
-  try {
-    // 使用articleData保存所有字段
-    const saveData = { ...articleData }
-    saveData.publishStatus = '0' // 草稿状态
-    
-    // 确保数字类型字段正确转换
-    if (saveData.id) saveData.id = Number(saveData.id)
-    if (saveData.subjectId) saveData.subjectId = Number(saveData.subjectId)
-    if (saveData.sort !== undefined) saveData.sort = Number(saveData.sort)
-    if (saveData.likeNum !== undefined) saveData.likeNum = Number(saveData.likeNum)
-    if (saveData.readNum !== undefined) saveData.readNum = Number(saveData.readNum)
-    if (saveData.commentNum !== undefined) saveData.commentNum = Number(saveData.commentNum)
-
-    let res
-    // 根据 articleData.id 是否存在来判断是新增还是更新
-    if (articleData.id) {
-      // 编辑模式：更新文章
-      saveData.id = Number(articleData.id)
-      res = await updateArticle(saveData)
-      ElMessage.success('草稿保存成功')
-    } else {
-      // 新增模式：创建文章
-      res = await addArticle(saveData)
-      // 保存成功后，获取新文章ID，切换到编辑模式
-      if (res.data && res.data.id) {
-        const newId = Number(res.data.id)
-        articleId.value = newId
-        isEdit.value = true
-        // 更新articleData中的id
-        articleData.id = newId
-        articleData.articleId = newId
-        // 更新URL，添加文章ID
-        router.replace({ query: { id: newId } })
-      }
-      ElMessage.success('草稿保存成功')
+  // 设置新的防抖定时器
+  saveTimer.value = setTimeout(async () => {
+    if (!validateForm()) {
+      return
     }
-  } catch (error) {
-    console.error('保存草稿失败:', error)
-    ElMessage.error('保存草稿失败')
-  } finally {
-    loading.value = false
-  }
+
+    loading.value = true
+    try {
+      // 使用articleData保存所有字段
+      const saveData = { ...articleData }
+      saveData.publishStatus = '0' // 草稿状态
+      
+      // 确保数字类型字段正确转换
+      if (saveData.id) saveData.id = Number(saveData.id)
+      if (saveData.subjectId) saveData.subjectId = Number(saveData.subjectId)
+      if (saveData.sort !== undefined) saveData.sort = Number(saveData.sort)
+      if (saveData.likeNum !== undefined) saveData.likeNum = Number(saveData.likeNum)
+      if (saveData.readNum !== undefined) saveData.readNum = Number(saveData.readNum)
+      if (saveData.commentNum !== undefined) saveData.commentNum = Number(saveData.commentNum)
+
+      let res
+      // 根据 articleData.id 是否存在来判断是新增还是更新
+      if (articleData.id) {
+        // 编辑模式:更新文章
+        saveData.id = Number(articleData.id)
+        res = await updateArticle(saveData)
+        ElMessage.success('草稿保存成功')
+      } else {
+        // 新增模式:创建文章
+        res = await addArticle(saveData)
+        // 保存成功后,立即获取新文章ID并更新,切换到编辑模式
+        if (res.data && res.data.id) {
+          const newId = Number(res.data.id)
+          // 立即更新所有相关ID字段,确保下次保存时使用编辑接口
+          articleId.value = newId
+          isEdit.value = true
+          articleData.id = newId
+          articleData.articleId = newId
+          // 同步更新saveData中的id,保证数据一致性
+          saveData.id = newId
+          // 更新URL,添加文章ID
+          router.replace({ query: { id: newId } })
+          console.log('新增成功,文章ID:', newId, '后续将使用编辑接口')
+        }
+        ElMessage.success('草稿保存成功')
+      }
+    } catch (error) {
+      console.error('保存草稿失败:', error)
+      ElMessage.error('保存草稿失败')
+    } finally {
+      loading.value = false
+      saveTimer.value = null
+    }
+  }, 300) // 300ms 防抖延迟
 }
 
-// 发布文章
+// 发布文章(带防抖)
 const handlePublish = async () => {
-  if (!validateForm()) {
-    return
+  // 清除之前的定时器
+  if (saveTimer.value) {
+    clearTimeout(saveTimer.value)
   }
 
-  loading.value = true
-  try {
-    // 使用articleData保存所有字段
-    const saveData = { ...articleData }
-    saveData.publishStatus = '1' // 发布状态
-    
-    // 确保数字类型字段正确转换
-    if (saveData.id) saveData.id = Number(saveData.id)
-    if (saveData.subjectId) saveData.subjectId = Number(saveData.subjectId)
-    if (saveData.sort !== undefined) saveData.sort = Number(saveData.sort)
-    if (saveData.likeNum !== undefined) saveData.likeNum = Number(saveData.likeNum)
-    if (saveData.readNum !== undefined) saveData.readNum = Number(saveData.readNum)
-    if (saveData.commentNum !== undefined) saveData.commentNum = Number(saveData.commentNum)
-
-    let res
-    // 根据 articleData.id 是否存在来判断是新增还是更新
-    if (articleData.id) {
-      // 编辑模式：更新文章
-      saveData.id = Number(articleData.id)
-      res = await updateArticle(saveData)
-      ElMessage.success('文章发布成功')
-    } else {
-      // 新增模式：创建文章
-      res = await addArticle(saveData)
-      // 保存成功后，获取新文章ID，切换到编辑模式
-      if (res.data && res.data.id) {
-        const newId = Number(res.data.id)
-        articleId.value = newId
-        isEdit.value = true
-        // 更新articleData中的id
-        articleData.id = newId
-        articleData.articleId = newId
-        // 更新URL，添加文章ID
-        router.replace({ query: { id: newId } })
-      }
-      ElMessage.success('文章发布成功')
+  // 设置新的防抖定时器
+  saveTimer.value = setTimeout(async () => {
+    if (!validateForm()) {
+      return
     }
 
-    // 发布成功后返回列表页
-    setTimeout(() => {
-      router.push('/post/article')
-    }, 1500)
-  } catch (error) {
-    console.error('发布文章失败:', error)
-    ElMessage.error('发布文章失败')
-  } finally {
-    loading.value = false
-  }
+    loading.value = true
+    try {
+      // 使用articleData保存所有字段
+      const saveData = { ...articleData }
+      saveData.publishStatus = '1' // 发布状态
+      
+      // 确保数字类型字段正确转换
+      if (saveData.id) saveData.id = Number(saveData.id)
+      if (saveData.subjectId) saveData.subjectId = Number(saveData.subjectId)
+      if (saveData.sort !== undefined) saveData.sort = Number(saveData.sort)
+      if (saveData.likeNum !== undefined) saveData.likeNum = Number(saveData.likeNum)
+      if (saveData.readNum !== undefined) saveData.readNum = Number(saveData.readNum)
+      if (saveData.commentNum !== undefined) saveData.commentNum = Number(saveData.commentNum)
+
+      let res
+      // 根据 articleData.id 是否存在来判断是新增还是更新
+      if (articleData.id) {
+        // 编辑模式:更新文章
+        saveData.id = Number(articleData.id)
+        res = await updateArticle(saveData)
+        ElMessage.success('文章发布成功')
+      } else {
+        // 新增模式:创建文章
+        res = await addArticle(saveData)
+        // 保存成功后,立即获取新文章ID并更新,切换到编辑模式
+        if (res.data && res.data.id) {
+          const newId = Number(res.data.id)
+          // 立即更新所有相关ID字段,确保下次保存时使用编辑接口
+          articleId.value = newId
+          isEdit.value = true
+          articleData.id = newId
+          articleData.articleId = newId
+          // 同步更新saveData中的id,保证数据一致性
+          saveData.id = newId
+          // 更新URL,添加文章ID
+          router.replace({ query: { id: newId } })
+          console.log('新增成功,文章ID:', newId, '后续将使用编辑接口')
+        }
+        ElMessage.success('文章发布成功')
+      }
+
+      // 发布成功后返回列表页
+      setTimeout(() => {
+        router.push('/post/article')
+      }, 1500)
+    } catch (error) {
+      console.error('发布文章失败:', error)
+      ElMessage.error('发布文章失败')
+    } finally {
+      loading.value = false
+      saveTimer.value = null
+    }
+  }, 300) // 300ms 防抖延迟
 }
 </script>
 
