@@ -153,7 +153,7 @@ const articleData = reactive({
   content: '',
   cover: '',
   author: '',
-  source: '',
+  source: '0', // 默认选择原创
   publishTime: undefined,
   likeNum: 0,
   readNum: 0,
@@ -269,9 +269,10 @@ const handleSaveDraft = async () => {
     if (saveData.commentNum !== undefined) saveData.commentNum = Number(saveData.commentNum)
 
     let res
-    if (isEdit.value && articleId.value) {
+    // 根据 articleData.id 是否存在来判断是新增还是更新
+    if (articleData.id) {
       // 编辑模式：更新文章
-      saveData.id = Number(articleId.value)
+      saveData.id = Number(articleData.id)
       res = await updateArticle(saveData)
       ElMessage.success('草稿保存成功')
     } else {
@@ -279,13 +280,14 @@ const handleSaveDraft = async () => {
       res = await addArticle(saveData)
       // 保存成功后，获取新文章ID，切换到编辑模式
       if (res.data && res.data.id) {
-        articleId.value = Number(res.data.id)
+        const newId = Number(res.data.id)
+        articleId.value = newId
         isEdit.value = true
         // 更新articleData中的id
-        articleData.id = Number(res.data.id)
-        articleData.articleId = Number(res.data.id)
+        articleData.id = newId
+        articleData.articleId = newId
         // 更新URL，添加文章ID
-        router.replace({ query: { id: res.data.id } })
+        router.replace({ query: { id: newId } })
       }
       ElMessage.success('草稿保存成功')
     }
@@ -318,9 +320,10 @@ const handlePublish = async () => {
     if (saveData.commentNum !== undefined) saveData.commentNum = Number(saveData.commentNum)
 
     let res
-    if (isEdit.value && articleId.value) {
+    // 根据 articleData.id 是否存在来判断是新增还是更新
+    if (articleData.id) {
       // 编辑模式：更新文章
-      saveData.id = Number(articleId.value)
+      saveData.id = Number(articleData.id)
       res = await updateArticle(saveData)
       ElMessage.success('文章发布成功')
     } else {
@@ -328,13 +331,14 @@ const handlePublish = async () => {
       res = await addArticle(saveData)
       // 保存成功后，获取新文章ID，切换到编辑模式
       if (res.data && res.data.id) {
-        articleId.value = Number(res.data.id)
+        const newId = Number(res.data.id)
+        articleId.value = newId
         isEdit.value = true
         // 更新articleData中的id
-        articleData.id = Number(res.data.id)
-        articleData.articleId = Number(res.data.id)
+        articleData.id = newId
+        articleData.articleId = newId
         // 更新URL，添加文章ID
-        router.replace({ query: { id: res.data.id } })
+        router.replace({ query: { id: newId } })
       }
       ElMessage.success('文章发布成功')
     }
