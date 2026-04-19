@@ -1,92 +1,271 @@
 <template>
-  <div class="app-container">
-    <div class="main-card">
-      <el-form v-show="showSearch" ref="queryRef" v-no-enter :inline="true" :model="queryParams">
-      <el-form-item label="文章标题" prop="title">
-        <el-input v-model="queryParams.title" clearable placeholder="请输入文章标题" @keyup.enter="handleQuery" />
-      </el-form-item>
-      <!-- todo: 状态字典翻译,数据字典有问题，目前的数据字典改完数据之后，前端的数据字典没有及时修改数据键值 -->
-      <!-- <el-form-item label="状态" prop="status">
-        <el-select v-model="queryParams.status" placeholder="文章状态" clearable style="width: 200px">
-          <el-option v-for="dict in sys_article_status" :key="dict.value" :label="dict.label" :value="dict.value" />
-        </el-select>
-      </el-form-item> -->
-      <el-form-item>
-        <el-button icon="Search" type="primary" @click="handleQuery">搜索</el-button>
-        <el-button icon="Refresh" @click="resetQuery">重置</el-button>
-      </el-form-item>
-    </el-form>
+  <div class="app-container article">
+    <el-card v-loading="loading" class="article-subject" shadow="never">
+      <div class="article-subject-header">
+        <el-input v-model="subject.query.title" class="search-input" placeholder="请输入专栏名称筛选" clearable @keyup.enter="subject.handleSearch" @blur="subject.handleSearchBlur" />
+      </div>
 
-    <el-row class="mb8" :gutter="10">
-      <el-col :span="1.5">
-        <el-button v-hasPermi="['post:Article:add']" icon="Plus" plain type="primary" @click="handleAdd">新增</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button v-hasPermi="['post:Article:edit']" :disabled="single" icon="Edit" plain type="success" @click="handleUpdate">修改</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button v-hasPermi="['post:Article:remove']" :disabled="multiple" icon="Delete" plain type="danger" @click="handleDelete">删除</el-button>
-      </el-col>
-      <right-toolbar v-model:show-search="showSearch" @query-table="getList" />
-    </el-row>
+      <div class="article-subject-body">
+        <el-scrollbar height="100%" @scroll="subject.handleScroll">
+          <div class="subject-list">
+            <div 
+              v-for="item in subject.state.list" 
+              :key="item.id" 
+              class="subject-item"
+              :class="{ 'is-active': subject.state.selectNode.id === item.id }"
+              @click="handleSubjectRowClick(item)"
+            >
+              <div class="subject-item-content">
+                <div class="subject-item-name">{{ item.title || '未命名专栏' }}</div>
+                <div class="subject-item-info">
+                  <span class="subject-item-count">{{ item.articleCount || 0 }} 篇</span>
+                  <dict-tag v-if="item.status" :options="post_subject_status" :value="item.status" />
+                </div>
+              </div>
+            </div>
+            <!-- 加载中 -->
+            <div v-show="subject.state.loading" class="subject-loading">
+              <el-icon class="is-loading"><loading /></el-icon>
+              <span>加载中...</span>
+            </div>
+            <!-- 没有更多数据 -->
+            <div v-show="!subject.state.loading && !subject.state.hasMore" class="subject-loading">
+              <span>没有更多了</span>
+            </div>
+            <!-- 暂无数据 -->
+            <div v-show="!subject.state.loading && subject.state.list.length === 0" class="subject-loading">
+              <span>暂无专栏数据</span>
+            </div>
+            <!-- 可以加载更多 -->
+            <div v-show="!subject.state.loading && subject.state.hasMore && subject.state.list.length > 0" class="subject-loading" style="opacity: 0.5;">
+              <span>滚动加载更多</span>
+            </div>
+            <!-- 调试信息 -->
+            <div style="font-size: 12px; color: #999; padding: 10px; text-align: center;">
+              loading: {{ subject.state.loading }}, hasMore: {{ subject.state.hasMore }}, length: {{ subject.state.list.length }}
+            </div>
+          </div>
+        </el-scrollbar>
+      </div>
+    </el-card>
 
-    <el-table v-loading="loading" :data="ArticleList" @selection-change="handleSelectionChange">
-      <el-table-column align="center" type="selection" width="55" />
-      <el-table-column align="left" label="文章标题" prop="title" show-overflow-tooltip min-width="200" />
-      <el-table-column align="center" label="文章简介" prop="remark" show-overflow-tooltip min-width="200" />
-      <el-table-column align="center" label="文章作者" prop="author" width="120" />
-      <el-table-column v-if="false" align="center" label="状态" prop="status">
-        <template #default="scope">
-          <!-- <dict-tag :options="sys_article_status" :value="scope.row.status" /> -->
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="发布时间" prop="publishTime" width="180">
-        <template #default="scope">
-          <!-- <span>{{ dayjs(scope.row.publishTime).format('YYYY-MM-DD HH:mm:ss') }}</span> -->
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="创建时间" prop="createTime" width="180" />
-      <el-table-column align="center" label="修改时间" prop="updateTime" width="180" />
-      <el-table-column align="center" class-name="small-padding fixed-width" fixed="right" label="操作" width="240">
-        <template #default="scope">
-          <el-button icon="View" link type="primary" @click="table.handlePreview(scope.row)">预览</el-button>
-          <el-button v-hasPermi="['post:Article:edit']" icon="Edit" link type="primary" @click="handleUpdate(scope.row)">修改</el-button>
-          <el-button v-hasPermi="['post:Article:remove']" icon="Delete" link type="danger" @click="handleDelete(scope.row)">删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+    <el-card v-loading="loading" class="article-table" shadow="never">
+      <div v-if="subject.state.selectNode.id === undefined || subject.state.selectNode.id === 0">
+        <el-form ref="queryArticleRef" v-no-enter :inline="true" :model="article.query">
+          <el-form-item label="文章标题" prop="title">
+            <el-input v-model="article.query.title" clearable placeholder="请输入文章标题" style="width: 200px" @keyup.enter="article.handleQuery" @blur="article.handleQueryBlur" />
+          </el-form-item>
+          <el-form-item label="作者" prop="author">
+            <el-input v-model="article.query.author" clearable placeholder="请输入作者" style="width: 150px" @keyup.enter="article.handleQuery" @blur="article.handleQueryBlur" />
+          </el-form-item>
+          <el-form-item label="发布状态" prop="publishStatus">
+            <el-select v-model="article.query.publishStatus" clearable placeholder="请选择发布状态" style="width: 150px">
+              <el-option v-for="dict in post_article_publish_status" :key="dict.value" :label="dict.label" :value="dict.value" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="审核状态" prop="auditStatus">
+            <el-select v-model="article.query.auditStatus" clearable placeholder="请选择审核状态" style="width: 150px">
+              <el-option v-for="dict in post_article_audit_status" :key="dict.value" :label="dict.label" :value="dict.value" />
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-button icon="Search" type="primary" @click="article.handleQuery">搜索</el-button>
+            <el-button icon="Refresh" @click="article.handleReset">重置</el-button>
+          </el-form-item>
+        </el-form>
 
-    <pagination v-show="total > 0" v-model:limit="queryParams.pageSize" v-model:page="queryParams.pageNum" :total="total" @pagination="getList" />
+        <el-row class="mb8" :gutter="10">
+          <el-col :span="1.5">
+            <el-button v-hasPermi="['post:Article:add']" icon="Plus" plain type="primary" @click="article.form.handleAdd">新增</el-button>
+          </el-col>
+          <el-col :span="1.5">
+            <el-button v-hasPermi="['post:Article:remove']" :disabled="article.multiple" icon="Delete" plain type="danger" @click="article.handleDelete">删除</el-button>
+          </el-col>
+          <right-toolbar v-model:show-search="article.showSearch" @query-table="article.getList" />
+        </el-row>
 
-    <!-- 添加或修改文章对话框 -->
-    <el-dialog v-model="open" append-to-body :title="title" width="600px">
-      <el-form ref="ArticleRef" v-no-enter label-width="100px" :model="form" :rules="rules">
-        <el-form-item label="文章标题" prop="title">
-          <el-input v-model="form.title" clearable maxlength="25" placeholder="请输入文章标题" show-word-limit />
+        <el-table v-loading="article.loading" :data="article.list" @selection-change="article.handleSelectionChange">
+          <el-table-column align="center" type="selection" width="55" />
+          <el-table-column align="left" label="文章标题" prop="title" show-overflow-tooltip min-width="200" />
+          <el-table-column align="center" label="文章简介" prop="desc" show-overflow-tooltip min-width="200" />
+          <el-table-column align="center" label="作者" prop="author" width="100" />
+          <el-table-column align="center" label="发布状态" prop="publishStatus" width="100">
+            <template #default="scope">
+              <dict-tag :options="post_article_publish_status" :value="scope.row.publishStatus" />
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="审核状态" prop="auditStatus" width="100">
+            <template #default="scope">
+              <dict-tag :options="post_article_audit_status" :value="scope.row.auditStatus" />
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="点赞" prop="likeNum" width="80" />
+          <el-table-column align="center" label="阅读" prop="readNum" width="80" />
+          <el-table-column align="center" label="评论" prop="commentNum" width="80" />
+          <el-table-column align="center" label="发布时间" prop="publishTime" width="180" />
+          <el-table-column align="center" label="创建时间" prop="createTime" width="180" />
+          <el-table-column align="center" class-name="small-padding fixed-width" fixed="right" label="操作" width="240">
+            <template #default="scope">
+              <el-button icon="View" link type="primary" @click="article.handlePreview(scope.row)">预览</el-button>
+              <el-button v-hasPermi="['post:Article:edit']" icon="Edit" link type="primary" @click="article.form.handleUpdate(scope.row)">修改</el-button>
+              <el-button v-hasPermi="['post:Article:remove']" icon="Delete" link type="danger" @click="article.handleDelete(scope.row)">删除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+
+        <pagination v-show="article.total > 0" v-model:limit="article.query.pageSize" v-model:page="article.query.pageNum" :total="article.total" @pagination="article.getList" />
+      </div>
+
+      <div v-else>
+        <el-descriptions border :column="4">
+          <el-descriptions-item label="专栏名称">{{ subject.state.selectNode.title }}</el-descriptions-item>
+          <el-descriptions-item label="文章数量">{{ subject.state.selectNode.articleCount }}</el-descriptions-item>
+          <el-descriptions-item label="状态">
+            <dict-tag :options="post_subject_status" :value="subject.state.selectNode.publishStatus" />
+          </el-descriptions-item>
+          <el-descriptions-item label="排序">{{ subject.state.selectNode.sort }}</el-descriptions-item>
+        </el-descriptions>
+
+        <el-divider content-position="left">文章列表</el-divider>
+
+        <el-form ref="queryArticleRef" v-no-enter :inline="true" :model="article.query">
+          <el-form-item label="文章标题" prop="title">
+            <el-input v-model="article.query.title" clearable placeholder="请输入文章标题" style="width: 200px" @keyup.enter="article.handleQuery" @blur="article.handleQueryBlur" />
+          </el-form-item>
+          <el-form-item label="作者" prop="author">
+            <el-input v-model="article.query.author" clearable placeholder="请输入作者" style="width: 150px" @keyup.enter="article.handleQuery" @blur="article.handleQueryBlur" />
+          </el-form-item>
+          <el-form-item label="发布状态" prop="publishStatus">
+            <el-select v-model="article.query.publishStatus" clearable placeholder="请选择发布状态" style="width: 150px">
+              <el-option v-for="dict in post_article_publish_status" :key="dict.value" :label="dict.label" :value="dict.value" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="审核状态" prop="auditStatus">
+            <el-select v-model="article.query.auditStatus" clearable placeholder="请选择审核状态" style="width: 150px">
+              <el-option v-for="dict in post_article_audit_status" :key="dict.value" :label="dict.label" :value="dict.value" />
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-button icon="Search" type="primary" @click="article.handleQuery">搜索</el-button>
+            <el-button icon="Refresh" @click="article.handleReset">重置</el-button>
+          </el-form-item>
+        </el-form>
+
+        <el-row class="mb8" :gutter="10">
+          <el-col :span="1.5">
+            <el-button v-hasPermi="['post:Article:add']" icon="Plus" plain type="primary" @click="article.form.handleAdd">新增</el-button>
+          </el-col>
+          <el-col :span="1.5">
+            <el-button v-hasPermi="['post:Article:remove']" :disabled="article.multiple" icon="Delete" plain type="danger" @click="article.handleDelete">删除</el-button>
+          </el-col>
+          <right-toolbar v-model:show-search="article.showSearch" @query-table="article.getList" />
+        </el-row>
+
+        <el-table v-loading="article.loading" :data="article.list" @selection-change="article.handleSelectionChange">
+          <el-table-column align="center" type="selection" width="55" />
+          <el-table-column align="left" label="文章标题" prop="title" show-overflow-tooltip min-width="200" />
+          <el-table-column align="center" label="文章简介" prop="desc" show-overflow-tooltip min-width="200" />
+          <el-table-column align="center" label="作者" prop="author" width="100" />
+          <el-table-column align="center" label="发布状态" prop="publishStatus" width="100">
+            <template #default="scope">
+              <dict-tag :options="post_article_publish_status" :value="scope.row.publishStatus" />
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="审核状态" prop="auditStatus" width="100">
+            <template #default="scope">
+              <dict-tag :options="post_article_audit_status" :value="scope.row.auditStatus" />
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="点赞" prop="likeNum" width="80" />
+          <el-table-column align="center" label="阅读" prop="readNum" width="80" />
+          <el-table-column align="center" label="评论" prop="commentNum" width="80" />
+          <el-table-column align="center" label="发布时间" prop="publishTime" width="180" />
+          <el-table-column align="center" label="创建时间" prop="createTime" width="180" />
+          <el-table-column align="center" class-name="small-padding fixed-width" fixed="right" label="操作" width="240">
+            <template #default="scope">
+              <el-button icon="View" link type="primary" @click="article.handlePreview(scope.row)">预览</el-button>
+              <el-button v-hasPermi="['post:Article:edit']" icon="Edit" link type="primary" @click="article.form.handleUpdate(scope.row)">修改</el-button>
+              <el-button v-hasPermi="['post:Article:remove']" icon="Delete" link type="danger" @click="article.handleDelete(scope.row)">删除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+
+        <pagination v-show="article.total > 0" v-model:limit="article.query.pageSize" v-model:page="article.query.pageNum" :total="article.total" @pagination="article.getList" />
+      </div>
+    </el-card>
+
+    <el-drawer v-model="article.form.open" :title="article.form.title" size="50%">
+      <el-form ref="formRef" v-no-enter label-width="120px" :model="article.form.data" :rules="article.form.rules">
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="文章标题" prop="title">
+              <el-input v-model="article.form.data.title" clearable maxlength="100" placeholder="请输入文章标题" show-word-limit @blur="article.form.handleTitleBlur" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="所属专栏" prop="subjectId">
+              <el-select v-model="article.form.data.subjectId" clearable placeholder="请选择专栏" style="width: 100%">
+                <el-option v-for="item in subject.state.list" :key="item.id" :label="item.title" :value="item.id" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-form-item label="文章简介" prop="desc">
+          <el-input v-model="article.form.data.desc" maxlength="500" placeholder="请输入文章简介" :rows="3" :show-word-limit="true" type="textarea" @blur="article.form.handleDescBlur" />
         </el-form-item>
-        <el-form-item label="文章简介" prop="remark">
-          <el-input v-model="form.remark" maxlength="200" placeholder="请输入文章简介" :rows="5" show-word-limit type="textarea" />
+        <el-form-item label="文章内容" prop="content">
+          <el-input v-model="article.form.data.content" placeholder="请输入文章内容" :rows="8" type="textarea" @blur="article.form.handleContentBlur" />
         </el-form-item>
-        <!-- todo: 文件上传公用组件的封装 -->
-        <!-- <el-form-item label="文章封面" prop="remark">
-          <el-input v-model="form.remark" placeholder="请输入编码名称" />
-        </el-form-item> -->
-        <!-- <el-form-item label="文章状态" prop="status">
-          <el-select v-model="form.status" clearable>
-            <el-option v-for="dict in sys_article_status" :value="dict.value">{{ dict.label }}</el-option>
-          </el-select>
-        </el-form-item> -->
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="封面图片" prop="cover">
+              <el-input v-model="article.form.data.cover" clearable placeholder="请输入封面图片URL" @blur="article.form.handleCoverBlur" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="作者" prop="author">
+              <el-input v-model="article.form.data.author" clearable placeholder="请输入作者昵称" disabled />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="发布状态" prop="publishStatus">
+              <el-select v-model="article.form.data.publishStatus" clearable placeholder="请选择发布状态" style="width: 100%">
+                <el-option v-for="dict in post_article_publish_status" :key="dict.value" :label="dict.label" :value="dict.value" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="审核状态" prop="auditStatus">
+              <el-select v-model="article.form.data.auditStatus" clearable placeholder="请选择审核状态" style="width: 100%">
+                <el-option v-for="dict in post_article_audit_status" :key="dict.value" :label="dict.label" :value="dict.value" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="定时发布时间" prop="scheduledPublishTime">
+              <el-date-picker v-model="article.form.data.scheduledPublishTime" clearable placeholder="选择定时发布时间" style="width: 100%" type="datetime" value-format="YYYY-MM-DD HH:mm:ss" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="排序" prop="sort">
+              <el-input-number v-model="article.form.data.sort" :min="0" controls-position="right" placeholder="请输入排序" style="width: 100%" />
+            </el-form-item>
+          </el-col>
+        </el-row>
       </el-form>
       <template #footer>
         <div class="dialog-footer">
-          <el-button type="primary" @click="submitForm">确 定</el-button>
-          <el-button @click="cancel">取 消</el-button>
+          <el-button type="primary" @click="article.form.submit">确 定</el-button>
+          <el-button @click="article.form.cancel">取 消</el-button>
         </div>
       </template>
-    </el-dialog>
+    </el-drawer>
 
-    <preview ref="PreviewRef" />
-    </div>
+    <preview ref="previewRef" />
   </div>
 </template>
 
@@ -95,152 +274,320 @@ import { listArticle, addArticle, delArticle, getArticle, updateArticle } from '
 import Preview from './components/Preview'
 import { useDict } from '@/composables/useDict'
 import { resetForm } from '@/composables/useCommon'
+import { useSubject } from '@/composables/useSubject'
 
-const { sys_article_status } = useDict('sys_article_status')
-console.log(sys_article_status, '数据字典')
-console.log(dayjs(new Date()).format('YYYY-MM-DD HH:mm:ss'), '字典')
+const { post_article_publish_status, post_article_audit_status, post_subject_status } = useDict('post_article_publish_status', 'post_article_audit_status', 'post_subject_status')
 
-const ArticleList = ref([])
-const open = ref(false)
-const loading = ref(true)
-const showSearch = ref(true)
-const ids = ref([])
-const single = ref(true)
-const multiple = ref(true)
-const total = ref(0)
-const title = ref('')
-const ArticleRef = ref(null)
-const PreviewRef = ref()
+// 使用专栏管理 composable
+const subject = useSubject()
 
-const data = reactive({
-  form: {},
-  queryParams: {
+const formRef = ref(null)
+const previewRef = ref()
+const queryArticleRef = ref(null)
+const loading = ref(false)
+
+const article = reactive({
+  loading: true,
+  showSearch: true,
+  query: {
     pageNum: 1,
     pageSize: 10,
-    ArticleCode: undefined,
-    ArticleName: undefined,
-    status: undefined,
+    title: undefined,
+    subjectId: undefined,
+    author: undefined,
+    publishStatus: undefined,
+    auditStatus: undefined,
     isAsc: 'descending',
     orderByColumn: 'createTime'
   },
-  rules: {
-    title: [{ required: true, message: '文章名称不能为空', trigger: 'blur' }],
-    remark: [{ required: true, message: '文章简介不能为空', trigger: 'blur' }]
-  }
-})
-
-const { queryParams, form, rules } = toRefs(data)
-
-const table = reactive({
-  handlePreview: (row) => {
-    PreviewRef.value.handleOpen(row)
-  }
-})
-
-/** 查询文章列表 */
-function getList() {
-  loading.value = true
-  listArticle(queryParams.value).then((res) => {
-    ArticleList.value = res.data.list
-    ArticleList.value.forEach((item) => {
-      item.updateTime = dayjs(item.updateTime).format('YYYY-MM-DD HH:mm:ss')
-      item.createTime = dayjs(item.createTime).format('YYYY-MM-DD HH:mm:ss')
-      item.publishTime = dayjs(item.publishTime).format('YYYY-MM-DD HH:mm:ss')
-    })
-    total.value = res.data.total
-    loading.value = false
-  })
-}
-/** 取消按钮 */
-function cancel() {
-  open.value = false
-  reset()
-}
-/** 表单重置 */
-function reset() {
-  form.value = {
-    articleId: undefined,
-    ArticleCode: undefined,
-    ArticleName: undefined,
-    ArticleSort: 0,
-    status: '0',
-    remark: undefined,
-    pushTime: dayjs().valueOf()
-  }
-  resetForm(ArticleRef)
-}
-/** 搜索按钮操作 */
-function handleQuery() {
-  queryParams.value.pageNum = 1
-  getList()
-}
-/** 重置按钮操作 */
-function resetQuery() {
-  resetForm(queryRef)
-  handleQuery()
-}
-/** 多选框选中数据 */
-function handleSelectionChange(selection) {
-  ids.value = selection.map((item) => item.articleId)
-  single.value = selection.length != 1
-  multiple.value = !selection.length
-}
-/** 新增按钮操作 */
-function handleAdd() {
-  reset()
-  open.value = true
-  title.value = '添加文章'
-}
-/** 修改按钮操作 */
-function handleUpdate(row) {
-  reset()
-  const articleId = row.articleId || ids.value
-  getArticle(articleId).then((res) => {
-    form.value = res.data
-    open.value = true
-    title.value = '修改文章'
-  })
-}
-/** 提交按钮 */
-function submitForm() {
-  console.log(form.value)
-  if (ArticleRef.value) {
-    ArticleRef.value.validate((valid) => {
-      if (valid) {
-        if (form.value.articleId != undefined) {
-          updateArticle(form.value).then((res) => {
-            ElMessage.success('修改成功') 
-            open.value = false
-            getList()
-          })
-        } else {
-          addArticle(form.value).then((res) => {
-            ElMessage.success('新增成功')
-            open.value = false
-            getList()
-          })
-        }
+  list: [],
+  total: 0,
+  single: true,
+  multiple: true,
+  ids: [],
+  getList: () => {
+    article.loading = true
+    listArticle(article.query).then((res) => {
+      article.list = res.data.list || []
+      if (article.list && article.list.length > 0) {
+        article.list.forEach((item) => {
+          if (item.updateTime) item.updateTime = dayjs(item.updateTime).format('YYYY-MM-DD HH:mm:ss')
+          if (item.createTime) item.createTime = dayjs(item.createTime).format('YYYY-MM-DD HH:mm:ss')
+          if (item.publishTime) item.publishTime = dayjs(item.publishTime).format('YYYY-MM-DD HH:mm:ss')
+          if (item.scheduledPublishTime) item.scheduledPublishTime = dayjs(item.scheduledPublishTime).format('YYYY-MM-DD HH:mm:ss')
+        })
       }
+      article.total = res.data.total || 0
+      article.loading = false
+    }).catch(() => {
+      article.loading = false
     })
+  },
+  handleSelectionChange: (selection) => {
+    article.ids = selection.map((item) => item.articleId)
+    article.single = selection.length != 1
+    article.multiple = !selection.length
+  },
+  handleDelete: (row) => {
+    const articleIds = row.articleId || article.ids
+    ElMessageBox.confirm(`是否确认删除文章编号为"${row.title}"的数据项？`, '系统提示', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning'
+    })
+      .then(function () {
+        return delArticle(articleIds)
+      })
+      .then(() => {
+        article.getList()
+        ElMessage.success('删除成功')
+      })
+      .catch(() => {})
+  },
+  handleQuery: () => {
+    article.query.pageNum = 1
+    article.getList()
+  },
+  handleQueryBlur: () => {
+    article.query.title = article.query.title.trim()
+    article.query.author = article.query.author.trim()
+  },
+  handleReset: () => {
+    resetForm(queryArticleRef)
+    article.handleQuery()
+  },
+  form: {
+    open: false,
+    title: '',
+    data: {
+      articleId: undefined,
+      title: undefined,
+      subjectId: undefined,
+      desc: undefined,
+      content: undefined,
+      cover: undefined,
+      author: undefined,
+      publishTime: undefined,
+      likeNum: 0,
+      readNum: 0,
+      commentNum: 0,
+      publishStatus: '0',
+      auditStatus: '0',
+      scheduledPublishTime: undefined,
+      sort: 0
+    },
+    rules: {
+      title: [{ required: true, message: '文章标题不能为空', trigger: 'blur' }],
+      subjectId: [{ required: true, message: '所属专栏不能为空', trigger: 'change' }],
+      desc: [{ required: true, message: '文章简介不能为空', trigger: 'blur' }]
+    },
+    reset: () => {
+      article.form.data = {
+        articleId: undefined,
+        title: undefined,
+        subjectId: undefined,
+        desc: undefined,
+        content: undefined,
+        cover: undefined,
+        author: undefined,
+        publishTime: undefined,
+        likeNum: 0,
+        readNum: 0,
+        commentNum: 0,
+        publishStatus: '0',
+        auditStatus: '0',
+        scheduledPublishTime: undefined,
+        sort: 0
+      }
+      resetForm(formRef)
+    },
+    cancel: () => {
+      article.form.open = false
+      article.form.reset()
+    },
+    handleAdd: () => {
+      article.form.reset()
+      article.form.data.subjectId = (subject.state.selectNode.id === undefined || subject.state.selectNode.id === 0) ? undefined : subject.state.selectNode.id
+      article.form.open = true
+      article.form.title = '添加文章'
+    },
+    handleUpdate: (row) => {
+      article.form.reset()
+      const articleId = row.articleId || article.ids
+      getArticle(articleId).then((res) => {
+        article.form.data = res.data
+        article.form.open = true
+        article.form.title = '修改文章'
+      })
+    },
+    submit: () => {
+      if (formRef.value) {
+        formRef.value.validate((valid) => {
+          if (valid) {
+            if (article.form.data.articleId != undefined) {
+              updateArticle(article.form.data).then((res) => {
+                ElMessage.success('修改成功')
+                article.form.open = false
+                article.getList()
+              })
+            } else {
+              addArticle(article.form.data).then((res) => {
+                ElMessage.success('新增成功')
+                article.form.open = false
+                article.getList()
+              })
+            }
+          }
+        })
+      }
+    },
+    handleTitleBlur: () => {
+      article.form.data.title = article.form.data.title.trim()
+    },
+    handleDescBlur: () => {
+      article.form.data.desc = article.form.data.desc.trim()
+    },
+    handleContentBlur: () => {
+      article.form.data.content = article.form.data.content.trim()
+    },
+    handleCoverBlur: () => {
+      article.form.data.cover = article.form.data.cover.trim()
+    }
+  },
+  handlePreview: (row) => {
+    previewRef.value.handleOpen(row)
+  }
+})
+
+subject.getList()
+article.getList()
+
+// 处理专栏行点击
+const handleSubjectRowClick = (row) => {
+  subject.handleRowClick(row, (subjectId) => {
+    article.query.subjectId = subjectId
+    article.getList()
+  })
+}
+</script>
+
+<style lang="scss" scoped>
+.article {
+  width: 100%;
+  height: 100%;
+  display: flex;
+
+  &-subject {
+    background-color: #ffffff;
+    width: 300px;
+    height: calc(100vh - 200px);
+    margin-right: 20px;
+
+    &-header {
+      margin-bottom: 10px;
+
+      .search-input {
+        width: 100%;
+      }
+    }
+
+    &-body {
+      height: calc(100vh - 320px);
+      padding-right: 0;
+    }
+  }
+
+  .subject-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .subject-item {
+    padding: 12px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: 1px solid #e4e7ed;
+    background-color: #ffffff;
+    width: 100%;
+    box-sizing: border-box;
+
+    &:hover {
+      background-color: #f5f7fa;
+      border-color: #c6e2ff;
+    }
+
+    &.is-active {
+      background-color: #ecf5ff;
+      border-color: #409eff;
+    }
+
+    &-content {
+      margin-bottom: 8px;
+    }
+
+    &-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: #303133;
+      margin-bottom: 6px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    &-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: #909399;
+    }
+
+    &-count {
+      background-color: #f0f2f5;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+  }
+
+  &-table {
+    position: relative;
+    width: calc(100% - 300px);
+    height: calc(100vh - 200px);
   }
 }
-/** 删除按钮操作 */
-function handleDelete(row) {
-  const articleIds = row.articleId || ids.value
-  ElMessageBox.confirm(`是否确认删除文章编号为"${row.title}"的数据项？`, '系统提示', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning'
-  })
-    .then(function () {
-      return delArticle(articleIds)
-    })
-    .then(() => {
-      getList()
-      ElMessage.success('删除成功')
-    })
-    .catch(() => {})
+
+.subject.subject-item:hover .subject-item-actions {
+  opacity: 1;
 }
 
-getList()
-</script>
+.subject-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  color: #909399;
+  font-size: 14px;
+  gap: 8px;
+
+  .is-loading {
+    font-size: 18px;
+  }
+}
+
+// 加载图标动画
+:deep(.is-loading) {
+  animation: rotating 2s linear infinite;
+}
+
+@keyframes rotating {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+</style>
