@@ -197,6 +197,11 @@ const props = defineProps({
     enableCrop: {
         type: Boolean,
         default: true
+    },
+    // 上传前验证回调，返回 false 则阻止上传
+    beforeUploadCheck: {
+        type: Function,
+        default: null
     }
 })
 
@@ -314,6 +319,16 @@ function handleBeforeUpload(file) {
         return false
     }
 
+    // 执行自定义验证回调
+    if (props.beforeUploadCheck && typeof props.beforeUploadCheck === 'function') {
+        const checkResult = props.beforeUploadCheck()
+        if (checkResult === false) {
+            // 验证失败，阻止上传
+            return false
+        }
+    }
+
+    // 验证通过，继续处理
     // 如果启用了裁切功能，打开裁切对话框
     if (props.enableCrop) {
         openCropDialog(file)
@@ -322,7 +337,7 @@ function handleBeforeUpload(file) {
         customUpload({ file })
     }
     
-    // 阻止默认上传行为
+    // 阻止默认上传行为（因为我们已经手动处理了）
     return false
 }
 

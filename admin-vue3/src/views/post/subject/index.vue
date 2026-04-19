@@ -65,8 +65,8 @@
 
     <pagination v-show="subject.total > 0" v-model:limit="subject.queryParams.pageSize" v-model:page="subject.queryParams.pageNum" :total="subject.total" @pagination="subject.getList" />
 
-    <!-- 添加或修改专栏对话框 -->
-    <el-dialog v-model="subject.open" append-to-body :title="subject.title" width="600px">
+    <!-- 添加或修改专栏抽屉 -->
+    <el-drawer v-model="subject.open" :title="subject.drawerTitle" size="600px" direction="rtl">
       <el-form ref="subjectRef" v-no-enter label-width="100px" :model="subject.form" :rules="subject.rules">
         <el-form-item label="专栏名称" prop="title">
           <el-input v-model.trim="subject.form.title" clearable maxlength="50" placeholder="请输入专栏名称" show-word-limit />
@@ -75,7 +75,7 @@
           <el-input v-model.trim="subject.form.desc" maxlength="200" placeholder="请输入专栏简介" :rows="4" show-word-limit type="textarea" />
         </el-form-item>
         <el-form-item label="封面图片" prop="cover">
-          <ImageUploadCover v-model="subject.form.cover" path="subject" :max-size="5" :quality="0.85" />
+          <ImageUploadCover v-model="subject.form.cover" path="subject" :max-size="5" :quality="0.85" :before-upload-check="subject.validateBeforeUpload" />
         </el-form-item>
         <el-form-item label="发布状态" prop="publishStatus">
           <el-radio-group v-model="subject.form.publishStatus">
@@ -92,12 +92,12 @@
         </el-form-item>
       </el-form>
       <template #footer>
-        <div class="dialog-footer">
+        <div class="drawer-footer">
           <el-button type="primary" @click="subject.submitForm">确 定</el-button>
           <el-button @click="subject.cancel">取 消</el-button>
         </div>
       </template>
-    </el-dialog>
+    </el-drawer>
     </div>
   </div>
 </template>
@@ -126,7 +126,7 @@ const subject = reactive({
   single: true,
   multiple: true,
   total: 0,
-  title: '',
+  drawerTitle: '',
 
   // 查询参数
   queryParams: {
@@ -202,6 +202,19 @@ const subject = reactive({
     })
   },
 
+  // 上传前验证：必须填写标题和简介
+  validateBeforeUpload() {
+    if (!subject.form.title || !subject.form.title.trim()) {
+      ElMessage.warning('请先填写专栏名称')
+      return false
+    }
+    if (!subject.form.desc || !subject.form.desc.trim()) {
+      ElMessage.warning('请先填写专栏简介')
+      return false
+    }
+    return true
+  },
+
   // 搜索按钮操作
   handleQuery: () => {
     subject.queryParams.pageNum = 1
@@ -226,7 +239,7 @@ const subject = reactive({
     subject.reset()
     nextTick(() => {
       subject.open = true
-      subject.title = '添加专栏'
+      subject.drawerTitle = '添加专栏'
     })
   },
 
@@ -237,7 +250,7 @@ const subject = reactive({
     const res = await getSubject(id)
     Object.assign(subject.form, res.data)
     subject.open = true
-    subject.title = '修改专栏'
+    subject.drawerTitle = '修改专栏'
   },
 
   // 提交按钮
