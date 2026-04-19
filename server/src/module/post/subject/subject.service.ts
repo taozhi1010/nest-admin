@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, In } from 'typeorm';
 import { ResultData } from 'src/common/utils/result';
 import { PostSubjectEntity } from './entities/subject.entity';
+import { PostArticleEntity } from '../article/entities/article.entity';
 import { CreatePostSubjectDto, UpdatePostSubjectDto, ListPostSubjectDto } from './dto/index';
 import { UserDto } from 'src/module/system/user/user.decorator';
 
@@ -11,6 +12,8 @@ export class PostSubjectService {
   constructor(
     @InjectRepository(PostSubjectEntity)
     private readonly postSubjectRepository: Repository<PostSubjectEntity>,
+    @InjectRepository(PostArticleEntity)
+    private readonly postArticleRepository: Repository<PostArticleEntity>,
   ) {}
 
   async create(createDto: CreatePostSubjectDto, user: UserDto) {
@@ -57,6 +60,17 @@ export class PostSubjectService {
     }
 
     const [list, total] = await entity.getManyAndCount();
+
+    // 为每个专栏统计文章数量
+    for (const subject of list) {
+      const articleCount = await this.postArticleRepository.count({
+        where: {
+          subjectId: subject.id,
+          delFlag: '0',
+        },
+      });
+      subject.articleCount = articleCount;
+    }
 
     return ResultData.ok({ list, total });
   }

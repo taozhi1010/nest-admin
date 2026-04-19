@@ -3,10 +3,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { PostSubjectService } from './subject.service';
 import { PostSubjectController } from './subject.controller';
 import { PostSubjectEntity } from './entities/subject.entity';
+import { PostArticleEntity } from '../article/entities/article.entity';
 
 @Global()
 @Module({
-  imports: [TypeOrmModule.forFeature([PostSubjectEntity])],
+  imports: [TypeOrmModule.forFeature([PostSubjectEntity, PostArticleEntity])],
   controllers: [PostSubjectController],
   providers: [PostSubjectService],
   exports: [PostSubjectService],
