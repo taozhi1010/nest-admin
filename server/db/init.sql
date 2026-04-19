@@ -509,6 +509,7 @@ insert into sys_dict_type values(11, '文章发布状态', 'post_article_publish
 insert into sys_dict_type values(12, '文章审核状态', 'post_article_audit_status', '0', 'admin', sysdate(), '', null, '文章审核状态列表', '0');
 insert into sys_dict_type values(13, '专栏发布状态', 'post_subject_publish_status', '0', 'admin', sysdate(), '', null, '专栏发布状态列表', '0');
 insert into sys_dict_type values(14, '专栏审核状态', 'post_subject_audit_status', '0', 'admin', sysdate(), '', null, '专栏审核状态列表', '0');
+insert into sys_dict_type values(15, '文章来源', 'post_article_source', '0', 'admin', sysdate(), '', null, '文章来源列表', '0');
 
 
 -- ----------------------------
@@ -583,6 +584,9 @@ insert into sys_dict_data values(41, 1,  '未提交',   '0',       'post_subject
 insert into sys_dict_data values(42, 2,  '审核中',   '1',       'post_subject_audit_status',   '',   'warning', 'N', '0', 'admin', sysdate(), '', null, '专栏-审核状态-审核中', '0');
 insert into sys_dict_data values(43, 3,  '审核通过', '2',       'post_subject_audit_status',   '',   'success', 'Y', '0', 'admin', sysdate(), '', null, '专栏-审核状态-审核通过', '0');
 insert into sys_dict_data values(44, 4,  '审核拒绝', '3',       'post_subject_audit_status',   '',   'danger',  'N', '0', 'admin', sysdate(), '', null, '专栏-审核状态-审核拒绝', '0');
+-- 文章来源
+insert into sys_dict_data values(45, 1,  '原创',     '0',       'post_article_source',         '',   'primary', 'Y', '0', 'admin', sysdate(), '', null, '文章-来源-原创', '0');
+insert into sys_dict_data values(46, 2,  '转载',     '1',       'post_article_source',         '',   'info',    'N', '0', 'admin', sysdate(), '', null, '文章-来源-转载', '0');
 
 
 -- ----------------------------
