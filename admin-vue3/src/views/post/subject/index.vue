@@ -145,7 +145,7 @@ const subject = reactive({
     title: undefined,
     desc: undefined,
     cover: undefined,
-    publishStatus: '0',
+    publishStatus: '1',
     auditStatus: '0',
     sort: 0
   },
@@ -192,7 +192,7 @@ const subject = reactive({
     subject.form.title = undefined
     subject.form.desc = undefined
     subject.form.cover = undefined
-    subject.form.publishStatus = '0'
+    subject.form.publishStatus = '1'
     subject.form.auditStatus = '0'
     subject.form.sort = 0
     nextTick(() => {
