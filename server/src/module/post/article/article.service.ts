@@ -33,6 +33,12 @@ export class PostArticleService {
     console.log('📝 [创建文章] 当前登录用户ID:', userId);
     console.log('📝 [创建文章] 前端提交的DTO:', JSON.stringify(createDto));
 
+    // 数据验证：检查描述字段是否过长或重复
+    if (createDto.desc && createDto.desc.length > 255) {
+      console.warn('⚠️ [创建文章] 描述字段过长，已截断');
+      createDto.desc = createDto.desc.substring(0, 255);
+    }
+
     // 创建文章实体，并设置 userId（强制覆盖前端传来的任何userId）
     const article = this.postArticleRepository.create({
       ...createDto,
@@ -96,8 +102,25 @@ export class PostArticleService {
 
     const [list, total] = await entity.getManyAndCount();
 
+    // 处理返回数据，将用户信息嵌套到每个文章对象中
+    const processedList = list.map((item: any) => {
+      // 从原始数据中提取用户信息
+      const userInfo = item.userInfo || null;
+
+      return {
+        ...item,
+        userInfo: userInfo
+          ? {
+              userId: userInfo.userId || userInfo.user_id,
+              nickName: userInfo.nickName || userInfo.nick_name || '',
+              avatar: userInfo.avatar || '',
+            }
+          : null,
+      };
+    });
+
     return ResultData.ok({
-      list,
+      list: processedList,
       total,
     });
   }
@@ -123,11 +146,24 @@ export class PostArticleService {
       select: ['userId', 'userName', 'nickName', 'avatar'],
     });
 
-    // 将用户信息附加到文章数据中返回
-    return ResultData.ok({
+    // 处理可能的空值并提供默认值
+    const processedArticle = {
       ...article,
-      userInfo: user || null,
-    });
+      content: article.content || '',
+      author: article.author || (user ? user.nickName : ''),
+      publishTime: article.publishTime || null,
+      userInfo: user
+        ? {
+            userId: user.userId,
+            userName: user.userName,
+            nickName: user.nickName,
+            avatar: user.avatar || '',
+          }
+        : null,
+    };
+
+    // 将用户信息附加到文章数据中返回
+    return ResultData.ok(processedArticle);
   }
 
   /**
@@ -157,6 +193,12 @@ export class PostArticleService {
 
     // 确保不会更新 userId 字段
     const { userId, ...safeUpdateData } = updateData as any;
+
+    // 数据验证：检查描述字段是否过长
+    if (safeUpdateData.desc && safeUpdateData.desc.length > 255) {
+      console.warn('⚠️ [更新文章] 描述字段过长，已截断');
+      safeUpdateData.desc = safeUpdateData.desc.substring(0, 255);
+    }
 
     await this.postArticleRepository.update({ id }, safeUpdateData);
     return ResultData.ok();
