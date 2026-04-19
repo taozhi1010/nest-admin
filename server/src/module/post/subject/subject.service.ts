@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, In } from 'typeorm';
 import { ResultData } from 'src/common/utils/result';
 import { PostSubjectEntity } from './entities/subject.entity';
 import { CreatePostSubjectDto, UpdatePostSubjectDto, ListPostSubjectDto } from './dto/index';
@@ -61,7 +61,7 @@ export class PostSubjectService {
     return ResultData.ok({ list, total });
   }
 
-  async findOne(id: string) {
+  async findOne(id: number) {
     const subject = await this.postSubjectRepository.findOne({
       where: { id, delFlag: '0' },
     });
@@ -85,14 +85,29 @@ export class PostSubjectService {
     return ResultData.ok();
   }
 
-  async remove(id: string) {
-    const subject = await this.postSubjectRepository.findOne({ where: { id, delFlag: '0' } });
+  async remove(ids: number | number[]) {
+    // 统一转换为数组
+    const idList = Array.isArray(ids) ? ids : [ids];
 
-    if (!subject) {
-      return ResultData.fail(500, '专栏不存在');
+    if (!idList || idList.length === 0) {
+      return ResultData.fail(400, '请选择要删除的专栏');
     }
 
-    await this.postSubjectRepository.update({ id }, { delFlag: '1' });
+    // 获取所有要删除的专栏
+    const subjects = await this.postSubjectRepository.find({
+      where: {
+        id: In(idList),
+        delFlag: '0',
+      },
+    });
+
+    if (subjects.length === 0) {
+      return ResultData.fail(500, '未找到可删除的专栏');
+    }
+
+    // 批量软删除
+    await this.postSubjectRepository.update({ id: In(idList) }, { delFlag: '1' });
+
     return ResultData.ok();
   }
 }

@@ -40,7 +40,7 @@ export class PostArticleController {
    */
   @ApiOperation({ summary: '文章-游客-详情' })
   @Get('/guest/detail')
-  findGuestOne(@Query('id') id: string) {
+  findGuestOne(@Query('id') id: number) {
     return this.postArticleService.findOne(id);
   }
 
@@ -60,7 +60,7 @@ export class PostArticleController {
   @ApiOperation({ summary: '文章-详情' })
   @RequirePermission('post:article:query')
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: number) {
     return this.postArticleService.findOne(id);
   }
 
@@ -71,18 +71,19 @@ export class PostArticleController {
   @ApiBody({ type: UpdatePostArticleDto, required: true })
   @RequirePermission('post:article:edit')
   @Put()
-  update(@Body() updateDto: UpdatePostArticleDto) {
-    return this.postArticleService.update(updateDto);
+  update(@Body() updateDto: UpdatePostArticleDto, @User() user: UserDto) {
+    return this.postArticleService.update(updateDto, user);
   }
 
   /**
-   * 删除文章
+   * 删除文章（支持单个或批量删除）
    */
   @ApiOperation({ summary: '文章-删除' })
   @RequirePermission('post:article:remove')
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.postArticleService.remove(id);
+  @Delete(':ids')
+  remove(@Param('ids') ids: string, @User() user: UserDto) {
+    const idList = ids.split(',').map((id) => +id);
+    return this.postArticleService.remove(idList, user);
   }
 
   /**
@@ -91,8 +92,8 @@ export class PostArticleController {
   @ApiOperation({ summary: '文章-提交审核' })
   @RequirePermission('post:article:submitAudit')
   @Post('/submit-audit/:id')
-  submitForAudit(@Param('id') id: string) {
-    return this.postArticleService.submitForAudit(id);
+  submitForAudit(@Param('id') id: number, @User() user: UserDto) {
+    return this.postArticleService.submitForAudit(id, user);
   }
 
   /**
@@ -114,7 +115,7 @@ export class PostArticleController {
   @ApiOperation({ summary: '文章-发布' })
   @RequirePermission('post:article:publish')
   @Post('/publish/:id')
-  publish(@Param('id') id: string) {
-    return this.postArticleService.publish(id);
+  publish(@Param('id') id: number, @User() user: UserDto) {
+    return this.postArticleService.publish(id, user);
   }
 }

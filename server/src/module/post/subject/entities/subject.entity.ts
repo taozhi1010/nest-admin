@@ -10,9 +10,9 @@ import { ApiProperty } from '@nestjs/swagger';
   comment: '专栏库',
 })
 export class PostSubjectEntity extends BaseEntity {
-  @ApiProperty({ type: String, description: '专栏ID' })
-  @PrimaryGeneratedColumn('uuid', { name: 'id', comment: '专栏ID' })
-  public id: string;
+  @ApiProperty({ type: Number, description: '专栏ID' })
+  @PrimaryGeneratedColumn({ name: 'id', comment: '专栏ID' })
+  public id: number;
 
   @ApiProperty({ type: String, description: '专栏标题' })
   @Column({ type: 'varchar', name: 'title', length: 64, comment: '专栏标题' })

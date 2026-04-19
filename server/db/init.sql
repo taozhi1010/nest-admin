@@ -803,10 +803,10 @@ create table sys_upload (
 -- ----------------------------
 drop table if exists post_article;
 create table post_article (
-  id            varchar(64)   not null                   comment '文章 id',
+  id            int           not null auto_increment    comment '文章 id',
   title         varchar(64)   not null                   comment '文章标题',
   `desc`        varchar(255)  default null               comment '文章简介',
-  subject_id    varchar(64)   not null                   comment '专栏 id',
+  subject_id    int           not null                   comment '专栏 id',
   user_id       int             not null                   comment '作者用户ID',
   content       longtext      default null               comment '文章内容',
   cover         varchar(255)  default null               comment '封面',
@@ -843,7 +843,7 @@ create table post_article (
 -- ----------------------------
 drop table if exists post_subject;
 create table post_subject (
-  id            varchar(64)   not null                   comment '专栏 id',
+  id            int           not null auto_increment    comment '专栏 id',
   title         varchar(64)   not null                   comment '专栏标题',
   `desc`        varchar(255)  default null               comment '专栏简介',
   user_id       int             not null                   comment '创建者用户ID',

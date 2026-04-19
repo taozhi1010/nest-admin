@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, In } from 'typeorm';
 import { ResultData } from 'src/common/utils/result';
 import { PostArticleEntity } from './entities/article.entity';
 import { CreatePostArticleDto, UpdatePostArticleDto, ListPostArticleDto, AuditPostArticleDto } from './dto/index';
@@ -27,11 +27,16 @@ export class PostArticleService {
     // 从当前登录用户信息中获取 userId
     const userId = user.user.userId;
 
-    // 创建文章实体，并设置 userId
+    console.log('📝 [创建文章] 当前登录用户ID:', userId);
+    console.log('📝 [创建文章] 前端提交的DTO:', JSON.stringify(createDto));
+
+    // 创建文章实体，并设置 userId（强制覆盖前端传来的任何userId）
     const article = this.postArticleRepository.create({
       ...createDto,
-      userId: userId,
+      userId: userId, // 这里会覆盖 createDto 中可能存在的 userId
     });
+
+    console.log('📝 [创建文章] 最终保存的文章数据 userId:', article.userId);
 
     await this.postArticleRepository.save(article);
     return ResultData.ok();
@@ -95,7 +100,7 @@ export class PostArticleService {
    * @param id 文章ID
    * @returns 文章详情
    */
-  async findOne(id: string) {
+  async findOne(id: number) {
     const article = await this.postArticleRepository.findOne({
       where: {
         id,
@@ -113,9 +118,10 @@ export class PostArticleService {
   /**
    * 更新文章
    * @param updateDto 更新数据
+   * @param user 当前登录用户信息
    * @returns 操作结果
    */
-  async update(updateDto: UpdatePostArticleDto) {
+  async update(updateDto: UpdatePostArticleDto, user: UserDto) {
     const { id, ...updateData } = updateDto;
 
     const article = await this.postArticleRepository.findOne({
@@ -126,25 +132,62 @@ export class PostArticleService {
       return ResultData.fail(500, '文章不存在');
     }
 
-    await this.postArticleRepository.update({ id }, updateData);
+    // 权限验证：只能更新自己的文章（管理员除外）
+    const currentUserId = user.user.userId;
+    const isAdmin = user.roles?.includes('admin');
+
+    if (!isAdmin && article.userId !== currentUserId) {
+      return ResultData.fail(403, '无权修改此文章');
+    }
+
+    // 确保不会更新 userId 字段
+    const { userId, ...safeUpdateData } = updateData as any;
+
+    await this.postArticleRepository.update({ id }, safeUpdateData);
     return ResultData.ok();
   }
 
   /**
-   * 删除文章（软删除）
-   * @param id 文章ID
+   * 删除文章（软删除，支持单个或多个）
+   * @param ids 文章ID或ID数组
+   * @param user 当前登录用户信息
    * @returns 操作结果
    */
-  async remove(id: string) {
-    const article = await this.postArticleRepository.findOne({
-      where: { id, delFlag: '0' },
-    });
+  async remove(ids: number | number[], user: UserDto) {
+    // 统一转换为数组
+    const idList = Array.isArray(ids) ? ids : [ids];
 
-    if (!article) {
-      return ResultData.fail(500, '文章不存在');
+    if (!idList || idList.length === 0) {
+      return ResultData.fail(400, '请选择要删除的文章');
     }
 
-    await this.postArticleRepository.update({ id }, { delFlag: '1' });
+    // 获取所有要删除的文章
+    const articles = await this.postArticleRepository.find({
+      where: {
+        id: In(idList),
+        delFlag: '0',
+      },
+    });
+
+    if (articles.length === 0) {
+      return ResultData.fail(500, '未找到可删除的文章');
+    }
+
+    // 权限验证：只能删除自己的文章（管理员除外）
+    const currentUserId = user.user.userId;
+    const isAdmin = user.roles?.includes('admin');
+
+    if (!isAdmin) {
+      // 检查是否有不属于当前用户的文章
+      const unauthorizedArticles = articles.filter((article) => article.userId !== currentUserId);
+      if (unauthorizedArticles.length > 0) {
+        return ResultData.fail(403, '无权删除部分文章');
+      }
+    }
+
+    // 批量软删除
+    await this.postArticleRepository.update({ id: In(idList) }, { delFlag: '1' });
+
     return ResultData.ok();
   }
 
@@ -180,15 +223,24 @@ export class PostArticleService {
   /**
    * 提交审核（将文章状态改为审核中）
    * @param id 文章ID
+   * @param user 当前登录用户信息
    * @returns 操作结果
    */
-  async submitForAudit(id: string) {
+  async submitForAudit(id: number, user: UserDto) {
     const article = await this.postArticleRepository.findOne({
       where: { id, delFlag: '0' },
     });
 
     if (!article) {
       return ResultData.fail(500, '文章不存在');
+    }
+
+    // 权限验证：只能提交自己的文章进行审核
+    const currentUserId = user.user.userId;
+    const isAdmin = user.roles?.includes('admin');
+
+    if (!isAdmin && article.userId !== currentUserId) {
+      return ResultData.fail(403, '无权操作此文章');
     }
 
     await this.postArticleRepository.update(
@@ -204,15 +256,24 @@ export class PostArticleService {
   /**
    * 发布文章（将待发布的文章改为已发布）
    * @param id 文章ID
+   * @param user 当前登录用户信息
    * @returns 操作结果
    */
-  async publish(id: string) {
+  async publish(id: number, user: UserDto) {
     const article = await this.postArticleRepository.findOne({
       where: { id, delFlag: '0' },
     });
 
     if (!article) {
       return ResultData.fail(500, '文章不存在');
+    }
+
+    // 权限验证：只能发布自己的文章（管理员除外）
+    const currentUserId = user.user.userId;
+    const isAdmin = user.roles?.includes('admin');
+
+    if (!isAdmin && article.userId !== currentUserId) {
+      return ResultData.fail(403, '无权发布此文章');
     }
 
     await this.postArticleRepository.update(

@@ -25,9 +25,9 @@ export class PostArticleEntity extends DeleteStatusEntity {
 
   @Column({ type: 'varchar', name: 'remark', length: 500, default: null, comment: '备注' })
   public remark: string;
-  @ApiProperty({ type: String, description: '文章ID' })
-  @PrimaryGeneratedColumn('uuid', { name: 'id', comment: '文章ID' })
-  public id: string;
+  @ApiProperty({ type: Number, description: '文章ID' })
+  @PrimaryGeneratedColumn({ name: 'id', comment: '文章ID' })
+  public id: number;
 
   @ApiProperty({ type: String, description: '文章标题' })
   @Column({ type: 'varchar', name: 'title', length: 64, comment: '文章标题' })
@@ -38,8 +38,8 @@ export class PostArticleEntity extends DeleteStatusEntity {
   public desc: string;
 
   @ApiProperty({ type: String, description: '专栏ID' })
-  @Column({ type: 'varchar', name: 'subject_id', length: 64, comment: '专栏ID' })
-  public subjectId: string;
+  @Column({ type: 'int', name: 'subject_id', comment: '专栏ID' })
+  public subjectId: number;
 
   @ApiProperty({ type: Number, description: '作者用户ID' })
   @Column({ type: 'int', name: 'user_id', comment: '作者用户ID' })

@@ -1,6 +1,7 @@
 import { IsString, IsNumber, IsOptional, IsEnum } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, OmitType } from '@nestjs/swagger';
 import { PagingDto } from 'src/common/dto/index';
+import { Transform } from 'class-transformer';
 
 /**
  * 发布状态枚举
@@ -36,8 +37,8 @@ export class CreatePostArticleDto {
   desc?: string;
 
   @ApiProperty({ required: true, description: '专栏ID' })
-  @IsString()
-  subjectId: string;
+  @IsNumber()
+  subjectId: number;
 
   @ApiProperty({ required: false, description: '文章内容' })
   @IsOptional()
@@ -98,8 +99,8 @@ export class CreatePostArticleDto {
  */
 export class UpdatePostArticleDto extends CreatePostArticleDto {
   @ApiProperty({ required: true, description: '文章ID' })
-  @IsString()
-  id: string;
+  @IsNumber()
+  id: number;
 }
 
 /**
@@ -113,11 +114,13 @@ export class ListPostArticleDto extends PagingDto {
 
   @ApiProperty({ required: false, description: '专栏ID' })
   @IsOptional()
-  @IsString()
-  subjectId?: string;
+  @Transform(({ value }) => (value ? parseInt(value, 10) : undefined))
+  @IsNumber()
+  subjectId?: number;
 
   @ApiProperty({ required: false, description: '作者用户ID' })
   @IsOptional()
+  @Transform(({ value }) => (value ? parseInt(value, 10) : undefined))
   @IsNumber()
   userId?: number;
 
@@ -137,8 +140,8 @@ export class ListPostArticleDto extends PagingDto {
  */
 export class DetailPostArticleDto {
   @ApiProperty({ required: true, description: '文章ID' })
-  @IsString()
-  id: string;
+  @IsNumber()
+  id: number;
 }
 
 /**
@@ -146,8 +149,8 @@ export class DetailPostArticleDto {
  */
 export class AuditPostArticleDto {
   @ApiProperty({ required: true, description: '文章ID' })
-  @IsString()
-  id: string;
+  @IsNumber()
+  id: number;
 
   @ApiProperty({ required: true, description: '审核状态', enum: AuditStatusEnum })
   @IsEnum(AuditStatusEnum)

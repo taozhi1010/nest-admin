@@ -29,7 +29,7 @@ export class PostSubjectController {
   @ApiOperation({ summary: '专栏-详情' })
   @RequirePermission('post:subject:query')
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: number) {
     return this.postSubjectService.findOne(id);
   }
 
@@ -43,8 +43,9 @@ export class PostSubjectController {
 
   @ApiOperation({ summary: '专栏-删除' })
   @RequirePermission('post:subject:remove')
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.postSubjectService.remove(id);
+  @Delete(':ids')
+  remove(@Param('ids') ids: string) {
+    const idList = ids.split(',').map((id) => +id);
+    return this.postSubjectService.remove(idList);
   }
 }
