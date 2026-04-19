@@ -1,3 +1,31 @@
+<!--
+/**
+ * 封面裁切上传组件
+ * @description 支持图片上传、在线裁切、WebP 压缩等功能的封面图片上传组件
+ * @features
+ * - 支持图片格式验证和大小限制
+ * - 提供在线裁切功能，裁切框比例与预览框保持一致
+ * - 自动将图片转换为 WebP 格式，减少文件体积
+ * - 支持实时预览裁切效果
+ * - 支持预览、更换、删除等操作
+ * - 可选裁切模式，支持跳过裁切直接上传
+ *
+ * @example
+ * // 基础使用（启用裁切）
+ * <ImageUploadCover v-model="coverUrl" />
+ *
+ * // 自定义尺寸
+ * <ImageUploadCover
+ *   v-model="coverUrl"
+ *   :max-size="10"
+ *   width="400px"
+ *   preview-width="400"
+ * />
+ *
+ * // 禁用裁切功能
+ * <ImageUploadCover v-model="coverUrl" :enable-crop="false" />
+ */
+-->
 <template>
     <div class="upload-cover-container">
         <el-upload ref="uploadRef" :action="uploadUrl" :before-upload="handleBeforeUpload" :http-request="customUpload"
@@ -45,8 +73,9 @@
                             v-if="cropDialogVisible"
                             ref="cropperRef"
                             :img="cropImageSource"
-                            :auto-crop="false"
-                            :fixed="false"
+                            :auto-crop="true"
+                            :fixed="true"
+                            :fixed-number="fixedNumber"
                             :full="true"
                             :center-box="true"
                             :info="true"
@@ -84,6 +113,7 @@
                     </div>
                     <div class="footer-right">
                         <el-button @click="closeCropDialog">取 消</el-button>
+                        <el-button type="info" @click="skipCropAndUpload">跳过裁切</el-button>
                         <el-button type="primary" @click="submitCrop">确 定</el-button>
                     </div>
                 </div>
@@ -162,6 +192,11 @@ const props = defineProps({
     previewRatio: {
         type: String,
         default: '16 / 9'
+    },
+    // 是否启用裁切功能
+    enableCrop: {
+        type: Boolean,
+        default: true
     }
 })
 
@@ -177,6 +212,14 @@ const cropDialogVisible = ref(false)
 const cropImageSource = ref('')
 const cropperRef = ref(null)
 const cropPreviews = ref({})
+const currentUploadFile = ref(null) // 保存当前待上传的文件
+
+// 计算裁切框的固定宽高比（与预览框一致）
+const fixedNumber = computed(() => {
+    const ratio = props.previewRatio.split('/')
+    const ratioValue = parseFloat(ratio[0]) / parseFloat(ratio[1])
+    return [parseFloat(ratio[0]), parseFloat(ratio[1])]
+})
 
 // 计算预览框高度
 const computedPreviewHeight = computed(() => {
@@ -271,8 +314,13 @@ function handleBeforeUpload(file) {
         return false
     }
 
-    // 打开裁切对话框
-    openCropDialog(file)
+    // 如果启用了裁切功能，打开裁切对话框
+    if (props.enableCrop) {
+        openCropDialog(file)
+    } else {
+        // 否则直接上传
+        customUpload({ file })
+    }
     
     // 阻止默认上传行为
     return false
@@ -387,6 +435,7 @@ function handlePreview() {
  * 打开裁切对话框
  */
 function openCropDialog(file) {
+    currentUploadFile.value = file // 保存文件引用
     const reader = new FileReader()
     reader.readAsDataURL(file)
     reader.onload = () => {
@@ -405,6 +454,7 @@ function closeCropDialog() {
     cropDialogVisible.value = false
     cropImageSource.value = ''
     cropPreviews.value = {}
+    currentUploadFile.value = null
 }
 
 /**
@@ -435,6 +485,22 @@ function rotateRight() {
 function handleRealTime(data) {
     console.log('实时预览数据:', data)
     cropPreviews.value = data
+}
+
+/**
+ * 跳过裁切直接上传
+ */
+async function skipCropAndUpload() {
+    if (!currentUploadFile.value) {
+        ElMessage.error('没有可上传的文件')
+        return
+    }
+    
+    // 关闭裁切对话框
+    closeCropDialog()
+    
+    // 直接上传原图
+    await customUpload({ file: currentUploadFile.value })
 }
 
 /**
