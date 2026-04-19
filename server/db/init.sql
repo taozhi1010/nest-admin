@@ -587,6 +587,9 @@ insert into sys_dict_data values(44, 4,  '审核拒绝', '3',       'post_subjec
 -- 文章来源
 insert into sys_dict_data values(45, 1,  '原创',     '0',       'post_article_source',         '',   'primary', 'Y', '0', 'admin', sysdate(), '', null, '文章-来源-原创', '0');
 insert into sys_dict_data values(46, 2,  '转载',     '1',       'post_article_source',         '',   'info',    'N', '0', 'admin', sysdate(), '', null, '文章-来源-转载', '0');
+insert into sys_dict_data values(47, 3,  '投稿',     '2',       'post_article_source',         '',   'success', 'N', '0', 'admin', sysdate(), '', null, '文章-来源-投稿', '0');
+insert into sys_dict_data values(48, 4,  '翻译',     '3',       'post_article_source',         '',   'warning', 'N', '0', 'admin', sysdate(), '', null, '文章-来源-翻译', '0');
+insert into sys_dict_data values(49, 5,  '整理',     '4',       'post_article_source',         '',   'default', 'N', '0', 'admin', sysdate(), '', null, '文章-来源-整理', '0');
 
 
 -- ----------------------------
@@ -815,6 +818,7 @@ create table post_article (
   content       longtext      default null               comment '文章内容',
   cover         varchar(255)  default null               comment '封面',
   author        varchar(64)   default null               comment '作者昵称',
+  source        char(1)       default '0'                comment '文章来源（0 原创 1 转载）',
   publish_time  datetime      default null               comment '发布时间',
   like_num      int           default '0'                comment '点赞数',
   read_num      int           default '0'                comment '阅读数',
