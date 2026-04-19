@@ -138,84 +138,22 @@
       <pagination v-show="article.total > 0" v-model:limit="article.query.pageSize" v-model:page="article.query.pageNum" :total="article.total" @pagination="article.getList" />
     </el-card>
 
-    <el-drawer v-model="article.form.open" :title="article.form.title" size="50%">
-      <el-form ref="formRef" v-no-enter label-width="120px" :model="article.form.data" :rules="article.form.rules">
-        <el-row :gutter="20">
-          <el-col :span="12">
-            <el-form-item label="文章标题" prop="title">
-              <el-input v-model="article.form.data.title" clearable maxlength="100" placeholder="请输入文章标题" show-word-limit @blur="article.form.handleTitleBlur" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="所属专栏" prop="subjectId">
-              <el-select v-model="article.form.data.subjectId" clearable placeholder="请选择专栏" style="width: 100%">
-                <el-option v-for="item in subject.state.list" :key="item.id" :label="item.title" :value="item.id" />
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-form-item label="文章简介" prop="desc">
-          <el-input v-model="article.form.data.desc" maxlength="500" placeholder="请输入文章简介" :rows="3" :show-word-limit="true" type="textarea" @blur="article.form.handleDescBlur" />
-        </el-form-item>
-        <el-form-item label="文章内容" prop="content">
-          <el-input v-model="article.form.data.content" placeholder="请输入文章内容" :rows="8" type="textarea" @blur="article.form.handleContentBlur" />
-        </el-form-item>
-        <el-row :gutter="20">
-          <el-col :span="12">
-            <el-form-item label="封面图片" prop="cover">
-              <el-input v-model="article.form.data.cover" clearable placeholder="请输入封面图片URL" @blur="article.form.handleCoverBlur" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="作者" prop="author">
-              <el-input v-model="article.form.data.author" clearable placeholder="请输入作者昵称" disabled />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row :gutter="20">
-          <el-col :span="12">
-            <el-form-item label="发布状态" prop="publishStatus">
-              <el-select v-model="article.form.data.publishStatus" clearable placeholder="请选择发布状态" style="width: 100%">
-                <el-option v-for="dict in post_article_publish_status" :key="dict.value" :label="dict.label" :value="dict.value" />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="审核状态" prop="auditStatus">
-              <el-select v-model="article.form.data.auditStatus" clearable placeholder="请选择审核状态" style="width: 100%">
-                <el-option v-for="dict in post_article_audit_status" :key="dict.value" :label="dict.label" :value="dict.value" />
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row :gutter="20">
-          <el-col :span="12">
-            <el-form-item label="定时发布时间" prop="scheduledPublishTime">
-              <el-date-picker v-model="article.form.data.scheduledPublishTime" clearable placeholder="选择定时发布时间" style="width: 100%" type="datetime" value-format="YYYY-MM-DD HH:mm:ss" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="排序" prop="sort">
-              <el-input-number v-model="article.form.data.sort" :min="0" controls-position="right" placeholder="请输入排序" style="width: 100%" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-      </el-form>
-      <template #footer>
-        <div class="dialog-footer">
-          <el-button type="primary" @click="article.form.submit">确 定</el-button>
-          <el-button @click="article.form.cancel">取 消</el-button>
-        </div>
-      </template>
-    </el-drawer>
+    <article-form 
+      v-model="article.form.open" 
+      :title="article.form.title" 
+      :initial-data="article.form.data" 
+      :subject-list="subject.state.list"
+      @success="article.getList"
+    />
 
     <preview ref="previewRef" />
   </div>
 </template>
 
 <script setup name="Article">
-import { listArticle, addArticle, delArticle, getArticle, updateArticle } from '@/api/post/article'
+import { listArticle, delArticle, getArticle } from '@/api/post/article'
 import Preview from './components/Preview'
+import ArticleForm from './components/ArticleForm'
 import { useDict } from '@/composables/useDict'
 import { resetForm } from '@/composables/useCommon'
 import { useSubject } from '@/composables/useSubject'
@@ -268,13 +206,14 @@ const article = reactive({
     })
   },
   handleSelectionChange: (selection) => {
-    article.ids = selection.map((item) => item.articleId)
+    article.ids = selection.map((item) => item.id)
     article.single = selection.length != 1
     article.multiple = !selection.length
   },
   handleDelete: (row) => {
-    const articleIds = row.articleId || article.ids
-    ElMessageBox.confirm(`是否确认删除文章编号为"${row.title}"的数据项？`, '系统提示', {
+    const articleIds = row.id || row.articleId || article.ids
+    const titles = row.title ? `"${row.title}"` : `选中的 ${article.ids.length} 篇文章`
+    ElMessageBox.confirm(`是否确认删除文章${titles}？`, '系统提示', {
       confirmButtonText: '确定',
       cancelButtonText: '取消',
       type: 'warning'
@@ -303,33 +242,12 @@ const article = reactive({
   form: {
     open: false,
     title: '',
-    data: {
-      articleId: undefined,
-      title: undefined,
-      subjectId: undefined,
-      desc: undefined,
-      content: undefined,
-      cover: undefined,
-      author: undefined,
-      publishTime: undefined,
-      likeNum: 0,
-      readNum: 0,
-      commentNum: 0,
-      publishStatus: '0',
-      auditStatus: '0',
-      scheduledPublishTime: undefined,
-      sort: 0
-    },
-    rules: {
-      title: [{ required: true, message: '文章标题不能为空', trigger: 'blur' }],
-      subjectId: [{ required: true, message: '所属专栏不能为空', trigger: 'change' }],
-      desc: [{ required: true, message: '文章简介不能为空', trigger: 'blur' }]
-    },
-    reset: () => {
+    data: {},
+    handleAdd: () => {
       article.form.data = {
         articleId: undefined,
         title: undefined,
-        subjectId: undefined,
+        subjectId: (subject.state.selectNode.id === undefined || subject.state.selectNode.id === 0) ? undefined : subject.state.selectNode.id,
         desc: undefined,
         content: undefined,
         cover: undefined,
@@ -343,59 +261,16 @@ const article = reactive({
         scheduledPublishTime: undefined,
         sort: 0
       }
-      resetForm(formRef)
-    },
-    cancel: () => {
-      article.form.open = false
-      article.form.reset()
-    },
-    handleAdd: () => {
-      article.form.reset()
-      article.form.data.subjectId = (subject.state.selectNode.id === undefined || subject.state.selectNode.id === 0) ? undefined : subject.state.selectNode.id
       article.form.open = true
       article.form.title = '添加文章'
     },
     handleUpdate: (row) => {
-      article.form.reset()
-      const articleId = row.articleId || article.ids
+      const articleId = row.id || row.articleId || article.ids
       getArticle(articleId).then((res) => {
         article.form.data = res.data
         article.form.open = true
         article.form.title = '修改文章'
       })
-    },
-    submit: () => {
-      if (formRef.value) {
-        formRef.value.validate((valid) => {
-          if (valid) {
-            if (article.form.data.articleId != undefined) {
-              updateArticle(article.form.data).then((res) => {
-                ElMessage.success('修改成功')
-                article.form.open = false
-                article.getList()
-              })
-            } else {
-              addArticle(article.form.data).then((res) => {
-                ElMessage.success('新增成功')
-                article.form.open = false
-                article.getList()
-              })
-            }
-          }
-        })
-      }
-    },
-    handleTitleBlur: () => {
-      article.form.data.title = article.form.data.title.trim()
-    },
-    handleDescBlur: () => {
-      article.form.data.desc = article.form.data.desc.trim()
-    },
-    handleContentBlur: () => {
-      article.form.data.content = article.form.data.content.trim()
-    },
-    handleCoverBlur: () => {
-      article.form.data.cover = article.form.data.cover.trim()
     }
   },
   handlePreview: (row) => {
