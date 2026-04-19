@@ -5,6 +5,9 @@ import { Response } from 'express';
 import { ResultData } from 'src/common/utils/result';
 import { ListToTree } from 'src/common/utils/index';
 import { ExportTable } from 'src/common/utils/export';
+import { RedisService } from 'src/module/common/redis/redis.service';
+import { CacheEnum } from 'src/common/enum/index';
+import { SysUserWithRoleEntity } from '../user/entities/user-width-role.entity';
 
 import { DataScopeEnum } from 'src/common/enum/index';
 import { SysRoleEntity } from './entities/role.entity';
@@ -26,6 +29,7 @@ export class RoleService {
     @InjectRepository(SysDeptEntity)
     private readonly sysDeptEntityRep: Repository<SysDeptEntity>,
     private readonly menuService: MenuService,
+    private readonly redisService: RedisService,
   ) {}
   async create(createRoleDto: CreateRoleDto) {
     const res = await this.sysRoleEntityRep.save(createRoleDto);
@@ -112,6 +116,10 @@ export class RoleService {
     delete (updateRoleDto as any).menuIds;
     entity.insert().values(values).execute();
     const res = await this.sysRoleEntityRep.update({ roleId: updateRoleDto.roleId }, updateRoleDto);
+
+    // 清除拥有该角色的所有用户的菜单缓存
+    await this.clearRoleMenuCache(updateRoleDto.roleId);
+
     return ResultData.ok(res);
   }
 
@@ -226,6 +234,25 @@ export class RoleService {
     });
     // 将查询结果映射为仅包含部门ID的数组并返回。
     return res.map((item) => item.deptId);
+  }
+
+  /**
+   * 清除拥有该角色的所有用户的菜单缓存
+   * @param roleId
+   */
+  async clearRoleMenuCache(roleId: number) {
+    try {
+      // 查询拥有该角色的所有用户
+      const usersWithRole = await this.sysRoleWithMenuEntityRep.manager.query('SELECT DISTINCT userId FROM sys_user_with_role WHERE roleId = ?', [roleId]);
+
+      // 清除每个用户的菜单缓存
+      for (const user of usersWithRole) {
+        const cacheKey = `${CacheEnum.SYS_MENU_KEY}${user.userId}`;
+        await this.redisService.del(cacheKey);
+      }
+    } catch (error) {
+      console.error('清除角色菜单缓存失败:', error);
+    }
   }
 
   /**
