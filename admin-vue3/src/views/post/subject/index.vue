@@ -140,7 +140,15 @@ const subject = reactive({
   },
 
   // 表单数据
-  form: {},
+  form: {
+    id: undefined,
+    title: undefined,
+    desc: undefined,
+    cover: undefined,
+    publishStatus: '0',
+    auditStatus: '0',
+    sort: 0
+  },
 
   // 表单验证规则
   rules: {
@@ -172,7 +180,9 @@ const subject = reactive({
   // 取消按钮
   cancel: () => {
     subject.open = false
-    subject.reset()
+    nextTick(() => {
+      subject.reset()
+    })
   },
 
   // 表单重置
@@ -187,7 +197,9 @@ const subject = reactive({
       sort: 0
     }
     nextTick(() => {
-      resetForm(subjectRef.value)
+      if (subjectRef.value) {
+        subjectRef.value.clearValidate()
+      }
     })
   },
 
@@ -213,8 +225,10 @@ const subject = reactive({
   // 新增按钮操作
   handleAdd: () => {
     subject.reset()
-    subject.open = true
-    subject.title = '添加专栏'
+    nextTick(() => {
+      subject.open = true
+      subject.title = '添加专栏'
+    })
   },
 
   // 修改按钮操作
@@ -251,8 +265,9 @@ const subject = reactive({
   // 删除按钮操作
   handleDelete: async (row) => {
     const ids = row.id || subject.ids
+    const titles = row.title ? `"${row.title}"` : `编号为"${ids}"的数据项`
     try {
-      await ElMessageBox.confirm(`是否确认删除专栏"${row.title}"？`, '系统提示', {
+      await ElMessageBox.confirm(`是否确认删除专栏${titles}？`, '系统提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
