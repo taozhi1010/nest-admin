@@ -73,7 +73,7 @@
 
       <!-- 文章展示 Tab -->
       <el-tab-pane label="文章展示" name="content">
-            <MdViewer :value="formData.content || ''" />
+            <MdViewer :model-value="formData.content || ''" />
       </el-tab-pane>
     </el-tabs>
     <template #footer>

@@ -95,6 +95,9 @@
           <el-button v-hasPermi="['post:Article:add']" icon="Plus" plain type="primary" @click="article.form.handleAdd">新增</el-button>
         </el-col>
         <el-col :span="1.5">
+          <el-button v-hasPermi="['post:Article:add']" icon="EditPen" plain type="success" @click="article.handleNewEditor">编辑器新建</el-button>
+        </el-col>
+        <el-col :span="1.5">
           <el-button v-hasPermi="['post:Article:remove']" :disabled="article.multiple" icon="Delete" plain type="danger" @click="article.handleDelete">删除</el-button>
         </el-col>
         <right-toolbar v-model:show-search="article.showSearch" @query-table="article.getList" />
@@ -125,10 +128,11 @@
         <el-table-column align="center" label="评论" prop="commentNum" width="80" />
         <el-table-column align="center" label="发布时间" prop="publishTime" width="180" />
         <el-table-column align="center" label="创建时间" prop="createTime" width="180" />
-        <el-table-column align="center" class-name="small-padding fixed-width" fixed="right" label="操作" width="240">
+        <el-table-column align="center" class-name="small-padding fixed-width" fixed="right" label="操作" width="300">
           <template #default="scope">
             <el-button icon="View" link type="primary" @click="article.handlePreview(scope.row)">预览</el-button>
             <el-button v-hasPermi="['post:Article:edit']" icon="Edit" link type="primary" @click="article.form.handleUpdate(scope.row)">修改</el-button>
+            <el-button v-hasPermi="['post:Article:edit']" icon="EditPen" link type="success" @click="article.handleOpenEditor(scope.row)">编辑器</el-button>
             <el-button v-hasPermi="['post:Article:remove']" icon="Delete" link type="danger" @click="article.handleDelete(scope.row)">删除</el-button>
           </template>
         </el-table-column>
@@ -278,6 +282,26 @@ const article = reactive({
   },
   handlePreview: (row) => {
     previewRef.value.handleOpen(row)
+  },
+  handleOpenEditor: (row) => {
+    const articleId = row.id || row.articleId
+    if (!articleId) {
+      ElMessage.warning('文章ID不存在')
+      return
+    }
+    // 在新窗口打开编辑器页面
+    const routeUrl = router.resolve({
+      path: '/post/article-editor',
+      query: { id: articleId }
+    })
+    window.open(routeUrl.href, '_blank')
+  },
+  handleNewEditor: () => {
+    // 在新窗口打开编辑器页面（新建模式）
+    const routeUrl = router.resolve({
+      path: '/post/article-editor'
+    })
+    window.open(routeUrl.href, '_blank')
   }
 })
 
