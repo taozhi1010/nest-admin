@@ -3,6 +3,7 @@ import { ApiTags, ApiOperation, ApiBody } from '@nestjs/swagger';
 import { PostArticleService } from './article.service';
 import { CreatePostArticleDto, UpdatePostArticleDto, ListPostArticleDto, AuditPostArticleDto } from './dto/index';
 import { RequirePermission } from 'src/common/decorators/require-premission.decorator';
+import { User, UserDto } from 'src/module/system/user/user.decorator';
 
 /**
  * 文章控制器
@@ -21,8 +22,8 @@ export class PostArticleController {
   @RequirePermission('post:article:add')
   @Post()
   @HttpCode(200)
-  create(@Body() createDto: CreatePostArticleDto) {
-    return this.postArticleService.create(createDto);
+  create(@Body() createDto: CreatePostArticleDto, @User() user: UserDto) {
+    return this.postArticleService.create(createDto, user);
   }
 
   /**

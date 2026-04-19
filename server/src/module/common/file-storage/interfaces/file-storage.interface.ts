@@ -19,9 +19,11 @@ export interface IFileStorage {
    * @param buffer 文件二进制数据
    * @param fileName 文件名
    * @param contentType 文件 MIME 类型
+   * @param path 文件存储路径（必填）
+   * @param authorName 作者名称（可选，用于生成文件名）
    * @returns 上传结果
    */
-  uploadFile(buffer: Buffer, fileName: string, contentType: string): Promise<UploadResult>;
+  uploadFile(buffer: Buffer, fileName: string, contentType: string, path: string, authorName?: string): Promise<UploadResult>;
 
   /**
    * 删除文件

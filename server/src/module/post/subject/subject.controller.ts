@@ -3,6 +3,7 @@ import { ApiTags, ApiOperation, ApiBody } from '@nestjs/swagger';
 import { PostSubjectService } from './subject.service';
 import { CreatePostSubjectDto, UpdatePostSubjectDto, ListPostSubjectDto } from './dto/index';
 import { RequirePermission } from 'src/common/decorators/require-premission.decorator';
+import { User, UserDto } from 'src/module/system/user/user.decorator';
 
 @ApiTags('专栏管理')
 @Controller('post/subject')
@@ -14,8 +15,8 @@ export class PostSubjectController {
   @RequirePermission('post:subject:add')
   @Post()
   @HttpCode(200)
-  create(@Body() createDto: CreatePostSubjectDto) {
-    return this.postSubjectService.create(createDto);
+  create(@Body() createDto: CreatePostSubjectDto, @User() user: UserDto) {
+    return this.postSubjectService.create(createDto, user);
   }
 
   @ApiOperation({ summary: '专栏-列表' })

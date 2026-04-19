@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { ResultData } from 'src/common/utils/result';
 import { PostArticleEntity } from './entities/article.entity';
 import { CreatePostArticleDto, UpdatePostArticleDto, ListPostArticleDto, AuditPostArticleDto } from './dto/index';
+import { UserDto } from 'src/module/system/user/user.decorator';
 
 /**
  * 文章服务类
@@ -19,10 +20,19 @@ export class PostArticleService {
   /**
    * 创建文章
    * @param createDto 创建文章的数据
+   * @param user 当前登录用户信息
    * @returns 操作结果
    */
-  async create(createDto: CreatePostArticleDto) {
-    const article = this.postArticleRepository.create(createDto);
+  async create(createDto: CreatePostArticleDto, user: UserDto) {
+    // 从当前登录用户信息中获取 userId
+    const userId = user.user.userId;
+
+    // 创建文章实体，并设置 userId
+    const article = this.postArticleRepository.create({
+      ...createDto,
+      userId: userId,
+    });
+
     await this.postArticleRepository.save(article);
     return ResultData.ok();
   }

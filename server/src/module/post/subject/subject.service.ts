@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { ResultData } from 'src/common/utils/result';
 import { PostSubjectEntity } from './entities/subject.entity';
 import { CreatePostSubjectDto, UpdatePostSubjectDto, ListPostSubjectDto } from './dto/index';
+import { UserDto } from 'src/module/system/user/user.decorator';
 
 @Injectable()
 export class PostSubjectService {
@@ -12,8 +13,16 @@ export class PostSubjectService {
     private readonly postSubjectRepository: Repository<PostSubjectEntity>,
   ) {}
 
-  async create(createDto: CreatePostSubjectDto) {
-    const subject = this.postSubjectRepository.create(createDto);
+  async create(createDto: CreatePostSubjectDto, user: UserDto) {
+    // 从当前登录用户信息中获取 userId
+    const userId = user.user.userId;
+
+    // 创建专栏实体，并设置 userId
+    const subject = this.postSubjectRepository.create({
+      ...createDto,
+      userId: userId,
+    });
+
     await this.postSubjectRepository.save(subject);
     return ResultData.ok();
   }

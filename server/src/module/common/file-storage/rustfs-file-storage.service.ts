@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import * as Minio from 'minio'; // RustFS 兼容 S3 API，可以使用 MinIO 客户端
 import { ConfigService } from '@nestjs/config';
 import { IFileStorage, UploadResult } from './interfaces/file-storage.interface';
+import Mime from 'mime-types';
 
 /**
  * RustFS 文件存储实现（预留，待 RustFS 正式可用后启用）
@@ -82,21 +83,83 @@ export class RustFSFileStorage implements IFileStorage {
    * 1. putObject API 的参数和返回值是否完全兼容
    * 2. 文件大小限制、分片上传等特性是否需要特殊处理
    * 3. Content-Type 设置是否正确生效
+   * @param buffer 文件二进制数据
+   * @param fileName 文件名
+   * @param contentType 文件 MIME 类型
+   * @param customPath 自定义存储路径（必填）
+   * @param authorName 作者名称（可选，用于生成文件名）
    */
-  async uploadFile(buffer: Buffer, fileName: string, contentType: string): Promise<UploadResult> {
+  async uploadFile(buffer: Buffer, fileName: string, contentType: string, customPath: string, authorName?: string): Promise<UploadResult> {
     await this.initialize();
 
+    // 验证 path 参数
+    if (!customPath || !customPath.trim()) {
+      throw new Error('文件存储路径不能为空');
+    }
+
+    // 处理文件名：添加时间戳和作者名
+    const processedFileName = this.getNewFileName(fileName, authorName);
+
+    // 清理路径，防止路径遍历攻击
+    const safePath = customPath.replace(/\.\./g, '').replace(/^\/+|\/+$/g, '');
+    // 构建对象键：路径 + 文件名
+    const objectKey = `${safePath}/${processedFileName}`;
+
     // 上传文件
-    await this.rustfsClient.putObject(this.bucketName, fileName, buffer, buffer.length, { 'Content-Type': contentType });
+    await this.rustfsClient.putObject(this.bucketName, objectKey, buffer, buffer.length, { 'Content-Type': contentType });
 
     // 返回相对路径
-    const url = `${this.serveRoot}/${this.bucketName}/${fileName}`;
+    const url = `${this.serveRoot}/${this.bucketName}/${objectKey}`;
 
     return {
-      fileName: fileName,
-      newFileName: fileName,
+      fileName: objectKey,
+      newFileName: processedFileName,
       url: url,
     };
+  }
+
+  /**
+   * 生成新的文件名
+   * @param originalname 原始文件名
+   * @param authorName 作者名称（可选）
+   * @returns 带时间戳和作者名的新文件名
+   */
+  private getNewFileName(originalname: string, authorName?: string): string {
+    if (!originalname) {
+      return originalname;
+    }
+
+    // 分离文件名和扩展名
+    const lastDotIndex = originalname.lastIndexOf('.');
+    let fileName = originalname;
+    let ext = '';
+    if (lastDotIndex > 0) {
+      fileName = originalname.substring(0, lastDotIndex);
+      ext = originalname.substring(lastDotIndex);
+    }
+
+    // 检查文件名是否已经包含时间戳
+    const timestampRegex = /_\d{13}$/;
+
+    // 构建新文件名：原名_时间戳_作者名
+    const timestamp = new Date().getTime();
+    if (authorName) {
+      // 清理作者名中的特殊字符，只保留字母、数字、中文、下划线
+      const safeAuthorName = authorName.replace(/[^a-zA-Z0-9\u4e00-\u9fa5_]/g, '_');
+      if (!timestampRegex.test(fileName)) {
+        fileName = `${fileName}_${timestamp}_${safeAuthorName}`;
+      } else {
+        // 如果已有时间戳，在时间戳后添加作者名
+        fileName = fileName.replace(/(\d{13})$/, `$1_${safeAuthorName}`);
+      }
+    } else {
+      // 没有作者名，只添加时间戳
+      if (!timestampRegex.test(fileName)) {
+        fileName = `${fileName}_${timestamp}`;
+      }
+    }
+
+    return fileName + ext;
   }
 
   /**
