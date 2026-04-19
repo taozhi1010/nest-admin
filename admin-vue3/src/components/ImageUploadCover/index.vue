@@ -4,15 +4,20 @@
             :show-file-list="false" accept="image/*" class="cover-uploader">
             <!-- 预览区域 -->
             <div v-if="imageUrl" class="cover-preview">
-                <img :src="imageUrl" class="cover-image" alt="封面" />
-                <div class="cover-overlay">
+                <img :src="imageUrl" class="cover-image" alt="封面" @click.stop="handlePreview" />
+                <div class="cover-overlay" @click.stop="handlePreview">
                     <el-icon class="overlay-icon">
                         <ZoomIn />
                     </el-icon>
-                    <span class="overlay-text">点击更换</span>
+                    <span class="overlay-text">点击预览</span>
                 </div>
                 <div class="cover-actions">
-                    <el-button circle size="small" type="danger" @click.stop="handleRemove">
+                    <el-button circle size="small" type="primary" @click.stop="handleReupload">
+                        <el-icon>
+                            <Refresh />
+                        </el-icon>
+                    </el-button>
+                    <el-button v-if="showDeleteBtn" circle size="small" type="danger" @click.stop="handleRemove">
                         <el-icon>
                             <Delete />
                         </el-icon>
@@ -25,8 +30,8 @@
                 <el-icon class="placeholder-icon">
                     <Plus />
                 </el-icon>
-                <span class="placeholder-text">上传封面</span>
-                <span class="placeholder-tip">建议尺寸 800x450</span>
+                <span class="placeholder-text">{{ uploadText }}</span>
+                <span v-if="sizeTip" class="placeholder-tip">{{ sizeTip }}</span>
             </div>
         </el-upload>
 
@@ -39,7 +44,7 @@
 
 <script setup>
 import { getToken } from '@/utils/auth'
-import { Plus, ZoomIn, Delete } from '@element-plus/icons-vue'
+import { Plus, ZoomIn, Delete, Refresh } from '@element-plus/icons-vue'
 
 const props = defineProps({
     modelValue: {
@@ -60,6 +65,36 @@ const props = defineProps({
     path: {
         type: String,
         default: ''
+    },
+    // 建议尺寸提示
+    sizeTip: {
+        type: String,
+        default: '建议尺寸 800x450'
+    },
+    // 上传提示文字
+    uploadText: {
+        type: String,
+        default: '上传封面'
+    },
+    // 是否显示删除按钮
+    showDeleteBtn: {
+        type: Boolean,
+        default: true
+    },
+    // 容器宽度
+    width: {
+        type: String,
+        default: '100%'
+    },
+    // 容器高度（支持具体值或aspect-ratio）
+    height: {
+        type: String,
+        default: ''
+    },
+    // 宽高比（如 16/9, 4/3, 1/1）
+    aspectRatio: {
+        type: String,
+        default: '16 / 9'
     }
 })
 
@@ -234,6 +269,15 @@ async function customUpload(options) {
 }
 
 /**
+ * 重新上传
+ */
+function handleReupload() {
+    if (uploadRef.value) {
+        uploadRef.value.$el.querySelector('input').click()
+    }
+}
+
+/**
  * 删除封面
  */
 function handleRemove() {
@@ -265,8 +309,8 @@ function handlePreview() {
         position: relative;
         overflow: hidden;
         transition: all 0.3s;
-        width: 100%;
-        aspect-ratio: 16 / 9;
+        width: v-bind(width);
+        aspect-ratio: v-bind(aspectRatio);
 
         &:hover {
             border-color: var(--el-color-primary);
