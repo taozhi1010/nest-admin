@@ -4,24 +4,20 @@
             :show-file-list="false" accept="image/*" class="cover-uploader">
             <!-- 预览区域 -->
             <div v-if="imageUrl" class="cover-preview">
-                <img :src="imageUrl" class="cover-image" alt="封面" @click.stop="handlePreview" />
-                <div class="cover-overlay" @click.stop="handlePreview">
-                    <el-icon class="overlay-icon">
-                        <ZoomIn />
-                    </el-icon>
-                    <span class="overlay-text">点击预览</span>
-                </div>
-                <div class="cover-actions">
-                    <el-button circle size="small" type="primary" @click.stop="handleReupload">
-                        <el-icon>
-                            <Refresh />
-                        </el-icon>
-                    </el-button>
-                    <el-button v-if="showDeleteBtn" circle size="small" type="danger" @click.stop="handleRemove">
-                        <el-icon>
-                            <Delete />
-                        </el-icon>
-                    </el-button>
+                <img :src="imageUrl" class="cover-image" alt="封面" />
+                <div class="cover-actions" @click.stop>
+                    <div class="action-item" @click="handlePreview">
+                        <el-icon><ZoomIn /></el-icon>
+                        <span>预览</span>
+                    </div>
+                    <div class="action-item" @click="handleReupload">
+                        <el-icon><Refresh /></el-icon>
+                        <span>更换</span>
+                    </div>
+                    <div v-if="showDeleteBtn" class="action-item" @click="handleRemove">
+                        <el-icon><Delete /></el-icon>
+                        <span>删除</span>
+                    </div>
                 </div>
             </div>
 
@@ -39,12 +35,68 @@
         <el-dialog v-model="previewVisible" append-to-body title="封面预览" width="900px">
             <img :src="imageUrl" class="preview-full" alt="预览" />
         </el-dialog>
+
+        <!-- 裁切对话框 -->
+        <el-dialog v-model="cropDialogVisible" append-to-body title="裁切封面" width="900px" @close="closeCropDialog">
+            <el-row :gutter="20">
+                <el-col :span="12">
+                    <div class="cropper-wrapper">
+                        <VueCropper
+                            v-if="cropDialogVisible"
+                            ref="cropperRef"
+                            :img="cropImageSource"
+                            :auto-crop="false"
+                            :fixed="false"
+                            :full="true"
+                            :center-box="true"
+                            :info="true"
+                            :output-type="'png'"
+                            :can-move="true"
+                            :original="true"
+                            :auto-crop-width="200"
+                            :auto-crop-height="200"
+                            :max-img-size="3000"
+                            :can-scale="true"
+                            @real-time="handleRealTime"
+                            style="width: 100%; height: 100%;"
+                        />
+                    </div>
+                </el-col>
+                <el-col :span="12">
+                    <div class="crop-preview-container">
+                        <div class="crop-preview-box" :style="{
+                            width: previewWidth + 'px',
+                            height: computedPreviewHeight + 'px'
+                        }">
+                            <img v-if="cropPreviews.url" :src="cropPreviews.url" :style="cropPreviews.img" alt="裁切预览" />
+                        </div>
+                        <p class="preview-tip">实时预览</p>
+                    </div>
+                </el-col>
+            </el-row>
+            <template #footer>
+                <div class="crop-dialog-footer">
+                    <div class="footer-left">
+                        <el-button icon="Plus" @click="changeScale(1)" title="放大" circle />
+                        <el-button icon="Minus" @click="changeScale(-1)" title="缩小" circle />
+                        <el-button icon="RefreshLeft" @click="rotateLeft" title="向左旋转" circle />
+                        <el-button icon="RefreshRight" @click="rotateRight" title="向右旋转" circle />
+                    </div>
+                    <div class="footer-right">
+                        <el-button @click="closeCropDialog">取 消</el-button>
+                        <el-button type="primary" @click="submitCrop">确 定</el-button>
+                    </div>
+                </div>
+            </template>
+        </el-dialog>
     </div>
 </template>
 
 <script setup>
 import { getToken } from '@/utils/auth'
 import { Plus, ZoomIn, Delete, Refresh } from '@element-plus/icons-vue'
+import 'vue-cropper/dist/index.css'
+import { VueCropper } from 'vue-cropper'
 
 const props = defineProps({
     modelValue: {
@@ -95,6 +147,21 @@ const props = defineProps({
     aspectRatio: {
         type: String,
         default: '16 / 9'
+    },
+    // 预览框宽度（像素）
+    previewWidth: {
+        type: Number,
+        default: 300
+    },
+    // 预览框高度（像素），如果为 0 则根据宽高比自动计算
+    previewHeight: {
+        type: Number,
+        default: 0
+    },
+    // 预览框宽高比（如 16/9, 4/3, 1/1），仅当 previewHeight 为 0 时生效
+    previewRatio: {
+        type: String,
+        default: '16 / 9'
     }
 })
 
@@ -104,6 +171,23 @@ const uploadRef = ref(null)
 const imageUrl = ref('')
 const previewVisible = ref(false)
 const uploadUrl = ref(`${import.meta.env.VITE_APP_BASE_API}/common/upload`)
+
+// 裁切相关数据
+const cropDialogVisible = ref(false)
+const cropImageSource = ref('')
+const cropperRef = ref(null)
+const cropPreviews = ref({})
+
+// 计算预览框高度
+const computedPreviewHeight = computed(() => {
+    if (props.previewHeight > 0) {
+        return props.previewHeight
+    }
+    // 根据预览宽高比计算高度
+    const ratio = props.previewRatio.split('/')
+    const ratioValue = parseFloat(ratio[0]) / parseFloat(ratio[1])
+    return Math.round(props.previewWidth / ratioValue)
+})
 
 // 监听modelValue变化
 watch(
@@ -187,7 +271,11 @@ function handleBeforeUpload(file) {
         return false
     }
 
-    return true
+    // 打开裁切对话框
+    openCropDialog(file)
+    
+    // 阻止默认上传行为
+    return false
 }
 
 /**
@@ -294,6 +382,157 @@ function handlePreview() {
         previewVisible.value = true
     }
 }
+
+/**
+ * 打开裁切对话框
+ */
+function openCropDialog(file) {
+    const reader = new FileReader()
+    reader.readAsDataURL(file)
+    reader.onload = () => {
+        cropImageSource.value = reader.result
+        cropDialogVisible.value = true
+    }
+    reader.onerror = () => {
+        ElMessage.error('图片读取失败')
+    }
+}
+
+/**
+ * 关闭裁切对话框
+ */
+function closeCropDialog() {
+    cropDialogVisible.value = false
+    cropImageSource.value = ''
+    cropPreviews.value = {}
+}
+
+/**
+ * 图片缩放
+ */
+function changeScale(num) {
+    num = num || 1
+    cropperRef.value?.changeScale(num)
+}
+
+/**
+ * 向左旋转
+ */
+function rotateLeft() {
+    cropperRef.value?.rotateLeft()
+}
+
+/**
+ * 向右旋转
+ */
+function rotateRight() {
+    cropperRef.value?.rotateRight()
+}
+
+/**
+ * 实时预览
+ */
+function handleRealTime(data) {
+    console.log('实时预览数据:', data)
+    cropPreviews.value = data
+}
+
+/**
+ * 提交裁切并上传
+ */
+async function submitCrop() {
+    return new Promise((resolve, reject) => {
+        cropperRef.value?.getCropBlob(async (blob) => {
+            if (!blob) {
+                ElMessage.error('裁切图片失败')
+                reject(new Error('裁切失败'))
+                return
+            }
+
+            try {
+                // 显示加载提示
+                const loading = ElLoading.service({
+                    lock: true,
+                    text: '正在处理图片...',
+                    background: 'rgba(0, 0, 0, 0.7)'
+                })
+
+                try {
+                    // 将裁切后的 Blob 转换为 File
+                    const croppedFile = new File([blob], 'cover.png', { type: blob.type })
+
+                    // 转换为 WebP 格式
+                    const webpBlob = await convertToWebP(croppedFile, props.quality)
+
+                    // 计算压缩率
+                    const originalSize = (croppedFile.size / 1024).toFixed(2)
+                    const compressedSize = (webpBlob.size / 1024).toFixed(2)
+                    const compressionRate = ((1 - webpBlob.size / croppedFile.size) * 100).toFixed(1)
+
+                    console.log(`图片压缩: ${originalSize}KB → ${compressedSize}KB (减少${compressionRate}%)`)
+
+                    // 创建新的 File 对象
+                    const uploadFile = new File([webpBlob], 'cover.webp', {
+                        type: 'image/webp'
+                    })
+
+                    // 构建 FormData
+                    const formData = new FormData()
+                    formData.append('file', uploadFile)
+                    
+                    // 添加路径参数
+                    if (props.path) {
+                        formData.append('path', props.path)
+                    }
+
+                    // 发送请求
+                    const response = await fetch(uploadUrl.value, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${getToken()}`
+                        },
+                        body: formData
+                    })
+
+                    const res = await response.json()
+                    loading.close()
+
+                    if (res.code === 200) {
+                        const data = res.data
+                        // 优先使用后端返回的 url 字段，如果没有则拼接 fileName
+                        const previewUrl = data.url || (data.fileName.startsWith('http') || data.fileName.startsWith('/')
+                            ? data.fileName
+                            : `${import.meta.env.VITE_APP_BASE_API}${data.fileName}`)
+
+                        // 更新预览 URL
+                        imageUrl.value = previewUrl
+
+                        // 触发 v-model 更新
+                        emit('update:modelValue', data.url || data.fileName)
+                        
+                        // 关闭对话框
+                        closeCropDialog()
+                        
+                        ElMessage.success('上传成功')
+                        resolve(res)
+                    } else {
+                        ElMessage.error(res.msg || '上传失败')
+                        reject(new Error(res.msg || '上传失败'))
+                    }
+                } catch (error) {
+                    loading.close()
+                    console.error('WebP 转换或上传失败:', error)
+                    ElMessage.error('图片处理失败，请重试')
+                    reject(error)
+                }
+            } catch (error) {
+                console.error('裁切处理失败:', error)
+                ElMessage.error('处理失败，请重试')
+                reject(error)
+            }
+        })
+    })
+}
 </script>
 
 <style scoped lang="scss">
@@ -332,41 +571,47 @@ function handlePreview() {
         display: block;
     }
 
-    .cover-overlay {
+    .cover-actions {
         position: absolute;
         top: 0;
         left: 0;
         right: 0;
         bottom: 0;
-        background: rgba(0, 0, 0, 0.5);
         display: flex;
-        flex-direction: column;
         align-items: center;
         justify-content: center;
+        gap: 20px;
         opacity: 0;
         transition: opacity 0.3s;
+        background: rgba(0, 0, 0, 0.5);
         color: #fff;
 
-        .overlay-icon {
-            font-size: 32px;
-            margin-bottom: 8px;
+        .action-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            padding: 10px 16px;
+            border-radius: 8px;
+            transition: all 0.3s;
+
+            .el-icon {
+                font-size: 24px;
+            }
+
+            span {
+                font-size: 14px;
+            }
+
+            &:hover {
+                background: rgba(255, 255, 255, 0.15);
+            }
+
+            &:nth-child(3):hover {
+                color: #f56c6c;
+            }
         }
-
-        .overlay-text {
-            font-size: 14px;
-        }
-    }
-
-    &:hover .cover-overlay {
-        opacity: 1;
-    }
-
-    .cover-actions {
-        position: absolute;
-        top: 8px;
-        right: 8px;
-        opacity: 0;
-        transition: opacity 0.3s;
     }
 
     &:hover .cover-actions {
@@ -407,5 +652,72 @@ function handlePreview() {
     object-fit: contain;
     display: block;
     margin: 0 auto;
+}
+
+// 裁切预览区域样式
+.crop-preview-container {
+    width: 100%;
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    .crop-preview-box {
+        border: 2px dashed var(--el-border-color);
+        border-radius: 8px;
+        overflow: hidden;
+        background: var(--el-fill-color-lighter);
+        position: relative;
+        transition: all 0.3s;
+
+        img {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+    }
+
+    .preview-tip {
+        margin-top: 12px;
+        font-size: 14px;
+        color: var(--el-text-color-secondary);
+    }
+}
+
+// 裁切器包裹层
+.cropper-wrapper {
+    width: 100%;
+    height: 400px;
+    border: 2px solid var(--el-border-color);
+    border-radius: 8px;
+    overflow: hidden;
+    background: #f5f5f5;
+    // 添加棋盘格背景，模拟遮罩效果
+    background-image: 
+        linear-gradient(45deg, #e0e0e0 25%, transparent 25%),
+        linear-gradient(-45deg, #e0e0e0 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #e0e0e0 75%),
+        linear-gradient(-45deg, transparent 75%, #e0e0e0 75%);
+    background-size: 20px 20px;
+    background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+}
+
+// 裁切对话框底部样式
+.crop-dialog-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px;
+
+    .footer-left {
+        display: flex;
+        gap: 10px;
+    }
+
+    .footer-right {
+        display: flex;
+        gap: 10px;
+    }
 }
 </style>
