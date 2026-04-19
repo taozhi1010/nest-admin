@@ -57,6 +57,10 @@ export class PostArticleEntity extends DeleteStatusEntity {
   @Column({ type: 'varchar', name: 'author', length: 64, nullable: true, comment: '作者昵称' })
   public author: string;
 
+  @ApiProperty({ type: String, description: '文章来源（0 原创 1 转载）', required: false })
+  @Column({ type: 'char', name: 'source', length: 1, default: '0', comment: '文章来源（0 原创 1 转载）' })
+  public source: string;
+
   @ApiProperty({ type: Date, description: '发布时间', required: false })
   @Column({ type: 'datetime', name: 'publish_time', nullable: true, comment: '发布时间' })
   public publishTime: Date;

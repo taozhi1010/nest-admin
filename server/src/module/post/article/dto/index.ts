@@ -7,20 +7,31 @@ import { Transform } from 'class-transformer';
  * 发布状态枚举
  */
 export enum PublishStatusEnum {
-  DRAFT = '0',      // 草稿
-  PENDING = '1',    // 待发布
-  PUBLISHED = '2',  // 已发布
-  OFFLINE = '3',    // 已下架
+  DRAFT = '0', // 草稿
+  PENDING = '1', // 待发布
+  PUBLISHED = '2', // 已发布
+  OFFLINE = '3', // 已下架
 }
 
 /**
  * 审核状态枚举
  */
 export enum AuditStatusEnum {
-  NOT_SUBMITTED = '0',  // 未提交
-  AUDITING = '1',       // 审核中
-  APPROVED = '2',       // 审核通过
-  REJECTED = '3',       // 审核拒绝
+  NOT_SUBMITTED = '0', // 未提交
+  AUDITING = '1', // 审核中
+  APPROVED = '2', // 审核通过
+  REJECTED = '3', // 审核拒绝
+}
+
+/**
+ * 文章来源枚举
+ */
+export enum ArticleSourceEnum {
+  ORIGINAL = '0', // 原创
+  REPRINT = '1', // 转载
+  CONTRIBUTION = '2', // 投稿
+  TRANSLATION = '3', // 翻译
+  COMPILATION = '4', // 整理
 }
 
 /**
@@ -54,6 +65,11 @@ export class CreatePostArticleDto {
   @IsOptional()
   @IsString()
   author?: string;
+
+  @ApiProperty({ required: false, description: '文章来源', enum: ArticleSourceEnum })
+  @IsOptional()
+  @IsEnum(ArticleSourceEnum)
+  source?: string;
 
   @ApiProperty({ required: false, description: '发布时间' })
   @IsOptional()
@@ -133,6 +149,11 @@ export class ListPostArticleDto extends PagingDto {
   @IsOptional()
   @IsEnum(AuditStatusEnum)
   auditStatus?: string;
+
+  @ApiProperty({ required: false, description: '文章来源', enum: ArticleSourceEnum })
+  @IsOptional()
+  @IsEnum(ArticleSourceEnum)
+  source?: string;
 }
 
 /**

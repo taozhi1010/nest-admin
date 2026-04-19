@@ -85,6 +85,11 @@ export class PostArticleService {
       entity.andWhere('article.auditStatus = :auditStatus', { auditStatus: query.auditStatus });
     }
 
+    // 按文章来源筛选
+    if (query.source) {
+      entity.andWhere('article.source = :source', { source: query.source });
+    }
+
     // 排序
     if (query.orderByColumn && query.isAsc) {
       const key = query.isAsc === 'ascending' ? 'ASC' : 'DESC';
