@@ -65,6 +65,7 @@
         </el-dialog>
 
         <!-- 裁切对话框 -->
+        <!-- TODO: 裁切功能待完善，切出来的图片位置稍微有点偏差，需要进一步调整 -->
         <el-dialog v-model="cropDialogVisible" append-to-body title="裁切封面" width="900px" @close="closeCropDialog">
             <el-row :gutter="20">
                 <el-col :span="12">
