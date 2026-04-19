@@ -64,6 +64,12 @@
               />
             </el-form-item>
             
+            <el-form-item label="文章来源">
+              <el-select v-model="articleData.source" clearable placeholder="请选择文章来源" style="width: 100%">
+                <el-option v-for="dict in post_article_source" :key="dict.value" :label="dict.label" :value="dict.value" />
+              </el-select>
+            </el-form-item>
+            
             <el-form-item label="定时发布">
               <el-date-picker 
                 v-model="articleData.scheduledPublishTime" 
@@ -118,11 +124,13 @@ import ImageUploadCover from '@/components/ImageUploadCover/index.vue'
 import { getArticle, addArticle, updateArticle } from '@/api/post/article'
 import { useSubject } from '@/composables/useSubject'
 import { useDynamicTitle } from '@/composables/useDynamicTitle'
+import { useDict } from '@/composables/useDict'
 
 const route = useRoute()
 const router = useRouter()
 const subject = useSubject()
 const { setTitle } = useDynamicTitle()
+const { post_article_source } = useDict('post_article_source')
 
 const title = ref('')
 const content = ref('')
@@ -145,6 +153,7 @@ const articleData = reactive({
   content: '',
   cover: '',
   author: '',
+  source: '',
   publishTime: undefined,
   likeNum: 0,
   readNum: 0,

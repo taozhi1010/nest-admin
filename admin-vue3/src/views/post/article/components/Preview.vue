@@ -5,6 +5,8 @@
         <h2 class="article-title">{{ form.model.title }}</h2>
         <el-descriptions direction="vertical">
           <el-descriptions-item label="文章简介" label-class-name="desc-label" :span="3">{{ form.model.remark }}</el-descriptions-item>
+          <el-descriptions-item label="作者" label-class-name="desc-label">{{ form.model.author }}</el-descriptions-item>
+          <el-descriptions-item label="文章来源" label-class-name="desc-label">{{ getDictLabel('post_article_source', form.model.source) || '未知' }}</el-descriptions-item>
           <el-descriptions-item label="发布时间" label-class-name="desc-label">{{ form.model.publishTime }}</el-descriptions-item>
           <el-descriptions-item label="创建时间" label-class-name="desc-label">{{ form.model.createTime }}</el-descriptions-item>
           <el-descriptions-item label="最后修改时间" :label-class-name="'desc-label'">{{ form.model.updateTime }}</el-descriptions-item>
@@ -20,6 +22,9 @@
 <script setup>
 import { getArticle } from '@/api/post/article'
 import MdViewer from '@/components/MdViewer'
+import { useDict } from '@/composables/useDict'
+
+const { post_article_source, getDictLabel } = useDict('post_article_source')
 
 const drawer = reactive({
   visible: false,

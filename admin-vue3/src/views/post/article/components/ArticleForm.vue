@@ -58,8 +58,10 @@
           </el-row>
           <el-row :gutter="20">
             <el-col :span="12">
-              <el-form-item label="定时发布时间" prop="scheduledPublishTime">
-                <el-date-picker v-model="formData.scheduledPublishTime" clearable placeholder="选择定时发布时间" style="width: 100%" type="datetime" value-format="YYYY-MM-DD HH:mm:ss" />
+              <el-form-item label="文章来源" prop="source">
+                <el-select v-model="formData.source" clearable placeholder="请选择文章来源" style="width: 100%">
+                  <el-option v-for="dict in post_article_source" :key="dict.value" :label="dict.label" :value="dict.value" />
+                </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="12">
@@ -116,7 +118,7 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue', 'success'])
 
-const { post_article_publish_status, post_article_audit_status } = useDict('post_article_publish_status', 'post_article_audit_status')
+const { post_article_publish_status, post_article_audit_status, post_article_source } = useDict('post_article_publish_status', 'post_article_audit_status', 'post_article_source')
 
 const formRef = ref(null)
 const open = ref(false)
@@ -130,6 +132,7 @@ const formData = reactive({
   content: undefined,
   cover: undefined,
   author: undefined,
+  source: undefined,
   publishTime: undefined,
   likeNum: 0,
   readNum: 0,
@@ -185,6 +188,7 @@ const resetForm = () => {
     content: undefined,
     cover: undefined,
     author: undefined,
+    source: undefined,
     publishTime: undefined,
     likeNum: 0,
     readNum: 0,

@@ -106,6 +106,11 @@
         <el-table-column align="left" label="文章标题" prop="title" show-overflow-tooltip min-width="200" />
         <el-table-column align="center" label="文章简介" prop="desc" show-overflow-tooltip min-width="200" />
         <el-table-column align="center" label="作者" prop="author" width="100" />
+        <el-table-column align="center" label="文章来源" prop="source" width="120">
+          <template #default="scope">
+            {{ getDictLabel('post_article_source', scope.row.source) }}
+          </template>
+        </el-table-column>
         <el-table-column align="center" label="发布状态" prop="publishStatus" width="100">
           <template #default="scope">
             <el-tag :type="getDictTagType('post_article_publish_status', scope.row.publishStatus)" effect="light" size="small">
@@ -162,7 +167,7 @@ import { useRouter } from 'vue-router'
 
 const router = useRouter()
 
-const { post_article_publish_status, post_article_audit_status, post_subject_publish_status, post_subject_audit_status, getDictLabel, getDictTagType } = useDict('post_article_publish_status', 'post_article_audit_status', 'post_subject_publish_status', 'post_subject_audit_status')
+const { post_article_publish_status, post_article_audit_status, post_article_source, post_subject_publish_status, post_subject_audit_status, getDictLabel, getDictTagType } = useDict('post_article_publish_status', 'post_article_audit_status', 'post_article_source', 'post_subject_publish_status', 'post_subject_audit_status')
 
 // 使用专栏管理 composable
 const subject = useSubject()
