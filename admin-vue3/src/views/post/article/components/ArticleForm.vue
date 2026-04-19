@@ -1,67 +1,68 @@
 <template>
   <el-drawer v-model="open" :title="title" size="50%">
-    <el-form ref="formRef" v-no-enter label-width="120px" :model="formData" :rules="formRules">
-      <el-row :gutter="20">
-        <el-col :span="12">
-          <el-form-item label="文章标题" prop="title">
-            <el-input v-model="formData.title" clearable maxlength="100" placeholder="请输入文章标题" show-word-limit @blur="handleTitleBlur" />
+    <el-tabs v-model="activeTab">
+      <!-- 基本信息 Tab -->
+      <el-tab-pane label="基本信息" name="basic">
+        <el-form ref="formRef" v-no-enter label-width="120px" :model="formData" :rules="formRules">
+          <el-row :gutter="20">
+            <el-col :span="12">
+              <el-form-item label="文章标题" prop="title">
+                <el-input v-model="formData.title" clearable maxlength="100" placeholder="请输入文章标题" show-word-limit @blur="handleTitleBlur" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="所属专栏" prop="subjectId">
+                <el-select v-model="formData.subjectId" clearable placeholder="请选择专栏" style="width: 100%">
+                  <el-option v-for="item in subjectList" :key="item.id" :label="item.title" :value="item.id" />
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-form-item label="文章简介" prop="desc">
+            <el-input v-model="formData.desc" maxlength="500" placeholder="请输入文章简介" :autosize="{ minRows: 5, maxRows: 8 }" :show-word-limit="true" type="textarea" @blur="handleDescBlur" />
           </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="所属专栏" prop="subjectId">
-            <el-select v-model="formData.subjectId" clearable placeholder="请选择专栏" style="width: 100%">
-              <el-option v-for="item in subjectList" :key="item.id" :label="item.title" :value="item.id" />
-            </el-select>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-form-item label="文章简介" prop="desc">
-        <el-input v-model="formData.desc" maxlength="500" placeholder="请输入文章简介" :rows="3" :show-word-limit="true" type="textarea" @blur="handleDescBlur" />
-      </el-form-item>
-      <el-form-item label="文章内容" prop="content">
-        <el-input v-model="formData.content" placeholder="请输入文章内容" :rows="8" type="textarea" @blur="handleContentBlur" />
-      </el-form-item>
-      <el-row :gutter="20">
-        <el-col :span="12">
           <el-form-item label="封面图片" prop="cover">
-            <ImageUploadCover v-model="formData.cover" path="article" :max-size="5" :quality="0.85" :before-upload-check="validateBeforeUpload" />
+            <ImageUploadCover v-model="formData.cover" path="article" :max-size="5" :quality="0.85" :before-upload-check="validateBeforeUpload" width="400px" aspect-ratio="16 / 9" />
           </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="作者" prop="author">
-            <el-input v-model="formData.author" clearable placeholder="请输入作者昵称" disabled />
+          <el-form-item label="作者">
+            <span class="author-display">{{ authorDisplay }}</span>
           </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row :gutter="20">
-        <el-col :span="12">
-          <el-form-item label="发布状态" prop="publishStatus">
-            <el-select v-model="formData.publishStatus" clearable placeholder="请选择发布状态" style="width: 100%">
-              <el-option v-for="dict in post_article_publish_status" :key="dict.value" :label="dict.label" :value="dict.value" />
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="审核状态" prop="auditStatus">
-            <el-select v-model="formData.auditStatus" clearable placeholder="请选择审核状态" style="width: 100%">
-              <el-option v-for="dict in post_article_audit_status" :key="dict.value" :label="dict.label" :value="dict.value" />
-            </el-select>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row :gutter="20">
-        <el-col :span="12">
-          <el-form-item label="定时发布时间" prop="scheduledPublishTime">
-            <el-date-picker v-model="formData.scheduledPublishTime" clearable placeholder="选择定时发布时间" style="width: 100%" type="datetime" value-format="YYYY-MM-DD HH:mm:ss" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="排序" prop="sort">
-            <el-input-number v-model="formData.sort" :min="0" controls-position="right" placeholder="请输入排序" style="width: 100%" />
-          </el-form-item>
-        </el-col>
-      </el-row>
-    </el-form>
+          <el-row :gutter="20">
+            <el-col :span="12">
+              <el-form-item label="发布状态" prop="publishStatus">
+                <el-select v-model="formData.publishStatus" clearable placeholder="请选择发布状态" style="width: 100%">
+                  <el-option v-for="dict in post_article_publish_status" :key="dict.value" :label="dict.label" :value="dict.value" />
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="审核状态" prop="auditStatus">
+                <el-select v-model="formData.auditStatus" clearable placeholder="请选择审核状态" style="width: 100%">
+                  <el-option v-for="dict in post_article_audit_status" :key="dict.value" :label="dict.label" :value="dict.value" />
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row :gutter="20">
+            <el-col :span="12">
+              <el-form-item label="定时发布时间" prop="scheduledPublishTime">
+                <el-date-picker v-model="formData.scheduledPublishTime" clearable placeholder="选择定时发布时间" style="width: 100%" type="datetime" value-format="YYYY-MM-DD HH:mm:ss" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="排序" prop="sort">
+                <el-input-number v-model="formData.sort" :min="0" controls-position="right" placeholder="请输入排序" style="width: 100%" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-form>
+      </el-tab-pane>
+
+      <!-- 文章展示 Tab -->
+      <el-tab-pane label="文章展示" name="content">
+            <MdViewer :value="formData.content || ''" />
+      </el-tab-pane>
+    </el-tabs>
     <template #footer>
       <div class="dialog-footer">
         <el-button type="primary" @click="handleSubmit">确 定</el-button>
@@ -72,10 +73,11 @@
 </template>
 
 <script setup name="ArticleForm">
-import { ref, reactive, watch } from 'vue'
+import { ref, reactive, watch, computed } from 'vue'
 import { addArticle, updateArticle } from '@/api/post/article'
 import { useDict } from '@/composables/useDict'
 import ImageUploadCover from '@/components/ImageUploadCover/index.vue'
+import MdViewer from '@/components/MdViewer/index.vue'
 
 const props = defineProps({
   modelValue: {
@@ -102,6 +104,7 @@ const { post_article_publish_status, post_article_audit_status } = useDict('post
 
 const formRef = ref(null)
 const open = ref(false)
+const activeTab = ref('basic') // 默认激活基本信息tab
 const formData = reactive({
   id: undefined,
   articleId: undefined,
@@ -118,7 +121,8 @@ const formData = reactive({
   publishStatus: '0',
   auditStatus: '0',
   scheduledPublishTime: undefined,
-  sort: 0
+  sort: 0,
+  userInfo: undefined
 })
 
 const formRules = {
@@ -177,6 +181,7 @@ const resetForm = () => {
   if (formRef.value) {
     formRef.value.resetFields()
   }
+  activeTab.value = 'basic' // 重置时回到基本信息tab
 }
 
 // 取消操作
@@ -233,6 +238,15 @@ const handleContentBlur = () => {
   formData.content = formData.content.trim()
 }
 
+// 作者显示名称：userName-nickName
+const authorDisplay = computed(() => {
+  const info = formData.userInfo
+  if (info && info.userName && info.nickName) {
+    return `${info.userName}-${info.nickName}`
+  }
+  return '未知'
+})
+
 // 上传前验证：必须填写标题和简介
 const validateBeforeUpload = () => {
   if (!formData.title || !formData.title.trim()) {
@@ -260,5 +274,11 @@ defineExpose({
   display: flex;
   justify-content: flex-end;
   gap: 12px;
+}
+
+.author-display {
+  line-height: 32px;
+  font-size: 14px;
+  color: var(--el-text-color-regular);
 }
 </style>
