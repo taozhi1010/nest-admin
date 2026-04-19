@@ -48,7 +48,7 @@ export class PostArticleService {
     console.log('📝 [创建文章] 最终保存的文章数据 userId:', article.userId);
 
     await this.postArticleRepository.save(article);
-    return ResultData.ok();
+    return ResultData.ok({ id: article.id });
   }
 
   /**
@@ -101,28 +101,34 @@ export class PostArticleService {
       entity.skip(query.pageSize * (query.pageNum - 1)).take(query.pageSize);
     }
 
-    // 关联查询用户信息（用于前端展示作者详情）
-    entity.leftJoin('sys_user', 'u', 'article.userId = u.user_id');
-    entity.addSelect(['u.user_id', 'u.nick_name', 'u.avatar']);
-
     const [list, total] = await entity.getManyAndCount();
 
-    // 处理返回数据，将用户信息嵌套到每个文章对象中
-    const processedList = list.map((item: any) => {
-      // 从原始数据中提取用户信息
-      const userInfo = item.userInfo || null;
+    // 为每篇文章关联查询用户信息
+    const processedList = await Promise.all(
+      list.map(async (item: any) => {
+        let userInfo = null;
 
-      return {
-        ...item,
-        userInfo: userInfo
-          ? {
-              userId: userInfo.userId || userInfo.user_id,
-              nickName: userInfo.nickName || userInfo.nick_name || '',
-              avatar: userInfo.avatar || '',
-            }
-          : null,
-      };
-    });
+        if (item.userId) {
+          const user = await this.userRepository.findOne({
+            where: { userId: item.userId },
+            select: ['userId', 'nickName', 'avatar'],
+          });
+
+          if (user) {
+            userInfo = {
+              userId: user.userId,
+              nickName: user.nickName,
+              avatar: user.avatar,
+            };
+          }
+        }
+
+        return {
+          ...item,
+          userInfo,
+        };
+      }),
+    );
 
     return ResultData.ok({
       list: processedList,
