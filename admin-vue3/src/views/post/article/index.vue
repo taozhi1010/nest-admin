@@ -103,12 +103,21 @@
       <!-- 数据表格 -->
       <el-table v-loading="article.loading" :data="article.list" @selection-change="article.handleSelectionChange">
         <el-table-column align="center" type="selection" width="55" />
-        <el-table-column align="left" label="文章标题" prop="title" show-overflow-tooltip min-width="200" />
-        <el-table-column align="center" label="文章简介" prop="desc" show-overflow-tooltip min-width="200" />
-        <el-table-column align="center" label="作者" prop="author" width="100" />
-        <el-table-column align="center" label="文章来源" prop="source" width="120">
+        <el-table-column align="left" label="文章标题" min-width="280">
           <template #default="scope">
-            {{ getDictLabel('post_article_source', scope.row.source) }}
+            <el-tooltip :content="scope.row.title" placement="top" effect="light">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <el-tag v-if="scope.row.source" :type="getSourceTagType(scope.row.source)" effect="light" size="small">
+                  {{ getDictLabel('post_article_source', scope.row.source) }}
+                </el-tag>
+                <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ scope.row.title }}</span>
+              </div>
+            </el-tooltip>
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="作者" width="120">
+          <template #default="scope">
+            <span>{{ scope.row.userInfo?.nickName || '未知' }}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" label="发布状态" prop="publishStatus" width="100">
@@ -125,9 +134,9 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="点赞" prop="likeNum" width="80" />
-        <el-table-column align="center" label="阅读" prop="readNum" width="80" />
-        <el-table-column align="center" label="评论" prop="commentNum" width="80" />
+        <el-table-column align="center" label="点赞" prop="likeNum" width="70" />
+        <el-table-column align="center" label="阅读" prop="readNum" width="70" />
+        <el-table-column align="center" label="评论" prop="commentNum" width="70" />
         <el-table-column align="center" label="发布时间" prop="publishTime" width="180" />
         <el-table-column align="center" label="创建时间" prop="createTime" width="180" />
         <el-table-column align="center" class-name="small-padding fixed-width" fixed="right" label="操作" width="300">
@@ -149,7 +158,7 @@
       :title="article.form.title" 
       :initial-data="article.form.data" 
       :subject-list="subject.state.list"
-      @success="article.getList"
+      @success="handleArticleSuccess"
     />
 
     <preview ref="previewRef" />
@@ -168,6 +177,16 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 
 const { post_article_publish_status, post_article_audit_status, post_article_source, post_subject_publish_status, post_subject_audit_status, getDictLabel, getDictTagType } = useDict('post_article_publish_status', 'post_article_audit_status', 'post_article_source', 'post_subject_publish_status', 'post_subject_audit_status')
+
+// 获取来源标签类型
+const getSourceTagType = (source) => {
+  const typeMap = {
+    '0': '', // 原创
+    '1': 'success', // 转载
+    '2': 'warning' // 翻译
+  }
+  return typeMap[source] || ''
+}
 
 // 使用专栏管理 composable
 const subject = useSubject()
@@ -294,6 +313,23 @@ const handleSubjectRowClick = (row) => {
   subject.handleRowClick(row, (subjectId) => {
     article.query.subjectId = subjectId
     article.getList()
+  })
+}
+
+// 处理文章操作成功后的回调
+const handleArticleSuccess = () => {
+  // 刷新文章列表
+  article.getList()
+  // 刷新左侧专栏列表，保持选中状态
+  const currentSelectNode = { ...subject.state.selectNode }
+  subject.getList().then(() => {
+    // 恢复之前选中的专栏
+    if (currentSelectNode.id && currentSelectNode.id !== 0) {
+      const found = subject.state.list.find(item => item.id === currentSelectNode.id)
+      if (found) {
+        subject.state.selectNode = found
+      }
+    }
   })
 }
 </script>
