@@ -30,13 +30,13 @@
               <el-icon class="is-loading"><loading /></el-icon>
               <span>加载中...</span>
             </div>
-            <!-- 没有更多数据 -->
-            <div v-show="!subject.state.loading && !subject.state.hasMore" class="subject-loading">
-              <span>没有更多了</span>
-            </div>
             <!-- 暂无数据 -->
             <div v-show="!subject.state.loading && subject.state.list.length === 0" class="subject-loading">
               <span>暂无专栏数据</span>
+            </div>
+            <!-- 没有更多数据（有数据时才显示） -->
+            <div v-show="!subject.state.loading && !subject.state.hasMore && subject.state.list.length > 0" class="subject-loading">
+              <span>没有更多了</span>
             </div>
             <!-- 可以加载更多 -->
             <div v-show="!subject.state.loading && subject.state.hasMore && subject.state.list.length > 0" class="subject-loading" style="opacity: 0.5;">
@@ -67,18 +67,18 @@
 
       <!-- 搜索表单 -->
       <el-form ref="queryArticleRef" v-no-enter :inline="true" :model="article.query">
-        <el-form-item label="文章标题" prop="title">
+        <el-form-item label="标题" prop="title">
           <el-input v-model="article.query.title" clearable placeholder="请输入文章标题" style="width: 200px" @keyup.enter="article.handleQuery" @blur="article.handleQueryBlur" />
         </el-form-item>
         <el-form-item label="作者" prop="author">
           <el-input v-model="article.query.author" clearable placeholder="请输入作者" style="width: 150px" @keyup.enter="article.handleQuery" @blur="article.handleQueryBlur" />
         </el-form-item>
-        <el-form-item label="发布状态" prop="publishStatus">
+        <el-form-item label="发布" prop="publishStatus">
           <el-select v-model="article.query.publishStatus" clearable placeholder="请选择发布状态" style="width: 150px">
             <el-option v-for="dict in post_article_publish_status" :key="dict.value" :label="dict.label" :value="dict.value" />
           </el-select>
         </el-form-item>
-        <el-form-item label="审核状态" prop="auditStatus">
+        <el-form-item label="审核" prop="auditStatus">
           <el-select v-model="article.query.auditStatus" clearable placeholder="请选择审核状态" style="width: 150px">
             <el-option v-for="dict in post_article_audit_status" :key="dict.value" :label="dict.label" :value="dict.value" />
           </el-select>

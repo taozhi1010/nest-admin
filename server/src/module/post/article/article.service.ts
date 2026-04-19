@@ -5,6 +5,7 @@ import { ResultData } from 'src/common/utils/result';
 import { PostArticleEntity } from './entities/article.entity';
 import { CreatePostArticleDto, UpdatePostArticleDto, ListPostArticleDto, AuditPostArticleDto } from './dto/index';
 import { UserDto } from 'src/module/system/user/user.decorator';
+import { UserEntity } from 'src/module/system/user/entities/sys-user.entity';
 
 /**
  * 文章服务类
@@ -15,6 +16,8 @@ export class PostArticleService {
   constructor(
     @InjectRepository(PostArticleEntity)
     private readonly postArticleRepository: Repository<PostArticleEntity>,
+    @InjectRepository(UserEntity)
+    private readonly userRepository: Repository<UserEntity>,
   ) {}
 
   /**
@@ -87,6 +90,10 @@ export class PostArticleService {
       entity.skip(query.pageSize * (query.pageNum - 1)).take(query.pageSize);
     }
 
+    // 关联查询用户信息（用于前端展示作者详情）
+    entity.leftJoin('sys_user', 'u', 'article.userId = u.user_id');
+    entity.addSelect(['u.user_id', 'u.nick_name', 'u.avatar']);
+
     const [list, total] = await entity.getManyAndCount();
 
     return ResultData.ok({
@@ -101,18 +108,26 @@ export class PostArticleService {
    * @returns 文章详情
    */
   async findOne(id: number) {
+    // 先查询文章基本信息
     const article = await this.postArticleRepository.findOne({
-      where: {
-        id,
-        delFlag: '0',
-      },
+      where: { id, delFlag: '0' },
     });
 
     if (!article) {
       return ResultData.fail(500, '文章不存在');
     }
 
-    return ResultData.ok(article);
+    // 根据文章中的 userId 查询用户详细信息
+    const user = await this.userRepository.findOne({
+      where: { userId: article.userId },
+      select: ['userId', 'userName', 'nickName', 'avatar'],
+    });
+
+    // 将用户信息附加到文章数据中返回
+    return ResultData.ok({
+      ...article,
+      userInfo: user || null,
+    });
   }
 
   /**

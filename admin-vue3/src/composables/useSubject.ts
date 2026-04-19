@@ -34,26 +34,12 @@ export function useSubject() {
    * @param isLoadMore 是否为加载更多
    */
   const getList = async (isLoadMore = false) => {
-    // 防止重复加载
-    if (state.loading) {
-      console.log('正在加载中，跳过')
-      return
-    }
-    
-    // 加载更多时，如果没有更多数据则跳过
-    if (!state.hasMore && isLoadMore) {
-      console.log('没有更多数据了，跳过')
-      return
-    }
+    if (state.loading || (!state.hasMore && isLoadMore)) return
 
     state.loading = true
     try {
       const res = await listSubject(query)
       const newList = res.data.list || []
-
-      if (newList.length > 0) {
-        console.log('获取到数据:', newList.length, '条')
-      }
 
       if (isLoadMore) {
         state.list = [...state.list, ...newList]
@@ -63,12 +49,10 @@ export function useSubject() {
 
       // 如果返回的数据少于 pageSize，说明没有更多数据了
       state.hasMore = newList.length >= query.pageSize
-      console.log('hasMore:', state.hasMore, '当前页数量:', newList.length, 'pageSize:', query.pageSize)
     } catch (error) {
       console.error('获取专栏列表失败:', error)
     } finally {
       state.loading = false
-      console.log('加载完成，loading设为false')
     }
   }
 
@@ -142,10 +126,7 @@ export function useSubject() {
    * @param clientHeight 可视区域高度
    */
   const handleScroll = ({ scrollTop, scrollHeight, clientHeight }) => {
-    // 滚动到底部50px时触发加载
-    // 注意：只有当有更多数据且当前没有正在加载时才触发
     if (scrollTop + clientHeight >= scrollHeight - 50 && state.hasMore && !state.loading) {
-      console.log('触发滚动加载，pageNum:', query.pageNum)
       query.pageNum++
       getList(true)
     }
@@ -162,12 +143,9 @@ export function useSubject() {
 
   // ==================== 返回 ====================
   return {
-    // 响应式数据
     subjectListRef,
     query,
     state,
-
-    // 方法
     getList,
     handleSearch,
     handleSearchBlur,
@@ -177,9 +155,4 @@ export function useSubject() {
     handleScroll,
     resetQuery
   }
-}
-
-// 调试：确保返回的是响应式对象
-if (typeof window !== 'undefined') {
-  console.log('useSubject loaded')
 }
