@@ -42,6 +42,11 @@ db:
     logger: 'file'              # 日志类型
     synchronize: true           # 测试环境可以开启自动同步
     logging: true               # 测试环境可以开启 SQL 日志
+    extra:
+      connectionLimit: 20       # 连接池最大连接数
+      connectTimeout: 30000     # 连接超时时间（毫秒）
+      enableKeepAlive: true     # 启用 TCP KeepAlive
+      keepAliveInitialDelay: 0  # KeepAlive 初始延迟
 
 # redis 配置
 redis:

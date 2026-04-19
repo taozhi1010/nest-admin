@@ -42,6 +42,11 @@ db:
     logger: 'file'              # 日志类型
     synchronize: false          # 生产环境必须设为 false
     logging: false              # 生产环境建议关闭 SQL 日志
+    extra:
+      connectionLimit: 50       # 连接池最大连接数（生产环境建议更大）
+      connectTimeout: 30000     # 连接超时时间（毫秒）
+      enableKeepAlive: true     # 启用 TCP KeepAlive
+      keepAliveInitialDelay: 0  # KeepAlive 初始延迟
 
 # redis 配置
 redis:
