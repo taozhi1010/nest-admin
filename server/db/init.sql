@@ -586,11 +586,9 @@ insert into sys_dict_data values(43, 3,  '审核通过', '2',       'post_subjec
 insert into sys_dict_data values(44, 4,  '审核拒绝', '3',       'post_subject_audit_status',   '',   'danger',  'N', '0', 'admin', sysdate(), '', null, '专栏-审核状态-审核拒绝', '0');
 -- 文章来源
 insert into sys_dict_data values(45, 1,  '原创',     '0',       'post_article_source',         '',   'primary', 'Y', '0', 'admin', sysdate(), '', null, '文章-来源-原创', '0');
-insert into sys_dict_data values(46, 2,  '转载',     '1',       'post_article_source',         '',   'info',    'N', '0', 'admin', sysdate(), '', null, '文章-来源-转载', '0');
-insert into sys_dict_data values(47, 3,  '投稿',     '2',       'post_article_source',         '',   'success', 'N', '0', 'admin', sysdate(), '', null, '文章-来源-投稿', '0');
-insert into sys_dict_data values(48, 4,  '翻译',     '3',       'post_article_source',         '',   'warning', 'N', '0', 'admin', sysdate(), '', null, '文章-来源-翻译', '0');
-insert into sys_dict_data values(49, 5,  '整理',     '4',       'post_article_source',         '',   'default', 'N', '0', 'admin', sysdate(), '', null, '文章-来源-整理', '0');
-
+insert into sys_dict_data values(46, 2,  '转载',     '1',       'post_article_source',         '',   'danger',    'N', '0', 'admin', sysdate(), '', null, '文章-来源-转载', '0');
+insert into sys_dict_data values(48, 4,  '翻译',     '2',       'post_article_source',         '',   'warning', 'N', '0', 'admin', sysdate(), '', null, '文章-来源-翻译', '0');
+insert into sys_dict_data values(49, 5,  '整理',     '3',       'post_article_source',         '',   'info', 'N', '0', 'admin', sysdate(), '', null, '文章-来源-整理', '0');
 
 -- ----------------------------
 -- 13、参数配置表
