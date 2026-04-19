@@ -11,7 +11,7 @@ export function useDynamicTitle() {
   const settingsStore = useSettingsStore()
 
   /**
-   * 更新页面标题
+   * 更新页面标题（根据 Store 配置）
    */
   const updateTitle = () => {
     if (settingsStore.dynamicTitle) {
@@ -21,7 +21,20 @@ export function useDynamicTitle() {
     }
   }
 
+  /**
+   * 设置自定义页面标题
+   * @param customTitle 自定义标题内容
+   */
+  const setTitle = (customTitle: string) => {
+    if (settingsStore.dynamicTitle) {
+      document.title = `${customTitle} - ${defaultSettings.title}`
+    } else {
+      document.title = customTitle
+    }
+  }
+
   return {
-    updateTitle
+    updateTitle,
+    setTitle
   }
 }

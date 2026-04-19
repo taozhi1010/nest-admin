@@ -92,10 +92,7 @@
       <!-- 操作按钮 -->
       <el-row class="mb8" :gutter="10">
         <el-col :span="1.5">
-          <el-button v-hasPermi="['post:Article:add']" icon="Plus" plain type="primary" @click="article.form.handleAdd">新增</el-button>
-        </el-col>
-        <el-col :span="1.5">
-          <el-button v-hasPermi="['post:Article:add']" icon="EditPen" plain type="success" @click="article.handleNewEditor">编辑器新建</el-button>
+          <el-button v-hasPermi="['post:Article:add']" icon="Plus" plain type="primary" @click="article.handleNewEditor">新增</el-button>
         </el-col>
         <el-col :span="1.5">
           <el-button v-hasPermi="['post:Article:remove']" :disabled="article.multiple" icon="Delete" plain type="danger" @click="article.handleDelete">删除</el-button>
@@ -250,27 +247,6 @@ const article = reactive({
     open: false,
     title: '',
     data: {},
-    handleAdd: () => {
-      article.form.data = {
-        articleId: undefined,
-        title: undefined,
-        subjectId: (subject.state.selectNode.id === undefined || subject.state.selectNode.id === 0) ? undefined : subject.state.selectNode.id,
-        desc: undefined,
-        content: undefined,
-        cover: undefined,
-        author: undefined,
-        publishTime: undefined,
-        likeNum: 0,
-        readNum: 0,
-        commentNum: 0,
-        publishStatus: '0',
-        auditStatus: '0',
-        scheduledPublishTime: undefined,
-        sort: 0
-      }
-      article.form.open = true
-      article.form.title = '添加文章'
-    },
     handleUpdate: (row) => {
       const articleId = row.id || row.articleId || article.ids
       getArticle(articleId).then((res) => {

@@ -117,10 +117,12 @@ import MdEditor from '@/components/MdEditor/index.vue'
 import ImageUploadCover from '@/components/ImageUploadCover/index.vue'
 import { getArticle, addArticle, updateArticle } from '@/api/post/article'
 import { useSubject } from '@/composables/useSubject'
+import { useDynamicTitle } from '@/composables/useDynamicTitle'
 
 const route = useRoute()
 const router = useRouter()
 const subject = useSubject()
+const { setTitle } = useDynamicTitle()
 
 const title = ref('')
 const content = ref('')
@@ -129,6 +131,9 @@ const loading = ref(false)
 const isEdit = ref(false)
 const subjectList = ref([])
 const sidebarCollapsed = ref(false) // 侧面板收起状态
+
+// 初始化默认标题
+setTitle('文章新建 - 编辑器')
 
 // 文章完整数据
 const articleData = reactive({
@@ -156,13 +161,6 @@ onMounted(() => {
   subject.getList().then(() => {
     subjectList.value = subject.state.list
   })
-  
-  const id = route.query.id
-  if (id) {
-    articleId.value = Number(id) // 转换为数字类型
-    isEdit.value = true
-    loadArticleInfo(Number(id))
-  }
 })
 
 // 加载文章信息
@@ -188,11 +186,39 @@ const loadArticleInfo = async (id) => {
 // 标题输入处理（同步到articleData）
 const handleTitleInput = (value) => {
   articleData.title = value
+  // 实时更新浏览器标题
+  if (value && value.trim()) {
+    setTitle(`${value} - 编辑器`)
+  } else {
+    setTitle(isEdit.value ? '文章编辑 - 编辑器' : '文章新建 - 编辑器')
+  }
 }
 
 // 监听content变化，同步到articleData
 watch(content, (newVal) => {
   articleData.content = newVal
+})
+
+// 监听路由参数变化，处理标题更新和数据加载
+watch(() => route.query.id, (newId) => {
+  const id = Number(newId)
+  if (newId && !isNaN(id)) {
+    // 如果路由参数有变化，加载文章信息
+    if (articleId.value !== id) {
+      articleId.value = id
+      isEdit.value = true
+      loadArticleInfo(id)
+    }
+  }
+}, { immediate: true })
+
+// 监听title变化，确保从接口加载后能更新标题
+watch(title, (newVal) => {
+  if (newVal && newVal.trim()) {
+    setTitle(`${newVal} - 编辑器`)
+  } else if (!newVal) {
+    setTitle(isEdit.value ? '文章编辑 - 编辑器' : '文章新建 - 编辑器')
+  }
 })
 
 // 切换侧面板展开/收起
@@ -358,7 +384,7 @@ const handlePublish = async () => {
     .header-actions {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 8px;
       flex-shrink: 0;
 
       .auto-save-tip {
