@@ -22,43 +22,6 @@ export function dateFormat(date, format = 'YYYY-MM-DD HH:mm:ss') {
 }
 
 /**
- * 防抖函数
- * @param {Function} fn - 要执行的函数
- * @param {number} delay - 延迟时间（毫秒），默认 300ms
- * @returns {Function} 防抖处理后的函数
- * @example
- * const debouncedFn = debounce(() => console.log('executed'), 500)
- */
-export function debounce(fn, delay = 300) {
-  let timer = null
-  return function (...args) {
-    if (timer) clearTimeout(timer)
-    timer = setTimeout(() => {
-      fn.apply(this, args)
-    }, delay)
-  }
-}
-
-/**
- * 节流函数
- * @param {Function} fn - 要执行的函数
- * @param {number} delay - 延迟时间（毫秒），默认 300ms
- * @returns {Function} 节流处理后的函数
- * @example
- * const throttledFn = throttle(() => console.log('executed'), 500)
- */
-export function throttle(fn, delay = 300) {
-  let lastTime = 0
-  return function (...args) {
-    const now = Date.now()
-    if (now - lastTime >= delay) {
-      fn.apply(this, args)
-      lastTime = now
-    }
-  }
-}
-
-/**
  * 生成 UUID v4
  * @returns {string} UUID 字符串
  * @example
@@ -70,27 +33,6 @@ export function uuid() {
     const v = c === 'x' ? r : (r & 0x3 | 0x8)
     return v.toString(16)
   })
-}
-
-/**
- * 解析 URL 参数
- * @param {string} url - URL 字符串
- * @returns {Object} 参数对象
- * @example
- * parseUrl('http://example.com?name=test&age=18') // { name: 'test', age: '18' }
- */
-export function parseUrl(url) {
-  const params = {}
-  const queryString = url.split('?')[1]
-  if (!queryString) return params
-  
-  const pairs = queryString.split('&')
-  pairs.forEach(pair => {
-    const [key, value] = pair.split('=').map(decodeURIComponent)
-    params[key] = value
-  })
-  
-  return params
 }
 
 /**
@@ -124,10 +66,7 @@ export function random(min, max) {
 // 导出所有工具函数（移除了与 npm cat-tools 重复的 isNullorUndefined）
 export const catTools = {
   dateFormat,
-  debounce,
-  throttle,
   uuid,
-  parseUrl,
   formatSize,
   random
 }

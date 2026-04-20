@@ -1,0 +1,61 @@
+/**
+ * 应用状态管理
+ * 管理侧边栏展开/收起、设备类型（桌面/移动）、组件尺寸等全局 UI 状态
+ */
+import { defineStore } from 'pinia'
+import Cookies from 'js-cookie'
+
+interface SidebarState {
+  opened: boolean
+  withoutAnimation: boolean
+  hide: boolean
+}
+
+interface AppState {
+  sidebar: SidebarState
+  device: string
+  size: string
+}
+
+const useAppStore = defineStore('app', {
+  state: (): AppState => ({
+    sidebar: {
+      opened: Cookies.get('sidebarStatus') ? !!+Cookies.get('sidebarStatus')! : true,
+      withoutAnimation: false,
+      hide: false
+    },
+    device: 'desktop',
+    size: Cookies.get('size') || 'default'
+  }),
+  actions: {
+    toggleSideBar(withoutAnimation: boolean) {
+      if (this.sidebar.hide) {
+        return false
+      }
+      this.sidebar.opened = !this.sidebar.opened
+      this.sidebar.withoutAnimation = withoutAnimation
+      if (this.sidebar.opened) {
+        Cookies.set('sidebarStatus', 1)
+      } else {
+        Cookies.set('sidebarStatus', 0)
+      }
+    },
+    closeSideBar({ withoutAnimation }: { withoutAnimation: boolean }) {
+      Cookies.set('sidebarStatus', 0)
+      this.sidebar.opened = false
+      this.sidebar.withoutAnimation = withoutAnimation
+    },
+    toggleDevice(device: string) {
+      this.device = device
+    },
+    setSize(size: string) {
+      this.size = size
+      Cookies.set('size', size)
+    },
+    toggleSideBarHide(status: boolean) {
+      this.sidebar.hide = status
+    }
+  }
+})
+
+export default useAppStore

@@ -1,5 +1,5 @@
 import request from '@/composables/useRequest'
-import { parseStrEmpty } from '@/utils/ruoyi'
+import { parseStrEmpty } from '@/composables/useCommon'
 
 // 查询用户列表
 export function listUser(query) {

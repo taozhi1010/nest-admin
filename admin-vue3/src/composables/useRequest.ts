@@ -1,14 +1,15 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
+import axios, { type AxiosInstance, type InternalAxiosRequestConfig, type AxiosResponse } from 'axios'
 import { ElNotification, ElMessageBox, ElMessage, ElLoading } from 'element-plus'
 import { getToken } from '@/utils/auth'
 import errorCode from '@/utils/errorCode'
-import { tansParams, blobValidate } from '@/utils/ruoyi'
-import cache from '@/plugins/cache'
+import cache from '@/utils/cache'
 import { saveAs } from 'file-saver'
 import useUserStore from '@/store/modules/user'
+import { isValidBlob } from './useValidator'
 
-// 定义类型
-interface RequestConfig extends AxiosRequestConfig {
+// ==================== 类型定义 ====================
+
+interface RequestConfig extends InternalAxiosRequestConfig {
   isToken?: boolean
   repeatSubmit?: boolean
   showMsg?: boolean
@@ -20,12 +21,47 @@ interface SessionObj {
   time: number
 }
 
-interface DownloadConfig extends AxiosRequestConfig {
+interface DownloadConfig {
   transformRequest?: Array<(data: any) => string>
+  headers?: Record<string, string>
+  responseType?: 'blob' | 'arraybuffer'
 }
 
 // 是否显示重新登录
 export let isRelogin = { show: false }
+
+// ==================== 工具函数 ====================
+
+/**
+ * 将参数对象转换为查询字符串
+ * 替代原 ruoyi.js 中的 tansParams 方法
+ * @param params 参数对象
+ * @returns 查询字符串（不带开头的 ?）
+ */
+function paramsToQueryString(params: Record<string, any>): string {
+  const searchParams = new URLSearchParams()
+  
+  function appendValue(key: string, value: any) {
+    if (value === null || value === undefined || value === '') {
+      return
+    }
+    
+    if (typeof value === 'object' && !Array.isArray(value)) {
+      // 处理嵌套对象，如 {user: {name: 'test'}} -> user[name]=test
+      Object.keys(value).forEach(subKey => {
+        appendValue(`${key}[${subKey}]`, value[subKey])
+      })
+    } else {
+      searchParams.append(key, String(value))
+    }
+  }
+  
+  Object.keys(params).forEach(key => {
+    appendValue(key, params[key])
+  })
+  
+  return searchParams.toString()
+}
 
 // 创建 axios 实例
 const service: AxiosInstance = axios.create({
@@ -38,11 +74,13 @@ service.defaults.headers['Content-Type'] = 'application/json;charset=utf-8'
 
 // request 拦截器
 service.interceptors.request.use(
-  (config: AxiosRequestConfig) => {
+  (config: InternalAxiosRequestConfig) => {
+    const requestConfig = config as RequestConfig
+    
     // 是否需要设置 token
-    const isToken = (config.headers as RequestConfig).isToken === false
+    const isToken = requestConfig.isToken === false
     // 是否需要防止数据重复提交
-    const isRepeatSubmit = (config.headers as RequestConfig).repeatSubmit === false
+    const isRepeatSubmit = requestConfig.repeatSubmit === false
     
     if (getToken() && !isToken) {
       config.headers['Authorization'] = `Bearer ${getToken()}` // 让每个请求携带自定义token 请根据实际情况自行修改
@@ -55,17 +93,20 @@ service.interceptors.request.use(
     
     // get请求映射params参数
     if (config.method === 'get' && config.params) {
-      let url = `${config.url}?${tansParams(config.params)}`
-      url = url.slice(0, -1)
+      let url = `${config.url}?${paramsToQueryString(config.params)}`
+      // 移除末尾的 & 符号（如果有的话）
+      if (url.endsWith('&')) {
+        url = url.slice(0, -1)
+      }
       config.params = {}
       config.url = url
     }
     
     if (!isRepeatSubmit && (config.method === 'post' || config.method === 'put')) {
-      const requestObj = {
-        url: config.url,
-        data: typeof config.data === 'object' ? JSON.stringify(config.data) : config.data,
-        time: new Date().getTime()
+      const requestObj: SessionObj = {
+        url: config.url || '',
+        data: typeof config.data === 'object' ? JSON.stringify(config.data) : String(config.data || ''),
+        time: Date.now()
       }
       
       const sessionObj = cache.session.getJSON('sessionObj') as SessionObj | null
@@ -110,8 +151,8 @@ service.interceptors.response.use(
     }
     
     // 是否需要显示错误提示（默认显示）
-    const config = res.config as RequestConfig
-    const showMessage = config.showMsg !== false
+    const requestConfig = res.config as RequestConfig
+    const showMessage = requestConfig.showMsg !== false
 
     switch (code) {
       case 401:
@@ -160,16 +201,19 @@ service.interceptors.response.use(
     }
   },
   (error) => {
-    console.log(`err${error}`)
+    console.error('Request error:', error)
     let { message } = error
-    if (message == 'Network Error') {
+    
+    if (message === 'Network Error') {
       message = '后端接口连接异常'
     } else if (message.includes('timeout')) {
       message = '系统接口请求超时'
     } else if (message.includes('Request failed with status code')) {
-      message = `系统接口${message.substr(message.length - 3)}异常`
+      const statusCode = message.slice(-3)
+      message = `系统接口${statusCode}异常`
     }
-    ElMessage({ message: message, type: 'error', duration: 5 * 1000 })
+    
+    ElMessage({ message, type: 'error', duration: 5000 })
     return Promise.reject(error)
   }
 )
@@ -183,7 +227,7 @@ export function download(url: string, params: any, filename: string, config?: Do
     .post(url, params, {
       transformRequest: [
         (params) => {
-          return tansParams(params)
+          return paramsToQueryString(params)
         }
       ],
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -191,7 +235,7 @@ export function download(url: string, params: any, filename: string, config?: Do
       ...config
     })
     .then(async (data: any) => {
-      const isBlob = blobValidate(data)
+      const isBlob = isValidBlob(data)
       if (isBlob) {
         const blob = new Blob([data])
         saveAs(blob, filename)

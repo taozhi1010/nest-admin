@@ -20,9 +20,6 @@ import useAppStore from '@/store/modules/app'
 
 const appStore = useAppStore()
 const size = computed(() => appStore.size)
-const route = useRoute()
-const router = useRouter()
-let loadingInstance = null
 const sizeOptions = ref([
   { label: '较大', value: 'large' },
   { label: '默认', value: 'default' },

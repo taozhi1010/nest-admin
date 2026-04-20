@@ -13,5 +13,9 @@
   // 或者使用 files.exclude 完全忽略格式化
   "files.associations": {
     "*.sql": "sql"
-  }
+  },
+  
+  // Git 设置：隐藏被 .gitignore 忽略的文件
+  "git.ignoreLimitWarning": true,
+  "git.untrackedChanges": "hidden"
 }

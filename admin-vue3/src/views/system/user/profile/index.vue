@@ -81,7 +81,7 @@ import resetPwd from './resetPwd'
 import { getUserProfile } from '@/api/system/user'
 import dayjs from 'dayjs'
 import { getImageUrl } from '@/utils/image'
-import defAva from '@/assets/images/profile.jpg'
+import defAva from '@/assets/images/avatar.webp'
 
 // ==================== 个人信息管理（集中式管理） ====================
 const profile = reactive({

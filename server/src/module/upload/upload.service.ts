@@ -11,6 +11,8 @@ import path from 'path';
 import iconv from 'iconv-lite';
 import COS from 'cos-nodejs-sdk-v5';
 import Mime from 'mime-types';
+import { FileStorageFactory } from '../common/file-storage/file-storage.factory';
+import { UploadResult } from '../common/file-storage/interfaces/file-storage.interface';
 
 @Injectable()
 export class UploadService {
@@ -25,14 +27,17 @@ export class UploadService {
     ChunkSize: 1024 * 1024 * 8, // 控制分片大小，单位 B，在同园区上传可以设置较大的分片大小
   });
   private isLocal: boolean;
+  private storageType: string;
   constructor(
     @InjectRepository(SysUploadEntity)
     private readonly sysUploadEntityRep: Repository<SysUploadEntity>,
     @Inject(ConfigService)
     private config: ConfigService,
+    private readonly fileStorageFactory: FileStorageFactory,
   ) {
     this.thunkDir = 'thunk';
     this.isLocal = this.config.get('app.file.isLocal');
+    this.storageType = this.config.get('app.file.storageType') || 'local';
   }
 
   /**
@@ -40,18 +45,15 @@ export class UploadService {
    * @param file
    * @returns
    */
-  async singleFileUpload(file: Express.Multer.File) {
+  async singleFileUpload(file: Express.Multer.File): Promise<UploadResult | any> {
     const fileSize = (file.size / 1024 / 1024).toFixed(2);
     if (fileSize > this.config.get('app.file.maxSize')) {
       return ResultData.fail(500, `文件大小不能超过${this.config.get('app.file.maxSize')}MB`);
     }
-    let res;
-    if (this.isLocal) {
-      res = await this.saveFileLocal(file);
-    } else {
-      const targetDir = this.config.get('cos.location');
-      res = await this.saveFileCos(targetDir, file);
-    }
+
+    // 使用文件存储工厂统一处理上传
+    const res = await this.fileStorageFactory.uploadFile(file.buffer, file.originalname, file.mimetype);
+
     const uploadId = GenerateUUID();
     await this.sysUploadEntityRep.save({ uploadId, ...res, ext: path.extname(res.newFileName), size: file.size });
     return res;
@@ -239,26 +241,39 @@ export class UploadService {
     const fileName = serveRoot + relativeFilePath;
 
     // 构建 URL（只返回相对路径，前端会自动拼接域名）
-    const url = fileName;  // 返回 /profile/blob_xxx.png 格式
+    const url = fileName; // 返回 /profile/blob_xxx.png 格式
 
     return {
       fileName: fileName,
       newFileName: newFileName,
-      url: url,  // 返回 /profile/blob_xxx.png 格式
+      url: url, // 返回 /profile/blob_xxx.png 格式
     };
   }
+
   /**
    * 生成新的文件名
-   * @param originalname
-   * @returns
+   * @param originalname 原始文件名
+   * @returns 带时间戳的新文件名
    */
   getNewFileName(originalname: string): string {
     if (!originalname) {
       return originalname;
     }
-    const newFileNameArr = originalname.split('.');
-    newFileNameArr[newFileNameArr.length - 1] = `${newFileNameArr[newFileNameArr.length - 1]}_${new Date().getTime()}`;
-    return newFileNameArr.join('.');
+    // 只取文件名部分，不包含扩展名
+    const nameParts = originalname.split('.');
+    if (nameParts.length > 1) {
+      nameParts.pop(); // 移除扩展名
+    }
+    let fileName = nameParts.join('.');
+
+    // 检查文件名是否已经包含时间戳（格式：name_1234567890123）
+    // 避免前端已经加了时间戳，后端又加一次导致重复
+    const timestampRegex = /_\d{13}$/;
+    if (!timestampRegex.test(fileName)) {
+      fileName = `${fileName}_${new Date().getTime()}`;
+    }
+
+    return fileName;
   }
 
   /**
