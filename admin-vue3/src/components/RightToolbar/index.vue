@@ -7,7 +7,7 @@
       <el-tooltip class="item" content="刷新" effect="dark" placement="top">
         <el-button circle icon="Refresh" @click="refresh()" />
       </el-tooltip>
-      <el-tooltip v-if="columns" class="item" content="显隐�? effect="dark" placement="top">
+      <el-tooltip v-if="columns" class="item" content="显隐列" effect="dark" placement="top">
         <el-button circle icon="Menu" @click="showColumn()" />
       </el-tooltip>
     </el-row>
@@ -40,9 +40,9 @@ const emits = defineEmits(['update:showSearch', 'queryTable'])
 
 // 显隐数据
 const value = ref([])
-// 弹出层标�?
+// 弹出层标题
 const title = ref('显示/隐藏')
-// 是否显示弹出�?
+// 是否显示弹出层
 const open = ref(false)
 
 const style = computed(() => {
