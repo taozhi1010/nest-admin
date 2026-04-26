@@ -129,7 +129,7 @@ import { useCatTools } from '@/composables/useCatTools'
 import MdEditor from '@/components/MdEditor'
 
 const { sys_notice_status, sys_notice_type, getDictLabel, getDictTagType } = useDict('sys_notice_status', 'sys_notice_type')
-const { isNullorUndefined } = useCatTools()
+const { isEmpty } = useCatTools()
 
 // 表单 ref
 const queryRef = ref()
@@ -236,7 +236,7 @@ const notice = reactive({
 
       notice.formLoading = true
       try {
-        if (isNullorUndefined(notice.form.noticeId)) {
+        if (isEmpty(notice.form.noticeId)) {
           await addNotice(notice.form)
           ElMessage.success('新增成功')
         } else {
@@ -273,7 +273,7 @@ const notice = reactive({
 
   // 删除操作
   handleDelete: async (row) => {
-    const noticeIds = isNullorUndefined(row.noticeId) ? notice.ids : row.noticeId
+    const noticeIds = isEmpty(row.noticeId) ? notice.ids : row.noticeId
     try {
       await ElMessageBox.confirm('您确认删除该公告吗？', '删除提示', {
         confirmButtonText: '确定',

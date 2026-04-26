@@ -1,4 +1,5 @@
 import { catTools as npmCatTools } from 'cat-tools'
+import { isEmpty } from 'radash'
 import dayjs from 'dayjs'
 
 // ==================== 本地工具函数 ====================
@@ -17,13 +18,20 @@ function dateFormat(date: any, format = 'YYYY-MM-DD HH:mm:ss'): string {
 /**
  * catTools Composable
  * 提供全局工具函数的 Composable 封装
- * 整合了 npm cat-tools 库和本地工具函数
+ * 整合了 npm cat-tools 库、radash 和本地工具函数
  * @example
- * const { dateFormat, isNullorUndefined, deepCopy } = useCatTools()
+ * const { dateFormat, isEmpty, deepCopy } = useCatTools()
  */
 export function useCatTools() {
   return {
     // 本地工具函数
+    dateFormat,
+    
+    // radash 工具函数
+    /**
+     * 判断值是否为空（null、undefined、空字符串、空数组、空对象）
+     */
+    isEmpty,
 
     // npm cat-tools 库的工具函数（优先使用）
     /**

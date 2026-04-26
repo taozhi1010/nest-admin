@@ -36,22 +36,6 @@ export function uuid() {
 }
 
 /**
- * 格式化文件大小
- * @param {number} bytes - 字节数
- * @returns {string} 格式化后的大小字符串
- * @example
- * formatSize(1024) // '1 KB'
- * formatSize(1048576) // '1 MB'
- */
-export function formatSize(bytes) {
-  if (bytes === 0) return '0 B'
-  const k = 1024
-  const sizes = ['B', 'KB', 'MB', 'GB', 'TB']
-  const i = Math.floor(Math.log(bytes) / Math.log(k))
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
-}
-
-/**
  * 生成指定范围内的随机整数
  * @param {number} min - 最小值（包含）
  * @param {number} max - 最大值（包含）
@@ -67,7 +51,6 @@ export function random(min, max) {
 export const catTools = {
   dateFormat,
   uuid,
-  formatSize,
   random
 }
 
