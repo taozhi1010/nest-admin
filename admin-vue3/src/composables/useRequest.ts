@@ -127,7 +127,7 @@ service.interceptors.request.use(
     return config
   },
   (error) => {
-    console.log(error)
+    console.error('请求拦截器错误:', error)
     return Promise.reject(error)
   }
 )

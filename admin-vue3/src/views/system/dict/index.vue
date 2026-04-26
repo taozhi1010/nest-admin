@@ -202,7 +202,7 @@ const dictGroup = reactive({
       const result = await listType(dictGroup.query)
       dictGroup.data[0].children = result.data.list
     } catch (e) {
-      console.log('dictGroup:', e)
+      console.error('加载字典分组失败:', e)
     } finally {
       loading.value = false
     }

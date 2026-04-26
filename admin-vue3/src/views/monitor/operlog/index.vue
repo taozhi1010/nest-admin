@@ -162,7 +162,6 @@ const { queryParams, form } = toRefs(data)
 function getList() {
   loading.value = true
   list(addDateRange(queryParams.value, dateRange.value)).then((response) => {
-    console.log('response', response)
     operlogList.value = response.data.list
     total.value = response.data.total
     loading.value = false

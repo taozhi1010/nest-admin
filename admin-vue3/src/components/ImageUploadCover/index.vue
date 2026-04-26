@@ -366,8 +366,6 @@ async function customUpload(options) {
             const compressedSize = (webpBlob.size / 1024).toFixed(2)
             const compressionRate = ((1 - webpBlob.size / file.size) * 100).toFixed(1)
 
-            console.log(`图片压缩: ${originalSize}KB → ${compressedSize}KB (减少${compressionRate}%)`)
-
             // 创建新的File对象
             uploadFile = new File([webpBlob], file.name.replace(/\.[^.]+$/, '.webp'), {
                 type: 'image/webp'
@@ -499,7 +497,6 @@ function rotateRight() {
  * 实时预览
  */
 function handleRealTime(data) {
-    console.log('实时预览数据:', data)
     cropPreviews.value = data
 }
 
@@ -550,8 +547,6 @@ async function submitCrop() {
                     const originalSize = (croppedFile.size / 1024).toFixed(2)
                     const compressedSize = (webpBlob.size / 1024).toFixed(2)
                     const compressionRate = ((1 - webpBlob.size / croppedFile.size) * 100).toFixed(1)
-
-                    console.log(`图片压缩: ${originalSize}KB → ${compressedSize}KB (减少${compressionRate}%)`)
 
                     // 创建新的 File 对象
                     const uploadFile = new File([webpBlob], 'cover.webp', {

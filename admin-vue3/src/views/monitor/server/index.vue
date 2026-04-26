@@ -204,7 +204,6 @@ function getList() {
     background: 'rgba(0, 0, 0, 0.7)'
   })
   getServer().then((response) => {
-    console.log(response)
     server.value = response.data
     if (loadingInstance) {
       loadingInstance.close()

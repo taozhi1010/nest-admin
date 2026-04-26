@@ -307,7 +307,6 @@ const handleSaveDraft = async () => {
           saveData.id = newId
           // 更新URL,添加文章ID
           router.replace({ query: { id: newId } })
-          console.log('新增成功,文章ID:', newId, '后续将使用编辑接口')
         }
         ElMessage.success('草稿保存成功')
       }
@@ -370,7 +369,6 @@ const handlePublish = async () => {
           saveData.id = newId
           // 更新URL,添加文章ID
           router.replace({ query: { id: newId } })
-          console.log('新增成功,文章ID:', newId, '后续将使用编辑接口')
         }
         ElMessage.success('文章发布成功')
       }

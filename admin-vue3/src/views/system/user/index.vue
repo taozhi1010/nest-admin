@@ -685,8 +685,6 @@ const user = reactive({
     user.upload.isUploading = false
     uploadRef.value.clearFiles()
 
-    console.log('导入接口返回数据:', response)
-
     // 尝试从不同路径获取数据
     const importData = response.data || response.result || response
 
@@ -860,12 +858,8 @@ const user = reactive({
       // 获取用户详情（包含 posts 和 roles）
       const userResponse = await getUser(userId)
 
-      console.log('用户详情完整响应:', userResponse)
-      console.log('response.data:', userResponse.data)
-
       // 适配后端返回的数据结构（多包了一层 data）
       const res = userResponse.data?.data
-      console.log('解析后的响应数据:', res)
 
       // 从 res 中提取用户信息、岗位列表、角色列表
       const userData = res.data || res // 用户信息可能在 data 字段或直接在根节点
@@ -873,12 +867,6 @@ const user = reactive({
       const rolesData = userResponse.data.roles || [] // 角色列表
       const roleIds = userResponse.data.roleIds || [] // 已选角色 ID
       const postIds = userResponse.data.postIds || [] // 已选岗位 ID
-
-      console.log('用户数据:', userData)
-      console.log('岗位列表（下拉选项）:', postsData)
-      console.log('角色列表（下拉选项）:', rolesData)
-      console.log('已选岗位 IDs:', postIds)
-      console.log('已选角色 IDs:', roleIds)
 
       // 使用 JSON 序列化进行深拷贝，避免引用问题
       user.form = {
@@ -895,19 +883,12 @@ const user = reactive({
         postIds: postIds.length > 0 ? JSON.parse(JSON.stringify(postIds)) : [],
         roleIds: roleIds.length > 0 ? JSON.parse(JSON.stringify(roleIds)) : []
       }
-      console.log('赋值后的表单数据:', user.form)
-
-      console.log('部门选项数据:', user.deptOptions)
 
       // 使用 Object.assign 确保响应式更新
       Object.assign(user, {
         postOptions: postsData.length > 0 ? postsData : [],
         roleOptions: rolesData.length > 0 ? rolesData : []
       })
-
-      console.log('最终岗位选项:', user.postOptions, '长度:', user.postOptions.length)
-      console.log('最终角色选项:', user.roleOptions, '长度:', user.roleOptions.length)
-      console.log('最终部门选项:', user.deptOptions)
 
       user.open = true
       user.title = '修改用户'

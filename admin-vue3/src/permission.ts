@@ -116,6 +116,5 @@ router.afterEach((to: RouteLocationNormalized, from: RouteLocationNormalized, fa
   } else if (targetPath && to.path !== targetPath && to.path !== '/404') {
     // 如果导航成功但路径不匹配（可能被重定向），且不是404页面
     // 这种情况通常是正常的重定向，不需要提示
-    console.log(`路由已从 ${targetPath} 导航到 ${to.path}`)
   }
 })

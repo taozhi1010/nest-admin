@@ -125,7 +125,7 @@ const getValidateCode = async (form: LoginForm, isClick = false): Promise<void> 
       authCodeInfo.refreshing = false
     }
   } catch (err) {
-    console.log('验证码获取错误:', err)
+    console.error('验证码获取错误:', err)
     authCodeInfo.refreshing = false
   }
 }

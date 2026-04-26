@@ -267,7 +267,7 @@ const notice = reactive({
 
   // Markdown 内容变化
   handleContentChange: ({ text, html }) => {
-    console.log('公告内容变化:', { text, html })
+    // 内容变化时的处理逻辑
   },
 
   // 删除操作
