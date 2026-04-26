@@ -63,7 +63,7 @@
 
     <div class="section-header" style="margin-top: 40px;">
       <h3 class="section-title">实用工具</h3>
-      <p class="section-desc">在线图片格式转换工具</p>
+      <p class="section-desc">在线图片格式转换与开发资源</p>
     </div>
     <el-row :gutter="20">
       <el-col :lg="8" :md="12" :sm="24" :xs="24">
@@ -102,13 +102,31 @@
           </div>
         </el-card>
       </el-col>
+      <el-col :lg="8" :md="12" :sm="24" :xs="24">
+        <el-card class="api-doc-card" @click="openTool('https://radash.uihtm.com/')">
+          <div class="doc-card-content">
+            <div class="doc-icon warning">
+              <el-icon :size="40">
+                <Collection />
+              </el-icon>
+            </div>
+            <div class="doc-info">
+              <h4 class="doc-name">Radash 文档</h4>
+              <p class="doc-desc">现代 JavaScript 工具库，提供 isEmpty 等实用函数</p>
+            </div>
+            <div class="doc-action">
+              <el-button type="warning" size="small" icon="TopRight">查看</el-button>
+            </div>
+          </div>
+        </el-card>
+      </el-col>
     </el-row>
   </div>
 </template>
 
 <script setup name="Swagger">
 import { ref } from 'vue'
-import { Document, Promotion, Link, Picture, PictureFilled } from '@element-plus/icons-vue'
+import { Document, Promotion, Link, Picture, PictureFilled, Collection } from '@element-plus/icons-vue'
 
 const activeTab = ref('swagger')
 const baseUrl = import.meta.env.VITE_APP_BASE_API
