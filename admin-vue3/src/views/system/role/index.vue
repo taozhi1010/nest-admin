@@ -359,7 +359,7 @@ const role = reactive({
   handleStatusChange: async (row) => {
     let text = row.status === '0' ? '启用' : '停用'
     try {
-      await ElMessageBox.confirm(`确认要"${text}""${row.roleName}"角色吗？`, '提示', {
+      await ElMessageBox.confirm(`确认要"${text}" "${row.roleName}"角色吗？`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -380,7 +380,7 @@ const role = reactive({
     const newStatus = currentStatus === '0' ? '1' : '0'
     let text = newStatus === '0' ? '启用' : '停用'
     try {
-      await ElMessageBox.confirm(`确认要"${text}""${row.roleName}"角色吗？`, '提示', {
+      await ElMessageBox.confirm(`确认要"${text}" "${row.roleName}"角色吗？`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
