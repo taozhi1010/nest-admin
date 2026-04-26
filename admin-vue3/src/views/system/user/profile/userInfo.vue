@@ -22,7 +22,7 @@
   </el-form>
 </template>
 
-<script setup>
+<script setup lang="ts">
 // ==================== 导入区域 ====================
 import { updateUserProfile } from '@/api/system/user'
 
