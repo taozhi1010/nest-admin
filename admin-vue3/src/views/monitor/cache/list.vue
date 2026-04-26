@@ -75,7 +75,6 @@
 </template>
 
 <script setup name="CacheList">
-import { ref, onUnmounted, onMounted } from 'vue'
 import { listCacheName, listCacheKey, getCacheValue, clearCacheName, clearCacheKey, clearCacheAll } from '@/api/monitor/cache'
 
 const cacheNames = ref([])

@@ -21,7 +21,6 @@
  * 基于 md-editor-v3 封装
  * 官方文档: https://imzbf.github.io/md-editor-v3/
  */
-import { ref, watch } from 'vue'
 import { MdEditor } from 'md-editor-v3'
 import 'md-editor-v3/lib/style.css'
 

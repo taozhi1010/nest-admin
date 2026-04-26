@@ -230,7 +230,6 @@
 </template>
 
 <script setup name="Menu">
-import { nextTick } from 'vue'
 import { addMenu, delMenu, getMenu, listMenu, updateMenu } from '@/api/system/menu'
 import SvgIcon from '@/components/SvgIcon'
 import IconSelect from '@/components/IconSelect'

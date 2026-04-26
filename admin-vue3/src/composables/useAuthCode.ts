@@ -1,6 +1,5 @@
 import Cookies from 'js-cookie'
 import { encrypt, decrypt } from '@/utils/jsencrypt'
-import { reactive } from 'vue'
 import { getCodeImg } from '@/api/login'
 import { isEmpty } from 'radash'
 import { ElMessage } from 'element-plus'

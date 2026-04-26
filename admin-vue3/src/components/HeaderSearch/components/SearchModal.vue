@@ -79,7 +79,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref, nextTick, onMounted, onUnmounted } from 'vue'
 import { useRouteSearch } from '@/composables/useRouteSearch'
 import { Search, Guide } from '@element-plus/icons-vue'
 import { isHttp } from '@/composables/useValidator'

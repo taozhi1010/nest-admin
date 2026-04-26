@@ -98,7 +98,6 @@
 </template>
 
 <script setup name="Cache">
-import { getCurrentInstance, ref, onUnmounted } from 'vue'
 import { getCache } from '@/api/monitor/cache'
 import * as echarts from 'echarts'
 

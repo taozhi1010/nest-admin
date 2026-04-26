@@ -1,42 +1,42 @@
 <template>
   <div>
     <el-tabs type="border-card">
-      <el-tab-pane v-if="shouldHide('second')" label="�?>
-        <crontab-second ref="cronsecond" :check="checkNumber" :cron="crontabValueObj" @update="updateCrontabValue" />
+      <el-tab-pane v-if="shouldHide('second')" label="秒">
+        <crontab-second ref="cronsecond" :check="checkNumber" :cron="crontab.valueObj" @update="updateCrontabValue" />
       </el-tab-pane>
 
       <el-tab-pane v-if="shouldHide('min')" label="分钟">
-        <crontab-min ref="cronmin" :check="checkNumber" :cron="crontabValueObj" @update="updateCrontabValue" />
+        <crontab-min ref="cronmin" :check="checkNumber" :cron="crontab.valueObj" @update="updateCrontabValue" />
       </el-tab-pane>
 
       <el-tab-pane v-if="shouldHide('hour')" label="小时">
-        <crontab-hour ref="cronhour" :check="checkNumber" :cron="crontabValueObj" @update="updateCrontabValue" />
+        <crontab-hour ref="cronhour" :check="checkNumber" :cron="crontab.valueObj" @update="updateCrontabValue" />
       </el-tab-pane>
 
-      <el-tab-pane v-if="shouldHide('day')" label="�?>
-        <crontab-day ref="cronday" :check="checkNumber" :cron="crontabValueObj" @update="updateCrontabValue" />
+      <el-tab-pane v-if="shouldHide('day')" label="日">
+        <crontab-day ref="cronday" :check="checkNumber" :cron="crontab.valueObj" @update="updateCrontabValue" />
       </el-tab-pane>
 
-      <el-tab-pane v-if="shouldHide('month')" label="�?>
-        <crontab-month ref="cronmonth" :check="checkNumber" :cron="crontabValueObj" @update="updateCrontabValue" />
+      <el-tab-pane v-if="shouldHide('month')" label="月">
+        <crontab-month ref="cronmonth" :check="checkNumber" :cron="crontab.valueObj" @update="updateCrontabValue" />
       </el-tab-pane>
 
-      <el-tab-pane v-if="shouldHide('week')" label="�?>
-        <crontab-week ref="cronweek" :check="checkNumber" :cron="crontabValueObj" @update="updateCrontabValue" />
+      <el-tab-pane v-if="shouldHide('week')" label="周">
+        <crontab-week ref="cronweek" :check="checkNumber" :cron="crontab.valueObj" @update="updateCrontabValue" />
       </el-tab-pane>
 
-      <el-tab-pane v-if="shouldHide('year')" label="�?>
-        <crontab-year ref="cronyear" :check="checkNumber" :cron="crontabValueObj" @update="updateCrontabValue" />
+      <el-tab-pane v-if="shouldHide('year')" label="年">
+        <crontab-year ref="cronyear" :check="checkNumber" :cron="crontab.valueObj" @update="updateCrontabValue" />
       </el-tab-pane>
     </el-tabs>
 
     <div class="popup-main">
       <div class="popup-result">
-        <p class="title">时间表达�?/p>
+        <p class="title">时间表达式</p>
         <table>
           <thead>
             <th v-for="item of tabTitles" :key="item">{{ item }}</th>
-            <th>Cron 表达�?/th>
+            <th>Cron 表达式</th>
           </thead>
           <tbody>
             <td>
@@ -102,7 +102,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from 'vue'
 import CrontabSecond from './second.vue'
 import CrontabMin from './min.vue'
 import CrontabHour from './hour.vue'
@@ -112,11 +111,11 @@ import CrontabWeek from './week.vue'
 import CrontabYear from './year.vue'
 import CrontabResult from './result.vue'
 
-// ==================== 事件与属�?====================
+// ==================== 事件与属性 ====================
 const emit = defineEmits(['hide', 'fill'])
 const props = defineProps({
   hideComponent: {
-    type: Array,
+    type: Array as () => string[],
     default: () => []
   },
   expression: {
@@ -125,11 +124,11 @@ const props = defineProps({
   }
 })
 
-// ==================== 响应式数�?====================
-const tabTitles = ref(['�?, '分钟', '小时', '�?, '�?, '�?, '�?])
+// ==================== 响应式数据 ====================
+const tabTitles = ref(['秒', '分钟', '小时', '日', '月', '周', '年'])
 const tabActive = ref(0)
 const crontab = reactive({
-  hideComponent: [],
+  hideComponent: [] as string[],
   expression: '',
   valueObj: {
     second: '*',
@@ -142,7 +141,7 @@ const crontab = reactive({
   }
 })
 
-// ==================== 计算属�?====================
+// ==================== 计算属性 ====================
 /**
  * Cron 表达式字符串
  */
@@ -151,7 +150,7 @@ const crontabValueString = computed(() => {
   return `${obj.second} ${obj.min} ${obj.hour} ${obj.day} ${obj.month} ${obj.week}${obj.year === '' ? '' : ` ${obj.year}`}`
 })
 
-// ==================== 监听�?====================
+// ==================== 监听器 ====================
 watch(
   () => crontab.expression,
   () => resolveExp()
@@ -159,22 +158,22 @@ watch(
 
 // ==================== 方法集合 ====================
 /**
- * 判断是否应该隐藏某个标签�?
- * @param {string} key - 标签页标�?
+ * 判断是否应该隐藏某个标签页
+ * @param {string} key - 标签页标识
  */
-function shouldHide(key) {
+function shouldHide(key: string) {
   return !(crontab.hideComponent && crontab.hideComponent.includes(key))
 }
 
 /**
- * 解析 Cron 表达�?
+ * 解析 Cron 表达式
  */
 function resolveExp() {
-  // 反解�?表达�?
+  // 反解析表达式
   if (crontab.expression) {
     const arr = crontab.expression.split(/\s+/)
     if (arr.length >= 6) {
-      //6 位以上是合法表达�?
+      //6 位以上是合法表达式
       let obj = {
         second: arr[0],
         min: arr[1],
@@ -189,36 +188,36 @@ function resolveExp() {
       }
     }
   } else {
-    // 没有传入的表达式 则还�?
+    // 没有传入的表达式 则还原
     clearCron()
   }
 }
 
 /**
- * Tab 切换�?
- * @param {number} index - 标签页索�?
+ * Tab 切换事件
+ * @param {number} index - 标签页索引
  */
-function tabCheck(index) {
+function tabCheck(index: number) {
   tabActive.value = index
 }
 
 /**
- * 由子组件触发，更改表达式组成的字段�?
- * @param {string} name - 字段�?
- * @param {string} value - 字段�?
+ * 由子组件触发，更改表达式组成的字段值
+ * @param {string} name - 字段名
+ * @param {string} value - 字段值
  * @param {string} from - 来源组件
  */
-function updateCrontabValue(name, value, from) {
-  crontab.valueObj[name] = value
+function updateCrontabValue(name: string, value: string, from: string) {
+  crontab.valueObj[name as keyof typeof crontab.valueObj] = value
 }
 
 /**
  * 表单选项的子组件校验数字格式（通过 -props 传递）
- * @param {number} value - 待校验的�?
- * @param {number} minLimit - 最小�?
- * @param {number} maxLimit - 最大�?
+ * @param {number} value - 待校验的数值
+ * @param {number} minLimit - 最小值
+ * @param {number} maxLimit - 最大值
  */
-function checkNumber(value, minLimit, maxLimit) {
+function checkNumber(value: number, minLimit: number, maxLimit: number) {
   // 检查必须为整数
   value = Math.floor(value)
   if (value < minLimit) {
@@ -237,7 +236,7 @@ function hidePopup() {
 }
 
 /**
- * 填充表达�?
+ * 填充表达式
  */
 function submitFill() {
   emit('fill', crontabValueString.value)
@@ -245,10 +244,10 @@ function submitFill() {
 }
 
 /**
- * 重置 Cron 表达�?
+ * 重置 Cron 表达式
  */
 function clearCron() {
-  // 还原选择�?
+  // 还原选择项
   crontab.valueObj = {
     second: '*',
     min: '*',

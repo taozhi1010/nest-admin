@@ -3,36 +3,37 @@
   <el-dialog v-model="dialogTableVisible" append-to-body :title="form.title" width="600px">
     <el-form ref="formRef" v-no-enter label-width="100px" :model="form.model" :rules="form.rules">
       <el-form-item label="字典名称" prop="dictName">
-        <el-input v-model="form.model.dictName" placeholder="请输入字典名�? />
+        <el-input v-model="form.model.dictName" placeholder="请输入字典名称" />
       </el-form-item>
       <el-form-item label="字典类型" prop="dictType">
-        <el-input v-model="form.model.dictType" placeholder="请输入字典类�? />
+        <el-input v-model="form.model.dictType" placeholder="请输入字典类型" />
       </el-form-item>
-      <el-form-item label="状�? prop="status">
+      <el-form-item label="状态" prop="status">
         <el-radio-group v-model="form.model.status">
           <el-radio v-for="dict in sys_normal_disable" :key="dict.value" :label="dict.value">{{ dict.label }}</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="备注" prop="remark">
-        <el-input v-model="form.model.remark" placeholder="请输入内�? type="textarea" />
+        <el-input v-model="form.model.remark" placeholder="请输入内容" type="textarea" />
       </el-form-item>
     </el-form>
     <template #footer>
       <div class="dialog-footer">
-        <el-button :loading="form.loading" type="primary" @click="form.submit">�?�?/el-button>
+        <el-button :loading="form.loading" type="primary" @click="form.submit">确 定</el-button>
         <el-button type="warning" @click="form.reset">重置</el-button>
-        <el-button @click="form.cancel">�?�?/el-button>
+        <el-button @click="form.cancel">取 消</el-button>
       </div>
     </template>
   </el-dialog>
 </template>
 
 <script setup lang="ts">
+import { ElMessage } from 'element-plus'
 import { addType, updateType } from '@/api/system/dict/type'
 import { useDict } from '@/composables/useDict'
 import { resetForm } from '@/composables/useForm'
 
-const { sys_normal_disable } = useDict('sys_normal_disable')
+const { sys_normal_disable } = useDict('sys_normal_disable') as any
 
 const dialogTableVisible = ref(false)
 const formRef = ref()
@@ -42,8 +43,9 @@ const form = reactive({
   loading: false,
   title: '',
   model: {
+    dictId: undefined as number | undefined,
     dictName: '',
-    dictType: null,
+    dictType: '',
     status: '0',
     remark: ''
   },
@@ -54,7 +56,7 @@ const form = reactive({
   reset: () => {
     form.loading = false
     nextTick(() => {
-      resetForm(formRef)
+      resetForm(formRef.value)
     })
   },
   submit: () => {

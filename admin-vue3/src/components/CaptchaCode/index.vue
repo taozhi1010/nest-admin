@@ -14,8 +14,6 @@
 </template>
 
 <script setup name="CaptchaCode">
-import { defineProps, defineEmits } from 'vue'
-
 const props = defineProps({
   // 验证码图片的 base64 字符串
   imgUrl: {

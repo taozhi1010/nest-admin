@@ -6,28 +6,28 @@
 
     <el-form-item>
       <el-radio v-model="radioValue" :label="2">
-        周期�?
+        周期
         <el-input-number v-model="cycle01" :max="22" :min="0" />
         -
         <el-input-number v-model="cycle02" :max="23" :min="cycle01 + 1" />
-        �?
+        小时
       </el-radio>
     </el-form-item>
 
     <el-form-item>
       <el-radio v-model="radioValue" :label="3">
-        �?
+        从
         <el-input-number v-model="average01" :max="22" :min="0" />
-        时开始，�?
+        时开始，每
         <el-input-number v-model="average02" :max="23 - average01" :min="1" />
-        小时执行一�?
+        小时执行一次
       </el-radio>
     </el-form-item>
 
     <el-form-item>
       <el-radio v-model="radioValue" :label="4">
         指定
-        <el-select v-model="checkboxList" clearable multiple :multiple-limit="10" placeholder="可多�?>
+        <el-select v-model="checkboxList" clearable multiple :multiple-limit="10" placeholder="可多选">
           <el-option v-for="item in 24" :key="item" :label="item - 1" :value="item - 1" />
         </el-select>
       </el-radio>
@@ -36,7 +36,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
 const emit = defineEmits(['update'])
 const props = defineProps({
   cron: {
@@ -61,7 +60,7 @@ const cycle01 = ref(0)
 const cycle02 = ref(1)
 const average01 = ref(0)
 const average02 = ref(1)
-const checkboxList = ref([])
+const checkboxList = ref<number[]>([])
 const checkCopy = ref([0])
 const cycleTotal = computed(() => {
   const checked01 = props.check(cycle01.value, 0, 22)
@@ -80,7 +79,7 @@ watch(
   () => props.cron.hour,
   (value) => changeRadioValue(value)
 )
-// 监听 computed 值变化并同步�?ref
+// 监听 computed 值变化并同步到 ref
 watch(cycleTotal, (value) => {
   const [v1, v2] = value.split('-')
   cycle01.value = Number(v1)
@@ -92,7 +91,7 @@ watch(averageTotal, (value) => {
   average02.value = Number(v2)
 })
 watch([radioValue, cycleTotal, averageTotal, checkboxString], () => onRadioChange())
-function changeRadioValue(value) {
+function changeRadioValue(value: string) {
   if (value === '*') {
     radioValue.value = 1
   } else if (value.indexOf('-') > -1) {

@@ -120,7 +120,6 @@
 </template>
 
 <script setup name="Notice">
-import { nextTick } from 'vue'
 import { listNotice, getNotice, delNotice, addNotice, updateNotice } from '@/api/system/notice'
 import { useDict } from '@/composables/useDict'
 import { parseTime } from '@/composables/useCommon'

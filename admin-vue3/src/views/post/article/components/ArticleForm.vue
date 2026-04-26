@@ -88,7 +88,6 @@
 </template>
 
 <script setup name="ArticleForm">
-import { ref, reactive, watch, computed } from 'vue'
 import { addArticle, updateArticle } from '@/api/post/article'
 import { useDict } from '@/composables/useDict'
 import ImageUploadCover from '@/components/ImageUploadCover/index.vue'

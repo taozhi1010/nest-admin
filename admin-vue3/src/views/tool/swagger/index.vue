@@ -125,7 +125,6 @@
 </template>
 
 <script setup name="Swagger">
-import { ref } from 'vue'
 import { Document, Promotion, Link, Picture, PictureFilled, Collection } from '@element-plus/icons-vue'
 
 const activeTab = ref('swagger')

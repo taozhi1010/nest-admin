@@ -116,7 +116,6 @@
 </template>
 
 <script setup name="ArticleEditor">
-import { ref, reactive, watch, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import MdEditor from '@/components/MdEditor/index.vue'
@@ -174,7 +173,6 @@ onMounted(() => {
 })
 
 // 组件卸载时清理定时器
-import { onUnmounted } from 'vue'
 onUnmounted(() => {
   if (saveTimer.value) {
     clearTimeout(saveTimer.value)
