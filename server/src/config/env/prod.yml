@@ -11,7 +11,7 @@ app:
     serveRoot: ''               # 文件虚拟路径
     maxSize: 10                 # 文件大小限制 (MB)
 
-# MinIO 对象存储配置
+# MinIO 对象存储配置（保留兼容）
 minio:
   endPoint: ''                  # MinIO 服务器地址
   port: 9000                    # MinIO API 端口
@@ -21,6 +21,17 @@ minio:
   bucket: ''                    # 存储桶名称
   region: ''                    # 区域
   domain: ''                    # MinIO 访问域名
+
+# RustFS 对象存储配置
+rustfs:
+  endPoint: ''                  # RustFS 服务器地址
+  port: 9000                    # RustFS API 端口
+  useSSL: false                 # 是否使用 SSL
+  accessKey: ''                 # RustFS Access Key
+  secretKey: ''                 # RustFS Secret Key
+  bucket: 'nest-admin'          # 存储桶名称
+  region: 'us-east-1'           # 区域
+  domain: ''                    # RustFS 访问域名（可选）
 
 # 腾讯云cos配置（保留兼容）
 cos:

@@ -1,32 +1,19 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import * as Minio from 'minio'; // RustFS 兼容 S3 API，可以使用 MinIO 客户端
 import { ConfigService } from '@nestjs/config';
 import { IFileStorage, UploadResult } from './interfaces/file-storage.interface';
-import Mime from 'mime-types';
 
 /**
- * RustFS 文件存储实现（预留，待 RustFS 正式可用后启用）
- *
- * TODO: RustFS 正式上线并集成到 1Panel 后的兼容性处理
- * - 等待 RustFS 发布正式开源版本
- * - 确认 RustFS 在 1Panel 中的部署方式和 API 端点
- * - 验证 S3 API 兼容性，可能需要调整客户端配置
- * - 测试存储桶策略设置是否符合 RustFS 规范
- * - 更新配置文件中的默认连接参数
- * - 补充完整的错误处理和日志记录
- *
- * 当前实现基于 RustFS 官方声明的 "100% 兼容 S3 API"，使用 MinIO 客户端直接连接。
- * 正式上线后需要根据实际 API 文档进行适配调整。
+ * RustFS 文件存储实现
+ * RustFS 100% 兼容 S3 API，因此可以直接使用 MinIO 客户端连接
  */
 @Injectable()
-export class RustFSFileStorage implements IFileStorage {
+export class RustFSFileStorage implements IFileStorage, OnModuleInit {
   private rustfsClient: Minio.Client;
   private bucketName: string;
   private serveRoot: string;
 
   constructor(private configService: ConfigService) {
-    // TODO: RustFS 正式上线后，根据实际 API 文档确认以下配置项
-    // 当前基于 S3 兼容性的假设配置，可能需要调整
     this.rustfsClient = new Minio.Client({
       endPoint: this.configService.get<string>('rustfs.endPoint', '127.0.0.1'),
       port: this.configService.get<number>('rustfs.port', 9000),
@@ -36,17 +23,24 @@ export class RustFSFileStorage implements IFileStorage {
       region: this.configService.get<string>('rustfs.region', 'us-east-1'),
     });
 
-    this.bucketName = this.configService.get<string>('rustfs.bucket', 'avatars');
+    this.bucketName = this.configService.get<string>('rustfs.bucket', 'nest-admin');
     this.serveRoot = this.configService.get<string>('app.file.serveRoot', '/profile');
   }
 
   /**
-   * 初始化存储桶
-   *
-   * TODO: RustFS 正式上线后需要验证：
-   * 1. bucketExists、makeBucket API 是否完全兼容
-   * 2. setBucketPolicy 的策略格式是否需要调整
-   * 3. 公开访问策略的配置方式是否与 MinIO 一致
+   * 模块初始化时自动设置存储桶策略
+   */
+  async onModuleInit() {
+    try {
+      await this.initialize();
+      console.log(`✅ RustFS 文件存储初始化完成，存储桶: ${this.bucketName}`);
+    } catch (error) {
+      console.error('❌ RustFS 文件存储初始化失败:', error.message);
+    }
+  }
+
+  /**
+   * 确保存储桶存在并设置为公开访问
    */
   async initialize(): Promise<void> {
     try {
@@ -73,16 +67,12 @@ export class RustFSFileStorage implements IFileStorage {
       console.log(`✅ RustFS 存储桶 '${this.bucketName}' 已设置为公开访问`);
     } catch (error) {
       console.error('❌ RustFS 初始化失败:', error.message);
+      throw error;
     }
   }
 
   /**
    * 上传文件到 RustFS
-   *
-   * TODO: RustFS 正式上线后需要验证：
-   * 1. putObject API 的参数和返回值是否完全兼容
-   * 2. 文件大小限制、分片上传等特性是否需要特殊处理
-   * 3. Content-Type 设置是否正确生效
    * @param buffer 文件二进制数据
    * @param fileName 文件名
    * @param contentType 文件 MIME 类型
@@ -164,8 +154,6 @@ export class RustFSFileStorage implements IFileStorage {
 
   /**
    * 删除文件
-   *
-   * TODO: RustFS 正式上线后需要验证 removeObject API 的兼容性
    */
   async deleteFile(fileName: string): Promise<void> {
     await this.rustfsClient.removeObject(this.bucketName, fileName);
@@ -173,8 +161,6 @@ export class RustFSFileStorage implements IFileStorage {
 
   /**
    * 检查文件是否存在
-   *
-   * TODO: RustFS 正式上线后需要验证 statObject API 的兼容性
    */
   async fileExists(fileName: string): Promise<boolean> {
     try {
