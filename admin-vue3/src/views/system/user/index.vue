@@ -526,7 +526,7 @@ const user = reactive({
   handleStatusChange: async (row) => {
     let text = row.status === '0' ? '启用' : '停用'
     try {
-      await ElMessageBox.confirm(`确认要"${text}""${row.userName}"用户吗？`, '提示', {
+      await ElMessageBox.confirm(`确认要"${text}" "${row.userName}"用户吗？`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -547,7 +547,7 @@ const user = reactive({
     const text = newStatus === '0' ? '启用' : '停用'
 
     try {
-      await ElMessageBox.confirm(`确认要"${text}""${row.userName}"用户吗？`, '提示', {
+      await ElMessageBox.confirm(`确认要"${text}" "${row.userName}"用户吗？`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
