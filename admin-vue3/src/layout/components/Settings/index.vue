@@ -36,14 +36,14 @@
     <h3 class="drawer-title">系统布局配置</h3>
 
     <div class="drawer-item">
-      <span>开�?TopNav</span>
+      <span>开�?TopNav</span>
       <span class="comp-style">
         <el-switch v-model="topNav" class="drawer-switch" />
       </span>
     </div>
 
     <div class="drawer-item">
-      <span>开�?Tags-Views</span>
+      <span>开�?Tags-Views</span>
       <span class="comp-style">
         <el-switch v-model="tagsView" class="drawer-switch" />
       </span>
@@ -64,7 +64,7 @@
     </div>
 
     <div class="drawer-item">
-      <span>动态标�?/span>
+      <span>动态标题</span>
       <span class="comp-style">
         <el-switch v-model="dynamicTitle" class="drawer-switch" />
       </span>
@@ -114,7 +114,7 @@ const tagsView = computed({
     settingsStore.changeSetting({ key: 'tagsView', value: val })
   }
 })
-/**是否需要固定头�?*/
+/**是否需要固定头�?*/
 const fixedHeader = computed({
   get: () => storeSettings.value.fixedHeader,
   set: (val) => {
@@ -133,7 +133,7 @@ const dynamicTitle = computed({
   get: () => storeSettings.value.dynamicTitle,
   set: (val) => {
     settingsStore.changeSetting({ key: 'dynamicTitle', value: val })
-    // 动态设置网页标�?
+    // 动态设置网页标�?
     const { updateTitle } = useDynamicTitle()
     updateTitle()
   }
@@ -151,7 +151,7 @@ function handleTheme(val) {
 function saveSetting() {
   loadingInstance = ElLoading.service({
     lock: true,
-    text: '正在保存到本地，请稍�?..',
+    text: '正在保存到本地，请稍等...',
     background: 'rgba(0, 0, 0, 0.7)'
   })
   let layoutSetting = {
@@ -174,7 +174,7 @@ function saveSetting() {
 function resetSetting() {
   loadingInstance = ElLoading.service({
     lock: true,
-    text: '正在清除设置缓存并刷新，请稍�?..',
+    text: '正在清除设置缓存并刷新，请稍等...',
     background: 'rgba(0, 0, 0, 0.7)'
   })
   localStorage.removeItem('layout-setting')
