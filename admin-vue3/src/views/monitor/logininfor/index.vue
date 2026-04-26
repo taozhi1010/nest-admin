@@ -67,7 +67,8 @@
 <script setup name="Logininfor">
 import { list, delLogininfor, cleanLogininfor, unlockLogininfor } from '@/api/monitor/logininfor'
 import { useDict } from '@/composables/useDict'
-import { resetForm, addDateRange, download, parseTime } from '@/composables/useCommon'
+import { resetForm } from '@/composables/useForm'
+import { addDateRange, download, parseTime } from '@/composables/useCommon'
 
 const { sys_common_status, getDictLabel } = useDict('sys_common_status')
 

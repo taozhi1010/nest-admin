@@ -123,7 +123,8 @@
 import { nextTick } from 'vue'
 import { listNotice, getNotice, delNotice, addNotice, updateNotice } from '@/api/system/notice'
 import { useDict } from '@/composables/useDict'
-import { parseTime, resetForm } from '@/composables/useCommon'
+import { parseTime } from '@/composables/useCommon'
+import { resetForm } from '@/composables/useForm'
 import { useCatTools } from '@/composables/useCatTools'
 import MdEditor from '@/components/MdEditor'
 

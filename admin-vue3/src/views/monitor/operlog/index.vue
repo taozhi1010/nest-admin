@@ -126,7 +126,8 @@
 <script setup name="Operlog">
 import { list, delOperlog, cleanOperlog } from '@/api/monitor/operlog'
 import { useDict } from '@/composables/useDict'
-import { resetForm, addDateRange, parseTime } from '@/composables/useCommon'
+import { resetForm } from '@/composables/useForm'
+import { addDateRange, parseTime } from '@/composables/useCommon'
 
 const { sys_oper_type, sys_common_status, getDictLabel } = useDict('sys_oper_type', 'sys_common_status')
 

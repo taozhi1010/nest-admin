@@ -53,7 +53,7 @@
 <script setup name="Data">
 import { addData, updateData } from '@/api/system/dict/data'
 import { useDict } from '@/composables/useDict'
-import { resetForm } from '@/composables/useCommon'
+import { resetForm } from '@/composables/useForm'
 
 const { sys_normal_disable } = useDict('sys_normal_disable')
 

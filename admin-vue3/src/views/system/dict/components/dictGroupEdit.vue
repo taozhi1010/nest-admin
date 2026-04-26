@@ -30,7 +30,7 @@
 <script setup>
 import { addType, updateType } from '@/api/system/dict/type'
 import { useDict } from '@/composables/useDict'
-import { resetForm } from '@/composables/useCommon'
+import { resetForm } from '@/composables/useForm'
 
 const { sys_normal_disable } = useDict('sys_normal_disable')
 

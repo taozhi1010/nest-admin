@@ -106,7 +106,7 @@
 // ==================== 导入区域 ====================
 import { listSubject, addSubject, delSubject, getSubject, updateSubject } from '@/api/post/subject'
 import { useDict } from '@/composables/useDict'
-import { resetForm } from '@/composables/useCommon'
+import { resetForm } from '@/composables/useForm'
 import ImageUploadCover from '@/components/ImageUploadCover/index.vue'
 
 const { post_subject_publish_status, post_subject_audit_status, getDictLabel } = useDict('post_subject_publish_status', 'post_subject_audit_status')

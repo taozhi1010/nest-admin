@@ -225,7 +225,8 @@ import { listJob, getJob, delJob, addJob, updateJob, runJob, changeJobStatus } f
 import Crontab from '@/components/Crontab'
 const router = useRouter()
 import { useDict } from '@/composables/useDict'
-import { parseTime, resetForm } from '@/composables/useCommon'
+import { parseTime } from '@/composables/useCommon'
+import { resetForm } from '@/composables/useForm'
 
 const { sys_job_group, sys_job_status, getDictLabel } = useDict('sys_job_group', 'sys_job_status')
 

@@ -320,7 +320,8 @@
 import { getToken } from '@/utils/auth'
 import { changeUserStatus, listUser, resetUserPwd, delUser, getUser, updateUser, addUser, deptTreeSelect, getAuthRole, updateAuthRole, importData } from '@/api/system/user'
 import { useDict } from '@/composables/useDict'
-import { resetForm, addDateRange, download, parseTime } from '@/composables/useCommon'
+import { resetForm } from '@/composables/useForm'
+import { addDateRange, download, parseTime } from '@/composables/useCommon'
 
 // ==================== 实例和字典 ====================
 const { sys_normal_disable, sys_user_sex } = useDict('sys_normal_disable', 'sys_user_sex')

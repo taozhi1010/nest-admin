@@ -236,7 +236,8 @@ import SvgIcon from '@/components/SvgIcon'
 import IconSelect from '@/components/IconSelect'
 import { ClickOutside as vClickOutside } from 'element-plus'
 import { useDict } from '@/composables/useDict'
-import { resetForm, handleTree, parseTime } from '@/composables/useCommon'
+import { resetForm } from '@/composables/useForm'
+import { handleTree, parseTime } from '@/composables/useCommon'
 
 const { sys_show_hide, sys_normal_disable, getDictLabel } = useDict('sys_show_hide', 'sys_normal_disable')
 

@@ -161,7 +161,8 @@ import AuthUser from './authUser.vue'
 import { addRole, changeRoleStatus, dataScope, delRole, getRole, listRole, updateRole, deptTreeSelect } from '@/api/system/role'
 import { roleMenuTreeselect, treeselect as menuTreeselect } from '@/api/system/menu'
 import { useDict } from '@/composables/useDict'
-import { resetForm, addDateRange, download, parseTime } from '@/composables/useCommon'
+import { resetForm } from '@/composables/useForm'
+import { addDateRange, download, parseTime } from '@/composables/useCommon'
 
 // ==================== 实例和字典 ====================
 const router = useRouter()

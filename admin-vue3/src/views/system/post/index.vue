@@ -94,7 +94,8 @@
 <script setup name="Post">
 import { listPost, addPost, delPost, getPost, updatePost } from '@/api/system/post'
 import { useDict } from '@/composables/useDict'
-import { resetForm, download, parseTime } from '@/composables/useCommon'
+import { resetForm } from '@/composables/useForm'
+import { download, parseTime } from '@/composables/useCommon'
 
 const { sys_normal_disable, getDictLabel } = useDict('sys_normal_disable')
 
