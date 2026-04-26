@@ -5,16 +5,16 @@
     </el-upload>
     <!-- 上传提示 -->
     <div v-if="showTip" class="el-upload__tip">
-      请上�?
+      请上传
       <template v-if="fileSize">
-        大小不超�?
+        大小不超过
         <b style="color: #f56c6c">{{ fileSize }}MB</b>
       </template>
       <template v-if="fileType">
-        格式�?
+        格式为
         <b style="color: #f56c6c">{{ fileType.join('/') }}</b>
       </template>
-      的文�?
+      的文件
     </div>
 
     <el-dialog v-model="dialogVisible" append-to-body title="预览" width="800px">
@@ -68,12 +68,12 @@ watch(
   () => props.modelValue,
   (val) => {
     if (val) {
-      // 首先将值转为数�?
+      // 首先将值转为数组
       const list = Array.isArray(val) ? val : props.modelValue.split(',')
-      // 然后将数组转为对象数�?
+      // 然后将数组转为对象数组
       fileList.value = list.map((item) => {
         if (typeof item === 'string') {
-          // 使用统一的图片工具方法处�?URL
+          // 使用统一的图片工具方法处理 URL
           const imageUrl = getImageUrl(item)
           item = { name: item, url: imageUrl }
         }
@@ -104,7 +104,7 @@ function handleBeforeUpload(file) {
     isImg = file.type.indexOf('image') > -1
   }
   if (!isImg) {
-    ElMessage.error(`文件格式不正�? 请上�?{props.fileType.join('/')}图片格式文件!`)
+    ElMessage.error(`文件格式不正确，请上传${props.fileType.join('/')}图片格式文件!`)
     return false
   }
   if (props.fileSize) {
@@ -116,7 +116,7 @@ function handleBeforeUpload(file) {
   }
   loadingInstance = ElLoading.service({
     lock: true,
-    text: '正在上传图片，请稍�?..',
+    text: '正在上传图片，请稍等...',
     background: 'rgba(0, 0, 0, 0.7)'
   })
   number.value++
@@ -124,7 +124,7 @@ function handleBeforeUpload(file) {
 
 // 文件个数超出
 function handleExceed() {
-  ElMessage.error(`上传文件数量不能超过 ${props.limit} �?`)
+  ElMessage.error(`上传文件数量不能超过 ${props.limit} 个!`)
 }
 
 // 上传成功回调
@@ -185,7 +185,7 @@ function handlePictureCardPreview(file) {
   dialogVisible.value = true
 }
 
-// 对象转成指定字符串分�?
+// 对象转成指定字符串分隔
 function listToString(list, separator) {
   let strs = ''
   separator = separator || ','
