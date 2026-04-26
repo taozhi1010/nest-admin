@@ -20,7 +20,7 @@
   </el-menu>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { constantRoutes } from '@/router'
 import { isHttp } from '@/composables/useValidator'
 import useAppStore from '@/store/modules/app'
@@ -31,7 +31,7 @@ import usePermissionStore from '@/store/modules/permission'
 const visibleNumber = ref(null)
 // 当前激活菜单的 index
 const currentIndex = ref(null)
-// 隐藏侧边栏路由
+// 隐藏侧边栏路�?
 const hideList = ['/index', '/user/profile']
 
 const appStore = useAppStore()
@@ -50,7 +50,7 @@ const topMenus = computed(() => {
   let topMenus = []
   routers.value.map((menu) => {
     if (menu.hidden !== true) {
-      // 兼容顶部栏一级菜单内部跳转
+      // 兼容顶部栏一级菜单内部跳�?
       if (menu.path === '/') {
         topMenus.push(menu.children[0])
       } else {
@@ -61,7 +61,7 @@ const topMenus = computed(() => {
   return topMenus
 })
 
-// 设置子路由
+// 设置子路�?
 const childrenMenus = computed(() => {
   let childrenMenus = []
   routers.value.map((router) => {

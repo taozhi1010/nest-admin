@@ -6,28 +6,28 @@
 
     <el-form-item>
       <el-radio v-model="radioValue" :label="2">
-        周期从
+        周期�?
         <el-input-number v-model="cycle01" :max="11" :min="1" />
         -
         <el-input-number v-model="cycle02" :max="12" :min="cycle01 + 1" />
-        月
+        �?
       </el-radio>
     </el-form-item>
 
     <el-form-item>
       <el-radio v-model="radioValue" :label="3">
-        从
+        �?
         <el-input-number v-model="average01" :max="11" :min="1" />
-        月开始，每
+        月开始，�?
         <el-input-number v-model="average02" :max="12 - average01" :min="1" />
-        月月执行一次
+        月月执行一�?
       </el-radio>
     </el-form-item>
 
     <el-form-item>
       <el-radio v-model="radioValue" :label="4">
         指定
-        <el-select v-model="checkboxList" clearable multiple :multiple-limit="8" placeholder="可多选">
+        <el-select v-model="checkboxList" clearable multiple :multiple-limit="8" placeholder="可多�?>
           <el-option v-for="item in monthList" :key="item.key" :label="item.value" :value="item.key" />
         </el-select>
       </el-radio>
@@ -35,7 +35,7 @@
   </el-form>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 const emit = defineEmits(['update'])
 const props = defineProps({
@@ -64,7 +64,7 @@ const average02 = ref(1)
 const checkboxList = ref([])
 const checkCopy = ref([1])
 const monthList = ref([
-  { key: 1, value: '一月' },
+  { key: 1, value: '一�? },
   { key: 2, value: '二月' },
   { key: 3, value: '三月' },
   { key: 4, value: '四月' },
@@ -74,8 +74,8 @@ const monthList = ref([
   { key: 8, value: '八月' },
   { key: 9, value: '九月' },
   { key: 10, value: '十月' },
-  { key: 11, value: '十一月' },
-  { key: 12, value: '十二月' }
+  { key: 11, value: '十一�? },
+  { key: 12, value: '十二�? }
 ])
 const cycleTotal = computed(() => {
   const checked01 = props.check(cycle01.value, 1, 11)
@@ -94,7 +94,7 @@ watch(
   () => props.cron.month,
   (value) => changeRadioValue(value)
 )
-// 监听 computed 值变化并同步到 ref
+// 监听 computed 值变化并同步�?ref
 watch(cycleTotal, (value) => {
   const [v1, v2] = value.split('-')
   cycle01.value = Number(v1)

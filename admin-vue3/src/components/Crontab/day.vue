@@ -5,26 +5,26 @@
     </el-form-item>
 
     <el-form-item>
-      <el-radio v-model="radioValue" :label="2">不指定</el-radio>
+      <el-radio v-model="radioValue" :label="2">不指�?/el-radio>
     </el-form-item>
 
     <el-form-item>
       <el-radio v-model="radioValue" :label="3">
-        周期从
+        周期�?
         <el-input-number v-model="cycle01" :max="30" :min="1" />
         -
         <el-input-number v-model="cycle02" :max="31" :min="cycle01 + 1" />
-        日
+        �?
       </el-radio>
     </el-form-item>
 
     <el-form-item>
       <el-radio v-model="radioValue" :label="4">
-        从
+        �?
         <el-input-number v-model="average01" :max="30" :min="1" />
-        号开始，每
+        号开始，�?
         <el-input-number v-model="average02" :max="31 - average01" :min="1" />
-        日执行一次
+        日执行一�?
       </el-radio>
     </el-form-item>
 
@@ -32,25 +32,25 @@
       <el-radio v-model="radioValue" :label="5">
         每月
         <el-input-number v-model="workday" :max="31" :min="1" />
-        号最近的那个工作日
+        号最近的那个工作�?
       </el-radio>
     </el-form-item>
 
     <el-form-item>
-      <el-radio v-model="radioValue" :label="6">本月最后一天</el-radio>
+      <el-radio v-model="radioValue" :label="6">本月最后一�?/el-radio>
     </el-form-item>
 
     <el-form-item>
       <el-radio v-model="radioValue" :label="7">
         指定
-        <el-select v-model="checkboxList" clearable multiple :multiple-limit="10" placeholder="可多选">
+        <el-select v-model="checkboxList" clearable multiple :multiple-limit="10" placeholder="可多�?>
           <el-option v-for="item in 31" :key="item" :label="item" :value="item" />
         </el-select>
       </el-radio>
     </el-form-item>
   </el-form>
 </template>
-<script setup>
+<script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 const emit = defineEmits(['update'])
 const props = defineProps({
@@ -100,7 +100,7 @@ watch(
   () => props.cron.day,
   (value) => changeRadioValue(value)
 )
-// 监听 computed 值变化并同步到 ref
+// 监听 computed 值变化并同步�?ref
 watch(cycleTotal, (value) => {
   const [v1, v2] = value.split('-')
   cycle01.value = Number(v1)

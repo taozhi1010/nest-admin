@@ -4,7 +4,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { computed } from 'vue'
 import { MdPreview } from 'md-editor-v3'
 import 'md-editor-v3/lib/preview.css'
@@ -16,7 +16,7 @@ const props = defineProps({
   }
 })
 
-// 使用计算属性直接绑定，保持响应式
+// 使用计算属性直接绑定，保持响应�?
 const content = computed(() => props.modelValue)
 </script>
 

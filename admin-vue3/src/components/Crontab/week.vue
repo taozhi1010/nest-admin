@@ -5,12 +5,12 @@
     </el-form-item>
 
     <el-form-item>
-      <el-radio v-model="radioValue" :label="2">不指定</el-radio>
+      <el-radio v-model="radioValue" :label="2">不指�?/el-radio>
     </el-form-item>
 
     <el-form-item>
       <el-radio v-model="radioValue" :label="3">
-        周期从
+        周期�?
         <el-select v-model="cycle01" clearable>
           <el-option v-for="(item, index) of weekList" :key="index" :disabled="item.key === 7" :label="item.value" :value="item.key">{{ item.value }}</el-option>
         </el-select>
@@ -23,7 +23,7 @@
 
     <el-form-item>
       <el-radio v-model="radioValue" :label="4">
-        第
+        �?
         <el-input-number v-model="average01" :max="4" :min="1" />
         周的
         <el-select v-model="average02" clearable>
@@ -34,7 +34,7 @@
 
     <el-form-item>
       <el-radio v-model="radioValue" :label="5">
-        本月最后一个
+        本月最后一�?
         <el-select v-model="weekday" clearable>
           <el-option v-for="item in weekList" :key="item.key" :label="item.value" :value="item.key" />
         </el-select>
@@ -44,7 +44,7 @@
     <el-form-item>
       <el-radio v-model="radioValue" :label="6">
         指定
-        <el-select v-model="checkboxList" class="multiselect" clearable multiple :multiple-limit="6" placeholder="可多选">
+        <el-select v-model="checkboxList" class="multiselect" clearable multiple :multiple-limit="6" placeholder="可多�?>
           <el-option v-for="item in weekList" :key="item.key" :label="item.value" :value="item.key" />
         </el-select>
       </el-radio>
@@ -52,7 +52,7 @@
   </el-form>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 const emit = defineEmits(['update'])
 const props = defineProps({
@@ -82,13 +82,13 @@ const weekday = ref(2)
 const checkboxList = ref([])
 const checkCopy = ref([2])
 const weekList = ref([
-  { key: 1, value: '星期日' },
+  { key: 1, value: '星期�? },
   { key: 2, value: '星期一' },
-  { key: 3, value: '星期二' },
-  { key: 4, value: '星期三' },
-  { key: 5, value: '星期四' },
-  { key: 6, value: '星期五' },
-  { key: 7, value: '星期六' }
+  { key: 3, value: '星期�? },
+  { key: 4, value: '星期�? },
+  { key: 5, value: '星期�? },
+  { key: 6, value: '星期�? },
+  { key: 7, value: '星期�? }
 ])
 const cycleTotal = computed(() => {
   const checked01 = props.check(cycle01.value, 1, 6)
@@ -111,7 +111,7 @@ watch(
   () => props.cron.week,
   (value) => changeRadioValue(value)
 )
-// 监听 computed 值变化并同步到 ref
+// 监听 computed 值变化并同步�?ref
 watch(cycleTotal, (value) => {
   const [v1, v2] = value.split('-')
   cycle01.value = Number(v1)

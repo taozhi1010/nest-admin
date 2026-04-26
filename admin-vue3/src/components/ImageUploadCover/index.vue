@@ -123,7 +123,7 @@
     </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { getToken } from '@/utils/auth'
 import { Plus, ZoomIn, Delete, Refresh } from '@element-plus/icons-vue'
 import 'vue-cropper/dist/index.css'

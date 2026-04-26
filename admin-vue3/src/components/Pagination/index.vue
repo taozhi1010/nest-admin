@@ -4,7 +4,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { scrollTo } from '@/utils/scroll-to'
 
 const props = defineProps({
@@ -26,7 +26,7 @@ const props = defineProps({
       return [10, 20, 30, 50]
     }
   },
-  // 移动端页码按钮的数量端默认值5
+  // 移动端页码按钮的数量端默认�?
   pagerCount: {
     type: Number,
     default: document.body.clientWidth < 992 ? 5 : 7

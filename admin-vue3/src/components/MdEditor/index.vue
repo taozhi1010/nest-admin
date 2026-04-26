@@ -15,7 +15,7 @@
   />
 </template>
 
-<script setup>
+<script setup lang="ts">
 /**
  * Markdown 编辑器组件
  * 基于 md-editor-v3 封装

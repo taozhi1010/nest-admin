@@ -10,7 +10,7 @@
 
     <el-form-item>
       <el-radio v-model="radioValue" :label="3">
-        周期从
+        周期�?
         <el-input-number v-model="cycle01" :max="maxFullYear - 1" :min="fullYear" />
         -
         <el-input-number v-model="cycle02" :max="maxFullYear" :min="cycle01 + 1" />
@@ -19,18 +19,18 @@
 
     <el-form-item>
       <el-radio v-model="radioValue" :label="4">
-        从
+        �?
         <el-input-number v-model="average01" :max="maxFullYear - 1" :min="fullYear" />
-        年开始，每
+        年开始，�?
         <el-input-number v-model="average02" :max="10" :min="1" />
-        年执行一次
+        年执行一�?
       </el-radio>
     </el-form-item>
 
     <el-form-item>
       <el-radio v-model="radioValue" :label="5">
         指定
-        <el-select v-model="checkboxList" clearable multiple :multiple-limit="8" placeholder="可多选">
+        <el-select v-model="checkboxList" clearable multiple :multiple-limit="8" placeholder="可多�?>
           <el-option v-for="item in 9" :key="item" :label="item - 1 + fullYear" :value="item - 1 + fullYear" />
         </el-select>
       </el-radio>
@@ -38,7 +38,7 @@
   </el-form>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 const emit = defineEmits(['update'])
 const props = defineProps({
@@ -85,7 +85,7 @@ watch(
   () => props.cron.year,
   (value) => changeRadioValue(value)
 )
-// 监听 computed 值变化并同步到 ref
+// 监听 computed 值变化并同步�?ref
 watch(cycleTotal, (value) => {
   const [v1, v2] = value.split('-')
   cycle01.value = Number(v1)

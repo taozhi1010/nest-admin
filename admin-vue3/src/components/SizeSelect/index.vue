@@ -15,7 +15,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import useAppStore from '@/store/modules/app'
 
 const appStore = useAppStore()
@@ -29,7 +29,7 @@ const sizeOptions = ref([
 function handleSetSize(size) {
   loadingInstance = ElLoading.service({
     lock: true,
-    text: '正在设置布局大小，请稍候...',
+    text: '正在设置布局大小，请稍�?..',
     background: 'rgba(0, 0, 0, 0.7)'
   })
   appStore.setSize(size)
