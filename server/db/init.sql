@@ -816,7 +816,7 @@ create table post_article (
   content       longtext      default null               comment '文章内容',
   cover         varchar(255)  default null               comment '封面',
   author        varchar(64)   default null               comment '作者昵称',
-  source        char(1)       default '0'                comment '文章来源（0 原创 1 转载）',
+  source        char(1)       default '0'                comment '文章来源（0 原创 1 转载 2 翻译 3 整理）',
   publish_time  datetime      default null               comment '发布时间',
   like_num      int           default '0'                comment '点赞数',
   read_num      int           default '0'                comment '阅读数',
