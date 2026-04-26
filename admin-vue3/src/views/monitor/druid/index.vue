@@ -4,7 +4,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import iFrame from '@/components/iFrame'
 
 import { ref } from 'vue'

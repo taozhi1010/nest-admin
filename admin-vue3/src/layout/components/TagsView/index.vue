@@ -37,7 +37,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import ScrollPane from './ScrollPane'
 import { getNormalPath } from '@/composables/useCommon'
 import useTagsViewStore from '@/store/modules/tagsView'

@@ -22,7 +22,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { isExternal } from '@/composables/useValidator'
 import AppLink from './Link'
 import { getNormalPath } from '@/composables/useCommon'

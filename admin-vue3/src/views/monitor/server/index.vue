@@ -11,31 +11,31 @@
             <table cellspacing="0" style="width: 100%">
               <thead>
                 <tr>
-                  <th class="el-table__cell is-leaf"><div class="cell">属性</div></th>
-                  <th class="el-table__cell is-leaf"><div class="cell">值</div></th>
+                  <th class="el-table__cell is-leaf"><div class="cell">属�?/div></th>
+                  <th class="el-table__cell is-leaf"><div class="cell">�?/div></th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td class="el-table__cell is-leaf"><div class="cell">核心数</div></td>
+                  <td class="el-table__cell is-leaf"><div class="cell">核心�?/div></td>
                   <td class="el-table__cell is-leaf">
                     <div v-if="server.cpu" class="cell">{{ server.cpu.cpuNum }}</div>
                   </td>
                 </tr>
                 <tr>
-                  <td class="el-table__cell is-leaf"><div class="cell">用户使用率</div></td>
+                  <td class="el-table__cell is-leaf"><div class="cell">用户使用�?/div></td>
                   <td class="el-table__cell is-leaf">
                     <div v-if="server.cpu" class="cell">{{ server.cpu.used }}%</div>
                   </td>
                 </tr>
                 <tr>
-                  <td class="el-table__cell is-leaf"><div class="cell">系统使用率</div></td>
+                  <td class="el-table__cell is-leaf"><div class="cell">系统使用�?/div></td>
                   <td class="el-table__cell is-leaf">
                     <div v-if="server.cpu" class="cell">{{ server.cpu.sys }}%</div>
                   </td>
                 </tr>
                 <tr>
-                  <td class="el-table__cell is-leaf"><div class="cell">当前空闲率</div></td>
+                  <td class="el-table__cell is-leaf"><div class="cell">当前空闲�?/div></td>
                   <td class="el-table__cell is-leaf">
                     <div v-if="server.cpu" class="cell">{{ server.cpu.free }}%</div>
                   </td>
@@ -56,14 +56,14 @@
             <table cellspacing="0" style="width: 100%">
               <thead>
                 <tr>
-                  <th class="el-table__cell is-leaf"><div class="cell">属性</div></th>
+                  <th class="el-table__cell is-leaf"><div class="cell">属�?/div></th>
                   <th class="el-table__cell is-leaf"><div class="cell">内存</div></th>
                   <th v-if="server.jvm" class="el-table__cell is-leaf"><div class="cell">JVM</div></th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td class="el-table__cell is-leaf"><div class="cell">总内存</div></td>
+                  <td class="el-table__cell is-leaf"><div class="cell">总内�?/div></td>
                   <td class="el-table__cell is-leaf">
                     <div v-if="server.mem" class="cell">{{ server.mem.total }}G</div>
                   </td>
@@ -90,7 +90,7 @@
                   </td>
                 </tr>
                 <tr>
-                  <td class="el-table__cell is-leaf"><div class="cell">使用率</div></td>
+                  <td class="el-table__cell is-leaf"><div class="cell">使用�?/div></td>
                   <td class="el-table__cell is-leaf">
                     <div v-if="server.mem" class="cell" :class="{ 'text-danger': server.mem.usage > 80 }">{{ server.mem.usage }}%</div>
                   </td>
@@ -108,13 +108,13 @@
         <el-card>
           <template #header>
             <monitor style="width: 1em; height: 1em; vertical-align: middle" />
-            <span style="vertical-align: middle">服务器信息</span>
+            <span style="vertical-align: middle">服务器信�?/span>
           </template>
           <div class="el-table el-table--enable-row-hover el-table--medium">
             <table cellspacing="0" style="width: 100%">
               <tbody>
                 <tr>
-                  <td class="el-table__cell is-leaf"><div class="cell">服务器名称</div></td>
+                  <td class="el-table__cell is-leaf"><div class="cell">服务器名�?/div></td>
                   <td class="el-table__cell is-leaf">
                     <div v-if="server.sys" class="cell">{{ server.sys.computerName }}</div>
                   </td>
@@ -143,7 +143,7 @@
         <el-card>
           <template #header>
             <message-box style="width: 1em; height: 1em; vertical-align: middle" />
-            <span style="vertical-align: middle">磁盘状态</span>
+            <span style="vertical-align: middle">磁盘状�?/span>
           </template>
           <div class="el-table el-table--enable-row-hover el-table--medium">
             <table cellspacing="0" style="width: 100%">
@@ -152,10 +152,10 @@
                   <th class="el-table__cell el-table__cell is-leaf"><div class="cell">盘符路径</div></th>
                   <th class="el-table__cell is-leaf"><div class="cell">文件系统</div></th>
                   <th class="el-table__cell is-leaf"><div class="cell">盘符类型</div></th>
-                  <th class="el-table__cell is-leaf"><div class="cell">总大小</div></th>
+                  <th class="el-table__cell is-leaf"><div class="cell">总大�?/div></th>
                   <th class="el-table__cell is-leaf"><div class="cell">可用大小</div></th>
                   <th class="el-table__cell is-leaf"><div class="cell">已用大小</div></th>
-                  <th class="el-table__cell is-leaf"><div class="cell">已用百分比</div></th>
+                  <th class="el-table__cell is-leaf"><div class="cell">已用百分�?/div></th>
                 </tr>
               </thead>
               <tbody v-if="server.sysFiles">
@@ -191,7 +191,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { getServer } from '@/api/monitor/server'
 
 const server = ref({})
