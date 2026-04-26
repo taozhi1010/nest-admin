@@ -125,11 +125,10 @@ import { listNotice, getNotice, delNotice, addNotice, updateNotice } from '@/api
 import { useDict } from '@/composables/useDict'
 import { parseTime } from '@/composables/useCommon'
 import { resetForm } from '@/composables/useForm'
-import { useCatTools } from '@/composables/useCatTools'
+import { isEmpty } from 'radash'
 import MdEditor from '@/components/MdEditor'
 
 const { sys_notice_status, sys_notice_type, getDictLabel, getDictTagType } = useDict('sys_notice_status', 'sys_notice_type')
-const { isEmpty } = useCatTools()
 
 // 表单 ref
 const queryRef = ref()

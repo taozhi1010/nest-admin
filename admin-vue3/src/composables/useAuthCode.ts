@@ -2,7 +2,7 @@ import Cookies from 'js-cookie'
 import { encrypt, decrypt } from '@/utils/jsencrypt'
 import { reactive } from 'vue'
 import { getCodeImg } from '@/api/login'
-import { useCatTools } from '@/composables/useCatTools'
+import { isEmpty } from 'radash'
 import { ElMessage } from 'element-plus'
 
 // ==================== 类型定义 ====================
@@ -72,8 +72,6 @@ let lastRefreshTime = 0
  * @returns Promise<void>
  */
 const getValidateCode = async (form: LoginForm, isClick = false): Promise<void> => {
-  const { isEmpty } = useCatTools()
-
   try {
     // 检查是否正在加载
     if (authCodeInfo.loading || authCodeInfo.refreshing) {
@@ -138,8 +136,6 @@ const getValidateCode = async (form: LoginForm, isClick = false): Promise<void> 
  * @returns 填充后的表单数据
  */
 const getUserCookie = (data: LoginForm): LoginForm => {
-  const { isEmpty } = useCatTools()
-
   const cookieData: CookieData = {
     username: Cookies.get('username'),
     password: Cookies.get('password'),
