@@ -37,7 +37,7 @@
           <el-button icon="RefreshRight" @click="rotateRight()" />
         </el-col>
         <el-col :lg="{ span: 2, offset: 6 }" :md="2">
-          <el-button type="primary" @click="submitCrop()">�?�?/el-button>
+          <el-button type="primary" @click="submitCrop()">确认</el-button>
         </el-col>
       </el-row>
     </el-dialog>
@@ -50,7 +50,6 @@ import 'vue-cropper/dist/index.css'
 import { VueCropper } from 'vue-cropper'
 import { uploadAvatar } from '@/api/system/user'
 import useUserStore from '@/store/modules/user'
-import { watch } from 'vue'
 import { getImageUrl } from '@/utils/image'
 import defAva from '@/assets/images/avatar.webp'
 
@@ -65,25 +64,25 @@ const props = defineProps({
 // ==================== Emits ====================
 const emit = defineEmits(['updateAvatar'])
 
-// ==================== 实例和字�?====================
+// ==================== 实例和字段 ====================
 const userStore = useUserStore()
 
 // ==================== 表单引用 ====================
 const cropperRef = ref(null)
 
-// ==================== 响应式数�?====================
+// ==================== 响应式数据 ====================
 const dialogVisible = ref(false)
 const cropperVisible = ref(false)
 const imgSource = ref('')
 const previews = ref({})
 
 // ==================== 监听 Props 变化 ====================
-// 监听 user prop 变化，更新头像显�?
+// 监听 user prop 变化，更新头像显示
 watch(() => props.user?.avatar, (newAvatar) => {
   // 如果头像为空，使用默认头像；否则使用 getImageUrl 处理
   const imgUrl = newAvatar ? getImageUrl(newAvatar) : defAva
   imgSource.value = imgUrl
-  // 同时更新 store，保持一�?
+  // 同时更新 store，保持一致
   userStore.avatar = imgUrl
 }, { immediate: true })
 
@@ -111,18 +110,18 @@ const closeDialog = () => {
 const handleFileSelect = (file) => {
   // 验证文件类型
   if (!file.type.startsWith('image/')) {
-    ElMessage.error('文件格式错误，请上传图片类型，如：JPG，PNG 后缀的文件�?)
+    ElMessage.error('文件格式错误，请上传图片类型，如：JPG，PNG 后缀的文件')
     return false
   }
   
-  // 验证文件大小�?MB 以内�?
+  // 验证文件大小 2MB 以内
   const maxSize = 2 * 1024 * 1024 // 2MB
   if (file.size > maxSize) {
-    ElMessage.error('头像图片大小不能超过 2MB�?)
+    ElMessage.error('头像图片大小不能超过 2MB')
     return false
   }
   
-  // 读取文件并显�?
+  // 读取文件并显示
   const reader = new FileReader()
   reader.readAsDataURL(file)
   reader.onload = () => {
@@ -152,7 +151,7 @@ const handleRealTime = (data) => {
   previews.value = data
 }
 
-// 提交裁剪的图�?
+// 提交裁剪的图片
 const submitCrop = async () => {
   return new Promise((resolve, reject) => {
     cropperRef.value?.getCropBlob((blob) => {
@@ -164,17 +163,17 @@ const submitCrop = async () => {
       
       // 创建 FormData
       const formData = new FormData()
-      // 生成带时间戳的文件名，确保唯一�?
+      // 生成带时间戳的文件名，确保唯一
       const fileName = `avatar_${Date.now()}.png`
       formData.append('avatarfile', blob, fileName)
       
       // 上传到服务器
       uploadAvatar(formData)
         .then((response) => {
-          // 后端返回�?data 就是完整的用户对象，包含 avatar 字段
+          // 后端返回的 data 就是完整的用户对象，包含 avatar 字段
           const avatarPath = response.data.avatar || response.data.imgUrl
           
-          // 获取完整的图�?URL（使用统一工具方法�?
+          // 获取完整的图片 URL（使用统一工具方法）
           const imgUrl = getImageUrl(avatarPath)
           
           // 1. 先通知父组件更新（这样外部头像会立即刷新）
