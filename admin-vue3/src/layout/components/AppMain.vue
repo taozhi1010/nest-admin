@@ -1,10 +1,10 @@
 <template>
   <section class="app-main">
-    <!-- 路由加载状态提�?-->
+    <!-- 路由加载状态提示 -->
     <div v-if="routeLoading" class="route-loading-overlay">
       <div class="loading-content">
         <el-icon class="is-loading"><Loading /></el-icon>
-        <span>页面加载�?..</span>
+        <span>页面加载中...</span>
       </div>
     </div>
     
