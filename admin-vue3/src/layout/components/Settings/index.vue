@@ -36,14 +36,14 @@
     <h3 class="drawer-title">系统布局配置</h3>
 
     <div class="drawer-item">
-      <span>开�?TopNav</span>
+      <span>开启 TopNav</span>
       <span class="comp-style">
         <el-switch v-model="topNav" class="drawer-switch" />
       </span>
     </div>
 
     <div class="drawer-item">
-      <span>开�?Tags-Views</span>
+      <span>开启 Tags-Views</span>
       <span class="comp-style">
         <el-switch v-model="tagsView" class="drawer-switch" />
       </span>
@@ -70,10 +70,12 @@
       </span>
     </div>
 
-    <el-divider />
-
-    <el-button icon="DocumentAdd" plain type="primary" @click="saveSetting">保存配置</el-button>
-    <el-button icon="Refresh" plain @click="resetSetting">重置配置</el-button>
+    <template #footer>
+      <div class="drawer-footer">
+        <el-button icon="DocumentAdd" type="primary" @click="saveSetting">保存配置</el-button>
+        <el-button icon="Refresh" @click="resetSetting">重置配置</el-button>
+      </div>
+    </template>
   </el-drawer>
 </template>
 
@@ -114,26 +116,26 @@ const tagsView = computed({
     settingsStore.changeSetting({ key: 'tagsView', value: val })
   }
 })
-/**是否需要固定头�?*/
+/** 是否需要固定头部 */
 const fixedHeader = computed({
   get: () => storeSettings.value.fixedHeader,
   set: (val) => {
     settingsStore.changeSetting({ key: 'fixedHeader', value: val })
   }
 })
-/**是否需要侧边栏的logo */
+/** 是否需要侧边栏的logo */
 const sidebarLogo = computed({
   get: () => storeSettings.value.sidebarLogo,
   set: (val) => {
     settingsStore.changeSetting({ key: 'sidebarLogo', value: val })
   }
 })
-/**是否需要侧边栏的动态网页的title */
+/** 是否需要侧边栏的动态网页的title */
 const dynamicTitle = computed({
   get: () => storeSettings.value.dynamicTitle,
   set: (val) => {
     settingsStore.changeSetting({ key: 'dynamicTitle', value: val })
-    // 动态设置网页标�?
+    // 动态设置网页标题
     const { updateTitle } = useDynamicTitle()
     updateTitle()
   }

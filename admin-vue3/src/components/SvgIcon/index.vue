@@ -18,7 +18,7 @@ import {
   User,
   Lock,
   Key,
-  Expand,
+  Setting,
   FullScreen,
   CloseBold,
   Phone,
@@ -35,7 +35,7 @@ const iconMap: Record<string, any> = {
   user: User,
   password: Lock,
   validCode: Key,
-  size: Expand,
+  size: Setting, // 使用 Setting 齿轮图标表示布局大小
   fullscreen: FullScreen,
   'exit-fullscreen': CloseBold,
   phone: Phone,
@@ -104,5 +104,11 @@ const iconStyle = computed(() => {
   fill: currentColor;
   vertical-align: -2px;
   display: inline-block;
+  
+  // Element Plus 图标样式
+  :deep(svg) {
+    width: 1em;
+    height: 1em;
+  }
 }
 </style>

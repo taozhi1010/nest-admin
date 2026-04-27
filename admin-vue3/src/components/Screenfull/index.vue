@@ -17,6 +17,8 @@ const { isFullscreen, enter, exit, toggle } = useFullscreen()
   fill: #5a5e66;
   width: 20px;
   height: 20px;
-  vertical-align: 10px;
+  vertical-align: middle;
+  font-size: 20px;
+  line-height: 50px;
 }
 </style>

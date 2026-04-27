@@ -2,7 +2,7 @@
   <div>
     <el-dropdown trigger="click" @command="handleSetSize">
       <div class="size-icon--style">
-        <svg-icon class-name="size-icon" icon-class="size" />
+        <svg-icon class-name="size-icon" icon-class="size" :size="22" />
       </div>
       <template #dropdown>
         <el-dropdown-menu>
@@ -42,5 +42,12 @@ function handleSetSize(size) {
   font-size: 18px;
   line-height: 50px;
   padding-right: 7px;
+  display: inline-block;
+  vertical-align: middle;
+  
+  :deep(.svg-icon) {
+    font-size: 22px;
+    vertical-align: middle;
+  }
 }
 </style>
