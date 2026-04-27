@@ -12,7 +12,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@element-plus/icons-vue": "2.0.10",
+    "@element-plus/icons-vue": "2.3.2",
     "@vueuse/core": "9.5.0",
     "axios": "1.15.2",
     "cat-tools": "^1.1.31",
@@ -27,7 +27,7 @@
     "highlight.js": "^11.11.0",
     "js-beautify": "^1.15.1",
     "js-cookie": "3.0.5",
-    "jsencrypt": "3.3.1",
+    "jsencrypt": "3.5.4",
     "markdown-it": "^14.1.0",
     "markdown-it-highlight": "^0.2.0",
     "md-editor-v3": "^6.4.2",
