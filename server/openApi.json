@@ -3760,7 +3760,7 @@
             "in": "query",
             "description": "专栏ID",
             "schema": {
-              "type": "string"
+              "type": "number"
             }
           },
           {
@@ -3801,6 +3801,22 @@
               ],
               "type": "string"
             }
+          },
+          {
+            "name": "source",
+            "required": false,
+            "in": "query",
+            "description": "文章来源",
+            "schema": {
+              "enum": [
+                "0",
+                "1",
+                "2",
+                "3",
+                "4"
+              ],
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -3823,7 +3839,7 @@
             "required": true,
             "in": "query",
             "schema": {
-              "type": "string"
+              "type": "number"
             }
           }
         ],
@@ -3895,7 +3911,7 @@
             "in": "query",
             "description": "专栏ID",
             "schema": {
-              "type": "string"
+              "type": "number"
             }
           },
           {
@@ -3936,6 +3952,22 @@
               ],
               "type": "string"
             }
+          },
+          {
+            "name": "source",
+            "required": false,
+            "in": "query",
+            "description": "文章来源",
+            "schema": {
+              "enum": [
+                "0",
+                "1",
+                "2",
+                "3",
+                "4"
+              ],
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -3958,7 +3990,7 @@
             "required": true,
             "in": "path",
             "schema": {
-              "type": "string"
+              "type": "number"
             }
           }
         ],
@@ -3970,13 +4002,15 @@
         "tags": [
           "文章管理"
         ]
-      },
+      }
+    },
+    "/post/article/{ids}": {
       "delete": {
         "operationId": "PostArticleController_remove",
         "summary": "文章-删除",
         "parameters": [
           {
-            "name": "id",
+            "name": "ids",
             "required": true,
             "in": "path",
             "schema": {
@@ -4004,7 +4038,7 @@
             "required": true,
             "in": "path",
             "schema": {
-              "type": "string"
+              "type": "number"
             }
           }
         ],
@@ -4053,7 +4087,7 @@
             "required": true,
             "in": "path",
             "schema": {
-              "type": "string"
+              "type": "number"
             }
           }
         ],
@@ -4227,7 +4261,7 @@
             "required": true,
             "in": "path",
             "schema": {
-              "type": "string"
+              "type": "number"
             }
           }
         ],
@@ -4239,13 +4273,15 @@
         "tags": [
           "专栏管理"
         ]
-      },
+      }
+    },
+    "/post/subject/{ids}": {
       "delete": {
         "operationId": "PostSubjectController_remove",
         "summary": "专栏-删除",
         "parameters": [
           {
-            "name": "id",
+            "name": "ids",
             "required": true,
             "in": "path",
             "schema": {
@@ -5414,7 +5450,7 @@
             "description": "文章简介"
           },
           "subjectId": {
-            "type": "string",
+            "type": "number",
             "description": "专栏ID"
           },
           "content": {
@@ -5428,6 +5464,17 @@
           "author": {
             "type": "string",
             "description": "作者昵称"
+          },
+          "source": {
+            "type": "string",
+            "description": "文章来源",
+            "enum": [
+              "0",
+              "1",
+              "2",
+              "3",
+              "4"
+            ]
           },
           "publishTime": {
             "format": "date-time",
@@ -5493,7 +5540,7 @@
             "description": "文章简介"
           },
           "subjectId": {
-            "type": "string",
+            "type": "number",
             "description": "专栏ID"
           },
           "content": {
@@ -5507,6 +5554,17 @@
           "author": {
             "type": "string",
             "description": "作者昵称"
+          },
+          "source": {
+            "type": "string",
+            "description": "文章来源",
+            "enum": [
+              "0",
+              "1",
+              "2",
+              "3",
+              "4"
+            ]
           },
           "publishTime": {
             "format": "date-time",
@@ -5555,7 +5613,7 @@
             "description": "排序"
           },
           "id": {
-            "type": "string",
+            "type": "number",
             "description": "文章ID"
           }
         },
@@ -5569,7 +5627,7 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "string",
+            "type": "number",
             "description": "文章ID"
           },
           "auditStatus": {
@@ -5694,7 +5752,7 @@
             "description": "排序"
           },
           "id": {
-            "type": "string",
+            "type": "number",
             "description": "专栏ID"
           }
         },

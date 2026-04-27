@@ -27,7 +27,7 @@ const sizeOptions = ref([
 ])
 
 function handleSetSize(size) {
-  loadingInstance = ElLoading.service({
+  const loadingInstance = ElLoading.service({
     lock: true,
     text: '正在设置布局大小，请稍等...',
     background: 'rgba(0, 0, 0, 0.7)'

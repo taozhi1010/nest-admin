@@ -10,25 +10,25 @@ app:
 
 # MinIO 对象存储配置（保留兼容）
 minio:
-  endPoint: '127.0.0.1'        # MinIO 服务器地址
-  port: 9000                   # MinIO API 端口
-  useSSL: false                # 是否使用 SSL
-  accessKey: 'YOUR_MINIO_ACCESS_KEY'      # MinIO Access Key（请修改）
-  secretKey: 'YOUR_MINIO_SECRET_KEY'      # MinIO Secret Key（请修改）
-  bucket: 'avatars'            # 存储桶名称
-  region: 'us-east-1'          # 区域
-  domain: 'http://127.0.0.1:9000' # MinIO 访问域名
+  endPoint: '124.222.189.233'    # MinIO 服务器地址
+  port: 9000                     # MinIO API 端口
+  useSSL: false                  # 是否使用 SSL
+  accessKey: 'minio_3mb6wK'      # MinIO Access Key
+  secretKey: 'minio_r3zNXd'      # MinIO Secret Key
+  bucket: 'avatars'              # 存储桶名称
+  region: 'us-east-1'            # 区域
+  domain: 'http://124.222.189.233:9000' # MinIO 访问域名
 
 # RustFS 对象存储配置
 rustfs:
-  endPoint: '127.0.0.1'        # RustFS 服务器地址
-  port: 9000                   # RustFS API 端口
-  useSSL: false                # 是否使用 SSL
-  accessKey: 'YOUR_RUSTFS_ACCESS_KEY' # RustFS Access Key（请修改）
-  secretKey: 'YOUR_RUSTFS_SECRET_KEY' # RustFS Secret Key（请修改）
-  bucket: 'nest-admin'         # 存储桶名称
-  region: 'us-east-1'          # 区域
-  domain: ''                   # RustFS 访问域名（可选）
+  endPoint: '124.222.189.233'    # RustFS 服务器地址
+  port: 9000                     # RustFS API 端口
+  useSSL: false                  # 是否使用 SSL
+  accessKey: 'rustfsadmin'       # RustFS Access Key
+  secretKey: 'rustfsadmin_kCCC4z' # RustFS Secret Key
+  bucket: 'nest-admin'           # 存储桶名称
+  region: 'us-east-1'            # 区域
+  domain: ''                     # RustFS 访问域名（可选）
 
 # 腾讯云cos配置（保留兼容）
 cos:
@@ -41,11 +41,11 @@ cos:
 # 数据库配置
 db:
   mysql:
-    host: '127.0.0.1'          # 数据库地址
-    username: 'root'           # 数据库用户名
-    password: 'YOUR_MYSQL_PASSWORD' # 数据库密码（请修改）
-    database: 'nest-db'        # 数据库名称
-    port: 3306                 # 数据库端口
+    host: '124.222.189.233'      # 数据库地址
+    username: 'root'             # 数据库用户名
+    password: 'mysql_6zaSGd'     # 数据库密码
+    database: 'nest-db'          # 数据库名称
+    port: 3306                   # 数据库端口
     charset: 'utf8mb4'           # 字符集
     logger: 'file'               # 日志类型
     synchronize: false           # 是否自动同步表结构（生产环境请设为 false）
@@ -55,12 +55,14 @@ db:
       connectTimeout: 30000      # 连接超时时间（毫秒）
       enableKeepAlive: true      # 启用 TCP KeepAlive
       keepAliveInitialDelay: 0   # KeepAlive 初始延迟
+      maxIdle: 10                # 最大空闲连接数
+      idleTimeout: 60000         # 空闲连接超时时间（毫秒）
 
 # redis 配置
 redis:
-  host: '127.0.0.1'            # Redis 地址
-  password: 'YOUR_REDIS_PASSWORD' # Redis 密码（请修改）
-  port: 6379                   # Redis 端口
+  host: '124.222.189.233'        # Redis 地址
+  password: 'redis_dECN6N'       # Redis 密码
+  port: 6379                     # Redis 端口
   db: 2                          # Redis 数据库编号
   keyPrefix: ''                  # Key 前缀
   retryStrategy:                 # 重连策略
