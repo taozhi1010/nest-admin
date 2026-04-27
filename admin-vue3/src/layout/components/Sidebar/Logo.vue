@@ -46,30 +46,31 @@ const sideTheme = computed(() => settingsStore.sideTheme)
   height: 50px;
   line-height: 50px;
   background: #2b2f3a;
-  text-align: center;
   overflow: hidden;
 
   & .sidebar-logo-link {
     height: 100%;
     width: 100%;
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    justify-content: flex-start;
-    padding: 0 20px;
+    padding: 0 16px;
 
     & .sidebar-logo {
-      width: 32px;
-      height: 32px;
-      flex-shrink: 0;
-      margin-right: 12px;
+      width: 28px;
+      height: 28px;
+      vertical-align: middle;
+      margin-right: 10px;
+      object-fit: contain;
     }
 
     & .sidebar-title {
       display: inline-block;
       margin: 0;
+      padding: 0;
       color: #fff;
       font-weight: 600;
       font-size: 15px;
+      line-height: 50px;
       font-family:
         Avenir,
         Helvetica Neue,
@@ -80,6 +81,7 @@ const sideTheme = computed(() => settingsStore.sideTheme)
       overflow: hidden;
       text-overflow: ellipsis;
       letter-spacing: 1px;
+      vertical-align: middle;
     }
   }
 
