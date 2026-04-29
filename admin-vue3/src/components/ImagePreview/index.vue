@@ -8,7 +8,7 @@
   </el-image>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { getImageUrl } from '@/utils/image'
 
 const props = defineProps({

@@ -40,8 +40,9 @@ async function bootstrap() {
   const rootPath = process.cwd();
   const baseDirPath = join(rootPath, config.get('app.file.location'));
 
-  // 判断存储类型，如果是 minio 则使用代理，否则使用本地静态资源
+  // 判断存储类型，根据类型配置不同的文件访问方式
   const storageType = config.get<string>('app.file.storageType');
+
   if (storageType === 'minio') {
     // MinIO 代理配置
     const minioDomain = config.get<string>('minio.domain');
@@ -52,6 +53,21 @@ async function bootstrap() {
         changeOrigin: true,
         pathRewrite: (path, req) => {
           // 将 /profile/avatars/xxx.png 转换为 /avatars/xxx.png
+          return path.replace(/^\/profile\//, '/');
+        },
+      }),
+    );
+  } else if (storageType === 'rustfs') {
+    // RustFS 代理配置
+    const rustfsDomain = config.get<string>('rustfs.domain') || `http://${config.get<string>('rustfs.endPoint')}:${config.get<number>('rustfs.port')}`;
+    const rustfsBucket = config.get<string>('rustfs.bucket', 'nest-admin');
+    app.use(
+      '/profile/',
+      createProxyMiddleware({
+        target: rustfsDomain,
+        changeOrigin: true,
+        pathRewrite: (path, req) => {
+          // 将 /profile/nest-admin/xxx.png 转换为 /nest-admin/xxx.png
           return path.replace(/^\/profile\//, '/');
         },
       }),

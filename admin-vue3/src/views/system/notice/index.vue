@@ -120,15 +120,14 @@
 </template>
 
 <script setup name="Notice">
-import { nextTick } from 'vue'
 import { listNotice, getNotice, delNotice, addNotice, updateNotice } from '@/api/system/notice'
 import { useDict } from '@/composables/useDict'
-import { parseTime, resetForm } from '@/composables/useCommon'
-import { useCatTools } from '@/composables/useCatTools'
+import { parseTime } from '@/composables/useCommon'
+import { resetForm } from '@/composables/useForm'
+import { isEmpty } from 'radash'
 import MdEditor from '@/components/MdEditor'
 
 const { sys_notice_status, sys_notice_type, getDictLabel, getDictTagType } = useDict('sys_notice_status', 'sys_notice_type')
-const { isNullorUndefined } = useCatTools()
 
 // 表单 ref
 const queryRef = ref()
@@ -235,7 +234,7 @@ const notice = reactive({
 
       notice.formLoading = true
       try {
-        if (isNullorUndefined(notice.form.noticeId)) {
+        if (isEmpty(notice.form.noticeId)) {
           await addNotice(notice.form)
           ElMessage.success('新增成功')
         } else {
@@ -267,12 +266,12 @@ const notice = reactive({
 
   // Markdown 内容变化
   handleContentChange: ({ text, html }) => {
-    console.log('公告内容变化:', { text, html })
+    // 内容变化时的处理逻辑
   },
 
   // 删除操作
   handleDelete: async (row) => {
-    const noticeIds = isNullorUndefined(row.noticeId) ? notice.ids : row.noticeId
+    const noticeIds = isEmpty(row.noticeId) ? notice.ids : row.noticeId
     try {
       await ElMessageBox.confirm('您确认删除该公告吗？', '删除提示', {
         confirmButtonText: '确定',

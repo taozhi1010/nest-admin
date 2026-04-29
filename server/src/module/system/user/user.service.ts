@@ -332,6 +332,15 @@ export class UserService {
   }
 
   /**
+   * 清除用户菜单缓存
+   * @param userId
+   */
+  async clearUserMenuCache(userId: number) {
+    const cacheKey = `${CacheEnum.SYS_MENU_KEY}${userId}`;
+    await this.redisService.del(cacheKey);
+  }
+
+  /**
    * 登陆
    */
   @Captcha('user')
@@ -685,6 +694,10 @@ export class UserService {
       });
       roleEntity.insert().values(roleValues).execute();
     }
+
+    // 清除用户菜单缓存
+    await this.clearUserMenuCache(query.userId);
+
     return ResultData.ok();
   }
 

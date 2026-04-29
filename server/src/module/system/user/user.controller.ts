@@ -50,7 +50,9 @@ export class UserController {
     if (!avatarfile) {
       return ResultData.fail(500, '请上传头像文件');
     }
-    const res = await this.uploadService.singleFileUpload(avatarfile);
+    // 传递作者名（使用用户昵称或用户名）
+    const authorName = user.user.nickName || user.user.userName;
+    const res = await this.uploadService.singleFileUpload(avatarfile, 'avatar', authorName);
 
     // 检查是否上传失败（返回的是错误信息）
     if (res.code && res.code !== 200) {

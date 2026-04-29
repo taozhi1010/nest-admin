@@ -105,7 +105,8 @@
 <script setup name="Dept">
 import { listDept, getDept, delDept, addDept, updateDept, listDeptExcludeChild } from '@/api/system/dept'
 import { useDict } from '@/composables/useDict'
-import { resetForm, handleTree, parseTime } from '@/composables/useCommon'
+import { resetForm } from '@/composables/useForm'
+import { handleTree, parseTime } from '@/composables/useCommon'
 
 const { sys_normal_disable, getDictLabel } = useDict('sys_normal_disable')
 

@@ -45,7 +45,8 @@
 
 <script setup name="Online">
 import { forceLogout, list as initData } from '@/api/monitor/online'
-import { resetForm, parseTime } from '@/composables/useCommon'
+import { parseTime } from '@/composables/useCommon'
+import { resetForm } from '@/composables/useForm'
 
 const onlineList = ref([])
 const loading = ref(true)

@@ -2,7 +2,7 @@
   <div>
     <el-dropdown trigger="click" @command="handleSetSize">
       <div class="size-icon--style">
-        <svg-icon class-name="size-icon" icon-class="size" />
+        <svg-icon class-name="size-icon" icon-class="size" :size="22" />
       </div>
       <template #dropdown>
         <el-dropdown-menu>
@@ -15,7 +15,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import useAppStore from '@/store/modules/app'
 
 const appStore = useAppStore()
@@ -27,9 +27,9 @@ const sizeOptions = ref([
 ])
 
 function handleSetSize(size) {
-  loadingInstance = ElLoading.service({
+  const loadingInstance = ElLoading.service({
     lock: true,
-    text: '正在设置布局大小，请稍候...',
+    text: '正在设置布局大小，请稍等...',
     background: 'rgba(0, 0, 0, 0.7)'
   })
   appStore.setSize(size)
@@ -42,5 +42,12 @@ function handleSetSize(size) {
   font-size: 18px;
   line-height: 50px;
   padding-right: 7px;
+  display: inline-block;
+  vertical-align: middle;
+  
+  :deep(.svg-icon) {
+    font-size: 22px;
+    vertical-align: middle;
+  }
 }
 </style>

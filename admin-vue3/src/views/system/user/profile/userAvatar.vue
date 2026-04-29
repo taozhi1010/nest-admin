@@ -37,20 +37,19 @@
           <el-button icon="RefreshRight" @click="rotateRight()" />
         </el-col>
         <el-col :lg="{ span: 2, offset: 6 }" :md="2">
-          <el-button type="primary" @click="submitCrop()">提 交</el-button>
+          <el-button type="primary" @click="submitCrop()">确认</el-button>
         </el-col>
       </el-row>
     </el-dialog>
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 // ==================== 导入区域 ====================
 import 'vue-cropper/dist/index.css'
 import { VueCropper } from 'vue-cropper'
 import { uploadAvatar } from '@/api/system/user'
 import useUserStore from '@/store/modules/user'
-import { watch } from 'vue'
 import { getImageUrl } from '@/utils/image'
 import defAva from '@/assets/images/avatar.webp'
 
@@ -65,7 +64,7 @@ const props = defineProps({
 // ==================== Emits ====================
 const emit = defineEmits(['updateAvatar'])
 
-// ==================== 实例和字典 ====================
+// ==================== 实例和字段 ====================
 const userStore = useUserStore()
 
 // ==================== 表单引用 ====================
@@ -111,14 +110,14 @@ const closeDialog = () => {
 const handleFileSelect = (file) => {
   // 验证文件类型
   if (!file.type.startsWith('image/')) {
-    ElMessage.error('文件格式错误，请上传图片类型，如：JPG，PNG 后缀的文件。')
+    ElMessage.error('文件格式错误，请上传图片类型，如：JPG，PNG 后缀的文件')
     return false
   }
   
-  // 验证文件大小（2MB 以内）
+  // 验证文件大小 2MB 以内
   const maxSize = 2 * 1024 * 1024 // 2MB
   if (file.size > maxSize) {
-    ElMessage.error('头像图片大小不能超过 2MB！')
+    ElMessage.error('头像图片大小不能超过 2MB')
     return false
   }
   
@@ -164,7 +163,7 @@ const submitCrop = async () => {
       
       // 创建 FormData
       const formData = new FormData()
-      // 生成带时间戳的文件名，确保唯一性
+      // 生成带时间戳的文件名，确保唯一
       const fileName = `avatar_${Date.now()}.png`
       formData.append('avatarfile', blob, fileName)
       

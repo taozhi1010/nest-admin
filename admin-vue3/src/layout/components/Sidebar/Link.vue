@@ -4,7 +4,7 @@
   </component>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { isExternal } from '@/composables/useValidator'
 
 const props = defineProps({

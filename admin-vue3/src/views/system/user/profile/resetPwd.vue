@@ -16,14 +16,14 @@
   </el-form>
 </template>
 
-<script setup>
+<script setup lang="ts">
 // ==================== 导入区域 ====================
 import { updateUserPwd } from '@/api/system/user'
 
 // ==================== Composables ====================
 const { closePage } = useTab()
 
-// ==================== 实例和字典 ====================
+// ==================== 实例和字段 ====================
 
 // ==================== 表单引用 ====================
 const pwdRef = ref(null)

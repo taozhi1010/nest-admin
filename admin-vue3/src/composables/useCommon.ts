@@ -1,7 +1,6 @@
 ﻿import { download as _download } from './useRequest'
-import type { FormInstance } from 'element-plus'
-import { getCurrentInstance } from 'vue'
 import dayjs from 'dayjs'
+import { debounce, throttle } from 'radash'
 
 /**
  * 构造树型结构数据
@@ -140,34 +139,60 @@ export function getNormalPath(path: string): string {
 }
 
 /**
- * 表单重置（Vue 3 Composition API 版本）
- * @param refName ref 名称或 FormInstance 实例
+ * 创建防抖函数
+ * 
+ * 防抖：在事件被触发 n 秒后再执行回调，如果 n 秒内又被触发，则重新计时
+ * 适用场景：搜索框输入、窗口 resize、表单验证等
+ * 
+ * @param fn 要执行的函数
+ * @param delay 延迟时间（毫秒），默认 300ms
+ * @returns 防抖后的函数
+ * @example
+ * const handleSearch = useDebounce((value) => {
+ *   console.log('搜索:', value)
+ * }, 300)
  */
-export function resetForm(refName: string | FormInstance) {
-  if (typeof refName === 'string') {
-    // 如果传入的是字符串，尝试从当前组件实例获取
-    const instance = getCurrentInstance()
-    if (instance && instance.proxy && (instance.proxy as any).$refs[refName]) {
-      ;(instance.proxy as any).$refs[refName].resetFields()
-    }
-  } else if (refName && typeof refName === 'object' && 'resetFields' in refName) {
-    // 如果传入的是 FormInstance 实例，直接调用
-    refName.resetFields()
-  }
+export function useDebounce<T extends (...args: any[]) => any>(
+  fn: T,
+  delay: number = 300
+) {
+  return debounce({ delay }, fn)
+}
+
+/**
+ * 创建节流函数
+ * 
+ * 节流：规定在一个单位时间内，只能触发一次函数。如果这个单位时间内触发多次函数，只有一次生效
+ * 适用场景：滚动事件、按钮点击防止重复提交、鼠标移动等
+ * 
+ * @param fn 要执行的函数
+ * @param interval 间隔时间（毫秒），默认 300ms
+ * @returns 节流后的函数
+ * @example
+ * const handleScroll = useThrottle(() => {
+ *   console.log('滚动')
+ * }, 100)
+ */
+export function useThrottle<T extends (...args: any[]) => any>(
+  fn: T,
+  interval: number = 300
+) {
+  return throttle({ interval }, fn)
 }
 
 /**
  * 通用工具函数 Composable
  * @example
- * const { parseTime, resetForm, handleTree, download, getNormalPath } = useCommon()
+ * const { parseTime, handleTree, download, getNormalPath, useDebounce, useThrottle } = useCommon()
  */
 export function useCommon() {
   return {
     parseTime,
-    resetForm,
     addDateRange,
     handleTree,
     download,
-    getNormalPath
+    getNormalPath,
+    useDebounce,
+    useThrottle
   }
 }

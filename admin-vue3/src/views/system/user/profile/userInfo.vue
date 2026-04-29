@@ -22,7 +22,7 @@
   </el-form>
 </template>
 
-<script setup>
+<script setup lang="ts">
 // ==================== 导入区域 ====================
 import { updateUserProfile } from '@/api/system/user'
 
@@ -65,8 +65,6 @@ const userInfo = reactive({
 
   // 提交按钮
   submit: async () => {
-    console.log('=== 调用 updateUserProfile 接口 ===')
-    console.log('表单数据:', userInfo.form)
     try {
       if (userInfoRef.value) {
         await userInfoRef.value.validate()
@@ -76,7 +74,6 @@ const userInfo = reactive({
         ...props.user,
         ...userInfo.form
       }
-      console.log('提交的数据:', updateData)
       await updateUserProfile(updateData)
       ElMessage.success('修改成功')
     } catch (e) {

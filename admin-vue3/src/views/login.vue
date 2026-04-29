@@ -50,7 +50,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import useUserStore from '@/store/modules/user'
 import { authCodeInfo, getValidateCode, getUserCookie, setUserCookie } from '@/composables/useAuthCode'
 

@@ -2,9 +2,9 @@
 import useDictStore from '@/store/modules/dict'
 
 /**
- * 字典 Composable
+ * 字典 Composable（增强版）
  * @example
- * const { sys_user_type, getDictLabel, getDictTag } = useDict('sys_user_type')
+ * const { sys_user_type, getDictLabel, getDictTagType } = useDict('sys_user_type')
  */
 export function useDict(...args: string[]) {
   const result = originalUseDict(...args)
@@ -57,10 +57,21 @@ export function useDict(...args: string[]) {
     return item?.elTagType || 'default'
   }
 
+  /**
+   * 检查字典是否已加载完成
+   * @param type 字典类型
+   * @returns 是否已加载且有数据
+   */
+  const isDictLoaded = (type: string): boolean => {
+    const dict = result[type]
+    return !!(dict && dict.value && dict.value.length > 0)
+  }
+
   return {
     ...result,
     getDictData,
     getDictLabel,
-    getDictTagType
+    getDictTagType,
+    isDictLoaded
   }
 }

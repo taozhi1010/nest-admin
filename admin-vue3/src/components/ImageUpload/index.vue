@@ -23,7 +23,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { getToken } from '@/utils/auth'
 import { getImageUrl } from '@/utils/image'
 
@@ -104,7 +104,7 @@ function handleBeforeUpload(file) {
     isImg = file.type.indexOf('image') > -1
   }
   if (!isImg) {
-    ElMessage.error(`文件格式不正确, 请上传${props.fileType.join('/')}图片格式文件!`)
+    ElMessage.error(`文件格式不正确，请上传${props.fileType.join('/')}图片格式文件!`)
     return false
   }
   if (props.fileSize) {
@@ -116,7 +116,7 @@ function handleBeforeUpload(file) {
   }
   loadingInstance = ElLoading.service({
     lock: true,
-    text: '正在上传图片，请稍候...',
+    text: '正在上传图片，请稍等...',
     background: 'rgba(0, 0, 0, 0.7)'
   })
   number.value++

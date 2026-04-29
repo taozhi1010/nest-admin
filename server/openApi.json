@@ -325,7 +325,7 @@
         "parameters": [
           {
             "name": "pageNum",
-            "required": true,
+            "required": false,
             "in": "query",
             "description": "当前分页",
             "schema": {
@@ -335,7 +335,7 @@
           },
           {
             "name": "pageSize",
-            "required": true,
+            "required": false,
             "in": "query",
             "description": "每页数量",
             "schema": {
@@ -758,7 +758,7 @@
         "parameters": [
           {
             "name": "pageNum",
-            "required": true,
+            "required": false,
             "in": "query",
             "description": "当前分页",
             "schema": {
@@ -768,7 +768,7 @@
           },
           {
             "name": "pageSize",
-            "required": true,
+            "required": false,
             "in": "query",
             "description": "每页数量",
             "schema": {
@@ -921,7 +921,7 @@
         "parameters": [
           {
             "name": "pageNum",
-            "required": true,
+            "required": false,
             "in": "query",
             "description": "当前分页",
             "schema": {
@@ -931,7 +931,7 @@
           },
           {
             "name": "pageSize",
-            "required": true,
+            "required": false,
             "in": "query",
             "description": "每页数量",
             "schema": {
@@ -1278,7 +1278,7 @@
         "parameters": [
           {
             "name": "pageNum",
-            "required": true,
+            "required": false,
             "in": "query",
             "description": "当前分页",
             "schema": {
@@ -1288,7 +1288,7 @@
           },
           {
             "name": "pageSize",
-            "required": true,
+            "required": false,
             "in": "query",
             "description": "每页数量",
             "schema": {
@@ -1436,7 +1436,7 @@
         "parameters": [
           {
             "name": "pageNum",
-            "required": true,
+            "required": false,
             "in": "query",
             "description": "当前分页",
             "schema": {
@@ -1446,7 +1446,7 @@
           },
           {
             "name": "pageSize",
-            "required": true,
+            "required": false,
             "in": "query",
             "description": "每页数量",
             "schema": {
@@ -1621,7 +1621,7 @@
         "parameters": [
           {
             "name": "pageNum",
-            "required": true,
+            "required": false,
             "in": "query",
             "description": "当前分页",
             "schema": {
@@ -1631,7 +1631,7 @@
           },
           {
             "name": "pageSize",
-            "required": true,
+            "required": false,
             "in": "query",
             "description": "每页数量",
             "schema": {
@@ -1804,7 +1804,7 @@
         "parameters": [
           {
             "name": "pageNum",
-            "required": true,
+            "required": false,
             "in": "query",
             "description": "当前分页",
             "schema": {
@@ -1814,7 +1814,7 @@
           },
           {
             "name": "pageSize",
-            "required": true,
+            "required": false,
             "in": "query",
             "description": "每页数量",
             "schema": {
@@ -1892,7 +1892,7 @@
         "parameters": [
           {
             "name": "pageNum",
-            "required": true,
+            "required": false,
             "in": "query",
             "description": "当前分页",
             "schema": {
@@ -1902,7 +1902,7 @@
           },
           {
             "name": "pageSize",
-            "required": true,
+            "required": false,
             "in": "query",
             "description": "每页数量",
             "schema": {
@@ -2080,7 +2080,7 @@
         "parameters": [
           {
             "name": "pageNum",
-            "required": true,
+            "required": false,
             "in": "query",
             "description": "当前分页",
             "schema": {
@@ -2090,7 +2090,7 @@
           },
           {
             "name": "pageSize",
-            "required": true,
+            "required": false,
             "in": "query",
             "description": "每页数量",
             "schema": {
@@ -2134,7 +2134,7 @@
         "parameters": [
           {
             "name": "pageNum",
-            "required": true,
+            "required": false,
             "in": "query",
             "description": "当前分页",
             "schema": {
@@ -2144,7 +2144,7 @@
           },
           {
             "name": "pageSize",
-            "required": true,
+            "required": false,
             "in": "query",
             "description": "每页数量",
             "schema": {
@@ -2530,7 +2530,7 @@
         "parameters": [
           {
             "name": "pageNum",
-            "required": true,
+            "required": false,
             "in": "query",
             "description": "当前分页",
             "schema": {
@@ -2540,7 +2540,7 @@
           },
           {
             "name": "pageSize",
-            "required": true,
+            "required": false,
             "in": "query",
             "description": "每页数量",
             "schema": {
@@ -3059,7 +3059,7 @@
         "parameters": [
           {
             "name": "pageNum",
-            "required": true,
+            "required": false,
             "in": "query",
             "description": "当前分页",
             "schema": {
@@ -3069,7 +3069,7 @@
           },
           {
             "name": "pageSize",
-            "required": true,
+            "required": false,
             "in": "query",
             "description": "每页数量",
             "schema": {
@@ -3327,7 +3327,7 @@
         "parameters": [
           {
             "name": "pageNum",
-            "required": true,
+            "required": false,
             "in": "query",
             "description": "当前分页",
             "schema": {
@@ -3337,7 +3337,7 @@
           },
           {
             "name": "pageSize",
-            "required": true,
+            "required": false,
             "in": "query",
             "description": "每页数量",
             "schema": {
@@ -3654,17 +3654,17 @@
         ]
       }
     },
-    "/game/article": {
+    "/post/article": {
       "post": {
-        "operationId": "GameArticleController_create",
-        "summary": "游戏文章-创建",
+        "operationId": "PostArticleController_create",
+        "summary": "文章-创建",
         "parameters": [],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateGameAricleDto"
+                "$ref": "#/components/schemas/CreatePostArticleDto"
               }
             }
           }
@@ -3675,19 +3675,19 @@
           }
         },
         "tags": [
-          "游戏文章"
+          "文章管理"
         ]
       },
       "put": {
-        "operationId": "GameArticleController_update",
-        "summary": "游戏文章-更新",
+        "operationId": "PostArticleController_update",
+        "summary": "文章-更新",
         "parameters": [],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UpdateGameAricleDto"
+                "$ref": "#/components/schemas/UpdatePostArticleDto"
               }
             }
           }
@@ -3698,18 +3698,18 @@
           }
         },
         "tags": [
-          "游戏文章"
+          "文章管理"
         ]
       }
     },
-    "/game/article/guest/list": {
+    "/post/article/guest/list": {
       "get": {
-        "operationId": "GameArticleController_findGuestAll",
-        "summary": "游戏文章-游客-列表",
+        "operationId": "PostArticleController_findGuestAll",
+        "summary": "文章-游客-列表",
         "parameters": [
           {
             "name": "pageNum",
-            "required": true,
+            "required": false,
             "in": "query",
             "description": "当前分页",
             "schema": {
@@ -3719,7 +3719,7 @@
           },
           {
             "name": "pageSize",
-            "required": true,
+            "required": false,
             "in": "query",
             "description": "每页数量",
             "schema": {
@@ -3749,109 +3749,72 @@
             "name": "title",
             "required": false,
             "in": "query",
+            "description": "文章标题（模糊搜索）",
             "schema": {
               "type": "string"
             }
           },
           {
-            "name": "status",
+            "name": "subjectId",
             "required": false,
             "in": "query",
+            "description": "专栏ID",
             "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "游戏文章"
-        ]
-      }
-    },
-    "/game/article/guest/detail": {
-      "get": {
-        "operationId": "GameArticleController_findGuestOne",
-        "summary": "游戏文章-详情",
-        "parameters": [
-          {
-            "name": "gameId",
-            "required": true,
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "游戏文章"
-        ]
-      }
-    },
-    "/game/article/list": {
-      "get": {
-        "operationId": "GameArticleController_findAll",
-        "summary": "游戏文章-管理员-列表",
-        "parameters": [
-          {
-            "name": "pageNum",
-            "required": true,
-            "in": "query",
-            "description": "当前分页",
-            "schema": {
-              "default": 1,
               "type": "number"
             }
           },
           {
-            "name": "pageSize",
-            "required": true,
+            "name": "userId",
+            "required": false,
             "in": "query",
-            "description": "每页数量",
+            "description": "作者用户ID",
             "schema": {
-              "default": 10,
               "type": "number"
             }
           },
           {
-            "name": "orderByColumn",
+            "name": "publishStatus",
             "required": false,
             "in": "query",
-            "description": "排序字段",
+            "description": "发布状态",
             "schema": {
+              "enum": [
+                "0",
+                "1",
+                "2",
+                "3"
+              ],
               "type": "string"
             }
           },
           {
-            "name": "isAsc",
+            "name": "auditStatus",
             "required": false,
             "in": "query",
-            "description": "排序规则",
+            "description": "审核状态",
             "schema": {
+              "enum": [
+                "0",
+                "1",
+                "2",
+                "3"
+              ],
               "type": "string"
             }
           },
           {
-            "name": "title",
+            "name": "source",
             "required": false,
             "in": "query",
+            "description": "文章来源",
             "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "status",
-            "required": false,
-            "in": "query",
-            "schema": {
+              "enum": [
+                "0",
+                "1",
+                "2",
+                "3",
+                "4"
+              ],
               "type": "string"
             }
           }
@@ -3862,17 +3825,192 @@
           }
         },
         "tags": [
-          "游戏文章"
+          "文章管理"
         ]
       }
     },
-    "/game/article/{id}": {
+    "/post/article/guest/detail": {
       "get": {
-        "operationId": "GameArticleController_findOne",
-        "summary": "游戏文章-详情",
+        "operationId": "PostArticleController_findGuestOne",
+        "summary": "文章-游客-详情",
         "parameters": [
           {
             "name": "id",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "文章管理"
+        ]
+      }
+    },
+    "/post/article/list": {
+      "get": {
+        "operationId": "PostArticleController_findAll",
+        "summary": "文章-管理员-列表",
+        "parameters": [
+          {
+            "name": "pageNum",
+            "required": false,
+            "in": "query",
+            "description": "当前分页",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "description": "每页数量",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "orderByColumn",
+            "required": false,
+            "in": "query",
+            "description": "排序字段",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "isAsc",
+            "required": false,
+            "in": "query",
+            "description": "排序规则",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "title",
+            "required": false,
+            "in": "query",
+            "description": "文章标题（模糊搜索）",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "subjectId",
+            "required": false,
+            "in": "query",
+            "description": "专栏ID",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "userId",
+            "required": false,
+            "in": "query",
+            "description": "作者用户ID",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "publishStatus",
+            "required": false,
+            "in": "query",
+            "description": "发布状态",
+            "schema": {
+              "enum": [
+                "0",
+                "1",
+                "2",
+                "3"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "auditStatus",
+            "required": false,
+            "in": "query",
+            "description": "审核状态",
+            "schema": {
+              "enum": [
+                "0",
+                "1",
+                "2",
+                "3"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "source",
+            "required": false,
+            "in": "query",
+            "description": "文章来源",
+            "schema": {
+              "enum": [
+                "0",
+                "1",
+                "2",
+                "3",
+                "4"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "文章管理"
+        ]
+      }
+    },
+    "/post/article/{id}": {
+      "get": {
+        "operationId": "PostArticleController_findOne",
+        "summary": "文章-详情",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "文章管理"
+        ]
+      }
+    },
+    "/post/article/{ids}": {
+      "delete": {
+        "operationId": "PostArticleController_remove",
+        "summary": "文章-删除",
+        "parameters": [
+          {
+            "name": "ids",
             "required": true,
             "in": "path",
             "schema": {
@@ -3886,15 +4024,264 @@
           }
         },
         "tags": [
-          "游戏文章"
+          "文章管理"
+        ]
+      }
+    },
+    "/post/article/submit-audit/{id}": {
+      "post": {
+        "operationId": "PostArticleController_submitForAudit",
+        "summary": "文章-提交审核",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "文章管理"
+        ]
+      }
+    },
+    "/post/article/audit": {
+      "post": {
+        "operationId": "PostArticleController_audit",
+        "summary": "文章-审核",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AuditPostArticleDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "文章管理"
+        ]
+      }
+    },
+    "/post/article/publish/{id}": {
+      "post": {
+        "operationId": "PostArticleController_publish",
+        "summary": "文章-发布",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "文章管理"
+        ]
+      }
+    },
+    "/post/subject": {
+      "post": {
+        "operationId": "PostSubjectController_create",
+        "summary": "专栏-创建",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePostSubjectDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "专栏管理"
         ]
       },
-      "delete": {
-        "operationId": "GameArticleController_remove",
-        "summary": "游戏文章-删除",
+      "put": {
+        "operationId": "PostSubjectController_update",
+        "summary": "专栏-更新",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePostSubjectDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "专栏管理"
+        ]
+      }
+    },
+    "/post/subject/list": {
+      "get": {
+        "operationId": "PostSubjectController_findAll",
+        "summary": "专栏-列表",
+        "parameters": [
+          {
+            "name": "pageNum",
+            "required": false,
+            "in": "query",
+            "description": "当前分页",
+            "schema": {
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "pageSize",
+            "required": false,
+            "in": "query",
+            "description": "每页数量",
+            "schema": {
+              "default": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "orderByColumn",
+            "required": false,
+            "in": "query",
+            "description": "排序字段",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "isAsc",
+            "required": false,
+            "in": "query",
+            "description": "排序规则",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "title",
+            "required": false,
+            "in": "query",
+            "description": "专栏标题",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "required": false,
+            "in": "query",
+            "description": "创建者用户ID",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "publishStatus",
+            "required": false,
+            "in": "query",
+            "description": "发布状态",
+            "schema": {
+              "enum": [
+                "0",
+                "1",
+                "2",
+                "3"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "auditStatus",
+            "required": false,
+            "in": "query",
+            "description": "审核状态",
+            "schema": {
+              "enum": [
+                "0",
+                "1",
+                "2",
+                "3"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "专栏管理"
+        ]
+      }
+    },
+    "/post/subject/{id}": {
+      "get": {
+        "operationId": "PostSubjectController_findOne",
+        "summary": "专栏-详情",
         "parameters": [
           {
             "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "专栏管理"
+        ]
+      }
+    },
+    "/post/subject/{ids}": {
+      "delete": {
+        "operationId": "PostSubjectController_remove",
+        "summary": "专栏-删除",
+        "parameters": [
+          {
+            "name": "ids",
             "required": true,
             "in": "path",
             "schema": {
@@ -3908,7 +4295,7 @@
           }
         },
         "tags": [
-          "游戏文章"
+          "专栏管理"
         ]
       }
     }
@@ -3980,10 +4367,15 @@
           "file": {
             "type": "string",
             "format": "binary"
+          },
+          "path": {
+            "type": "string",
+            "description": "文件存储路径（如：avatar、article、document），不能为空"
           }
         },
         "required": [
-          "file"
+          "file",
+          "path"
         ]
       },
       "ChunkMergeFileDto": {
@@ -3994,11 +4386,16 @@
           },
           "fileName": {
             "type": "string"
+          },
+          "path": {
+            "type": "string",
+            "description": "文件存储路径（如：avatar、article、document），不能为空"
           }
         },
         "required": [
           "uploadId",
-          "fileName"
+          "fileName",
+          "path"
         ]
       },
       "CreateConfigDto": {
@@ -4048,11 +4445,7 @@
             "type": "string",
             "description": "排序规则"
           }
-        },
-        "required": [
-          "pageNum",
-          "pageSize"
-        ]
+        }
       },
       "UpdateConfigDto": {
         "type": "object",
@@ -4214,11 +4607,7 @@
             "type": "string",
             "description": "排序规则"
           }
-        },
-        "required": [
-          "pageNum",
-          "pageSize"
-        ]
+        }
       },
       "CreateMenuDto": {
         "type": "object",
@@ -4365,11 +4754,7 @@
             "type": "string",
             "description": "排序规则"
           }
-        },
-        "required": [
-          "pageNum",
-          "pageSize"
-        ]
+        }
       },
       "UpdateNoticeDto": {
         "type": "object",
@@ -4428,11 +4813,7 @@
             "type": "string",
             "description": "排序规则"
           }
-        },
-        "required": [
-          "pageNum",
-          "pageSize"
-        ]
+        }
       },
       "UpdatePostDto": {
         "type": "object",
@@ -4509,11 +4890,7 @@
             "type": "string",
             "description": "排序规则"
           }
-        },
-        "required": [
-          "pageNum",
-          "pageSize"
-        ]
+        }
       },
       "UpdateRoleDto": {
         "type": "object",
@@ -4600,11 +4977,7 @@
           "roleId": {
             "type": "string"
           }
-        },
-        "required": [
-          "pageNum",
-          "pageSize"
-        ]
+        }
       },
       "AuthUserCancelDto": {
         "type": "object",
@@ -4882,11 +5255,7 @@
           "status": {
             "type": "string"
           }
-        },
-        "required": [
-          "pageNum",
-          "pageSize"
-        ]
+        }
       },
       "CreateJobDto": {
         "type": "object",
@@ -4999,8 +5368,6 @@
           }
         },
         "required": [
-          "pageNum",
-          "pageSize",
           "jobName",
           "jobGroup",
           "status"
@@ -5044,11 +5411,7 @@
           "status": {
             "type": "string"
           }
-        },
-        "required": [
-          "pageNum",
-          "pageSize"
-        ]
+        }
       },
       "OnlineListDto": {
         "type": "object",
@@ -5075,45 +5438,327 @@
         "type": "object",
         "properties": {}
       },
-      "CreateGameAricleDto": {
+      "CreatePostArticleDto": {
         "type": "object",
         "properties": {
           "title": {
-            "type": "string"
+            "type": "string",
+            "description": "文章标题"
           },
-          "remark": {
-            "type": "string"
+          "desc": {
+            "type": "string",
+            "description": "文章简介"
           },
-          "status": {
-            "type": "string"
+          "subjectId": {
+            "type": "number",
+            "description": "专栏ID"
+          },
+          "content": {
+            "type": "string",
+            "description": "文章内容"
+          },
+          "cover": {
+            "type": "string",
+            "description": "封面图片"
+          },
+          "author": {
+            "type": "string",
+            "description": "作者昵称"
+          },
+          "source": {
+            "type": "string",
+            "description": "文章来源",
+            "enum": [
+              "0",
+              "1",
+              "2",
+              "3",
+              "4"
+            ]
+          },
+          "publishTime": {
+            "format": "date-time",
+            "type": "string",
+            "description": "发布时间"
+          },
+          "likeNum": {
+            "type": "number",
+            "description": "点赞数"
+          },
+          "readNum": {
+            "type": "number",
+            "description": "阅读数"
+          },
+          "commentNum": {
+            "type": "number",
+            "description": "评论数"
+          },
+          "publishStatus": {
+            "type": "string",
+            "description": "发布状态",
+            "enum": [
+              "0",
+              "1",
+              "2",
+              "3"
+            ]
+          },
+          "auditStatus": {
+            "type": "string",
+            "description": "审核状态",
+            "enum": [
+              "0",
+              "1",
+              "2",
+              "3"
+            ]
+          },
+          "scheduledPublishTime": {
+            "format": "date-time",
+            "type": "string",
+            "description": "定时发布时间"
+          },
+          "sort": {
+            "type": "number",
+            "description": "排序"
           }
         },
         "required": [
           "title",
-          "remark",
-          "status"
+          "subjectId"
         ]
       },
-      "UpdateGameAricleDto": {
+      "UpdatePostArticleDto": {
         "type": "object",
         "properties": {
           "title": {
-            "type": "string"
+            "type": "string",
+            "description": "文章标题"
           },
-          "remark": {
-            "type": "string"
+          "desc": {
+            "type": "string",
+            "description": "文章简介"
           },
-          "status": {
-            "type": "string"
+          "subjectId": {
+            "type": "number",
+            "description": "专栏ID"
           },
-          "articleId": {
-            "type": "number"
+          "content": {
+            "type": "string",
+            "description": "文章内容"
+          },
+          "cover": {
+            "type": "string",
+            "description": "封面图片"
+          },
+          "author": {
+            "type": "string",
+            "description": "作者昵称"
+          },
+          "source": {
+            "type": "string",
+            "description": "文章来源",
+            "enum": [
+              "0",
+              "1",
+              "2",
+              "3",
+              "4"
+            ]
+          },
+          "publishTime": {
+            "format": "date-time",
+            "type": "string",
+            "description": "发布时间"
+          },
+          "likeNum": {
+            "type": "number",
+            "description": "点赞数"
+          },
+          "readNum": {
+            "type": "number",
+            "description": "阅读数"
+          },
+          "commentNum": {
+            "type": "number",
+            "description": "评论数"
+          },
+          "publishStatus": {
+            "type": "string",
+            "description": "发布状态",
+            "enum": [
+              "0",
+              "1",
+              "2",
+              "3"
+            ]
+          },
+          "auditStatus": {
+            "type": "string",
+            "description": "审核状态",
+            "enum": [
+              "0",
+              "1",
+              "2",
+              "3"
+            ]
+          },
+          "scheduledPublishTime": {
+            "format": "date-time",
+            "type": "string",
+            "description": "定时发布时间"
+          },
+          "sort": {
+            "type": "number",
+            "description": "排序"
+          },
+          "id": {
+            "type": "number",
+            "description": "文章ID"
           }
         },
         "required": [
           "title",
-          "remark",
-          "status"
+          "subjectId",
+          "id"
+        ]
+      },
+      "AuditPostArticleDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "文章ID"
+          },
+          "auditStatus": {
+            "type": "string",
+            "description": "审核状态",
+            "enum": [
+              "0",
+              "1",
+              "2",
+              "3"
+            ]
+          },
+          "auditRemark": {
+            "type": "string",
+            "description": "审核备注"
+          }
+        },
+        "required": [
+          "id",
+          "auditStatus"
+        ]
+      },
+      "CreatePostSubjectDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "专栏标题"
+          },
+          "desc": {
+            "type": "string",
+            "description": "专栏简介"
+          },
+          "cover": {
+            "type": "string",
+            "description": "专栏封面"
+          },
+          "author": {
+            "type": "string",
+            "description": "作者昵称"
+          },
+          "publishStatus": {
+            "type": "string",
+            "description": "发布状态",
+            "enum": [
+              "0",
+              "1",
+              "2",
+              "3"
+            ]
+          },
+          "auditStatus": {
+            "type": "string",
+            "description": "审核状态",
+            "enum": [
+              "0",
+              "1",
+              "2",
+              "3"
+            ]
+          },
+          "scheduledPublishTime": {
+            "format": "date-time",
+            "type": "string",
+            "description": "定时发布时间"
+          },
+          "sort": {
+            "type": "number",
+            "description": "排序"
+          }
+        },
+        "required": [
+          "title"
+        ]
+      },
+      "UpdatePostSubjectDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "专栏标题"
+          },
+          "desc": {
+            "type": "string",
+            "description": "专栏简介"
+          },
+          "cover": {
+            "type": "string",
+            "description": "专栏封面"
+          },
+          "author": {
+            "type": "string",
+            "description": "作者昵称"
+          },
+          "publishStatus": {
+            "type": "string",
+            "description": "发布状态",
+            "enum": [
+              "0",
+              "1",
+              "2",
+              "3"
+            ]
+          },
+          "auditStatus": {
+            "type": "string",
+            "description": "审核状态",
+            "enum": [
+              "0",
+              "1",
+              "2",
+              "3"
+            ]
+          },
+          "scheduledPublishTime": {
+            "format": "date-time",
+            "type": "string",
+            "description": "定时发布时间"
+          },
+          "sort": {
+            "type": "number",
+            "description": "排序"
+          },
+          "id": {
+            "type": "number",
+            "description": "专栏ID"
+          }
+        },
+        "required": [
+          "title",
+          "id"
         ]
       }
     }

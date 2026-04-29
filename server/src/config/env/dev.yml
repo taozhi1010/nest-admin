@@ -2,22 +2,33 @@ app:
   port: 8080                    # 服务端口
   prefix: ''                    # API访问前缀
   file:
-    storageType: 'minio'        # 文件存储类型：minio | rustfs | local
+    storageType: 'rustfs'       # 文件存储类型：minio | rustfs | local
     location: '../upload'       # 本地存储路径（仅当 storageType=local 时有效）
     domain: 'http://localhost:8080'  # 文件访问域名
     serveRoot: '/profile'       # 文件虚拟路径
     maxSize: 10                 # 文件大小限制 (MB)
 
-# MinIO 对象存储配置
+# MinIO 对象存储配置（保留兼容）
 minio:
-  endPoint: 'your-minio-host'    # MinIO 服务器地址
+  endPoint: '124.222.189.233'    # MinIO 服务器地址
   port: 9000                     # MinIO API 端口
   useSSL: false                  # 是否使用 SSL
-  accessKey: 'your-minio-access-key'      # MinIO Access Key
-  secretKey: 'your-minio-secret-key'      # MinIO Secret Key
+  accessKey: 'minio_3mb6wK'      # MinIO Access Key
+  secretKey: 'minio_r3zNXd'      # MinIO Secret Key
   bucket: 'avatars'              # 存储桶名称
   region: 'us-east-1'            # 区域
-  domain: 'http://your-minio-host:9000' # MinIO 访问域名
+  domain: 'http://124.222.189.233:9000' # MinIO 访问域名
+
+# RustFS 对象存储配置
+rustfs:
+  endPoint: '124.222.189.233'    # RustFS 服务器地址
+  port: 9000                     # RustFS API 端口
+  useSSL: false                  # 是否使用 SSL
+  accessKey: 'rustfsadmin'       # RustFS Access Key
+  secretKey: 'rustfsadmin_kCCC4z' # RustFS Secret Key
+  bucket: 'nest-admin'           # 存储桶名称
+  region: 'us-east-1'            # 区域
+  domain: ''                     # RustFS 访问域名（可选）
 
 # 腾讯云cos配置（保留兼容）
 cos:
@@ -30,9 +41,9 @@ cos:
 # 数据库配置
 db:
   mysql:
-    host: 'your-mysql-host'      # 数据库地址
+    host: '124.222.189.233'      # 数据库地址
     username: 'root'             # 数据库用户名
-    password: 'your-mysql-password'     # 数据库密码
+    password: 'mysql_6zaSGd'     # 数据库密码
     database: 'nest-db'          # 数据库名称
     port: 3306                   # 数据库端口
     charset: 'utf8mb4'           # 字符集
@@ -40,16 +51,17 @@ db:
     synchronize: false           # 是否自动同步表结构（生产环境请设为 false）
     logging: true                # 是否开启 SQL 日志
     extra:
-      connectionLimit: 10        # 连接池最大连接数
-      connectTimeout: 10000      # 连接超时时间（毫秒）
-      timeout: 10000             # 查询超时时间（毫秒）
-      acquireTimeout: 10000      # 获取连接超时时间（毫秒）
-      waitForConnections: true   # 等待可用连接
+      connectionLimit: 20        # 连接池最大连接数
+      connectTimeout: 30000      # 连接超时时间（毫秒）
+      enableKeepAlive: true      # 启用 TCP KeepAlive
+      keepAliveInitialDelay: 0   # KeepAlive 初始延迟
+      maxIdle: 10                # 最大空闲连接数
+      idleTimeout: 60000         # 空闲连接超时时间（毫秒）
 
 # redis 配置
 redis:
-  host: 'your-redis-host'        # Redis 地址
-  password: 'your-redis-password'       # Redis 密码
+  host: '124.222.189.233'        # Redis 地址
+  password: 'redis_dECN6N'       # Redis 密码
   port: 6379                     # Redis 端口
   db: 2                          # Redis 数据库编号
   keyPrefix: ''                  # Key 前缀

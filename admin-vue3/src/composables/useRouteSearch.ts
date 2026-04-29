@@ -1,4 +1,3 @@
-import { ref, computed, watchEffect } from 'vue'
 import Fuse from 'fuse.js'
 import { getNormalPath } from './useCommon'
 import { isHttp } from './useValidator'

@@ -191,10 +191,11 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
+import { ElLoading } from 'element-plus'
 import { getServer } from '@/api/monitor/server'
 
-const server = ref({})
+const server = ref<any>({})
 let loadingInstance = null
 
 function getList() {
@@ -204,7 +205,6 @@ function getList() {
     background: 'rgba(0, 0, 0, 0.7)'
   })
   getServer().then((response) => {
-    console.log(response)
     server.value = response.data
     if (loadingInstance) {
       loadingInstance.close()

@@ -6,7 +6,7 @@
 
     <el-form-item>
       <el-radio v-model="radioValue" :label="2">
-        周期从
+        周期
         <el-input-number v-model="cycle01" :max="11" :min="1" />
         -
         <el-input-number v-model="cycle02" :max="12" :min="cycle01 + 1" />
@@ -20,7 +20,7 @@
         <el-input-number v-model="average01" :max="11" :min="1" />
         月开始，每
         <el-input-number v-model="average02" :max="12 - average01" :min="1" />
-        月月执行一次
+        月执行一次
       </el-radio>
     </el-form-item>
 
@@ -28,15 +28,14 @@
       <el-radio v-model="radioValue" :label="4">
         指定
         <el-select v-model="checkboxList" clearable multiple :multiple-limit="8" placeholder="可多选">
-          <el-option v-for="item in monthList" :key="item.key" :label="item.value" :value="item.key" />
+          <el-option v-for="item in 12" :key="item" :label="item" :value="item" />
         </el-select>
       </el-radio>
     </el-form-item>
   </el-form>
 </template>
 
-<script setup>
-import { ref, computed, watch } from 'vue'
+<script setup lang="ts">
 const emit = defineEmits(['update'])
 const props = defineProps({
   cron: {
@@ -94,7 +93,7 @@ watch(
   () => props.cron.month,
   (value) => changeRadioValue(value)
 )
-// 监听 computed 值变化并同步到 ref
+// 监听 computed 值变化并同步�?ref
 watch(cycleTotal, (value) => {
   const [v1, v2] = value.split('-')
   cycle01.value = Number(v1)

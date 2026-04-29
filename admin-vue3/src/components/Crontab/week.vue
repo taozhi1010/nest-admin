@@ -1,23 +1,21 @@
 <template>
   <el-form size="small">
     <el-form-item>
-      <el-radio v-model="radioValue" :label="1">周，允许的通配符[, - * ? / L #]</el-radio>
+      <el-radio v-model="radioValue" :label="1">周，允许的通配符[, - * / ?]</el-radio>
     </el-form-item>
 
     <el-form-item>
-      <el-radio v-model="radioValue" :label="2">不指定</el-radio>
+      <el-radio v-model="radioValue" :label="2">
+        不指定
+      </el-radio>
     </el-form-item>
 
     <el-form-item>
       <el-radio v-model="radioValue" :label="3">
-        周期从
-        <el-select v-model="cycle01" clearable>
-          <el-option v-for="(item, index) of weekList" :key="index" :disabled="item.key === 7" :label="item.value" :value="item.key">{{ item.value }}</el-option>
-        </el-select>
+        周期
+        <el-input-number v-model="cycle01" :max="6" :min="1" />
         -
-        <el-select v-model="cycle02" clearable>
-          <el-option v-for="(item, index) of weekList" :key="index" :disabled="item.key <= cycle01" :label="item.value" :value="item.key">{{ item.value }}</el-option>
-        </el-select>
+        <el-input-number v-model="cycle02" :max="7" :min="cycle01 + 1" />
       </el-radio>
     </el-form-item>
 
@@ -25,7 +23,7 @@
       <el-radio v-model="radioValue" :label="4">
         第
         <el-input-number v-model="average01" :max="4" :min="1" />
-        周的
+        周的星期
         <el-select v-model="average02" clearable>
           <el-option v-for="item in weekList" :key="item.key" :label="item.value" :value="item.key" />
         </el-select>
@@ -34,7 +32,7 @@
 
     <el-form-item>
       <el-radio v-model="radioValue" :label="5">
-        本月最后一个
+        本月最后一个星期
         <el-select v-model="weekday" clearable>
           <el-option v-for="item in weekList" :key="item.key" :label="item.value" :value="item.key" />
         </el-select>
@@ -52,8 +50,7 @@
   </el-form>
 </template>
 
-<script setup>
-import { ref, computed, watch } from 'vue'
+<script setup lang="ts">
 const emit = defineEmits(['update'])
 const props = defineProps({
   cron: {
@@ -111,7 +108,7 @@ watch(
   () => props.cron.week,
   (value) => changeRadioValue(value)
 )
-// 监听 computed 值变化并同步到 ref
+// 监听 computed 值变化并同步 ref
 watch(cycleTotal, (value) => {
   const [v1, v2] = value.split('-')
   cycle01.value = Number(v1)

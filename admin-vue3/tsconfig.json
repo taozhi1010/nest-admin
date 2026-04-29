@@ -22,6 +22,6 @@
     },
     "types": ["element-plus/global"]
   },
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "types/*.d.ts"],
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "types/*.d.ts", "auto-imports.d.ts", "components.d.ts"],
   "exclude": ["node_modules", "dist"]
 }

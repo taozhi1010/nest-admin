@@ -19,7 +19,7 @@
   </section>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { Loading } from '@element-plus/icons-vue'
 import iframeToggle from './IframeToggle/index'
 import useTagsViewStore from '@/store/modules/tagsView'

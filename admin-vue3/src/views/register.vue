@@ -44,7 +44,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { register } from '@/api/login'
 import { authCodeInfo, getValidateCode } from '@/composables/useAuthCode'
 

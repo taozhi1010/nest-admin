@@ -41,25 +41,20 @@ export let isRelogin = { show: false }
 function paramsToQueryString(params: Record<string, any>): string {
   const searchParams = new URLSearchParams()
   
-  function appendValue(key: string, value: any) {
-    if (value === null || value === undefined || value === '') {
-      return
-    }
+  // 递归处理嵌套结构
+  const serialize = (obj: any, prefix = ''): void => {
+    if (obj == null || obj === '') return
     
-    if (typeof value === 'object' && !Array.isArray(value)) {
-      // 处理嵌套对象，如 {user: {name: 'test'}} -> user[name]=test
-      Object.keys(value).forEach(subKey => {
-        appendValue(`${key}[${subKey}]`, value[subKey])
-      })
+    if (Array.isArray(obj)) {
+      obj.forEach((item, i) => serialize(item, `${prefix}[${i}]`))
+    } else if (typeof obj === 'object' && !(obj instanceof Date) && !(obj instanceof RegExp)) {
+      Object.entries(obj).forEach(([key, val]) => serialize(val, prefix ? `${prefix}[${key}]` : key))
     } else {
-      searchParams.append(key, String(value))
+      searchParams.append(prefix, String(obj))
     }
   }
   
-  Object.keys(params).forEach(key => {
-    appendValue(key, params[key])
-  })
-  
+  Object.entries(params).forEach(([key, value]) => serialize(value, key))
   return searchParams.toString()
 }
 
@@ -132,7 +127,7 @@ service.interceptors.request.use(
     return config
   },
   (error) => {
-    console.log(error)
+    console.error('请求拦截器错误:', error)
     return Promise.reject(error)
   }
 )

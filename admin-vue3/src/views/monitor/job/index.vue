@@ -225,7 +225,8 @@ import { listJob, getJob, delJob, addJob, updateJob, runJob, changeJobStatus } f
 import Crontab from '@/components/Crontab'
 const router = useRouter()
 import { useDict } from '@/composables/useDict'
-import { parseTime, resetForm } from '@/composables/useCommon'
+import { parseTime } from '@/composables/useCommon'
+import { resetForm } from '@/composables/useForm'
 
 const { sys_job_group, sys_job_status, getDictLabel } = useDict('sys_job_group', 'sys_job_status')
 
@@ -329,7 +330,7 @@ function handleCommand(command, row) {
 // 任务状态修改
 function handleStatusChange(row) {
   let text = row.status === '0' ? '启用' : '停用'
-  ElMessageBox.confirm(`确认要"${text}""${row.jobName}"任务吗?`, '系统提示', {
+  ElMessageBox.confirm(`确认要"${text}" "${row.jobName}"任务吗?`, '系统提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'
@@ -349,7 +350,7 @@ function handleStatusClick(row) {
   const currentStatus = row.status
   const newStatus = currentStatus === '0' ? '1' : '0'
   let text = newStatus === '0' ? '启用' : '停用'
-  ElMessageBox.confirm(`确认要"${text}""${row.jobName}"任务吗?`, '系统提示', {
+  ElMessageBox.confirm(`确认要"${text}" "${row.jobName}"任务吗?`, '系统提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'

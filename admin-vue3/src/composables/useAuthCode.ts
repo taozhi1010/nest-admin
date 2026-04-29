@@ -1,8 +1,7 @@
 import Cookies from 'js-cookie'
 import { encrypt, decrypt } from '@/utils/jsencrypt'
-import { reactive } from 'vue'
 import { getCodeImg } from '@/api/login'
-import { useCatTools } from '@/composables/useCatTools'
+import { isEmpty } from 'radash'
 import { ElMessage } from 'element-plus'
 
 // ==================== 类型定义 ====================
@@ -72,8 +71,6 @@ let lastRefreshTime = 0
  * @returns Promise<void>
  */
 const getValidateCode = async (form: LoginForm, isClick = false): Promise<void> => {
-  const { isNullorUndefined } = useCatTools()
-
   try {
     // 检查是否正在加载
     if (authCodeInfo.loading || authCodeInfo.refreshing) {
@@ -84,12 +81,12 @@ const getValidateCode = async (form: LoginForm, isClick = false): Promise<void> 
     // 如果是点击触发，进行额外检查
     if (isClick) {
       // 检查用户名和密码是否为空
-      if (isNullorUndefined(form.username)) {
+      if (isEmpty(form.username)) {
         ElMessage.error('请输入用户账号，否则无法刷新验证码')
         return
       }
 
-      if (isNullorUndefined(form.password)) {
+      if (isEmpty(form.password)) {
         ElMessage.error('请输入用户密码，否则无法刷新验证码')
         return
       }
@@ -127,7 +124,7 @@ const getValidateCode = async (form: LoginForm, isClick = false): Promise<void> 
       authCodeInfo.refreshing = false
     }
   } catch (err) {
-    console.log('验证码获取错误:', err)
+    console.error('验证码获取错误:', err)
     authCodeInfo.refreshing = false
   }
 }
@@ -138,8 +135,6 @@ const getValidateCode = async (form: LoginForm, isClick = false): Promise<void> 
  * @returns 填充后的表单数据
  */
 const getUserCookie = (data: LoginForm): LoginForm => {
-  const { isNullorUndefined } = useCatTools()
-
   const cookieData: CookieData = {
     username: Cookies.get('username'),
     password: Cookies.get('password'),
@@ -147,9 +142,9 @@ const getUserCookie = (data: LoginForm): LoginForm => {
   }
 
   const form: LoginForm = {
-    username: isNullorUndefined(cookieData.username) ? data.username : cookieData.username,
-    password: isNullorUndefined(cookieData.password) ? data.password : (decrypt(cookieData.password) || ''),
-    rememberMe: isNullorUndefined(cookieData.rememberMe) ? false : Boolean(cookieData.rememberMe)
+    username: isEmpty(cookieData.username) ? data.username : cookieData.username,
+    password: isEmpty(cookieData.password) ? data.password : (decrypt(cookieData.password) || ''),
+    rememberMe: isEmpty(cookieData.rememberMe) ? false : Boolean(cookieData.rememberMe)
   }
 
   return form

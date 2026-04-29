@@ -12,7 +12,7 @@ import { UploadModule } from './module/upload/upload.module';
 import { SystemModule } from './module/system/system.module';
 import { CommonModule } from './module/common/common.module';
 import { MonitorModule } from './module/monitor/monitor.module';
-import { GameModule } from './module/game/game.module';
+import { PostModule } from './module/post/post.module';
 
 @Global()
 @Module({
@@ -45,7 +45,7 @@ import { GameModule } from './module/game/game.module';
     CommonModule,
     SystemModule,
     MonitorModule,
-    GameModule,
+    PostModule,
   ],
   providers: [
     {

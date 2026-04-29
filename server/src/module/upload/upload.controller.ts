@@ -1,9 +1,10 @@
-import { Controller, Get, Post, Body, Query, UploadedFile, UseInterceptors, HttpCode } from '@nestjs/common';
+import { Controller, Get, Post, Body, Query, UploadedFile, UseInterceptors, HttpCode, Req } from '@nestjs/common';
 import { UploadService } from './upload.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiTags, ApiOperation, ApiBody, ApiQuery } from '@nestjs/swagger';
 import { ChunkFileDto, ChunkMergeFileDto, FileUploadDto, uploadIdDto } from './dto/index';
 import { ResultData } from 'src/common/utils/result';
+import { User, UserDto } from 'src/module/system/user/user.decorator';
 
 @ApiTags('通用-文件上传')
 @Controller('common/upload')
@@ -13,6 +14,7 @@ export class UploadController {
   /**
    * 文件上传
    * @param file
+   * @param body
    * @returns
    */
   @ApiOperation({
@@ -25,8 +27,19 @@ export class UploadController {
   @HttpCode(200)
   @Post()
   @UseInterceptors(FileInterceptor('file'))
-  async singleFileUpload(@UploadedFile() file: Express.Multer.File) {
-    const res = await this.uploadService.singleFileUpload(file);
+  async singleFileUpload(@UploadedFile() file: Express.Multer.File, @Req() req: any, @User() user?: UserDto) {
+    // 从请求体中获取 path 参数（multipart/form-data 中的表单字段）
+    const customPath = req.body?.path;
+
+    // 验证 path 参数
+    if (!customPath || !customPath.trim()) {
+      return ResultData.fail(400, '文件存储路径不能为空，请提供有效的 path 参数');
+    }
+
+    // 从用户信息中获取作者名（如果有登录用户）
+    const authorName = user?.user?.nickName || user?.user?.userName;
+
+    const res = await this.uploadService.singleFileUpload(file, customPath, authorName);
     return ResultData.ok(res);
   }
 
@@ -50,6 +63,7 @@ export class UploadController {
   /**
    * 文件分片上传
    * @param file
+   * @param body
    * @returns
    */
   @ApiOperation({
@@ -67,6 +81,7 @@ export class UploadController {
 
   /**
    * 文件分片合并
+   * @param body
    * @returns
    */
   @ApiOperation({
@@ -79,6 +94,11 @@ export class UploadController {
   @HttpCode(200)
   @Post('/chunk/merge')
   chunkMergeFile(@Body() body: ChunkMergeFileDto) {
+    // 验证 path 参数
+    if (!body.path || !body.path.trim()) {
+      return ResultData.fail(400, '文件存储路径不能为空，请提供有效的 path 参数');
+    }
+
     return this.uploadService.chunkMergeFile(body);
   }
 

@@ -27,12 +27,13 @@
   </el-dialog>
 </template>
 
-<script setup>
+<script setup lang="ts">
+import { ElMessage } from 'element-plus'
 import { addType, updateType } from '@/api/system/dict/type'
 import { useDict } from '@/composables/useDict'
-import { resetForm } from '@/composables/useCommon'
+import { resetForm } from '@/composables/useForm'
 
-const { sys_normal_disable } = useDict('sys_normal_disable')
+const { sys_normal_disable } = useDict('sys_normal_disable') as any
 
 const dialogTableVisible = ref(false)
 const formRef = ref()
@@ -42,8 +43,9 @@ const form = reactive({
   loading: false,
   title: '',
   model: {
+    dictId: undefined as number | undefined,
     dictName: '',
-    dictType: null,
+    dictType: '',
     status: '0',
     remark: ''
   },
@@ -54,7 +56,7 @@ const form = reactive({
   reset: () => {
     form.loading = false
     nextTick(() => {
-      resetForm(formRef)
+      resetForm(formRef.value)
     })
   },
   submit: () => {

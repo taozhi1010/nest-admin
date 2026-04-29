@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="error-401-container">
     <div class="error-content">
       <div class="error-icon">
@@ -8,20 +8,20 @@
       </div>
       <div class="error-text">
         <h1 class="error-title">401</h1>
-        <h2 class="error-subtitle">未授权访问</h2>
+        <h2 class="error-subtitle">δ��Ȩ����</h2>
         <p class="error-description">
-          抱歉，您没有权限访问此页面。
+          ��Ǹ����û��Ȩ�޷��ʴ�ҳ�档
           <br />
-          请联系管理员获取相应权限。
+          ����ϵ����Ա��ȡ��ӦȨ�ޡ�
         </p>
         <div class="error-actions">
           <el-button type="primary" @click="back">
             <el-icon><arrow-left /></el-icon>
-            返回上一页
+            ������һҳ
           </el-button>
           <el-button @click="goHome">
             <el-icon><house /></el-icon>
-            返回首页
+            ������ҳ
           </el-button>
         </div>
       </div>
@@ -29,7 +29,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { WarningFilled, ArrowLeft, House } from '@element-plus/icons-vue'
 
 const router = useRouter()

@@ -8,6 +8,8 @@ import { CreateMenuDto, UpdateMenuDto, ListDeptDto } from './dto/index';
 import { ListToTree, Uniq } from 'src/common/utils/index';
 import { UserService } from '../user/user.service';
 import { buildMenus } from './utils';
+import { RedisService } from 'src/module/common/redis/redis.service';
+import { CacheEnum } from 'src/common/enum/index';
 @Injectable()
 export class MenuService {
   constructor(
@@ -17,6 +19,7 @@ export class MenuService {
     private readonly sysMenuEntityRep: Repository<SysMenuEntity>,
     @InjectRepository(SysRoleWithMenuEntity)
     private readonly sysRoleWithMenuEntityRep: Repository<SysRoleWithMenuEntity>,
+    private readonly redisService: RedisService,
   ) {}
 
   async create(createMenuDto: CreateMenuDto) {
@@ -97,6 +100,10 @@ export class MenuService {
 
   async update(updateMenuDto: UpdateMenuDto) {
     const res = await this.sysMenuEntityRep.update({ menuId: updateMenuDto.menuId }, updateMenuDto);
+
+    // 清除所有用户的菜单缓存
+    await this.clearAllMenuCache();
+
     return ResultData.ok(res);
   }
 
@@ -107,7 +114,26 @@ export class MenuService {
         delFlag: '1',
       },
     );
+
+    // 清除所有用户的菜单缓存
+    await this.clearAllMenuCache();
+
     return ResultData.ok(data);
+  }
+
+  /**
+   * 清除所有用户的菜单缓存
+   */
+  async clearAllMenuCache() {
+    try {
+      // 获取所有以 sys_menu: 开头的键
+      const keys = await this.redisService.keys(`${CacheEnum.SYS_MENU_KEY}*`);
+      if (keys && keys.length > 0) {
+        await this.redisService.del(keys);
+      }
+    } catch (error) {
+      console.error('清除所有菜单缓存失败:', error);
+    }
   }
 
   async findMany(where: FindManyOptions<SysMenuEntity>) {
@@ -121,6 +147,14 @@ export class MenuService {
    * @return 菜单列表
    */
   async getMenuListByUserId(userId: number) {
+    // 尝试从缓存中获取
+    const cacheKey = `${CacheEnum.SYS_MENU_KEY}${userId}`;
+    const cachedMenus = await this.redisService.get(cacheKey);
+
+    if (cachedMenus) {
+      return cachedMenus;
+    }
+
     let menuWidthRoleList = [];
     const roleIds = await this.userService.getRoleIds([userId]);
     if (roleIds.includes(1)) {
@@ -154,6 +188,10 @@ export class MenuService {
     });
     // 构建前端需要的菜单树
     const menuTree = buildMenus(menuList);
+
+    // 将结果存入缓存，设置过期时间为30分钟
+    await this.redisService.set(cacheKey, menuTree, 1800);
+
     return menuTree;
   }
 }

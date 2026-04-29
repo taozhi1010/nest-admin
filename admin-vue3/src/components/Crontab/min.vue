@@ -6,7 +6,7 @@
 
     <el-form-item>
       <el-radio v-model="radioValue" :label="2">
-        周期从
+        周期
         <el-input-number v-model="cycle01" :max="58" :min="0" />
         -
         <el-input-number v-model="cycle02" :max="59" :min="cycle01 + 1" />
@@ -18,7 +18,7 @@
       <el-radio v-model="radioValue" :label="3">
         从
         <el-input-number v-model="average01" :max="58" :min="0" />
-        分钟开始， 每
+        分钟开始，每
         <el-input-number v-model="average02" :max="59 - average01" :min="1" />
         分钟执行一次
       </el-radio>
@@ -34,8 +34,7 @@
     </el-form-item>
   </el-form>
 </template>
-<script setup>
-import { ref, computed, watch } from 'vue'
+<script setup lang="ts">
 const emit = defineEmits(['update'])
 const props = defineProps({
   cron: {
@@ -79,7 +78,7 @@ watch(
   () => props.cron.min,
   (value) => changeRadioValue(value)
 )
-// 监听 computed 值变化并同步到 ref
+// 监听 computed 值变化并同步�?ref
 watch(cycleTotal, (value) => {
   const [v1, v2] = value.split('-')
   cycle01.value = Number(v1)

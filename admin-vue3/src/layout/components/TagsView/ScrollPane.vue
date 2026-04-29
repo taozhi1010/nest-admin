@@ -4,7 +4,7 @@
   </el-scrollbar>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import useTagsViewStore from '@/store/modules/tagsView'
 
 const tagAndTagSpacing = ref(4)

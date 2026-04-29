@@ -59,7 +59,8 @@
 import selectUser from './selectUser'
 import { allocatedUserList, authUserCancel, authUserCancelAll } from '@/api/system/role'
 import { useDict } from '@/composables/useDict'
-import { resetForm, parseTime } from '@/composables/useCommon'
+import { parseTime } from '@/composables/useCommon'
+import { resetForm } from '@/composables/useForm'
 
 // ==================== Composables ====================
 const { closeOpenPage } = useTab()

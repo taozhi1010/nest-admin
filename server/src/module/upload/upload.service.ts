@@ -43,16 +43,21 @@ export class UploadService {
   /**
    * 单文件上传
    * @param file
+   * @param customPath 自定义存储路径
+   * @param authorName 作者名称（可选，用于生成文件名）
    * @returns
    */
-  async singleFileUpload(file: Express.Multer.File): Promise<UploadResult | any> {
+  async singleFileUpload(file: Express.Multer.File, customPath?: string, authorName?: string): Promise<UploadResult | any> {
     const fileSize = (file.size / 1024 / 1024).toFixed(2);
     if (fileSize > this.config.get('app.file.maxSize')) {
       return ResultData.fail(500, `文件大小不能超过${this.config.get('app.file.maxSize')}MB`);
     }
 
-    // 使用文件存储工厂统一处理上传
-    const res = await this.fileStorageFactory.uploadFile(file.buffer, file.originalname, file.mimetype);
+    // 使用默认路径或自定义路径
+    const storagePath = customPath || 'uploads';
+
+    // 使用文件存储工厂统一处理上传，传递作者名
+    const res = await this.fileStorageFactory.uploadFile(file.buffer, file.originalname, file.mimetype, storagePath, authorName);
 
     const uploadId = GenerateUUID();
     await this.sysUploadEntityRep.save({ uploadId, ...res, ext: path.extname(res.newFileName), size: file.size });

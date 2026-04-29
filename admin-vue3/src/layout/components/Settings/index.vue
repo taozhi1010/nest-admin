@@ -70,14 +70,16 @@
       </span>
     </div>
 
-    <el-divider />
-
-    <el-button icon="DocumentAdd" plain type="primary" @click="saveSetting">保存配置</el-button>
-    <el-button icon="Refresh" plain @click="resetSetting">重置配置</el-button>
+    <template #footer>
+      <div class="drawer-footer">
+        <el-button icon="DocumentAdd" type="primary" @click="saveSetting">保存配置</el-button>
+        <el-button icon="Refresh" @click="resetSetting">重置配置</el-button>
+      </div>
+    </template>
   </el-drawer>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import variables from '@/assets/styles/variables.module.scss'
 import axios from 'axios'
 import { useDynamicTitle } from '@/composables/useDynamicTitle'
@@ -114,21 +116,21 @@ const tagsView = computed({
     settingsStore.changeSetting({ key: 'tagsView', value: val })
   }
 })
-/**是否需要固定头部 */
+/** 是否需要固定头部 */
 const fixedHeader = computed({
   get: () => storeSettings.value.fixedHeader,
   set: (val) => {
     settingsStore.changeSetting({ key: 'fixedHeader', value: val })
   }
 })
-/**是否需要侧边栏的logo */
+/** 是否需要侧边栏的logo */
 const sidebarLogo = computed({
   get: () => storeSettings.value.sidebarLogo,
   set: (val) => {
     settingsStore.changeSetting({ key: 'sidebarLogo', value: val })
   }
 })
-/**是否需要侧边栏的动态网页的title */
+/** 是否需要侧边栏的动态网页的title */
 const dynamicTitle = computed({
   get: () => storeSettings.value.dynamicTitle,
   set: (val) => {
@@ -151,7 +153,7 @@ function handleTheme(val) {
 function saveSetting() {
   loadingInstance = ElLoading.service({
     lock: true,
-    text: '正在保存到本地，请稍候...',
+    text: '正在保存到本地，请稍等...',
     background: 'rgba(0, 0, 0, 0.7)'
   })
   let layoutSetting = {
@@ -174,7 +176,7 @@ function saveSetting() {
 function resetSetting() {
   loadingInstance = ElLoading.service({
     lock: true,
-    text: '正在清除设置缓存并刷新，请稍候...',
+    text: '正在清除设置缓存并刷新，请稍等...',
     background: 'rgba(0, 0, 0, 0.7)'
   })
   localStorage.removeItem('layout-setting')

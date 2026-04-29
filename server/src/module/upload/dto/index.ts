@@ -3,6 +3,13 @@ import { ApiProperty } from '@nestjs/swagger';
 export class FileUploadDto {
   @ApiProperty({ type: 'string', format: 'binary' })
   file: any;
+
+  @ApiProperty({
+    type: 'string',
+    required: true,
+    description: '文件存储路径（如：avatar、article、document），不能为空',
+  })
+  path: string;
 }
 export class uploadIdDto {
   @ApiProperty({ type: 'string' })
@@ -17,6 +24,12 @@ export class ChunkFileDto {
   uploadId: string;
   @ApiProperty({ type: 'string' })
   fileName: string;
+  @ApiProperty({
+    type: 'string',
+    required: true,
+    description: '文件存储路径（如：avatar、article、document），不能为空',
+  })
+  path: string;
 }
 
 export class ChunkMergeFileDto {
@@ -24,4 +37,10 @@ export class ChunkMergeFileDto {
   uploadId: string;
   @ApiProperty({ type: 'string' })
   fileName: string;
+  @ApiProperty({
+    type: 'string',
+    required: true,
+    description: '文件存储路径（如：avatar、article、document），不能为空',
+  })
+  path: string;
 }

@@ -2,31 +2,31 @@
   <div>
     <el-tabs type="border-card">
       <el-tab-pane v-if="shouldHide('second')" label="秒">
-        <crontab-second ref="cronsecond" :check="checkNumber" :cron="crontabValueObj" @update="updateCrontabValue" />
+        <crontab-second ref="cronsecond" :check="checkNumber" :cron="crontab.valueObj" @update="updateCrontabValue" />
       </el-tab-pane>
 
       <el-tab-pane v-if="shouldHide('min')" label="分钟">
-        <crontab-min ref="cronmin" :check="checkNumber" :cron="crontabValueObj" @update="updateCrontabValue" />
+        <crontab-min ref="cronmin" :check="checkNumber" :cron="crontab.valueObj" @update="updateCrontabValue" />
       </el-tab-pane>
 
       <el-tab-pane v-if="shouldHide('hour')" label="小时">
-        <crontab-hour ref="cronhour" :check="checkNumber" :cron="crontabValueObj" @update="updateCrontabValue" />
+        <crontab-hour ref="cronhour" :check="checkNumber" :cron="crontab.valueObj" @update="updateCrontabValue" />
       </el-tab-pane>
 
       <el-tab-pane v-if="shouldHide('day')" label="日">
-        <crontab-day ref="cronday" :check="checkNumber" :cron="crontabValueObj" @update="updateCrontabValue" />
+        <crontab-day ref="cronday" :check="checkNumber" :cron="crontab.valueObj" @update="updateCrontabValue" />
       </el-tab-pane>
 
       <el-tab-pane v-if="shouldHide('month')" label="月">
-        <crontab-month ref="cronmonth" :check="checkNumber" :cron="crontabValueObj" @update="updateCrontabValue" />
+        <crontab-month ref="cronmonth" :check="checkNumber" :cron="crontab.valueObj" @update="updateCrontabValue" />
       </el-tab-pane>
 
       <el-tab-pane v-if="shouldHide('week')" label="周">
-        <crontab-week ref="cronweek" :check="checkNumber" :cron="crontabValueObj" @update="updateCrontabValue" />
+        <crontab-week ref="cronweek" :check="checkNumber" :cron="crontab.valueObj" @update="updateCrontabValue" />
       </el-tab-pane>
 
       <el-tab-pane v-if="shouldHide('year')" label="年">
-        <crontab-year ref="cronyear" :check="checkNumber" :cron="crontabValueObj" @update="updateCrontabValue" />
+        <crontab-year ref="cronyear" :check="checkNumber" :cron="crontab.valueObj" @update="updateCrontabValue" />
       </el-tab-pane>
     </el-tabs>
 
@@ -101,8 +101,7 @@
   </div>
 </template>
 
-<script setup>
-import { ref, computed, watch, onMounted } from 'vue'
+<script setup lang="ts">
 import CrontabSecond from './second.vue'
 import CrontabMin from './min.vue'
 import CrontabHour from './hour.vue'
@@ -116,7 +115,7 @@ import CrontabResult from './result.vue'
 const emit = defineEmits(['hide', 'fill'])
 const props = defineProps({
   hideComponent: {
-    type: Array,
+    type: Array as () => string[],
     default: () => []
   },
   expression: {
@@ -129,7 +128,7 @@ const props = defineProps({
 const tabTitles = ref(['秒', '分钟', '小时', '日', '月', '周', '年'])
 const tabActive = ref(0)
 const crontab = reactive({
-  hideComponent: [],
+  hideComponent: [] as string[],
   expression: '',
   valueObj: {
     second: '*',
@@ -162,7 +161,7 @@ watch(
  * 判断是否应该隐藏某个标签页
  * @param {string} key - 标签页标识
  */
-function shouldHide(key) {
+function shouldHide(key: string) {
   return !(crontab.hideComponent && crontab.hideComponent.includes(key))
 }
 
@@ -170,7 +169,7 @@ function shouldHide(key) {
  * 解析 Cron 表达式
  */
 function resolveExp() {
-  // 反解析 表达式
+  // 反解析表达式
   if (crontab.expression) {
     const arr = crontab.expression.split(/\s+/)
     if (arr.length >= 6) {
@@ -195,10 +194,10 @@ function resolveExp() {
 }
 
 /**
- * Tab 切换值
+ * Tab 切换事件
  * @param {number} index - 标签页索引
  */
-function tabCheck(index) {
+function tabCheck(index: number) {
   tabActive.value = index
 }
 
@@ -208,17 +207,17 @@ function tabCheck(index) {
  * @param {string} value - 字段值
  * @param {string} from - 来源组件
  */
-function updateCrontabValue(name, value, from) {
-  crontab.valueObj[name] = value
+function updateCrontabValue(name: string, value: string, from: string) {
+  crontab.valueObj[name as keyof typeof crontab.valueObj] = value
 }
 
 /**
  * 表单选项的子组件校验数字格式（通过 -props 传递）
- * @param {number} value - 待校验的值
+ * @param {number} value - 待校验的数值
  * @param {number} minLimit - 最小值
  * @param {number} maxLimit - 最大值
  */
-function checkNumber(value, minLimit, maxLimit) {
+function checkNumber(value: number, minLimit: number, maxLimit: number) {
   // 检查必须为整数
   value = Math.floor(value)
   if (value < minLimit) {

@@ -1,16 +1,18 @@
 <template>
   <el-form size="small">
     <el-form-item>
-      <el-radio v-model="radioValue" :label="1">日，允许的通配符[, - * ? / L W]</el-radio>
+      <el-radio v-model="radioValue" :label="1">日，允许的通配符[, - * / ?]</el-radio>
     </el-form-item>
 
     <el-form-item>
-      <el-radio v-model="radioValue" :label="2">不指定</el-radio>
+      <el-radio v-model="radioValue" :label="2">
+        不指定
+      </el-radio>
     </el-form-item>
 
     <el-form-item>
       <el-radio v-model="radioValue" :label="3">
-        周期从
+        周期
         <el-input-number v-model="cycle01" :max="30" :min="1" />
         -
         <el-input-number v-model="cycle02" :max="31" :min="cycle01 + 1" />
@@ -22,9 +24,9 @@
       <el-radio v-model="radioValue" :label="4">
         从
         <el-input-number v-model="average01" :max="30" :min="1" />
-        号开始，每
+        日开始，每
         <el-input-number v-model="average02" :max="31 - average01" :min="1" />
-        日执行一次
+        天执行一次
       </el-radio>
     </el-form-item>
 
@@ -37,7 +39,9 @@
     </el-form-item>
 
     <el-form-item>
-      <el-radio v-model="radioValue" :label="6">本月最后一天</el-radio>
+      <el-radio v-model="radioValue" :label="6">
+        本月最后一天
+      </el-radio>
     </el-form-item>
 
     <el-form-item>
@@ -50,8 +54,7 @@
     </el-form-item>
   </el-form>
 </template>
-<script setup>
-import { ref, computed, watch } from 'vue'
+<script setup lang="ts">
 const emit = defineEmits(['update'])
 const props = defineProps({
   cron: {
@@ -100,7 +103,7 @@ watch(
   () => props.cron.day,
   (value) => changeRadioValue(value)
 )
-// 监听 computed 值变化并同步到 ref
+// 监听 computed 值变化并同步�?ref
 watch(cycleTotal, (value) => {
   const [v1, v2] = value.split('-')
   cycle01.value = Number(v1)

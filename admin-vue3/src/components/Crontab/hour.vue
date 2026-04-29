@@ -6,11 +6,11 @@
 
     <el-form-item>
       <el-radio v-model="radioValue" :label="2">
-        周期从
+        周期
         <el-input-number v-model="cycle01" :max="22" :min="0" />
         -
         <el-input-number v-model="cycle02" :max="23" :min="cycle01 + 1" />
-        时
+        小时
       </el-radio>
     </el-form-item>
 
@@ -35,8 +35,7 @@
   </el-form>
 </template>
 
-<script setup>
-import { ref, computed, watch } from 'vue'
+<script setup lang="ts">
 const emit = defineEmits(['update'])
 const props = defineProps({
   cron: {
@@ -61,7 +60,7 @@ const cycle01 = ref(0)
 const cycle02 = ref(1)
 const average01 = ref(0)
 const average02 = ref(1)
-const checkboxList = ref([])
+const checkboxList = ref<number[]>([])
 const checkCopy = ref([0])
 const cycleTotal = computed(() => {
   const checked01 = props.check(cycle01.value, 0, 22)
@@ -92,7 +91,7 @@ watch(averageTotal, (value) => {
   average02.value = Number(v2)
 })
 watch([radioValue, cycleTotal, averageTotal, checkboxString], () => onRadioChange())
-function changeRadioValue(value) {
+function changeRadioValue(value: string) {
   if (value === '*') {
     radioValue.value = 1
   } else if (value.indexOf('-') > -1) {
