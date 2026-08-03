@@ -1,8 +1,8 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException, OnModuleInit } from '@nestjs/common';
 import { Cron, CronExpression, SchedulerRegistry } from '@nestjs/schedule';
 import { CronJob } from 'cron';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Like } from 'typeorm';
+import { Repository, Like, In } from 'typeorm';
 import { Job } from './entities/job.entity';
 import { CreateJobDto, ListJobDto } from './dto/create-job.dto';
 import { ResultData } from 'src/common/utils/result';
@@ -11,7 +11,7 @@ import { ExportTable } from 'src/common/utils/export';
 import { Response } from 'express';
 
 @Injectable()
-export class JobService {
+export class JobService implements OnModuleInit {
   private readonly logger = new Logger(JobService.name);
 
   constructor(
@@ -19,8 +19,11 @@ export class JobService {
     @InjectRepository(Job)
     private jobRepository: Repository<Job>,
     private taskService: TaskService,
-  ) {
-    this.initializeJobs();
+  ) {}
+
+  // 模块初始化时加载启用的定时任务，使用生命周期钩子避免构造函数中执行异步操作
+  async onModuleInit() {
+    await this.initializeJobs();
   }
 
   // 初始化任务
@@ -45,7 +48,6 @@ export class JobService {
     if (status) {
       where.status = status;
     }
-
     const [list, total] = await this.jobRepository.findAndCount({
       where,
       skip: (pageNum - 1) * pageSize,
@@ -62,7 +64,7 @@ export class JobService {
   async getJob(jobId: number) {
     const job = await this.jobRepository.findOne({ where: { jobId } });
     if (!job) {
-      throw new Error('任务不存在');
+      throw new NotFoundException('任务不存在');
     }
     return ResultData.ok(job);
   }
@@ -89,7 +91,7 @@ export class JobService {
   async update(jobId: number, updateJobDto: Partial<Job>, userName: string) {
     const job = await this.jobRepository.findOne({ where: { jobId } });
     if (!job) {
-      throw new Error('任务不存在');
+      throw new NotFoundException('任务不存在');
     }
 
     // 如果更新了cron表达式或状态，需要重新调度
@@ -116,7 +118,8 @@ export class JobService {
   // 删除任务
   async remove(jobIds: number | number[]) {
     const ids = Array.isArray(jobIds) ? jobIds : [jobIds];
-    const jobs = await this.jobRepository.findByIds(ids);
+    // findByIds 在 TypeORM 0.3.x 已废弃，改用 find + In
+    const jobs = await this.jobRepository.find({ where: { jobId: In(ids) } });
 
     // 从调度器中删除
     for (const job of jobs) {
@@ -135,7 +138,7 @@ export class JobService {
   async changeStatus(jobId: number, status: string, userName: string) {
     const job = await this.jobRepository.findOne({ where: { jobId } });
     if (!job) {
-      throw new Error('任务不存在');
+      throw new NotFoundException('任务不存在');
     }
 
     const cronJob = this.getCronJob(job.jobName);
@@ -167,7 +170,7 @@ export class JobService {
   async run(jobId: number) {
     const job = await this.jobRepository.findOne({ where: { jobId } });
     if (!job) {
-      throw new Error('任务不存在');
+      throw new NotFoundException('任务不存在');
     }
 
     // 执行任务
@@ -177,7 +180,10 @@ export class JobService {
 
   // 添加定时任务到调度器
   private addCronJob(name: string, cronTime: string, invokeTarget: string) {
-    cronTime = cronTime.replace('?', '*'); // 不支持问号，则将cron的问号转成*
+    // cron 库不支持 Quartz 的 ? 语法，转换为 *。
+    // 注意：? 表示"不指定值"（用于 dayOfMonth/dayOfWeek 互斥），* 表示"任意值"，
+    // 多数场景下效果等价，但若表达式同时约束了 dayOfMonth 和 dayOfWeek 需留意语义差异。
+    cronTime = cronTime.replace(/\?/g, '*');
     const job = new CronJob(cronTime, async () => {
       this.logger.warn(`定时任务 ${name} 正在执行，调用方法: ${invokeTarget}`);
       await this.taskService.executeTask(invokeTarget, name);

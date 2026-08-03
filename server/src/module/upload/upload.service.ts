@@ -54,7 +54,8 @@ export class UploadService {
     }
     const uploadId = GenerateUUID();
     await this.sysUploadEntityRep.save({ uploadId, ...res, ext: path.extname(res.newFileName), size: file.size });
-    return res;
+    // 统一返回 ResultData，避免调用方双重包装
+    return ResultData.ok(res);
   }
 
   /**
@@ -139,10 +140,13 @@ export class UploadService {
     await this.thunkStreamMerge(sourceFilesDir, targetFile);
     //文件相对地址
     const relativeFilePath = targetFile.replace(baseDirPath, '');
-    const url = path.posix.join(this.config.get('app.file.domain'), fileName);
+    // 本地访问 URL 需拼接 serveRoot + relativeFilePath，与 saveFileLocal 逻辑保持一致
+    const serveRoot = this.config.get('app.file.serveRoot') || '';
+    const localFileName = path.posix.join(serveRoot, relativeFilePath);
+    const url = path.posix.join(this.config.get('app.file.domain'), localFileName);
     const key = path.posix.join('test', relativeFilePath);
     const data = {
-      fileName: key,
+      fileName: this.isLocal ? localFileName : key,
       newFileName: newFileName,
       url: url,
     };
@@ -337,10 +341,11 @@ export class UploadService {
         Key: targetFile,
         FilePath: sourceFile,
         SliceSize: 1024 * 1024 * 5 /* 触发分块上传的阈值，超过5MB使用分块上传，非必须 */,
-        onProgress: function (progressData) {
-          /* 非必须 */
+        // 必须使用箭头函数保留 this 指向，否则 this.sysUploadEntityRep 为 undefined
+        onProgress: (progressData) => {
           if (progressData.percent === 1) {
-            this.sysUploadEntityRep.update({ filName: targetFile }, { status: 0 });
+            // 修正字段名 filName → fileName，status 统一用字符串 '0'
+            this.sysUploadEntityRep.update({ fileName: targetFile }, { status: '0' });
           }
         },
       });

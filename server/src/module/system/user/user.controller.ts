@@ -47,8 +47,12 @@ export class UserController {
   @Post('/profile/avatar')
   @UseInterceptors(FileInterceptor('avatarfile'))
   async avatar(@UploadedFile() avatarfile: Express.Multer.File, @User() user: UserDto) {
+    // singleFileUpload 已统一返回 ResultData，需从 data 中取 fileName
     const res = await this.uploadService.singleFileUpload(avatarfile);
-    return ResultData.ok({ imgUrl: res.fileName });
+    if (res.code !== 200) {
+      return res;
+    }
+    return ResultData.ok({ imgUrl: res.data.fileName });
   }
 
   @ApiOperation({
@@ -177,8 +181,8 @@ export class UserController {
   @RequireRole('admin')
   @Delete(':id')
   remove(@Param('id') ids: string) {
-    const menuIds = ids.split(',').map((id) => +id);
-    return this.userService.remove(menuIds);
+    const userIds = ids.split(',').map((id) => +id);
+    return this.userService.remove(userIds);
   }
 
   @ApiOperation({ summary: '导出用户信息数据为xlsx' })

@@ -13,6 +13,10 @@ export class RolesGuard implements CanActivate {
 
     //不需要鉴权
     if (role) {
+      // req.user 可能为 undefined（如白名单路由未登录访问），需空值保护
+      if (!req.user || !req.user.roles) {
+        return false;
+      }
       return this.hasRole(role, req.user.roles);
     }
 

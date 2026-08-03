@@ -104,8 +104,8 @@ export class RoleController {
   @RequirePermission('system:role:remove')
   @Delete(':id')
   remove(@Param('id') ids: string) {
-    const menuIds = ids.split(',').map((id) => +id);
-    return this.roleService.remove(menuIds);
+    const roleIds = ids.split(',').map((id) => +id);
+    return this.roleService.remove(roleIds);
   }
 
   @ApiOperation({

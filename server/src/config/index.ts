@@ -8,10 +8,12 @@ const configFileNameObj = {
   production: 'prod',
 };
 
-const env = process.env.NODE_ENV;
-
-console.log(env);
+const env = process.env.NODE_ENV || 'development';
 
 export default () => {
-  return yaml.load(readFileSync(join(__dirname, `./${configFileNameObj[env]}.yml`), 'utf8')) as Record<string, any>;
+  const configName = configFileNameObj[env];
+  if (!configName) {
+    throw new Error(`无效的 NODE_ENV: ${env}，支持 development/test/production`);
+  }
+  return yaml.load(readFileSync(join(__dirname, `./${configName}.yml`), 'utf8')) as Record<string, any>;
 };

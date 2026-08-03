@@ -29,7 +29,7 @@ export class MenuService {
     entity.where('entity.delFlag = :delFlag', { delFlag: '0' });
 
     if (query.menuName) {
-      entity.andWhere(`entity.menuName LIKE "%${query.menuName}%"`);
+      entity.andWhere('entity.menuName LIKE :menuName', { menuName: `%${query.menuName}%` });
     }
     if (query.status) {
       entity.andWhere('entity.status = :status', { status: query.status });

@@ -3,7 +3,6 @@ import { UploadService } from './upload.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiTags, ApiOperation, ApiBody, ApiQuery, ApiBearerAuth } from '@nestjs/swagger';
 import { ChunkFileDto, ChunkMergeFileDto, FileUploadDto, uploadIdDto } from './dto/index';
-import { ResultData } from 'src/common/utils/result';
 
 @ApiTags('通用-文件上传')
 @Controller('common/upload')
@@ -24,11 +23,11 @@ export class UploadController {
     required: true,
   })
   @HttpCode(200)
-  @Post()
+  @Post('/single')
   @UseInterceptors(FileInterceptor('file'))
   async singleFileUpload(@UploadedFile() file: Express.Multer.File) {
-    const res = await this.uploadService.singleFileUpload(file);
-    return ResultData.ok(res);
+    // service 已统一返回 ResultData，直接返回避免双重包装
+    return this.uploadService.singleFileUpload(file);
   }
 
   /**

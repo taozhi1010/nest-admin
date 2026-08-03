@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import dayjs from 'dayjs';
 import isLeapYear from 'dayjs/plugin/isLeapYear'; // 导入插件
 import timezone from 'dayjs/plugin/timezone'; // 导入插件
+import { Logger } from '@nestjs/common';
 import utc from 'dayjs/plugin/utc'; // 导入插件
 import 'dayjs/locale/zh-cn'; // 导入本地化语言
 import { ValueTransformer } from 'typeorm';
@@ -53,7 +54,7 @@ export function ListToTree(arr, getId, getLabel) {
       if (kData[parentId]) {
         kData[parentId].children.push(kData[id]);
       } else {
-        console.warn(`Parent menuId: ${parentId} not found for child menuId: ${id}`);
+        Logger.warn(`Parent menuId: ${parentId} not found for child menuId: ${id}`, 'ListToTree');
       }
     }
   });

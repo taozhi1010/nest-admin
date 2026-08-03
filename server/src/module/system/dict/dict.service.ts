@@ -38,11 +38,11 @@ export class DictService {
     entity.where('entity.delFlag = :delFlag', { delFlag: '0' });
 
     if (query.dictName) {
-      entity.andWhere(`entity.dictName LIKE "%${query.dictName}%"`);
+      entity.andWhere('entity.dictName LIKE :dictName', { dictName: `%${query.dictName}%` });
     }
 
     if (query.dictType) {
-      entity.andWhere(`entity.dictType LIKE "%${query.dictType}%"`);
+      entity.andWhere('entity.dictType LIKE :dictType', { dictType: `%${query.dictType}%` });
     }
 
     if (query.status) {
@@ -104,11 +104,11 @@ export class DictService {
     const entity = this.sysDictDataEntityRep.createQueryBuilder('entity');
     entity.where('entity.delFlag = :delFlag', { delFlag: '0' });
     if (query.dictLabel) {
-      entity.andWhere(`entity.dictLabel LIKE "%${query.dictLabel}%"`);
+      entity.andWhere('entity.dictLabel LIKE :dictLabel', { dictLabel: `%${query.dictLabel}%` });
     }
 
     if (query.dictType) {
-      entity.andWhere(`entity.dictType LIKE "%${query.dictType}%"`);
+      entity.andWhere('entity.dictType LIKE :dictType', { dictType: `%${query.dictType}%` });
     }
 
     if (query.status) {

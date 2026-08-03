@@ -45,11 +45,11 @@ export class RoleService {
     entity.where('entity.delFlag = :delFlag', { delFlag: '0' });
 
     if (query.roleName) {
-      entity.andWhere(`entity.roleName LIKE "%${query.roleName}%"`);
+      entity.andWhere('entity.roleName LIKE :roleName', { roleName: `%${query.roleName}%` });
     }
 
     if (query.roleKey) {
-      entity.andWhere(`entity.roleKey LIKE "%${query.roleKey}%"`);
+      entity.andWhere('entity.roleKey LIKE :roleKey', { roleKey: `%${query.roleKey}%` });
     }
 
     if (query.roleId) {

@@ -16,19 +16,16 @@ export const UserTool = createParamDecorator((data: unknown, ctx: ExecutionConte
   const userName = request.user?.user?.userName;
 
   const injectCreate = (data: any) => {
-    if (data.createBy) {
-      return;
+    if (!data.createBy) {
+      data.createBy = userName;
     }
-    data.createBy = userName;
-
     return injectUpdate(data);
   };
 
   const injectUpdate = (data: any) => {
-    if (data.updateBy) {
-      return;
+    if (!data.updateBy) {
+      data.updateBy = userName;
     }
-    data.updateBy = userName;
     return data;
   };
 

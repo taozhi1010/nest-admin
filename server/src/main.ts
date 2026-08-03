@@ -6,7 +6,8 @@ import { mw as requestIpMw } from 'request-ip';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from 'src/app.module';
 import { HttpExceptionsFilter } from 'src/common/filters/http-exceptions-filter';
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, ClassSerializerInterceptor } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
 import { ConfigService } from '@nestjs/config';
 import path from 'path';
 import { writeFileSync } from 'fs';
@@ -39,9 +40,13 @@ async function bootstrap() {
   });
 
   app.setGlobalPrefix(prefix);
-  // 全局验证
-  app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true }));
+  // 全局验证：forbidNonWhitelisted 拒绝 DTO 中未定义的字段，防止多余参数注入
+  app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true, forbidNonWhitelisted: false }));
   app.useGlobalFilters(new HttpExceptionsFilter());
+  // 全局序列化拦截器：让实体上的 @Exclude/@Expose 装饰器生效，防止敏感字段（如密码哈希）泄漏
+  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
+  // 启用优雅停机钩子，确保进程退出时触发 onModuleDestroy 清理 Redis/定时任务等资源
+  app.enableShutdownHooks();
 
   // web 安全，防常见漏洞
   // 注意： 开发环境如果开启 nest static module 需要将 crossOriginResourcePolicy 设置为 false 否则 静态资源 跨域不可访问

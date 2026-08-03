@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, SelectQueryBuilder } from 'typeorm';
 import { ResultData } from 'src/common/utils/result';
@@ -10,6 +10,8 @@ import { Cacheable, CacheEvict } from 'src/common/decorators/redis.decorator';
 
 @Injectable()
 export class DeptService {
+  private readonly logger = new Logger(DeptService.name);
+
   constructor(
     @InjectRepository(SysDeptEntity)
     private readonly sysDeptEntityRep: Repository<SysDeptEntity>,
@@ -40,7 +42,7 @@ export class DeptService {
     entity.where('entity.delFlag = :delFlag', { delFlag: '0' });
 
     if (query.deptName) {
-      entity.andWhere(`entity.deptName LIKE "%${query.deptName}%"`);
+      entity.andWhere('entity.deptName LIKE :deptName', { deptName: `%${query.deptName}%` });
     }
     if (query.status) {
       entity.andWhere('entity.status = :status', { status: query.status });
@@ -49,7 +51,7 @@ export class DeptService {
     return ResultData.ok(res);
   }
 
-  @Cacheable(CacheEnum.SYS_DEPT_KEY, 'findOne:{deptId}')
+  @Cacheable(CacheEnum.SYS_DEPT_KEY, 'findOne:{0}')
   async findOne(deptId: number) {
     const data = await this.sysDeptEntityRep.findOne({
       where: {
@@ -66,7 +68,7 @@ export class DeptService {
    * @param dataScope 数据权限范围，决定查询的部门范围。
    * @returns 返回一个部门ID数组，根据数据权限范围决定返回的部门ID集合。
    */
-  @Cacheable(CacheEnum.SYS_DEPT_KEY, 'findDeptIdsByDataScope:{deptId}-{dataScope}')
+  @Cacheable(CacheEnum.SYS_DEPT_KEY, 'findDeptIdsByDataScope:{0}-{1}')
   async findDeptIdsByDataScope(deptId: number, dataScope: DataScopeEnum) {
     try {
       // 创建部门实体的查询构建器
@@ -90,8 +92,9 @@ export class DeptService {
       // 将查询结果映射为部门ID数组后返回
       return list.map((item) => item.deptId);
     } catch (error) {
-      console.error('Failed to query department IDs:', error);
-      throw new Error('Querying department IDs failed');
+      // 保留原始错误堆栈，便于排查
+      this.logger.error(`查询部门ID失败: ${error.message}`, error.stack);
+      throw error;
     }
   }
 
@@ -110,22 +113,21 @@ export class DeptService {
    * @param deptId 部门ID
    */
   private addQueryForDeptAndChildDataScope(queryBuilder: SelectQueryBuilder<any>, deptId: number) {
-    // 使用参数化查询以防止SQL注入
-    queryBuilder
-      .andWhere('dept.ancestors LIKE :ancestors', {
-        ancestors: `%${deptId}%`,
-      })
-      .orWhere('dept.deptId = :deptId', { deptId: deptId });
+    // 使用 FIND_IN_SET 精确匹配 ancestors 中的 deptId，避免 LIKE '%1%' 匹配到 10/11/21 等
+    // ancestors 格式为 "0,100,101" 逗号分隔的父级链
+    queryBuilder.andWhere('FIND_IN_SET(:deptId, dept.ancestors) > 0', { deptId: deptId }).orWhere('dept.deptId = :deptId', { deptId: deptId });
   }
 
   @Cacheable(CacheEnum.SYS_DEPT_KEY, 'findListExclude')
   async findListExclude(id: number) {
-    //TODO 需排出ancestors 中不出现id的数据
-    const data = await this.sysDeptEntityRep.find({
-      where: {
-        delFlag: '0',
-      },
-    });
+    // 排除指定部门及其所有子部门（ancestors 中包含 id 的记录），
+    // 用于编辑部门时避免将自己或子部门设为父级造成循环引用
+    const data = await this.sysDeptEntityRep
+      .createQueryBuilder('dept')
+      .where('dept.delFlag = :delFlag', { delFlag: '0' })
+      .andWhere('dept.deptId != :id', { id })
+      .andWhere('(FIND_IN_SET(:id, dept.ancestors) = 0 OR dept.ancestors IS NULL)', { id })
+      .getMany();
     return ResultData.ok(data);
   }
 
@@ -151,6 +153,13 @@ export class DeptService {
 
   @CacheEvict(CacheEnum.SYS_DEPT_KEY, '*')
   async remove(deptId: number) {
+    // 检查是否存在子部门，避免软删除后形成孤儿数据
+    const childCount = await this.sysDeptEntityRep.count({
+      where: { parentId: deptId, delFlag: '0' },
+    });
+    if (childCount > 0) {
+      return ResultData.fail(500, '存在子部门，不允许删除');
+    }
     const data = await this.sysDeptEntityRep.update(
       { deptId: deptId },
       {

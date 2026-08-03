@@ -27,11 +27,11 @@ export class ConfigService {
     entity.where('entity.delFlag = :delFlag', { delFlag: '0' });
 
     if (query.configName) {
-      entity.andWhere(`entity.configName LIKE "%${query.configName}%"`);
+      entity.andWhere('entity.configName LIKE :configName', { configName: `%${query.configName}%` });
     }
 
     if (query.configKey) {
-      entity.andWhere(`entity.configKey LIKE "%${query.configKey}%"`);
+      entity.andWhere('entity.configKey LIKE :configKey', { configKey: `%${query.configKey}%` });
     }
 
     if (query.configType) {
@@ -74,13 +74,14 @@ export class ConfigService {
    * @param configKey 配置的键值，用于查询配置信息。
    * @returns 返回一个结果对象，包含查询到的配置信息。如果未查询到，则返回空结果。
    */
-  @Cacheable(CacheEnum.SYS_CONFIG_KEY, '{configKey}')
+  @Cacheable(CacheEnum.SYS_CONFIG_KEY, '{0}')
   async getConfigValue(configKey: string) {
     const data = await this.sysConfigEntityRep.findOne({ where: { configKey: configKey } });
-    return data.configValue;
+    // data 可能为 null（配置项不存在），需空值保护
+    return data?.configValue ?? null;
   }
 
-  @CacheEvict(CacheEnum.SYS_CONFIG_KEY, '{updateConfigDto.configKey}')
+  @CacheEvict(CacheEnum.SYS_CONFIG_KEY, '{0.configKey}')
   async update(updateConfigDto: UpdateConfigDto) {
     await this.sysConfigEntityRep.update(
       {

@@ -33,11 +33,11 @@ export class LoginlogService {
     entity.where('entity.delFlag = :delFlag', { delFlag: '0' });
 
     if (query.ipaddr) {
-      entity.andWhere(`entity.ipaddr LIKE "%${query.ipaddr}%"`);
+      entity.andWhere('entity.ipaddr LIKE :ipaddr', { ipaddr: `%${query.ipaddr}%` });
     }
 
     if (query.userName) {
-      entity.andWhere(`entity.userName LIKE "%${query.userName}%"`);
+      entity.andWhere('entity.userName LIKE :userName', { userName: `%${query.userName}%` });
     }
 
     if (query.status) {

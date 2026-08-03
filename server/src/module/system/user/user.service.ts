@@ -56,9 +56,9 @@ export class UserService {
    * @returns
    */
   async create(createUserDto: CreateUserDto) {
-    const salt = bcrypt.genSaltSync(10);
+    const salt = await bcrypt.genSalt(10);
     if (createUserDto.password) {
-      createUserDto.password = await bcrypt.hashSync(createUserDto.password, salt);
+      createUserDto.password = await bcrypt.hash(createUserDto.password, salt);
     }
 
     const res = await this.userRepo.save({ ...createUserDto, userType: SYS_USER_TYPE.CUSTOM });
@@ -129,11 +129,11 @@ export class UserService {
     }
 
     if (query.userName) {
-      entity.andWhere(`user.userName LIKE "%${query.userName}%"`);
+      entity.andWhere('user.userName LIKE :userName', { userName: `%${query.userName}%` });
     }
 
     if (query.phonenumber) {
-      entity.andWhere(`user.phonenumber LIKE "%${query.phonenumber}%"`);
+      entity.andWhere('user.phonenumber LIKE :phonenumber', { phonenumber: `%${query.phonenumber}%` });
     }
 
     if (query.status) {
@@ -180,7 +180,7 @@ export class UserService {
     });
   }
 
-  @Cacheable(CacheEnum.SYS_USER_KEY, '{userId}')
+  @Cacheable(CacheEnum.SYS_USER_KEY, '{0}')
   async findOne(userId: number) {
     const data = await this.userRepo.findOne({
       where: {
@@ -232,7 +232,7 @@ export class UserService {
    * @param updateUserDto
    * @returns
    */
-  @CacheEvict(CacheEnum.SYS_USER_KEY, '{updateUserDto.userId}')
+  @CacheEvict(CacheEnum.SYS_USER_KEY, '{0.userId}')
   async update(updateUserDto: UpdateUserDto, userId: number) {
     //不能修改超级管理员
     if (updateUserDto.userId === 1) throw new BadRequestException('非法操作！');
@@ -304,7 +304,7 @@ export class UserService {
     return ResultData.ok(data);
   }
 
-  @CacheEvict(CacheEnum.SYS_USER_KEY, '{userId}')
+  @CacheEvict(CacheEnum.SYS_USER_KEY, '{0}')
   clearCacheByUserId(userId: number) {
     return userId;
   }
@@ -317,14 +317,16 @@ export class UserService {
     const data = await this.userRepo.findOne({
       where: {
         userName: user.userName,
+        delFlag: DelFlagEnum.NORMAL,
       },
       select: ['userId', 'password'],
     });
-    this.clearCacheByUserId(data.userId);
 
-    if (!(data && bcrypt.compareSync(user.password, data.password))) {
+    if (!data || !(await bcrypt.compare(user.password, data.password))) {
       return ResultData.fail(500, `帐号或密码错误`);
     }
+    // 清缓存必须在 data 存在性判断之后，否则 data 为 null 时访问 data.userId 会抛 TypeError
+    this.clearCacheByUserId(data.userId);
 
     const userData = await this.getUserinfo(data.userId);
 
@@ -500,6 +502,8 @@ export class UserService {
       posts,
       dept: (data as any).dept,
     };
+    // 剔除密码哈希，避免敏感信息写入 Redis 或经 /getInfo 接口泄漏
+    delete (result as any).password;
 
     return result;
   }
@@ -509,9 +513,9 @@ export class UserService {
    */
   async register(user: RegisterDto) {
     const loginDate = GetNowDate();
-    const salt = bcrypt.genSaltSync(10);
+    const salt = await bcrypt.genSalt(10);
     if (user.password) {
-      user.password = await bcrypt.hashSync(user.password, salt);
+      user.password = await bcrypt.hash(user.password, salt);
     }
     const checkUserNameUnique = await this.userRepo.findOne({
       where: {
@@ -565,7 +569,8 @@ export class UserService {
       return ResultData.fail(500, '系统用户不能重置密码');
     }
     if (body.password) {
-      body.password = await bcrypt.hashSync(body.password, bcrypt.genSaltSync(10));
+      const resetSalt = await bcrypt.genSalt(10);
+      body.password = await bcrypt.hash(body.password, resetSalt);
     }
     await this.userRepo.update(
       {
@@ -623,13 +628,12 @@ export class UserService {
 
     const roleIds = await this.getRoleIds([userId]);
     //TODO flag用来给前端表格标记选中状态，后续优化
-    user['roles'] = allRoles.filter((item) => {
+    // 标记用户已分配的角色（flag），保留全部角色供前端展示选中状态
+    user['roles'] = allRoles.map((item) => {
       if (roleIds.includes(item.roleId)) {
         item['flag'] = true;
-        return true;
-      } else {
-        return true;
       }
+      return item;
     });
 
     return ResultData.ok({
@@ -732,11 +736,11 @@ export class UserService {
     entity.andWhere('user.status = :status', { status: '0' });
     entity.andWhere('user.userId IN (:...userIds)', { userIds: userIds });
     if (query.userName) {
-      entity.andWhere(`user.userName LIKE "%${query.userName}%"`);
+      entity.andWhere('user.userName LIKE :userName', { userName: `%${query.userName}%` });
     }
 
     if (query.phonenumber) {
-      entity.andWhere(`user.phonenumber LIKE "%${query.phonenumber}%"`);
+      entity.andWhere('user.phonenumber LIKE :phonenumber', { phonenumber: `%${query.phonenumber}%` });
     }
     entity.skip(query.pageSize * (query.pageNum - 1)).take(query.pageSize);
     //联查部门详情
@@ -769,11 +773,11 @@ export class UserService {
       userId: Not(In(userIds)),
     });
     if (query.userName) {
-      entity.andWhere(`user.userName LIKE "%${query.userName}%"`);
+      entity.andWhere('user.userName LIKE :userName', { userName: `%${query.userName}%` });
     }
 
     if (query.phonenumber) {
-      entity.andWhere(`user.phonenumber LIKE "%${query.phonenumber}%"`);
+      entity.andWhere('user.phonenumber LIKE :phonenumber', { phonenumber: `%${query.phonenumber}%` });
     }
     entity.skip(query.pageSize * (query.pageNum - 1)).take(query.pageSize);
     //联查部门详情
@@ -862,11 +866,18 @@ export class UserService {
     if (updatePwdDto.oldPassword === updatePwdDto.newPassword) {
       return ResultData.fail(500, '新密码不能与旧密码相同');
     }
-    if (bcrypt.compareSync(user.user.password, updatePwdDto.oldPassword)) {
+    // 从数据库查询最新密码哈希，避免 Redis 中缓存的旧哈希导致校验失真
+    const userData = await this.userRepo.findOne({
+      where: { userId: user.user.userId },
+      select: ['password'],
+    });
+    // bcrypt.compare(plaintext, hash) —— 参数顺序固定：明文在前，哈希在后
+    if (!userData || !(await bcrypt.compare(updatePwdDto.oldPassword, userData.password))) {
       return ResultData.fail(500, '修改密码失败，旧密码错误');
     }
 
-    const password = await bcrypt.hashSync(updatePwdDto.newPassword, bcrypt.genSaltSync(10));
+    const pwdSalt = await bcrypt.genSalt(10);
+    const password = await bcrypt.hash(updatePwdDto.newPassword, pwdSalt);
     await this.userRepo.update({ userId: user.user.userId }, { password: password });
     return ResultData.ok();
   }

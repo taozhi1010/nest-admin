@@ -11,7 +11,7 @@ export function CacheEvict(CACHE_NAME: string, CACHE_KEY: string) {
     const originMethod = descriptor.value;
 
     descriptor.value = async function (...args: any[]) {
-      const key = paramsKeyFormat(originMethod, CACHE_KEY, args);
+      const key = paramsKeyFormat(CACHE_KEY, args);
 
       if (key === '*') {
         const res = await this.redis.keys(`${CACHE_NAME}*`);
@@ -38,7 +38,7 @@ export function Cacheable(CACHE_NAME: string, CACHE_KEY: string, CACHE_EXPIRESIN
     const originMethod = descriptor.value;
 
     descriptor.value = async function (...args: any[]) {
-      const key = paramsKeyFormat(originMethod, CACHE_KEY, args);
+      const key = paramsKeyFormat(CACHE_KEY, args);
 
       if (key === null) {
         return await originMethod.apply(this, args);

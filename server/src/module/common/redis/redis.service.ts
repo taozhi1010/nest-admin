@@ -113,7 +113,24 @@ export class RedisService {
    * @param key
    */
   async keys(key?: string) {
-    return await this.client.keys(key);
+    // 使用 SCAN 替代 KEYS，避免在大数据量下阻塞 Redis
+    return await this.scan(key || '*');
+  }
+
+  /**
+   * 使用 SCAN 增量遍历匹配的 key，避免 KEYS 阻塞 Redis
+   * @param pattern 匹配模式，默认 '*'
+   * @param count 每次扫描数量，默认 100
+   */
+  async scan(pattern: string = '*', count: number = 100): Promise<string[]> {
+    const result: string[] = [];
+    let cursor = '0';
+    do {
+      const reply = await this.client.scan(cursor, 'MATCH', pattern, 'COUNT', count);
+      cursor = reply[0];
+      result.push(...reply[1]);
+    } while (cursor !== '0');
+    return result;
   }
 
   /* ----------------------- hash ----------------------- */
@@ -279,7 +296,8 @@ export class RedisService {
    */
   async lRightPush(key: string, ...val: string[]): Promise<number> {
     if (!key) return 0;
-    return await this.client.lpush(key, ...val);
+    // 使用 rpush 推入列表尾部（右侧），而非 lpush（左侧）
+    return await this.client.rpush(key, ...val);
   }
 
   /**
@@ -293,23 +311,23 @@ export class RedisService {
   }
 
   /**
-   * 移除并获取列表第一个元素
+   * 移除并获取列表第一个元素（非阻塞）
    * @param key
    */
-  async lLeftPop(key: string): Promise<string> {
+  async lLeftPop(key: string): Promise<string | null> {
     if (!key) return null;
-    const result = await this.client.blpop(key);
-    return result.length > 0 ? result[0] : null;
+    // 使用 lpop 非阻塞弹出，避免 blpop 在空列表时永久阻塞
+    return await this.client.lpop(key);
   }
 
   /**
-   * 移除并获取列表最后一个元素
+   * 移除并获取列表最后一个元素（非阻塞）
    * @param key
    */
-  async lRightPop(key: string): Promise<string> {
+  async lRightPop(key: string): Promise<string | null> {
     if (!key) return null;
-    const result = await this.client.brpop(key);
-    return result.length > 0 ? result[0] : null;
+    // 使用 rpop 非阻塞弹出，避免 brpop 在空列表时永久阻塞
+    return await this.client.rpop(key);
   }
 
   /**
@@ -354,7 +372,7 @@ export class RedisService {
    * @returns
    */
   async reset() {
-    const keys = await this.client.keys('*');
+    const keys = await this.scan('*');
     return this.client.del(keys);
   }
 }
