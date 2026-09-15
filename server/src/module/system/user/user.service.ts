@@ -56,7 +56,7 @@ export class UserService {
    * @returns
    */
   async create(createUserDto: CreateUserDto) {
-    const salt = await bcrypt.genSalt(10);
+    const salt = await bcrypt.genSalt(12);
     if (createUserDto.password) {
       createUserDto.password = await bcrypt.hash(createUserDto.password, salt);
     }
@@ -513,7 +513,7 @@ export class UserService {
    */
   async register(user: RegisterDto) {
     const loginDate = GetNowDate();
-    const salt = await bcrypt.genSalt(10);
+    const salt = await bcrypt.genSalt(12);
     if (user.password) {
       user.password = await bcrypt.hash(user.password, salt);
     }
@@ -569,7 +569,7 @@ export class UserService {
       return ResultData.fail(500, '系统用户不能重置密码');
     }
     if (body.password) {
-      const resetSalt = await bcrypt.genSalt(10);
+      const resetSalt = await bcrypt.genSalt(12);
       body.password = await bcrypt.hash(body.password, resetSalt);
     }
     await this.userRepo.update(
@@ -876,7 +876,7 @@ export class UserService {
       return ResultData.fail(500, '修改密码失败，旧密码错误');
     }
 
-    const pwdSalt = await bcrypt.genSalt(10);
+    const pwdSalt = await bcrypt.genSalt(12);
     const password = await bcrypt.hash(updatePwdDto.newPassword, pwdSalt);
     await this.userRepo.update({ userId: user.user.userId }, { password: password });
     return ResultData.ok();
