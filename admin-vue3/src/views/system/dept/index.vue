@@ -85,7 +85,7 @@
                      <el-tree-select
                         v-model="form.parentId"
                         :data="deptOptions"
-                        :props="{ value: 'deptId', label: 'deptName', children: 'children' }"
+                        :props="{ value: 'deptId', label: 'deptName', children: 'children', disabled: 'disabled' }"
                         value-key="deptId"
                         placeholder="选择上级部门"
                         check-strictly
@@ -141,7 +141,7 @@
 </template>
 
 <script setup name="Dept">
-import { listDept, getDept, delDept, addDept, updateDept, listDeptExcludeChild } from "@/api/system/dept";
+import { listDept, getDept, delDept, addDept, updateDept } from "@/api/system/dept";
 
 const { proxy } = getCurrentInstance();
 const { sys_normal_disable } = proxy.useDict("sys_normal_disable");
@@ -231,8 +231,12 @@ function toggleExpandAll() {
 /** 修改按钮操作 */
 function handleUpdate(row) {
   reset();
-  listDeptExcludeChild(row.deptId).then(response => {
-    deptOptions.value = proxy.handleTree(response.data, "deptId");
+  listDept().then(response => {
+    // 当前部门禁用，避免选到自己（其余部门均可选）
+    const data = (response.data || []).map(d => (
+      d.deptId === row.deptId ? { ...d, disabled: true } : d
+    ));
+    deptOptions.value = proxy.handleTree(data, "deptId");
   });
   getDept(row.deptId).then(response => {
     form.value = response.data;

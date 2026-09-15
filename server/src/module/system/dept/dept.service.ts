@@ -118,7 +118,7 @@ export class DeptService {
     queryBuilder.andWhere('FIND_IN_SET(:deptId, dept.ancestors) > 0', { deptId: deptId }).orWhere('dept.deptId = :deptId', { deptId: deptId });
   }
 
-  @Cacheable(CacheEnum.SYS_DEPT_KEY, 'findListExclude')
+  @Cacheable(CacheEnum.SYS_DEPT_KEY, 'findListExclude:{0}')
   async findListExclude(id: number) {
     // 排除指定部门及其所有子部门（ancestors 中包含 id 的记录），
     // 用于编辑部门时避免将自己或子部门设为父级造成循环引用
