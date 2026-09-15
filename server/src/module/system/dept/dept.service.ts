@@ -40,6 +40,7 @@ export class DeptService {
   async findAll(query: ListDeptDto) {
     const entity = this.sysDeptEntityRep.createQueryBuilder('entity');
     entity.where('entity.delFlag = :delFlag', { delFlag: '0' });
+    entity.orderBy('entity.orderNum', 'ASC');
 
     if (query.deptName) {
       entity.andWhere('entity.deptName LIKE :deptName', { deptName: `%${query.deptName}%` });
@@ -127,6 +128,7 @@ export class DeptService {
       .where('dept.delFlag = :delFlag', { delFlag: '0' })
       .andWhere('dept.deptId != :id', { id })
       .andWhere('(FIND_IN_SET(:id, dept.ancestors) = 0 OR dept.ancestors IS NULL)', { id })
+      .orderBy('dept.orderNum', 'ASC')
       .getMany();
     return ResultData.ok(data);
   }
@@ -179,6 +181,7 @@ export class DeptService {
       where: {
         delFlag: '0',
       },
+      order: { orderNum: 'ASC' },
     });
     const tree = ListToTree(
       res,

@@ -172,11 +172,16 @@ const data = reactive({
 
 const { queryParams, form, rules } = toRefs(data);
 
+/** 按 orderNum 升序排序（orderNum 缺失/非数字时按 0 处理） */
+function sortByOrderNum(list) {
+  return (list || []).slice().sort((a, b) => (Number(a?.orderNum) || 0) - (Number(b?.orderNum) || 0));
+}
+
 /** 查询部门列表 */
 function getList() {
   loading.value = true;
   listDept(queryParams.value).then(response => {
-    deptList.value = proxy.handleTree(response.data, "deptId");
+    deptList.value = proxy.handleTree(sortByOrderNum(response.data), "deptId");
     loading.value = false;
   });
 }
@@ -212,7 +217,7 @@ function resetQuery() {
 function handleAdd(row) {
   reset();
   listDept().then(response => {
-    deptOptions.value = proxy.handleTree(response.data, "deptId");
+    deptOptions.value = proxy.handleTree(sortByOrderNum(response.data), "deptId");
   });
   if (row != undefined) {
     form.value.parentId = row.deptId;
@@ -233,7 +238,7 @@ function handleUpdate(row) {
   reset();
   listDept().then(response => {
     // 当前部门禁用，避免选到自己（其余部门均可选）
-    const data = (response.data || []).map(d => (
+    const data = sortByOrderNum(response.data).map(d => (
       d.deptId === row.deptId ? { ...d, disabled: true } : d
     ));
     deptOptions.value = proxy.handleTree(data, "deptId");
