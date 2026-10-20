@@ -20,6 +20,7 @@ A out of the box backend management system based on the latest version of Nestjs
 
 - Preview: https://nest-admin.dooring.vip/
 - Domestic Mirror: https://gitee.com/tao-zhi/nest-admin
+- GitCode: https://atomgit.com/taozhi1010/nest-admin.git
 
 ## 1.0 is out! 🎉🎉🎉
 

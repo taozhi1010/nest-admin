@@ -20,6 +20,7 @@ Language : [🇺🇸](./README.md) | 🇨🇳
 
 - 预览: https://nest-admin.dooring.vip/
 - 国内镜像: https://gitee.com/tao-zhi/nest-admin
+- GitCode: https://atomgit.com/taozhi1010/nest-admin.git
 
 ## 1.0 版本! 🎉🎉🎉
 
