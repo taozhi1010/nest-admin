@@ -9,6 +9,9 @@ import { SysDictTypeEntity } from './entities/dict.type.entity';
 import { SysDictDataEntity } from './entities/dict.data.entity';
 import { CreateDictTypeDto, UpdateDictTypeDto, ListDictType, CreateDictDataDto, UpdateDictDataDto, ListDictData } from './dto/index';
 import { RedisService } from 'src/module/common/redis/redis.service';
+
+const DICT_CACHE_COMPLETE_KEY = 'sys_dict_meta:complete';
+
 @Injectable()
 export class DictService {
   constructor(
@@ -20,16 +23,19 @@ export class DictService {
   ) {}
   async createType(CreateDictTypeDto: CreateDictTypeDto) {
     await this.sysDictTypeEntityRep.save(CreateDictTypeDto);
+    await this.clearDictCache();
     return ResultData.ok();
   }
 
   async deleteType(dictIds: number[]) {
     await this.sysDictTypeEntityRep.update({ dictId: In(dictIds) }, { delFlag: '1' });
+    await this.clearDictCache();
     return ResultData.ok();
   }
 
   async updateType(updateDictTypeDto: UpdateDictTypeDto) {
     await this.sysDictTypeEntityRep.update({ dictId: updateDictTypeDto.dictId }, updateDictTypeDto);
+    await this.clearDictCache();
     return ResultData.ok();
   }
 
@@ -87,16 +93,19 @@ export class DictService {
   // 字典数据
   async createDictData(createDictDataDto: CreateDictDataDto) {
     await this.sysDictDataEntityRep.save(createDictDataDto);
+    await this.clearDictCache();
     return ResultData.ok();
   }
 
   async deleteDictData(dictIds: number[]) {
     await this.sysDictDataEntityRep.update({ dictCode: In(dictIds) }, { delFlag: '1' });
+    await this.clearDictCache();
     return ResultData.ok();
   }
 
   async updateDictData(updateDictDataDto: UpdateDictDataDto) {
     await this.sysDictDataEntityRep.update({ dictCode: updateDictDataDto.dictCode }, updateDictDataDto);
+    await this.clearDictCache();
     return ResultData.ok();
   }
 
@@ -132,95 +141,95 @@ export class DictService {
    * @param dictType 字典类型字符串。
    * @returns 返回查询到的数据类型信息，如果未查询到则返回空。
    */
-  async findOneDataType(dictType: string) {
-    // TODO: 先查询字典类型是否被删除，以下代码被注释
-    // const dictTypeData = await this.sysDictTypeEntityRep.findOne({
-    //   where: {
-    //     dictType: dictType,
-    //     delFlag: '0',
-    //   },
-    // });
-
-    // 尝试从 Redis 缓存中获取字典数据
-    let data = await this.redisService.get(`${CacheEnum.SYS_DICT_KEY}${dictType}`);
-
-    if (data) {
-      // 如果缓存中存在，则直接返回缓存数据
-      return ResultData.ok(data);
+  async findOneDataType(dictType: string, fresh = false) {
+    if (!fresh) {
+      const cached = await this.redisService.get(`${CacheEnum.SYS_DICT_KEY}${dictType}`);
+      if (cached) {
+        return ResultData.ok(cached);
+      }
     }
 
-    // 从数据库中查询字典数据
-    data = await this.sysDictDataEntityRep.find({
+    const data = await this.sysDictDataEntityRep.find({
       where: {
         dictType: dictType,
         delFlag: '0',
       },
     });
 
-    // 将查询到的数据存入 Redis 缓存，并返回数据
     await this.redisService.set(`${CacheEnum.SYS_DICT_KEY}${dictType}`, data);
     return ResultData.ok(data);
+  }
+
+  /**
+   * 字典版本号：取字典类型和字典数据中最后一次修改时间
+   * 返回格式如 2026-10-22 04:03:43，方便人工识别
+   */
+  async getDictVersion() {
+    const stats = await this.sysDictTypeEntityRep.query(`
+      SELECT COALESCE(
+        DATE_FORMAT(MAX(update_time), '%Y-%m-%d %H:%i:%s'),
+        DATE_FORMAT(MAX(create_time), '%Y-%m-%d %H:%i:%s')
+      ) AS latest
+      FROM sys_dict_type
+      UNION ALL
+      SELECT COALESCE(
+        DATE_FORMAT(MAX(update_time), '%Y-%m-%d %H:%i:%s'),
+        DATE_FORMAT(MAX(create_time), '%Y-%m-%d %H:%i:%s')
+      ) AS latest
+      FROM sys_dict_data
+    `);
+
+    const latest = stats
+      .map((item: { latest: string | null }) => item.latest || '')
+      .sort()
+      .pop();
+
+    return ResultData.ok({ version: latest || '1970-01-01 00:00:00' });
   }
 
   /**
    * 获取所有字典数据，按字典类型分组
    * @returns 返回所有字典数据，格式为 { dictType: [dictDataList] }
    */
-  async findAllDictData() {
+  async findAllDictData(fresh = false) {
     try {
-      // 尝试从缓存中获取所有字典数据
-      const keys = await this.redisService.keys(`${CacheEnum.SYS_DICT_KEY}*`);
-
-      if (keys && keys.length > 0) {
-        // 如果缓存中存在，批量获取所有缓存数据
-        const result: Record<string, any[]> = {};
-
-        // 使用 mget 批量获取，提高效率
-        const values = await this.redisService.mget(keys);
-
-        keys.forEach((key, index) => {
-          try {
-            const dictType = key.replace(CacheEnum.SYS_DICT_KEY, '');
-            const data = values[index];
-            if (data) {
-              result[dictType] = data;
-            }
-          } catch (error) {
-            console.error(`解析 redis key 失败: ${key}`, error);
+      if (!fresh) {
+        const complete = await this.redisService.get(DICT_CACHE_COMPLETE_KEY);
+        if (complete) {
+          const cached = await this.readAllDictCache();
+          if (cached) {
+            return ResultData.ok(cached);
           }
-        });
-
-        return ResultData.ok(result);
+        }
       }
 
-      // 如果缓存中不存在，从数据库加载
-      await this.loadingDictCache();
-
-      // 重新从缓存中获取
-      const newKeys = await this.redisService.keys(`${CacheEnum.SYS_DICT_KEY}*`);
-      const result: Record<string, any[]> = {};
-
-      if (newKeys && newKeys.length > 0) {
-        const values = await this.redisService.mget(newKeys);
-
-        newKeys.forEach((key, index) => {
-          try {
-            const dictType = key.replace(CacheEnum.SYS_DICT_KEY, '');
-            const data = values[index];
-            if (data) {
-              result[dictType] = data;
-            }
-          } catch (error) {
-            console.error(`解析 redis key 失败: ${key}`, error);
-          }
-        });
-      }
-
-      return ResultData.ok(result);
+      // 缓存不完整或强制刷新时，一次性从数据库重建全部字典缓存
+      const dicts = await this.loadingDictCache();
+      return ResultData.ok(dicts);
     } catch (error) {
       console.error('获取全部字典数据失败:', error);
       throw error;
     }
+  }
+
+  private async readAllDictCache(): Promise<Record<string, any[]> | null> {
+    const keys = await this.redisService.keys(`${CacheEnum.SYS_DICT_KEY}*`);
+    if (!keys || keys.length === 0) {
+      return null;
+    }
+
+    const values = await this.redisService.mget(keys);
+    const result: Record<string, any[]> = {};
+
+    keys.forEach((key, index) => {
+      const dictType = key.replace(CacheEnum.SYS_DICT_KEY, '');
+      const data = values[index];
+      if (dictType && data) {
+        result[dictType] = data;
+      }
+    });
+
+    return result;
   }
 
   async findOneDictData(dictCode: number) {
@@ -280,7 +289,6 @@ export class DictService {
    * @returns
    */
   async resetDictCache() {
-    await this.clearDictCache();
     await this.loadingDictCache();
     return ResultData.ok();
   }
@@ -294,21 +302,40 @@ export class DictService {
     if (keys && keys.length > 0) {
       await this.redisService.del(keys);
     }
+    await this.redisService.del(DICT_CACHE_COMPLETE_KEY);
   }
 
   /**
-   * 加载字典缓存
-   * @returns
+   * 全量加载字典缓存，并写入完整性标记
+   * @returns 按字典类型分组的字典数据
    */
   async loadingDictCache() {
+    await this.clearDictCache();
+
     const entity = this.sysDictTypeEntityRep.createQueryBuilder('entity');
     entity.where('entity.delFlag = :delFlag', { delFlag: '0' });
-    entity.leftJoinAndMapMany('entity.dictTypeList', SysDictDataEntity, 'dictType', 'dictType.dictType = entity.dictType');
+    entity.leftJoinAndMapMany(
+      'entity.dictTypeList',
+      SysDictDataEntity,
+      'dictType',
+      'dictType.dictType = entity.dictType AND dictType.delFlag = :dataDelFlag',
+      { dataDelFlag: '0' },
+    );
     const list = await entity.getMany();
-    list.forEach((item: any) => {
-      if (item.dictType) {
-        this.redisService.set(`${CacheEnum.SYS_DICT_KEY}${item.dictType}`, item.dictTypeList);
-      }
-    });
+
+    const result: Record<string, any[]> = {};
+    await Promise.all(
+      list.map(async (item: any) => {
+        if (!item.dictType) {
+          return;
+        }
+        const dictData = item.dictTypeList || [];
+        result[item.dictType] = dictData;
+        await this.redisService.set(`${CacheEnum.SYS_DICT_KEY}${item.dictType}`, dictData);
+      }),
+    );
+
+    await this.redisService.set(DICT_CACHE_COMPLETE_KEY, '1');
+    return result;
   }
 }

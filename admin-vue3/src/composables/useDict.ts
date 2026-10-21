@@ -1,12 +1,13 @@
-﻿import { useDict as originalUseDict } from '@/utils/dict'
+﻿import { useDict as originalUseDict, type UseDictOptions } from '@/utils/dict'
 import useDictStore from '@/store/modules/dict'
 
 /**
  * 字典 Composable（增强版）
  * @example
  * const { sys_user_type, getDictLabel, getDictTagType } = useDict('sys_user_type')
+ * const { sys_user_type } = useDict('sys_user_type', { fresh: true })
  */
-export function useDict(...args: string[]) {
+export function useDict(...args: Array<string | UseDictOptions>) {
   const result = originalUseDict(...args)
   const dictStore = useDictStore()
 
