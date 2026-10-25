@@ -18,9 +18,29 @@ export function getData(dictCode) {
 }
 
 // 根据字典类型查询字典数据信息
-export function getDicts(dictType) {
+// fresh=true 时跳过后端缓存，直接查询数据库
+export function getDicts(dictType, fresh = false) {
   return request({
     url: '/system/dict/data/type/' + dictType,
+    method: 'get',
+    params: fresh ? { fresh: true } : undefined
+  })
+}
+
+// 获取所有字典数据
+// fresh=true 时跳过后端缓存，直接查询数据库并重建缓存
+export function getAllDicts(fresh = false) {
+  return request({
+    url: '/system/dict/data/all',
+    method: 'get',
+    params: fresh ? { fresh: true } : undefined
+  })
+}
+
+// 获取字典版本号，用于校验本地持久化缓存是否过期
+export function getDictVersion() {
+  return request({
+    url: '/system/dict/data/version',
     method: 'get'
   })
 }

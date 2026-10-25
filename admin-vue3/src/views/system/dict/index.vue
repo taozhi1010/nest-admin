@@ -155,8 +155,8 @@
     </el-card>
   </div>
 
-  <dictGroupEdit ref="dictGroupEditRef" @refresh="dictGroup.handleRefresh" />
-  <dictDataEdit ref="dictDataEditRef" @refresh="dictData.handleRefresh" />
+  <dictGroupEdit ref="dictGroupEditRef" @refresh="handleDictChanged(dictGroup.handleRefresh)" />
+  <dictDataEdit ref="dictDataEditRef" @refresh="handleDictChanged(dictData.handleRefresh)" />
 </template>
 
 <script setup name="Dict">
@@ -164,6 +164,7 @@ import dictGroupEdit from './components/dictGroupEdit'
 import dictDataEdit from './components/dictDataEdit'
 import { listType, delType, refreshCache } from '@/api/system/dict/type'
 import { listData, delData } from '@/api/system/dict/data'
+import useDictStore from '@/store/modules/dict'
 
 const { proxy } = getCurrentInstance()
 const { sys_normal_disable } = proxy.useDict('sys_normal_disable')
@@ -230,6 +231,7 @@ const dictGroup = reactive({
       })
       .then(() => {
         dictGroup.request()
+        refreshLocalDictCache()
         proxy.$modal.msgSuccess('删除成功')
       })
   },
@@ -269,9 +271,12 @@ const dictGroup = reactive({
   handleRefreshCache: () => {
     loading.value = true
     refreshCache()
+      .then(() => useDictStore().initDict({ force: true }))
       .then(() => {
         proxy.$modal.msgSuccess('刷新成功')
-        useDictStore().cleanDict()
+      })
+      .catch((error) => {
+        console.error('刷新字典缓存失败:', error)
       })
       .finally(() => {
         loading.value = false
@@ -313,8 +318,8 @@ const dictData = reactive({
       })
       .then(() => {
         dictData.request()
+        refreshLocalDictCache()
         proxy.$modal.msgSuccess('删除成功')
-        useDictStore().removeDict(dictData.query.dictType)
       })
   },
   handleExport: () => {
@@ -333,6 +338,18 @@ const dictData = reactive({
     dictData.selection = selection
   }
 })
+
+// 字典变更后同步失效本地持久化缓存，并重新拉取全量字典
+function refreshLocalDictCache() {
+  useDictStore().initDict({ force: true }).catch((error) => {
+    console.error('字典缓存刷新失败:', error)
+  })
+}
+
+function handleDictChanged(refresh) {
+  refresh()
+  refreshLocalDictCache()
+}
 
 watch(dictGroup.query, (val) => {
   dictGroupRef.value.filter(val.dictName)

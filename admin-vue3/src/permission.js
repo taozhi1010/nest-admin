@@ -8,6 +8,7 @@ import { isRelogin } from '@/utils/request'
 import useUserStore from '@/store/modules/user'
 import useSettingsStore from '@/store/modules/settings'
 import usePermissionStore from '@/store/modules/permission'
+import useDictStore from '@/store/modules/dict'
 
 NProgress.configure({ showSpinner: false });
 
@@ -27,6 +28,10 @@ router.beforeEach((to, from, next) => {
         // 判断当前用户是否已拉取完user_info信息
         useUserStore().getInfo().then(() => {
           isRelogin.show = false
+          // 初始化字典：优先使用本地缓存，仅校验版本号，版本变化才重新拉取
+          useDictStore().initDict().catch(err => {
+            console.error('字典初始化失败:', err)
+          })
           usePermissionStore().generateRoutes().then(accessRoutes => {
             // 根据roles权限生成可访问的路由表
             accessRoutes.forEach(route => {

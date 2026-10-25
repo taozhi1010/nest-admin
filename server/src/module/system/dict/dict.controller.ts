@@ -123,19 +123,38 @@ export class DictController {
   }
 
   @ApiOperation({
+    summary: '字典数据-类型-详情【走缓存】',
+    description: '传 fresh=true 时跳过缓存，直接查询数据库',
+  })
+  @Get('/data/type/:id')
+  findOneDataType(@Param('id') dictType: string, @Query('fresh') fresh?: string) {
+    return this.dictService.findOneDataType(dictType, fresh === 'true');
+  }
+
+  @ApiOperation({
+    summary: '字典数据-版本号',
+    description: '返回字典最后一次修改时间，前端用它判断本地缓存是否过期',
+  })
+  @Get('/data/version')
+  findDictVersion() {
+    return this.dictService.getDictVersion();
+  }
+
+  @ApiOperation({
+    summary: '字典数据-全部【走缓存】',
+    description: '一次性获取所有字典类型及其数据，传 fresh=true 时跳过缓存直接重建',
+  })
+  @Get('/data/all')
+  findAllDictData(@Query('fresh') fresh?: string) {
+    return this.dictService.findAllDictData(fresh === 'true');
+  }
+
+  @ApiOperation({
     summary: '字典数据-详情',
   })
   @Get('/data/:id')
   findOneDictData(@Param('id') dictCode: string) {
     return this.dictService.findOneDictData(+dictCode);
-  }
-
-  @ApiOperation({
-    summary: '字典数据-类型-详情【走缓存】',
-  })
-  @Get('/data/type/:id')
-  findOneDataType(@Param('id') dictType: string) {
-    return this.dictService.findOneDataType(dictType);
   }
 
   @ApiOperation({ summary: '导出字典组为xlsx文件' })
