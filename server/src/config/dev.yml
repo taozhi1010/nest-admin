@@ -30,7 +30,7 @@ db:
   mysql:
     host: '127.0.0.1'
     username: 'root'
-    password: 'yehuozhili'
+    password: ''
     database: 'nest-admin'
     port: 3306
     charset: 'utf8mb4'
@@ -45,14 +45,14 @@ db:
 # redis 配置
 redis:
   host: 'localhost'
-  password: '*********'
+  password: ''
   port: 6379
   db: 2
   keyPrefix: ''
 
 # jwt 配置
 jwt:
-  secretkey: 'you_secretkey'
+  secretkey: ''
   expiresin: '1h'
   refreshExpiresIn: '2h'
 # 权限 白名单配置
