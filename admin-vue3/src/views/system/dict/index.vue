@@ -146,8 +146,8 @@
     </el-card>
   </div>
 
-  <dict-group-edit ref="dictGroupEditRef" @refresh="handleDictGroupChanged" />
-  <dict-data-edit ref="dictDataEditRef" @refresh="handleDictDataChanged" />
+  <dict-group-edit ref="dictGroupEditRef" @refresh="handleDictChanged(dictGroup.handleRefresh)" />
+  <dict-data-edit ref="dictDataEditRef" @refresh="handleDictChanged(dictData.handleRefresh)" />
 </template>
 
 <script setup name="Dict">
@@ -346,13 +346,8 @@ function refreshLocalDictCache() {
   })
 }
 
-function handleDictGroupChanged() {
-  dictGroup.handleRefresh()
-  refreshLocalDictCache()
-}
-
-function handleDictDataChanged() {
-  dictData.handleRefresh()
+function handleDictChanged(refresh) {
+  refresh()
   refreshLocalDictCache()
 }
 

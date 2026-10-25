@@ -15,11 +15,6 @@ interface DictItem {
   elTagClass?: string
 }
 
-interface DictData {
-  key: string
-  value: DictItem[]
-}
-
 interface RawDictItem {
   dictLabel: string
   dictValue: string
@@ -59,11 +54,7 @@ const pendingTypeLoads = new Map<string, Promise<DictItem[]>>()
 
 // ==================== 工具函数 ====================
 
-/**
- * 格式化字典数据
- * @param dictDataList - 原始字典数据列表
- * @returns 格式化后的字典数据
- */
+/** 把后端字典数据转换为前端使用的结构 */
 function formatDictData(dictDataList: RawDictItem[]): DictItem[] {
   return dictDataList.map((item) => ({
     label: item.dictLabel,
@@ -73,9 +64,7 @@ function formatDictData(dictDataList: RawDictItem[]): DictItem[] {
   }))
 }
 
-/**
- * 读取本地持久化缓存
- */
+/** 读取并校验 localStorage 中的字典缓存 */
 function readPersistedCache(): PersistedDictCache | null {
   try {
     const raw = localStorage.getItem(CACHE_STORAGE_KEY)
@@ -104,32 +93,21 @@ const useDictStore = defineStore('dict', {
   state: () => {
     const cached = readPersistedCache()
     return {
-      // 字典缓存数组 [{ key: dictType, value: dictData[] }]
-      dict: (cached
-        ? Object.entries(cached.dicts).map(([key, value]) => ({ key, value }))
-        : []) as DictData[],
-      // 已加载（含本地缓存恢复）的字典类型集合
-      loadedTypes: new Set<string>(cached ? Object.keys(cached.dicts) : []),
+      // 字典数据，key 为字典类型
+      dicts: (cached?.dicts || {}) as Record<string, DictItem[]>,
       // 最近一次与后端校验通过的字典版本号
       serverVersion: cached?.serverVersion || ''
     }
   },
   actions: {
-    /**
-     * 将当前字典写入 localStorage
-     */
+    /** 将当前字典写入 localStorage */
     persist() {
       try {
-        const dicts: Record<string, DictItem[]> = {}
-        this.dict.forEach((item) => {
-          dicts[item.key] = item.value
-        })
-
         const cache: PersistedDictCache = {
           schema: CACHE_SCHEMA_VERSION,
           serverVersion: this.serverVersion,
           savedAt: Date.now(),
-          dicts
+          dicts: this.dicts
         }
         localStorage.setItem(CACHE_STORAGE_KEY, JSON.stringify(cache))
       } catch (error) {
@@ -137,54 +115,29 @@ const useDictStore = defineStore('dict', {
       }
     },
 
-    /**
-     * 获取字典数据
-     * @param key - 字典类型
-     * @returns 字典数据数组
-     */
+    /** 获取指定类型的字典数据，不存在时返回 null */
     getDict(key: string): DictItem[] | null {
       if (!key) return null
-      const item = this.dict.find((d) => d.key === key)
-      return item ? item.value : null
+      return this.dicts[key] || null
     },
 
-    /**
-     * 设置字典数据（不自动持久化，由调用方统一处理）
-     * @param key - 字典类型
-     * @param value - 字典数据数组
-     */
+    /** 写入指定类型的字典数据（不自动持久化） */
     setDict(key: string, value: DictItem[]) {
       if (!key) return
-
-      const existingIndex = this.dict.findIndex((item) => item.key === key)
-      if (existingIndex !== -1) {
-        this.dict[existingIndex].value = value
-      } else {
-        this.dict.push({ key, value })
-      }
+      this.dicts[key] = value
     },
 
-    /**
-     * 删除字典（同时从持久化缓存移除）
-     * @param key - 字典类型
-     * @returns 是否删除成功
-     */
+    /** 删除指定类型的字典，并同步到本地缓存 */
     removeDict(key: string): boolean {
-      const index = this.dict.findIndex((item) => item.key === key)
-      if (index === -1) return false
-
-      this.dict.splice(index, 1)
-      this.loadedTypes.delete(key)
+      if (!this.dicts[key]) return false
+      delete this.dicts[key]
       this.persist()
       return true
     },
 
-    /**
-     * 清空所有字典（内存 + localStorage）
-     */
+    /** 清空内存和 localStorage 中的全部字典缓存 */
     cleanDict() {
-      this.dict = []
-      this.loadedTypes.clear()
+      this.dicts = {}
       this.serverVersion = ''
       try {
         localStorage.removeItem(CACHE_STORAGE_KEY)
@@ -194,40 +147,21 @@ const useDictStore = defineStore('dict', {
     },
 
     /**
-     * 标记字典类型为已加载
-     * @param dictType - 字典类型
-     */
-    markTypeAsLoaded(dictType: string) {
-      this.loadedTypes.add(dictType)
-    },
-
-    /**
-     * 检查字典类型是否已加载
-     * @param dictType - 字典类型
-     * @returns 是否已加载
-     */
-    isTypeLoaded(dictType: string): boolean {
-      return this.loadedTypes.has(dictType)
-    },
-
-    /**
      * 加载单个字典
-     * @param dictType - 字典类型
      * @param options.fresh - 绕过本地缓存与后端 Redis 缓存
-     * @returns 字典数据数组
      */
     async loadDict(dictType: string, options: DictLoadOptions = {}): Promise<DictItem[]> {
       const { fresh = false } = options
 
-      if (!fresh && this.isTypeLoaded(dictType)) {
-        return this.getDict(dictType) || []
+      if (!fresh && this.dicts[dictType]) {
+        return this.dicts[dictType]
       }
 
       // 全量初始化进行中时先等待，避免启动阶段再发单类型请求
       if (initPromise) {
         await initPromise.catch(() => {})
-        if (!fresh && this.isTypeLoaded(dictType)) {
-          return this.getDict(dictType) || []
+        if (!fresh && this.dicts[dictType]) {
+          return this.dicts[dictType]
         }
       }
 
@@ -246,15 +180,12 @@ const useDictStore = defineStore('dict', {
       return task
     },
 
-    /**
-     * 请求单个字典类型并写入缓存
-     */
+    /** 请求单个字典类型并写入缓存 */
     async fetchAndCacheType(dictType: string, fresh: boolean): Promise<DictItem[]> {
       try {
         const resp = await getDicts(dictType, fresh)
         const dictData = formatDictData(resp.data || [])
         this.setDict(dictType, dictData)
-        this.markTypeAsLoaded(dictType)
         this.persist()
         return dictData
       } catch (error) {
@@ -266,8 +197,6 @@ const useDictStore = defineStore('dict', {
     /**
      * 初始化字典
      * 默认先用本地缓存，仅发一个版本号请求；版本变化时才重新全量拉取
-     * @param options.force - 忽略版本校验，强制重新拉取全量字典
-     * @param options.fresh - 拉取时绕过本地缓存与后端 Redis 缓存
      */
     async initDict(options: DictInitOptions = {}): Promise<void> {
       const { force = false, fresh = false } = options
@@ -288,6 +217,7 @@ const useDictStore = defineStore('dict', {
       }
     },
 
+    /** 校验版本号，缓存有效时直接复用，否则拉取全量字典 */
     async runInit(force: boolean, fresh: boolean) {
       if (force) {
         await this.fetchAllDicts(fresh)
@@ -303,13 +233,8 @@ const useDictStore = defineStore('dict', {
         console.warn('[字典] 版本校验失败:', error)
       }
 
-      // 版本一致，直接使用本地缓存
-      if (!fresh && version && this.dict.length > 0 && version === this.serverVersion) {
-        return
-      }
-
-      // 版本接口不可用时，已有本地缓存则继续使用，避免每次启动重复全量拉取
-      if (!fresh && !version && this.dict.length > 0) {
+      // 版本一致，或版本接口不可用时已有缓存，直接使用本地缓存
+      if (!fresh && Object.keys(this.dicts).length > 0 && (!version || version === this.serverVersion)) {
         return
       }
 
@@ -321,36 +246,29 @@ const useDictStore = defineStore('dict', {
         }
       } catch (error) {
         console.warn('[字典] 全量加载失败:', error)
-        if (this.dict.length === 0) {
+        if (Object.keys(this.dicts).length === 0) {
           await this.initDictFallback()
         }
       }
     },
 
-    /**
-     * 拉取全量字典并覆盖本地缓存
-     */
+    /** 拉取全量字典并覆盖本地缓存 */
     async fetchAllDicts(fresh: boolean) {
       const response = await getAllDicts(fresh)
       const allDicts = response.data || {}
+      const dicts: Record<string, DictItem[]> = {}
 
-      this.dict = []
-      this.loadedTypes.clear()
+      Object.entries(allDicts).forEach(([dictType, dictDataList]) => {
+        if (dictType && Array.isArray(dictDataList)) {
+          dicts[dictType] = formatDictData(dictDataList)
+        }
+      })
 
-      if (Array.isArray(allDicts)) {
-        // 格式 A: 返回字典项数组 [{dictType, dictLabel, dictValue, ...}]
-        this.processArrayDicts(allDicts)
-      } else if (typeof allDicts === 'object') {
-        // 格式 B: 返回对象 {dictType: [items]}
-        this.processObjectDicts(allDicts)
-      }
-
+      this.dicts = dicts
       this.persist()
     },
 
-    /**
-     * 静默刷新版本号（失败不影响已加载的字典）
-     */
+    /** 拉取并保存最新版本号，失败时保留原值 */
     async refreshVersion() {
       try {
         const versionResp = await getDictVersion()
@@ -365,42 +283,8 @@ const useDictStore = defineStore('dict', {
     },
 
     /**
-     * 处理数组格式的字典数据
-     */
-    processArrayDicts(allDicts: RawDictItem[]) {
-      const groupedDicts: Record<string, RawDictItem[]> = {}
-
-      allDicts.forEach((item) => {
-        const dictType = item.dictType
-        if (dictType) {
-          if (!groupedDicts[dictType]) {
-            groupedDicts[dictType] = []
-          }
-          groupedDicts[dictType].push(item)
-        }
-      })
-
-      Object.entries(groupedDicts).forEach(([dictType, dictDataList]) => {
-        this.setDict(dictType, formatDictData(dictDataList))
-        this.markTypeAsLoaded(dictType)
-      })
-    },
-
-    /**
-     * 处理对象格式的字典数据
-     */
-    processObjectDicts(allDicts: Record<string, RawDictItem[]>) {
-      Object.entries(allDicts).forEach(([dictType, dictDataList]) => {
-        if (dictType && Array.isArray(dictDataList)) {
-          this.setDict(dictType, formatDictData(dictDataList))
-          this.markTypeAsLoaded(dictType)
-        }
-      })
-    },
-
-    /**
      * 回退方案：全量接口不可用时，按字典类型逐个加载
-     * 注意：这里直接请求，不能调用 loadDict，否则会等待当前初始化而互相死锁
+     * 这里不能调用 loadDict，否则会等待当前初始化而互相死锁
      */
     async initDictFallback() {
       try {
@@ -408,22 +292,11 @@ const useDictStore = defineStore('dict', {
         const dictTypes = response.data || []
 
         await Promise.all(
-          dictTypes.map(async (item: any) => {
+          dictTypes.map((item: any) => {
             const type = item.dictType || item.type
-            if (!type) return
-
-            try {
-              const resp = await getDicts(type)
-              this.setDict(type, formatDictData(resp.data || []))
-              this.markTypeAsLoaded(type)
-            } catch (error) {
-              console.error(`[字典] 加载失败 (${type}):`, error)
-            }
+            return type ? this.fetchAndCacheType(type, false) : Promise.resolve()
           })
         )
-
-        this.persist()
-        console.log('[字典] 逐个加载完成，已缓存', this.dict.length, '个字典类型')
       } catch (error) {
         console.error('[字典] 回退加载失败:', error)
       }
