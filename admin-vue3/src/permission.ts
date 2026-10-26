@@ -39,13 +39,11 @@ router.beforeEach(async (to: RouteLocationNormalized, from: RouteLocationNormali
           await useUserStore().getInfo()
           isRelogin.show = false
           
-          // 初始化字典数据 - 在用户登录后才加载字典
+          // 初始化字典：优先使用本地缓存，仅校验版本号，版本变化才重新拉取
           const dictStore = useDictStore()
-          if (dictStore && !dictStore.dict.length) {
-            dictStore.initDict().catch((error: any) => {
-              console.error('字典初始化失败:', error)
-            })
-          }
+          await dictStore.initDict().catch((error: any) => {
+            console.error('字典初始化失败:', error)
+          })
           
           const accessRoutes = await usePermissionStore().generateRoutes(useUserStore().roles)
           // 根据roles权限生成可访问的路由表

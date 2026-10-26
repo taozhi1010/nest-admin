@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Body, Query, Request, Put, Res, HttpCode, Param, Delete } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBody, ApiConsumes, ApiQuery, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBody, ApiConsumes, ApiQuery, ApiBearerAuth, ApiOkResponse } from '@nestjs/swagger';
 import { DictService } from './dict.service';
 import { CreateDictTypeDto, UpdateDictTypeDto, ListDictType, CreateDictDataDto, UpdateDictDataDto, ListDictData } from './dto/index';
 import { RequirePermission } from 'src/common/decorators/require-premission.decorator';
@@ -124,19 +124,51 @@ export class DictController {
 
   @ApiOperation({
     summary: '字典数据-类型-详情【走缓存】',
+    description: '传 fresh=true 时跳过 Redis 缓存，直接查询数据库',
   })
   @Get('/data/type/:id')
-  findOneDataType(@Param('id') dictType: string) {
-    return this.dictService.findOneDataType(dictType);
+  findOneDataType(@Param('id') dictType: string, @Query('fresh') fresh?: string) {
+    return this.dictService.findOneDataType(dictType, fresh === 'true');
+  }
+
+  @ApiOperation({
+    summary: '字典数据-版本号',
+    description: [
+      '返回字典最后一次修改的时间，前端用它判断本地缓存是否过期。',
+      '',
+      '**版本号怎么来的：**',
+      '1. 分别取 `sys_dict_type`、`sys_dict_data` 中最大的 `update_time`（为空时取 `create_time`）；',
+      '2. 两个时间再取较新的一个，格式化为 `YYYY-MM-DD HH:mm:ss`。',
+      '',
+      '新增、修改、删除任意字典类型或字典数据，都会让版本号变化；两个表都为空时返回 `1970-01-01 00:00:00`。',
+      '',
+      '**前端如何使用：** 只做字符串比较。与本地保存的版本一致就使用缓存；不一致则调用 `/system/dict/data/all` 重新拉取。',
+    ].join('\n'),
+  })
+  @ApiOkResponse({
+    description: '字典最后修改时间',
+    schema: {
+      example: {
+        code: 200,
+        msg: '操作成功',
+        data: {
+          version: '2026-10-22 04:03:43',
+        },
+      },
+    },
+  })
+  @Get('/data/version')
+  findDictVersion() {
+    return this.dictService.getDictVersion();
   }
 
   @ApiOperation({
     summary: '字典数据-全部【走缓存】',
-    description: '一次性获取所有字典类型及其对应的字典数据，便于前端初始化时使用',
+    description: '一次性获取所有字典类型及其对应的字典数据，传 fresh=true 时跳过缓存直接重建',
   })
   @Get('/data/all')
-  findAllDictData() {
-    return this.dictService.findAllDictData();
+  findAllDictData(@Query('fresh') fresh?: string) {
+    return this.dictService.findAllDictData(fresh === 'true');
   }
 
   @ApiOperation({
