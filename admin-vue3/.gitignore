@@ -19,21 +19,16 @@ selenium-debug.log
 *.sln
 *.local
 
+.env
 .env.development
 .env.production
+!.env.production
 .env.staging
 
-# 自动生成的类型声明文件（从 config 复制）
-.prettierrc
-.prettierignore
-eslint.config.js
-tsconfig.json
-Dockerfile
-nginx.conf
-
+# 自动生成的类型声明文件
 components.d.ts
 auto-imports.d.ts
 
+# 本项目用 pnpm，pnpm-lock.yaml 必须入库；其他包管理器的锁留在本地
 package-lock.json
 yarn.lock
-pnpm-lock.yaml

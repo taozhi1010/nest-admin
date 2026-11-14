@@ -2,7 +2,7 @@
   <!-- 岗位管理 -->
   <div class="app-container">
     <div class="main-card">
-      <el-form v-show="post.showSearch" ref="post.queryRef" v-no-enter :inline="true" :model="post.queryParams">
+      <el-form v-show="post.showSearch" ref="queryRef" v-no-enter :inline="true" :model="post.queryParams">
       <el-form-item label="岗位编码" prop="postCode">
         <el-input v-model.trim="post.queryParams.postCode" clearable placeholder="请输入岗位编码" style="width: 200px" @keyup.enter="post.handleQuery" />
       </el-form-item>
@@ -95,17 +95,18 @@
 import { listPost, addPost, delPost, getPost, updatePost } from '@/api/system/post'
 import { useDict } from '@/composables/useDict'
 import { resetForm } from '@/composables/useForm'
-import { download, parseTime } from '@/composables/useCommon'
+import { parseTime } from '@/composables/useCommon'
+import { download } from '@/composables/useRequest'
 
 const { sys_normal_disable, getDictLabel } = useDict('sys_normal_disable')
 
 // 模板引用
 const postRef = ref(null)
+const queryRef = ref(null)
 
 // 岗位管理
 const post = reactive({
   // 响应式数据
-  queryRef: null,
   postList: [],
   open: false,
   loading: true,
@@ -171,7 +172,7 @@ const post = reactive({
 
   // 重置按钮操作
   resetQuery: () => {
-    resetForm(post.queryRef)
+    resetForm(queryRef.value)
     post.handleQuery()
   },
 

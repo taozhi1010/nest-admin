@@ -1,0 +1,161 @@
+name: Deploy Full Stack to Server
+
+on:
+  push:
+    branches: [master]  # 只在 master 分支触发
+  workflow_dispatch:  # 允许手动触发
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      # 1. 检出代码
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      # 2. 设置 SSH 密钥
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.7.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      
+      # 3. 添加服务器到 known_hosts
+      - name: Add server to known hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+      
+      # 4. 上传代码到服务器
+      - name: Upload code to server
+        run: |
+          rsync -avz --delete \
+            -e "ssh -o StrictHostKeyChecking=no" \
+            --exclude '.git' \
+            --exclude 'node_modules' \
+            --exclude 'dist' \
+            --exclude '.env' \
+            --exclude 'docs' \
+            --exclude '*.md' \
+            ./ \
+            ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:${{ secrets.DEPLOY_PATH }}/
+      
+      # 5. 在服务器上清理旧资源、构建和部署
+      - name: Clean, Build and Deploy on Server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SERVER_PORT }}
+          command_timeout: 30m
+          script: |
+            set -e
+            cd ${{ secrets.DEPLOY_PATH }}
+            
+            echo "🧹 开始清理旧的 Docker 资源..."
+            
+            # 删除旧的镜像（保留最新的2个）
+            docker images --format '{{.ID}} {{.Repository}}' | grep nest-admin | tail -n +3 | awk '{print $1}' | xargs -r docker rmi -f || true
+            
+            # 清理悬空镜像
+            docker image prune -f
+            
+            # 清理停止的容器
+            docker container prune -f
+            
+            # 清理未使用的卷
+            docker volume prune -f
+            
+            # 清理构建缓存
+            docker builder prune -f
+            
+            echo "✅ 清理完成"
+            
+            echo ""
+            echo "📦 开始部署..."
+            
+            # RustFS Access Key 兜底：GitHub Secret 缺失/为空时沿用服务器上已有的值，
+            # 避免把可用凭据覆盖成空值导致头像等上传接口 500（RustFS 返回 403/凭据无效）
+            RUSTFS_ACCESS_KEY_VALUE="${{ secrets.RUSTFS_ACCESS_KEY }}"
+            if [ -z "$RUSTFS_ACCESS_KEY_VALUE" ]; then
+              RUSTFS_ACCESS_KEY_VALUE=$(grep -E '^RUSTFS_ACCESS_KEY=' .env 2>/dev/null | cut -d= -f2- || true)
+              echo "⚠️ GitHub Secret RUSTFS_ACCESS_KEY 为空，沿用现有 .env 中的 Access Key"
+            else
+              echo "🔑 RUSTFS_ACCESS_KEY 使用 GitHub Secret 配置"
+            fi
+
+            # 创建或更新 .env 文件
+            cat > .env << EOF
+            MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}
+            MYSQL_DATABASE=${{ secrets.MYSQL_DATABASE }}
+            MYSQL_HOST=${{ secrets.SERVER_HOST }}
+            MYSQL_PORT=3306
+            MYSQL_USERNAME=root
+            REDIS_HOST=${{ secrets.SERVER_HOST }}
+            REDIS_PORT=6379
+            REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}
+            REDIS_DB=2
+            RUSTFS_ENDPOINT=${{ secrets.SERVER_HOST }}
+            RUSTFS_PORT=9000
+            RUSTFS_ACCESS_KEY=${RUSTFS_ACCESS_KEY_VALUE}
+            RUSTFS_SECRET_KEY=${{ secrets.RUSTFS_SECRET_KEY }}
+            RUSTFS_BUCKET=nest-admin
+            JWT_SECRETKEY=${{ secrets.JWT_SECRETKEY }}
+            SERVER_PORT=8080
+            WEB_PORT=8888
+            DEPLOY_PATH=/opt/deploy/nest-admin
+            EOF
+            
+            echo "✅ .env 文件已更新"
+            
+            # 先单独发布后端，避免前端镜像源异常阻塞后端上线
+            echo "🔨 构建后端镜像..."
+            docker compose build --no-cache server
+
+            echo "🚀 启动后端容器..."
+            docker compose up -d server
+
+            # 前端单独构建；如果镜像源异常，保留旧前端，不阻塞后端部署
+            echo "🔨 构建前端镜像..."
+            if docker compose build --no-cache admin-vue3; then
+              echo "🚀 启动前端容器..."
+              docker compose up -d admin-vue3
+            else
+              echo "⚠️ 前端镜像构建失败，尝试保留现有前端镜像并继续部署后端"
+              docker compose up -d --no-build admin-vue3 || true
+            fi
+            
+            # 等待服务启动
+            echo "⏳ 等待服务启动..."
+            sleep 15
+
+            echo ""
+            echo "🔎 后端连通性诊断："
+            docker exec nest-admin-server node -e "const net=require('net'); const targets=[['MYSQL_HOST',process.env.MYSQL_HOST,Number(process.env.MYSQL_PORT||3306)],['REDIS_HOST',process.env.REDIS_HOST,Number(process.env.REDIS_PORT||6379)],['RUSTFS_ENDPOINT',process.env.RUSTFS_ENDPOINT,Number(process.env.RUSTFS_PORT||9000)]]; let i=0; const run=()=>{ if(i>=targets.length) process.exit(0); const [name,host,port]=targets[i++]; const s=net.createConnection({host,port,timeout:5000},()=>{console.log('[OK]',name,host+':'+port); s.destroy(); run();}); s.on('timeout',()=>{console.log('[TIMEOUT]',name,host+':'+port); s.destroy(); run();}); s.on('error',(e)=>{console.log('[ERROR]',name,host+':'+port,e.code||e.message); run();});}; run();"
+
+            echo ""
+            echo "🔎 后端 HTTP 健康探测："
+            docker exec nest-admin-server node -e "const http=require('http'); const req=http.get('http://127.0.0.1:8080/',res=>{console.log('[HTTP]',res.statusCode); res.resume(); process.exit(0);}); req.on('error',e=>{console.log('[HTTP_ERROR]',e.code||e.message); process.exit(0);}); req.setTimeout(5000,()=>{console.log('[HTTP_TIMEOUT]'); req.destroy(); process.exit(0);});"
+            
+            # 检查容器状态
+            echo ""
+            echo "📊 容器状态："
+            docker compose ps
+            
+            # 查看磁盘使用情况
+            echo ""
+            echo "💾 Docker 磁盘使用情况："
+            docker system df
+            
+            # 查看日志（最后50行）
+            echo ""
+            echo "📝 最新日志："
+            docker compose logs --tail=50 server admin-vue3
+            
+            echo ""
+            echo "=========================================="
+            echo "✅ 部署完成！"
+            echo "前端访问地址：http://${{ secrets.SERVER_HOST }}:8888"
+            echo "后端 API 地址：http://${{ secrets.SERVER_HOST }}:8080"
+            echo "=========================================="

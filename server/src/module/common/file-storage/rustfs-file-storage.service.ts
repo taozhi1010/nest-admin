@@ -1,5 +1,6 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import * as Minio from 'minio'; // RustFS 兼容 S3 API，可以使用 MinIO 客户端
+import * as path from 'path';
 import { ConfigService } from '@nestjs/config';
 import { IFileStorage, UploadResult } from './interfaces/file-storage.interface';
 
@@ -14,8 +15,16 @@ export class RustFSFileStorage implements IFileStorage, OnModuleInit {
   private serveRoot: string;
 
   constructor(private configService: ConfigService) {
+    const endPoint = this.configService.get<string>('rustfs.endPoint');
+
+    // 如果 endPoint 为空，不创建 RustFS 客户端（避免启动失败）
+    if (!endPoint) {
+      console.log('⚠️  RustFS endPoint 未配置，跳过 RustFS 客户端初始化');
+      return;
+    }
+
     this.rustfsClient = new Minio.Client({
-      endPoint: this.configService.get<string>('rustfs.endPoint', '127.0.0.1'),
+      endPoint: endPoint,
       port: this.configService.get<number>('rustfs.port', 9000),
       useSSL: this.configService.get<boolean>('rustfs.useSSL', false),
       accessKey: this.configService.get<string>('rustfs.accessKey', ''),
@@ -31,6 +40,12 @@ export class RustFSFileStorage implements IFileStorage, OnModuleInit {
    * 模块初始化时自动设置存储桶策略
    */
   async onModuleInit() {
+    // 如果 rustfsClient 未初始化，跳过
+    if (!this.rustfsClient) {
+      console.log('⚠️  RustFS 客户端未初始化，跳过存储桶策略设置');
+      return;
+    }
+
     try {
       await this.initialize();
       console.log(`✅ RustFS 文件存储初始化完成，存储桶: ${this.bucketName}`);
@@ -43,6 +58,11 @@ export class RustFSFileStorage implements IFileStorage, OnModuleInit {
    * 确保存储桶存在并设置为公开访问
    */
   async initialize(): Promise<void> {
+    // 如果 rustfsClient 未初始化，直接返回
+    if (!this.rustfsClient) {
+      throw new Error('RustFS 客户端未初始化，请检查配置');
+    }
+
     try {
       const exists = await this.rustfsClient.bucketExists(this.bucketName);
       if (!exists) {
@@ -80,6 +100,11 @@ export class RustFSFileStorage implements IFileStorage, OnModuleInit {
    * @param authorName 作者名称（可选，用于生成文件名）
    */
   async uploadFile(buffer: Buffer, fileName: string, contentType: string, customPath: string, authorName?: string): Promise<UploadResult> {
+    // 如果 rustfsClient 未初始化，抛出错误
+    if (!this.rustfsClient) {
+      throw new Error('RustFS 客户端未初始化，无法上传文件');
+    }
+
     await this.initialize();
 
     // 验证 path 参数
@@ -119,6 +144,9 @@ export class RustFSFileStorage implements IFileStorage, OnModuleInit {
       return originalname;
     }
 
+    // 剥离目录成分并消毒：仅保留字母数字、下划线、中文、中划线、点，阻断恶意文件名穿越落盘
+    originalname = path.basename(originalname).replace(/[^\w\u4e00-\u9fa5.-]+/g, '_');
+
     // 分离文件名和扩展名
     const lastDotIndex = originalname.lastIndexOf('.');
     let fileName = originalname;
@@ -156,6 +184,11 @@ export class RustFSFileStorage implements IFileStorage, OnModuleInit {
    * 删除文件
    */
   async deleteFile(fileName: string): Promise<void> {
+    // 如果 rustfsClient 未初始化，抛出错误
+    if (!this.rustfsClient) {
+      throw new Error('RustFS 客户端未初始化，无法删除文件');
+    }
+
     await this.rustfsClient.removeObject(this.bucketName, fileName);
   }
 
@@ -163,6 +196,11 @@ export class RustFSFileStorage implements IFileStorage, OnModuleInit {
    * 检查文件是否存在
    */
   async fileExists(fileName: string): Promise<boolean> {
+    // 如果 rustfsClient 未初始化，抛出错误
+    if (!this.rustfsClient) {
+      throw new Error('RustFS 客户端未初始化，无法检查文件');
+    }
+
     try {
       await this.rustfsClient.statObject(this.bucketName, fileName);
       return true;

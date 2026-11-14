@@ -3,7 +3,7 @@ import { ApiTags, ApiOperation, ApiBody } from '@nestjs/swagger';
 import { PostSubjectService } from './subject.service';
 import { CreatePostSubjectDto, UpdatePostSubjectDto, ListPostSubjectDto } from './dto/index';
 import { RequirePermission } from 'src/common/decorators/require-premission.decorator';
-import { User, UserDto } from 'src/module/system/user/user.decorator';
+import { NotRequireAuth, User, UserDto } from 'src/module/system/user/user.decorator';
 
 @ApiTags('专栏管理')
 @Controller('post/subject')
@@ -17,6 +17,26 @@ export class PostSubjectController {
   @HttpCode(200)
   create(@Body() createDto: CreatePostSubjectDto, @User() user: UserDto) {
     return this.postSubjectService.create(createDto, user);
+  }
+
+  /**
+   * 查询专栏列表（游客可访问，仅返回已发布专栏）
+   */
+  @ApiOperation({ summary: '专栏-游客-列表' })
+  @NotRequireAuth()
+  @Get('/guest/list')
+  findGuestAll(@Query() query: ListPostSubjectDto) {
+    return this.postSubjectService.findGuestAll(query);
+  }
+
+  /**
+   * 查询专栏详情（游客可访问，仅返回已发布专栏）
+   */
+  @ApiOperation({ summary: '专栏-游客-详情' })
+  @NotRequireAuth()
+  @Get('/guest/detail')
+  findGuestOne(@Query('id') id: number) {
+    return this.postSubjectService.findGuestOne(id);
   }
 
   @ApiOperation({ summary: '专栏-列表' })

@@ -18,18 +18,6 @@ export function login(username, password, code, uuid) {
   })
 }
 
-// 注册方法
-export function register(data) {
-  return request({
-    url: '/register',
-    headers: {
-      isToken: false
-    },
-    method: 'post',
-    data: data
-  })
-}
-
 // 获取用户详细信息
 export function getInfo() {
   return request({
@@ -46,14 +34,45 @@ export function logout() {
   })
 }
 
+// 注册方法
+export function register(username, password, code, uuid) {
+  const data = {
+    username,
+    password,
+    code,
+    uuid
+  }
+  return request({
+    url: '/register',
+    headers: {
+      isToken: false
+    },
+    method: 'post',
+    data: data
+  })
+}
+
+// 检查账号是否已被注册
+export function checkUsername(username) {
+  return request({
+    url: '/register/check',
+    headers: {
+      isToken: false
+    },
+    method: 'get',
+    params: { username }
+  })
+}
+
 // 获取验证码
-export function getCodeImg() {
+export function getCodeImg(username, type) {
   return request({
     url: '/captchaImage',
     headers: {
       isToken: false
     },
     method: 'get',
+    params: { username, type },
     timeout: 20000
   })
 }

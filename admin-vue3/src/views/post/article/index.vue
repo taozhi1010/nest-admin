@@ -1,6 +1,6 @@
 <template>
   <div class="app-container article">
-    <el-card v-loading="loading" class="article-subject" shadow="never">
+    <el-card v-loading="loading" class="article-subject fill-card" shadow="never">
       <div class="article-subject-header">
         <el-input v-model="subject.query.title" class="search-input" placeholder="请输入专栏名称筛选" clearable @keyup.enter="subject.handleSearch" @blur="subject.handleSearchBlur" />
       </div>
@@ -47,7 +47,7 @@
       </div>
     </el-card>
 
-    <el-card v-loading="loading" class="article-table" shadow="never">
+    <el-card v-loading="loading" class="article-table fill-card" shadow="never">
       <!-- 专栏信息描述（仅在选择专栏时显示） -->
       <el-descriptions v-if="subject.state.selectNode.id && subject.state.selectNode.id !== 0" border :column="4">
         <el-descriptions-item label="专栏名称">{{ subject.state.selectNode.title }}</el-descriptions-item>
@@ -103,47 +103,53 @@
       <!-- 数据表格 -->
       <el-table v-loading="article.loading" :data="article.list" @selection-change="article.handleSelectionChange">
         <el-table-column align="center" type="selection" width="55" />
-        <el-table-column align="left" label="文章标题" min-width="280">
+        <el-table-column align="left" label="文章标题" min-width="350">
           <template #default="scope">
-            <el-tooltip :content="scope.row.title" placement="top" effect="light">
+            <el-tooltip :content="'双击打开编辑器'" placement="top" effect="light">
               <div style="display: flex; align-items: center; gap: 8px;">
                 <el-tag v-if="scope.row.source" :type="getSourceTagType(scope.row.source)" effect="light" size="small">
                   {{ getDictLabel('post_article_source', scope.row.source) }}
                 </el-tag>
-                <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ scope.row.title }}</span>
+                <el-link 
+                  type="primary" 
+                  :underline="false"
+                  @dblclick="article.handleOpenEditor(scope.row)"
+                  style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block; text-align: left; width: 100%;"
+                >
+                  {{ scope.row.title }}
+                </el-link>
               </div>
             </el-tooltip>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="作者" width="120">
+        <el-table-column align="left" label="作者" width="120">
           <template #default="scope">
             <span>{{ scope.row.userInfo?.nickName || '未知' }}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="发布状态" prop="publishStatus" width="100">
+        <el-table-column align="left" label="发布状态" prop="publishStatus" width="100">
           <template #default="scope">
             <el-tag :type="getDictTagType('post_article_publish_status', scope.row.publishStatus)" effect="light" size="small">
               {{ getDictLabel('post_article_publish_status', scope.row.publishStatus) }}
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="审核状态" prop="auditStatus" width="100">
+        <el-table-column align="left" label="审核状态" prop="auditStatus" width="100">
           <template #default="scope">
             <el-tag :type="getDictTagType('post_article_audit_status', scope.row.auditStatus)" effect="light" size="small">
               {{ getDictLabel('post_article_audit_status', scope.row.auditStatus) }}
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="点赞" prop="likeNum" width="70" />
-        <el-table-column align="center" label="阅读" prop="readNum" width="70" />
-        <el-table-column align="center" label="评论" prop="commentNum" width="70" />
-        <el-table-column align="center" label="发布时间" prop="publishTime" width="180" />
-        <el-table-column align="center" label="创建时间" prop="createTime" width="180" />
-        <el-table-column align="center" class-name="small-padding fixed-width" fixed="right" label="操作" width="300">
+        <el-table-column align="left" label="点赞" prop="likeNum" width="80" />
+        <el-table-column align="left" label="阅读" prop="readNum" width="80" />
+        <el-table-column align="left" label="评论" prop="commentNum" width="80" />
+        <el-table-column align="left" label="发布时间" prop="publishTime" width="170" />
+        <el-table-column align="left" label="创建时间" prop="createTime" width="170" />
+        <el-table-column align="center" class-name="small-padding fixed-width" fixed="right" label="操作" width="220">
           <template #default="scope">
             <el-button icon="View" link type="primary" @click="article.handlePreview(scope.row)">预览</el-button>
             <el-button v-hasPermi="['post:Article:edit']" icon="Edit" link type="primary" @click="article.form.handleUpdate(scope.row)">修改</el-button>
-            <el-button v-hasPermi="['post:Article:edit']" icon="EditPen" link type="success" @click="article.handleOpenEditor(scope.row)">编辑器</el-button>
             <el-button v-hasPermi="['post:Article:remove']" icon="Delete" link type="danger" @click="article.handleDelete(scope.row)">删除</el-button>
           </template>
         </el-table-column>
@@ -169,10 +175,7 @@
 import { listArticle, delArticle, getArticle } from '@/api/post/article'
 import Preview from './components/Preview'
 import ArticleForm from './components/ArticleForm'
-import { useDict } from '@/composables/useDict'
-import { resetForm } from '@/composables/useForm'
-import { useSubject } from '@/composables/useSubject'
-import { useRouter } from 'vue-router'
+import { useSubject } from '@/composables/post/useSubject'
 
 const router = useRouter()
 
@@ -343,10 +346,11 @@ const handleArticleSuccess = () => {
   &-subject {
     background-color: #ffffff;
     width: 300px;
-    height: calc(100vh - 200px);
+    // 高度与内部滚动由全局 .fill-card 统一处理
     margin-right: 20px;
 
     &-header {
+      flex-shrink: 0;
       margin-bottom: 10px;
 
       .search-input {
@@ -355,8 +359,11 @@ const handleArticleSuccess = () => {
     }
 
     &-body {
-      height: calc(100vh - 320px);
+      // 占满卡片剩余空间，独立滚动
+      flex: 1;
+      min-height: 0;
       padding-right: 0;
+      overflow-y: auto;
     }
   }
 
@@ -418,7 +425,6 @@ const handleArticleSuccess = () => {
   &-table {
     position: relative;
     width: calc(100% - 300px);
-    height: calc(100vh - 200px);
   }
 }
 

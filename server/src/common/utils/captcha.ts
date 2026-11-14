@@ -1,4 +1,10 @@
 import * as svgCaptcha from 'svg-captcha';
+import { ConfigObject } from 'svg-captcha';
+
+// svg-captcha 的默认导出（createCaptcha 函数）经 TS importStar 互操作后不可调用，
+// 且 d.ts 未声明调用签名，此处直接 require 原始导出；返回值即 SVG 字符串
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const createCaptcha = require('svg-captcha') as (text: string, options?: ConfigObject) => string;
 
 const options = {
   // 验证码字符集，可以是字母、数字或者组合
@@ -35,13 +41,19 @@ const options = {
   pointPosition: 'random',
 };
 
+function randomInt(min: number, max: number): number {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 export function createMath() {
-  return svgCaptcha.createMathExpr({
-    ...options,
-    mathMin: 1,
-    mathMax: 50,
-    mathOperator: '+-',
-  });
+  // 自行生成算式而非用 createMathExpr：库的减法会出现负数答案，这里保证结果恒为非负
+  // 加法任意组合；减法保证被减数不小于减数
+  const left = randomInt(1, 50);
+  const usePlus = Math.random() < 0.5;
+  const right = usePlus ? randomInt(1, 50) : randomInt(1, left);
+  const equation = usePlus ? `${left}+${right}` : `${left}-${right}`;
+  const text = String(usePlus ? left + right : left - right);
+  return { text, data: createCaptcha(equation, options) };
 }
 
 export function createText() {

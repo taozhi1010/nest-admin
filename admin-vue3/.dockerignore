@@ -1,0 +1,51 @@
+# 依赖目录
+node_modules
+
+# 构建输出
+dist
+
+# Git
+.git
+.gitignore
+
+# 环境变量
+.env
+.env.local
+.env.*.local
+
+# 文档
+docs
+*.md
+README*
+LICENSE
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# 测试
+tests
+test
+*.test.js
+*.spec.js
+
+# 日志
+logs
+*.log
+npm-debug.log*
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# 其他
+upload
+mysql_data
+redis_data

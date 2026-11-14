@@ -6,6 +6,7 @@ import { defineStore } from 'pinia'
 import { login, logout, getInfo } from '@/api/login'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { getUserAvatar } from '@/utils/image'
+import useDictStore from '@/store/modules/dict'
 
 interface UserInfo {
   username: string
@@ -71,15 +72,19 @@ const useUserStore = defineStore('user', {
     },
     
     // 退出系统
+    // 接口失败不阻塞本地清理：token 过期或网络异常时也要保证登出成功
     async logOut(): Promise<void> {
       try {
         await logout(this.token)
+      } catch (error) {
+        console.warn('[用户] 登出接口失败，仍执行本地清理:', error)
+      } finally {
+        // 清空字典缓存（内存 + localStorage），避免共用设备上残留上个用户的会话数据
+        useDictStore().cleanDict()
         this.token = ''
         this.roles = []
         this.permissions = []
         removeToken()
-      } catch (error) {
-        throw error
       }
     }
   }

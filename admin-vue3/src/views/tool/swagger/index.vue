@@ -128,14 +128,13 @@
 import { Document, Promotion, Link, Picture, PictureFilled, Collection } from '@element-plus/icons-vue'
 
 const activeTab = ref('swagger')
-const baseUrl = import.meta.env.VITE_APP_BASE_API
 const isDev = import.meta.env.VITE_APP_ENV === 'development'
 
 // 开发环境：直接访问后端地址（8080端口）
 // 生产环境：通过后端代理访问
-const apiBaseUrl = isDev ? 'http://localhost:8080' : baseUrl
+const apiBaseUrl = isDev ? 'http://localhost:8080' : window.location.origin
 
-const swaggerUrl = ref(`${apiBaseUrl}/swagger-ui`)
+const swaggerUrl = ref(`${apiBaseUrl}/swagger-ui/`)
 const redocUrl = ref(`${apiBaseUrl}/docs`)
 const apifoxJsonUrl = ref(`${apiBaseUrl}/openapi.json`)
 

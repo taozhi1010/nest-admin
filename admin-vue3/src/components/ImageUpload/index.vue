@@ -171,8 +171,18 @@ function uploadedSuccessfully() {
 }
 
 // 上传失败
-function handleUploadError() {
-  ElMessage.error('上传图片失败')
+function handleUploadError(err) {
+  // 错误状态码下 el-upload 会把响应体（统一信封）透传到 err.message，解析出具体错误提示
+  let message = '上传图片失败'
+  try {
+    const payload = JSON.parse(err?.message || '')
+    if (payload?.msg) {
+      message = payload.msg
+    }
+  } catch {
+    // 响应体不是信封 JSON 时保留默认提示
+  }
+  ElMessage.error(message)
   if (loadingInstance) {
     loadingInstance.close()
     loadingInstance = null

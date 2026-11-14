@@ -1,6 +1,6 @@
 <template>
   <div class="auth-user-container">
-    <el-form v-show="authUser.showSearch" ref="authUser.queryRef" v-no-enter :inline="true" :model="authUser.queryParams">
+    <el-form v-show="authUser.showSearch" ref="queryRef" v-no-enter :inline="true" :model="authUser.queryParams">
       <el-form-item label="用户账号" prop="userName">
         <el-input v-model.trim="authUser.queryParams.userName" clearable placeholder="请输入用户账号" style="width: 240px" @keyup.enter="authUser.handleQuery" />
       </el-form-item>
@@ -80,11 +80,11 @@ const { sys_normal_disable, getDictLabel } = useDict('sys_normal_disable')
 
 // ==================== 表单引用 ====================
 const selectRef = ref(null)
+const queryRef = ref(null)
 
 // ==================== 授权用户管理（集中式管理） ====================
 const authUser = reactive({
   // 响应式数据
-  queryRef: null,
   userList: [],
   loading: true,
   showSearch: true,
@@ -127,7 +127,7 @@ const authUser = reactive({
 
   // 重置按钮操作
   resetQuery: () => {
-    resetForm(authUser.queryRef)
+    resetForm(queryRef.value)
     authUser.handleQuery()
   },
 

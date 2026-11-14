@@ -58,6 +58,55 @@ function paramsToQueryString(params: Record<string, any>): string {
   return searchParams.toString()
 }
 
+/**
+ * 统一处理业务错误码
+ * 响应拦截器（HTTP 200 + 信封错误码）与 HTTP 错误拦截器（4xx/5xx 真实状态码）共用
+ */
+function processBizError(code: number, msg: string, showMessage: boolean): Promise<never> {
+  switch (code) {
+    case 401:
+      if (!isRelogin.show) {
+        isRelogin.show = true
+        ElMessageBox.confirm('登录状态已过期，您可以继续留在该页面，或者重新登录', '系统提示', {
+          confirmButtonText: '重新登录',
+          cancelButtonText: '取消',
+          type: 'warning'
+        })
+          .then(() => {
+            // 标记在登出完成后才复位，登出接口自身触发的 401 不会重复弹窗
+            useUserStore()
+              .logOut()
+              .then(() => {
+                isRelogin.show = false
+                window.location.href = '/index'
+              })
+          })
+          .catch(() => {
+            isRelogin.show = false
+          })
+      }
+      return Promise.reject('无效的会话，或者会话已过期，请重新登录。')
+
+    case 500:
+      if (showMessage) {
+        ElMessage({ message: msg, type: 'error' })
+      }
+      return Promise.reject(new Error(msg))
+
+    case 601:
+      if (showMessage) {
+        ElMessage({ message: msg, type: 'warning' })
+      }
+      return Promise.reject(new Error(msg))
+
+    default:
+      if (showMessage) {
+        ElNotification.error({ title: msg })
+      }
+      return Promise.reject('error')
+  }
+}
+
 // 创建 axios 实例
 const service: AxiosInstance = axios.create({
   baseURL: (import.meta as any).env.VITE_APP_BASE_API,
@@ -135,79 +184,53 @@ service.interceptors.request.use(
 // 响应拦截器
 service.interceptors.response.use(
   (res: AxiosResponse) => {
-    // 未设置状态码则默认成功状态
-    const code = res.data.code || 200
-    // 获取错误信息
-    const msg = errorCode[code as keyof typeof errorCode] || res.data.msg || errorCode['default']
-    
     // 二进制数据则直接返回
     if (res.request.responseType === 'blob' || res.request.responseType === 'arraybuffer') {
       return res.data
     }
-    
+
+    // 未设置状态码则默认成功状态
+    const code = res.data.code || 200
     // 是否需要显示错误提示（默认显示）
     const requestConfig = res.config as RequestConfig
     const showMessage = requestConfig.showMsg !== false
 
-    switch (code) {
-      case 401:
-        if (!isRelogin.show) {
-          isRelogin.show = true
-          ElMessageBox.confirm('登录状态已过期，您可以继续留在该页面，或者重新登录', '系统提示', { 
-            confirmButtonText: '重新登录', 
-            cancelButtonText: '取消', 
-            type: 'warning' 
-          })
-            .then(() => {
-              isRelogin.show = false
-              useUserStore()
-                .logOut()
-                .then(() => {
-                  window.location.href = '/index'
-                })
-            })
-            .catch(() => {
-              isRelogin.show = false
-            })
-        }
-        return Promise.reject('无效的会话，或者会话已过期，请重新登录。')
-
-      case 500:
-        if (showMessage) {
-          ElMessage({ message: msg, type: 'error' })
-        }
-        return Promise.reject(new Error(msg))
-
-      case 601:
-        if (showMessage) {
-          ElMessage({ message: msg, type: 'warning' })
-        }
-        return Promise.reject(new Error(msg))
-
-      default:
-        if (code !== 200) {
-          if (showMessage) {
-            ElNotification.error({ title: msg })
-          }
-          return Promise.reject('error')
-        } else {
-          return Promise.resolve(res.data)
-        }
+    if (code === 200) {
+      return Promise.resolve(res.data)
     }
+
+    // 获取错误信息
+    const msg = errorCode[code as keyof typeof errorCode] || res.data.msg || errorCode['default']
+    return processBizError(code, msg, showMessage)
   },
   (error) => {
     console.error('Request error:', error)
+
+    // 后端返回真实 HTTP 状态码（4xx/5xx）时响应体仍是统一信封，按信封 code 走统一错误处理
+    if (error.response) {
+      // 二进制响应（文件下载）的错误由 download() 自行解析信封提示，避免双重提示
+      const responseType = error.config?.responseType
+      if (responseType === 'blob' || responseType === 'arraybuffer') {
+        return Promise.reject(error)
+      }
+
+      const status = error.response.status as number
+      const data = error.response.data || {}
+      const requestConfig = (error.config || {}) as RequestConfig
+      const showMessage = requestConfig.showMsg !== false
+      const code = data.code || status
+      const msg = errorCode[code as keyof typeof errorCode] || data.msg || `系统接口${status}异常`
+      return processBizError(code, msg, showMessage)
+    }
+
+    // 网络层错误（无响应）
     let { message } = error
-    
     if (message === 'Network Error') {
       message = '后端接口连接异常'
     } else if (message.includes('timeout')) {
       message = '系统接口请求超时'
-    } else if (message.includes('Request failed with status code')) {
-      const statusCode = message.slice(-3)
-      message = `系统接口${statusCode}异常`
     }
-    
+
     ElMessage({ message, type: 'error', duration: 5000 })
     return Promise.reject(error)
   }
@@ -242,9 +265,22 @@ export function download(url: string, params: any, filename: string, config?: Do
       }
       downloadLoadingInstance.close()
     })
-    .catch((r) => {
+    .catch(async (r: any) => {
       console.error(r)
-      ElMessage.error('下载文件出现错误，请联系管理员！')
+      // 错误响应体可能被 responseType 包成 Blob，解析信封还原具体错误信息
+      let errMsg = '下载文件出现错误，请联系管理员！'
+      try {
+        let payload: any = r?.response?.data
+        if (payload instanceof Blob) {
+          payload = JSON.parse(await payload.text())
+        }
+        if (payload?.code && payload.code !== 200) {
+          errMsg = errorCode[payload.code as keyof typeof errorCode] || payload.msg || errMsg
+        }
+      } catch {
+        // 解析失败保留默认提示
+      }
+      ElMessage.error(errMsg)
       downloadLoadingInstance.close()
     })
 }

@@ -26,7 +26,12 @@ lerna-debug.log*
 dev.local.yml
 
 # Environment configuration files (sensitive information)
+# 真实配置只留在本地，入库的是同目录下的 *.example.yml 模板
 src/config/env/*.yml
+!src/config/env/*.example.yml
+# prod.yml 例外：config/index.ts 硬读取该文件，且 Docker 构建必须有它才能启动；
+# 文件内凭据一律留空，真实值由 .env / GitHub Secrets 经环境变量注入
+!src/config/env/prod.yml
 
 # Upload folder (local test files)
 /upload
@@ -47,6 +52,9 @@ src/config/env/*.yml
 !.vscode/launch.json
 !.vscode/extensions.json
 
+# 本项目用 pnpm，pnpm-lock.yaml 必须入库；其他包管理器的锁留在本地
 package-lock.json
 yarn.lock
-pnpm-lock.yaml
+
+# 后端启动时自动生成的 OpenAPI 描述文件
+/openApi.json

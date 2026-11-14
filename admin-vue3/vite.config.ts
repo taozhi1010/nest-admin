@@ -2,7 +2,7 @@ import { defineConfig, loadEnv } from 'vite'
 import path from 'path'
 import type { UserConfig, ConfigEnv } from 'vite'
 
-import createVitePlugins from './vite/plugins/index'
+import createVitePlugins from './vite/plugins/index.ts'
 
 // 打包后的文件是否开启 hash
 const outputHash = true
@@ -26,9 +26,9 @@ export default defineConfig(({ mode, command }: ConfigEnv): UserConfig => {
       // https://cn.vitejs.dev/config/#resolve-alias
       alias: {
         // 设置路径
-        '~': path.resolve(__dirname, './'),
+        '~': path.resolve(import.meta.dirname, './'),
         // 设置别名
-        '@': path.resolve(__dirname, './src')
+        '@': path.resolve(import.meta.dirname, './src')
       },
       // https://cn.vitejs.dev/config/#resolve-extensions
       extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue']
@@ -56,6 +56,12 @@ export default defineConfig(({ mode, command }: ConfigEnv): UserConfig => {
         "/profile":{
           target: 'http://localhost:8080',
           changeOrigin: true,
+        },
+        // 项目文档（VitePress，本地 docs 服务提供）
+        '/manual': {
+          target: 'http://localhost:5173',
+          changeOrigin: true,
+          ws: true
         }
       }
     },

@@ -3,6 +3,7 @@ import { RedisModule } from './redis/redis.module';
 import { AxiosModule } from './axios/axios.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { RedisClientOptions } from '@songkeys/nestjs-redis';
+import { DatabaseHealthService } from './database/database-health.service';
 
 @Global()
 @Module({
@@ -39,5 +40,6 @@ import { RedisClientOptions } from '@songkeys/nestjs-redis';
 
     AxiosModule,
   ],
+  providers: [DatabaseHealthService],
 })
 export class CommonModule {}

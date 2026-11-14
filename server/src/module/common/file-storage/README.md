@@ -37,7 +37,7 @@ app:
     storageType: 'rustfs'
 
 rustfs:
-  endPoint: '111.229.29.214'
+  endPoint: '127.0.0.1'
   port: 9000
   useSSL: false
   accessKey: 'your-access-key'

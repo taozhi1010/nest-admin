@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-row :gutter="20">
       <el-col :span="6" :xs="24">
-        <el-card class="box-card" :body-style="{ height: 'calc(100vh - 200px)', overflow: 'auto' }">
+        <el-card class="box-card fill-card">
           <template #header>
             <div class="clearfix">
               <span>个人信息</span>
@@ -53,7 +53,7 @@
         </el-card>
       </el-col>
       <el-col :span="18" :xs="24">
-        <el-card :body-style="{ height: 'calc(100vh - 200px)', overflow: 'auto' }">
+        <el-card class="fill-card">
           <template #header>
             <div class="clearfix">
               <span>基本资料</span>

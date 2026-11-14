@@ -3,7 +3,7 @@ import { ApiTags, ApiOperation, ApiBody } from '@nestjs/swagger';
 import { PostArticleService } from './article.service';
 import { CreatePostArticleDto, UpdatePostArticleDto, ListPostArticleDto, AuditPostArticleDto } from './dto/index';
 import { RequirePermission } from 'src/common/decorators/require-premission.decorator';
-import { User, UserDto } from 'src/module/system/user/user.decorator';
+import { NotRequireAuth, User, UserDto } from 'src/module/system/user/user.decorator';
 
 /**
  * 文章控制器
@@ -27,21 +27,23 @@ export class PostArticleController {
   }
 
   /**
-   * 查询文章列表（游客可访问）
+   * 查询文章列表（游客可访问，仅返回已发布文章）
    */
   @ApiOperation({ summary: '文章-游客-列表' })
+  @NotRequireAuth()
   @Get('/guest/list')
   findGuestAll(@Query() query: ListPostArticleDto) {
-    return this.postArticleService.findAll(query);
+    return this.postArticleService.findGuestAll(query);
   }
 
   /**
-   * 查询文章详情（游客可访问）
+   * 查询文章详情（游客可访问，仅返回已发布文章）
    */
   @ApiOperation({ summary: '文章-游客-详情' })
+  @NotRequireAuth()
   @Get('/guest/detail')
   findGuestOne(@Query('id') id: number) {
-    return this.postArticleService.findOne(id);
+    return this.postArticleService.findGuestOne(id);
   }
 
   /**

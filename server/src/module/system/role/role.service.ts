@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, In, FindManyOptions } from 'typeorm';
+import { Repository, In, FindManyOptions, DataSource } from 'typeorm';
 import { Response } from 'express';
 import { ResultData } from 'src/common/utils/result';
 import { ListToTree } from 'src/common/utils/index';
@@ -30,17 +30,17 @@ export class RoleService {
     private readonly sysDeptEntityRep: Repository<SysDeptEntity>,
     private readonly menuService: MenuService,
     private readonly redisService: RedisService,
+    private readonly dataSource: DataSource,
   ) {}
   async create(createRoleDto: CreateRoleDto) {
-    const res = await this.sysRoleEntityRep.save(createRoleDto);
-    const entity = this.sysRoleWithMenuEntityRep.createQueryBuilder('entity');
-    const values = createRoleDto.menuIds.map((id) => {
-      return {
-        roleId: res.roleId,
-        menuId: id,
-      };
+    // 角色与菜单关联写入打包为事务，任一步失败整体回滚
+    const res = await this.dataSource.transaction(async (manager) => {
+      const role = await manager.save(SysRoleEntity, createRoleDto);
+      if (createRoleDto.menuIds?.length) {
+        await manager.insert(SysRoleWithMenuEntity, createRoleDto.menuIds.map((id) => ({ roleId: role.roleId, menuId: id })));
+      }
+      return role;
     });
-    entity.insert().values(values).execute();
     return ResultData.ok(res);
   }
 
@@ -90,32 +90,24 @@ export class RoleService {
   }
 
   async update(updateRoleDto: UpdateRoleDto) {
-    const hasId = await this.sysRoleWithMenuEntityRep.findOne({
-      where: {
-        roleId: updateRoleDto.roleId,
-      },
-      select: ['roleId'],
-    });
-
-    //角色已关联菜单
-    if (hasId) {
-      await this.sysRoleWithMenuEntityRep.delete({
-        roleId: updateRoleDto.roleId,
-      });
-    }
-
-    //TODO 后续改造为事务
-    const entity = this.sysRoleWithMenuEntityRep.createQueryBuilder('entity');
     const values = updateRoleDto.menuIds.map((id) => {
       return {
         roleId: updateRoleDto.roleId,
         menuId: id,
       };
     });
+    const dto = { ...updateRoleDto };
+    delete (dto as any).menuIds;
 
-    delete (updateRoleDto as any).menuIds;
-    entity.insert().values(values).execute();
-    const res = await this.sysRoleEntityRep.update({ roleId: updateRoleDto.roleId }, updateRoleDto);
+    // 菜单关联"先删后插"与角色信息更新打包为事务，任一步失败整体回滚
+    const res = await this.dataSource.transaction(async (manager) => {
+      //角色已关联菜单，直接删除（无关联时删除为空操作，等价于原"查有则删"）
+      await manager.delete(SysRoleWithMenuEntity, {
+        roleId: updateRoleDto.roleId,
+      });
+      await manager.insert(SysRoleWithMenuEntity, values);
+      return await manager.update(SysRoleEntity, { roleId: updateRoleDto.roleId }, dto);
+    });
 
     // 清除拥有该角色的所有用户的菜单缓存
     await this.clearRoleMenuCache(updateRoleDto.roleId);
@@ -131,25 +123,26 @@ export class RoleService {
       select: ['roleId'],
     });
 
-    //角色已有权限 或者 非自定义权限 先删除权限关联
-    if (hasId || updateRoleDto.dataScope !== DataScopeEnum.DATA_SCOPE_CUSTOM) {
-      await this.sysRoleWithDeptEntityRep.delete({
-        roleId: updateRoleDto.roleId,
-      });
-    }
-
-    const entity = this.sysRoleWithDeptEntityRep.createQueryBuilder('entity');
     const values = updateRoleDto.deptIds.map((id) => {
       return {
         roleId: updateRoleDto.roleId,
         deptId: id,
       };
     });
-    entity.insert().values(values).execute();
+    const dto = { ...updateRoleDto };
+    delete (dto as any).deptIds;
 
-    delete (updateRoleDto as any).deptIds;
-
-    const res = await this.sysRoleEntityRep.update({ roleId: updateRoleDto.roleId }, updateRoleDto);
+    // 部门关联"先删后插"与角色信息更新打包为事务，任一步失败整体回滚
+    const res = await this.dataSource.transaction(async (manager) => {
+      //角色已有权限 或者 非自定义权限 先删除权限关联
+      if (hasId || dto.dataScope !== DataScopeEnum.DATA_SCOPE_CUSTOM) {
+        await manager.delete(SysRoleWithDeptEntity, {
+          roleId: updateRoleDto.roleId,
+        });
+      }
+      await manager.insert(SysRoleWithDeptEntity, values);
+      return await manager.update(SysRoleEntity, { roleId: updateRoleDto.roleId }, dto);
+    });
     return ResultData.ok(res);
   }
 

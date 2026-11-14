@@ -26,23 +26,12 @@ export default function createAutoImport(): PluginOption[] {
         'pinia',
         {
           dayjs: [['default', 'dayjs']],
-          'element-plus': ['ElMessage', 'ElMessageBox', 'ElNotification', 'ElLoading'],
-          '@/composables/useAuth': ['useAuth'],
-          '@/composables/useRequest': ['useRequest', 'download', 'isRelogin'],
-          'cat-tools': ['catTools'],
-          '@/composables/useCatTools': ['useCatTools'],
-          '@/composables/useValidator': [
-            'isExternal', 'isHttp', 'validURL', 'validUsername', 
-            'validLowerCase', 'validUpperCase', 'validAlphabets', 
-            'validEmail', 'isString', 'isArray', 'safeValidate',
-            'urlSchema', 'emailSchema', 'usernameSchema',
-            'lowerCaseSchema', 'upperCaseSchema', 'alphabetsSchema'
-          ]
+          'element-plus': ['ElMessage', 'ElMessageBox', 'ElNotification', 'ElLoading']
         }
       ],
       dts: true, // 启用类型声明生成
       resolvers: [ElementPlusResolver()],
-      dirs: ['./src/composables'],
+      dirs: ['./src/composables'], // 自动扫描 composables 目录下所有文件
 
       // 全局导入，无需手动 import
       injectAtEnd: true

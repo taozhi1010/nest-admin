@@ -65,7 +65,6 @@
         </el-dialog>
 
         <!-- 裁切对话框 -->
-        <!-- TODO: 裁切功能待完善，切出来的图片位置稍微有点偏差，需要进一步调整 -->
         <el-dialog v-model="cropDialogVisible" append-to-body title="裁切封面" width="900px" @close="closeCropDialog">
             <el-row :gutter="20">
                 <el-col :span="12">
@@ -98,7 +97,9 @@
                             width: previewWidth + 'px',
                             height: computedPreviewHeight + 'px'
                         }">
-                            <img v-if="cropPreviews.url" :src="cropPreviews.url" :style="cropPreviews.img" alt="裁切预览" />
+                            <div v-if="cropPreviews.url" class="crop-preview-scaler" :style="previewScalerStyle">
+                                <img :src="cropPreviews.url" :style="cropPreviews.img" alt="裁切预览" />
+                            </div>
                         </div>
                         <p class="preview-tip">实时预览</p>
                     </div>
@@ -223,7 +224,6 @@ const currentUploadFile = ref(null) // 保存当前待上传的文件
 // 计算裁切框的固定宽高比（与预览框一致）
 const fixedNumber = computed(() => {
     const ratio = props.previewRatio.split('/')
-    const ratioValue = parseFloat(ratio[0]) / parseFloat(ratio[1])
     return [parseFloat(ratio[0]), parseFloat(ratio[1])]
 })
 
@@ -236,6 +236,23 @@ const computedPreviewHeight = computed(() => {
     const ratio = props.previewRatio.split('/')
     const ratioValue = parseFloat(ratio[0]) / parseFloat(ratio[1])
     return Math.round(props.previewWidth / ratioValue)
+})
+
+// 实时预览缩放：vue-cropper 的 real-time 样式以裁切框实际尺寸为基准，
+// 需要把预览窗口设为裁切框尺寸后再等比缩放到预览框，内容才能与选区对齐
+const previewScalerStyle = computed(() => {
+    const cropW = cropPreviews.value.w
+    const cropH = cropPreviews.value.h
+    if (!cropW || !cropH) {
+        return {}
+    }
+    const scale = Math.min(props.previewWidth / cropW, computedPreviewHeight.value / cropH)
+    return {
+        width: `${cropW}px`,
+        height: `${cropH}px`,
+        transform: `scale(${scale})`,
+        transformOrigin: 'top left'
+    }
 })
 
 // 监听modelValue变化
@@ -747,11 +764,17 @@ async function submitCrop() {
         background: var(--el-fill-color-lighter);
         position: relative;
         transition: all 0.3s;
+    }
+
+    .crop-preview-scaler {
+        position: relative;
+        overflow: hidden;
 
         img {
             position: absolute;
             top: 0;
             left: 0;
+            display: block;
         }
     }
 

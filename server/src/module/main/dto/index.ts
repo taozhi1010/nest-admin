@@ -11,30 +11,30 @@ export class LoginDto {
     required: false,
   })
   @IsOptional()
-  @IsString()
+  @IsString({ message: '验证码必须是字符串' })
   code?: string;
 
   @ApiProperty({
     required: true,
   })
-  @IsString()
-  @MinLength(2)
-  @MaxLength(10)
+  @IsString({ message: '账号必须是字符串' })
+  @MinLength(2, { message: '账号长度必须为 2 到 50 个字符' })
+  @MaxLength(50, { message: '账号长度必须为 2 到 50 个字符' })
   username: string;
 
   @ApiProperty({
     required: true,
   })
-  @IsString()
-  @MinLength(5)
-  @MaxLength(20)
+  @IsString({ message: '密码必须是字符串' })
+  @MinLength(5, { message: '密码长度必须为 5 到 20 个字符' })
+  @MaxLength(20, { message: '密码长度必须为 5 到 20 个字符' })
   password: string;
 
   @ApiProperty({
     required: true,
   })
   @IsOptional()
-  @IsString()
+  @IsString({ message: 'uuid 必须是字符串' })
   uuid?: string;
 }
 

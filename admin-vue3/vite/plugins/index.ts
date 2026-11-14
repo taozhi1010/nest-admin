@@ -9,10 +9,10 @@
 import vue from '@vitejs/plugin-vue'
 import type { PluginOption } from 'vite'
 
-import createAutoImport from './auto-import'
-import createSvgIcon from './svg-icon'
-import createCompression from './compression'
-import createSetupExtend from './setup-extend'
+import createAutoImport from './auto-import.ts'
+import createSvgIcon from './svg-icon.ts'
+import createCompression from './compression.ts'
+import createSetupExtend from './setup-extend.ts'
 
 interface ViteEnv {
   [key: string]: any
