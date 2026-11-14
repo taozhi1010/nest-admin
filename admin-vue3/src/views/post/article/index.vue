@@ -8,13 +8,7 @@
       <div class="article-subject-body">
         <el-scrollbar height="100%" @scroll="subject.handleScroll">
           <div class="subject-list">
-            <div 
-              v-for="item in subject.state.list" 
-              :key="item.id" 
-              class="subject-item"
-              :class="{ 'is-active': subject.state.selectNode.id === item.id }"
-              @click="handleSubjectRowClick(item)"
-            >
+            <div v-for="item in subject.state.list" :key="item.id" class="subject-item" :class="{ 'is-active': subject.state.selectNode.id === item.id }" @click="handleSubjectRowClick(item)">
               <div class="subject-item-content">
                 <div class="subject-item-name">{{ item.title || '未命名专栏' }}</div>
                 <div class="subject-item-info">
@@ -39,7 +33,7 @@
               <span>没有更多了</span>
             </div>
             <!-- 可以加载更多 -->
-            <div v-show="!subject.state.loading && subject.state.hasMore && subject.state.list.length > 0" class="subject-loading" style="opacity: 0.5;">
+            <div v-show="!subject.state.loading && subject.state.hasMore && subject.state.list.length > 0" class="subject-loading" style="opacity: 0.5">
               <span>滚动加载更多</span>
             </div>
           </div>
@@ -106,16 +100,11 @@
         <el-table-column align="left" label="文章标题" min-width="350">
           <template #default="scope">
             <el-tooltip :content="'双击打开编辑器'" placement="top" effect="light">
-              <div style="display: flex; align-items: center; gap: 8px;">
+              <div style="display: flex; align-items: center; gap: 8px">
                 <el-tag v-if="scope.row.source" :type="getSourceTagType(scope.row.source)" effect="light" size="small">
                   {{ getDictLabel('post_article_source', scope.row.source) }}
                 </el-tag>
-                <el-link 
-                  type="primary" 
-                  :underline="false"
-                  @dblclick="article.handleOpenEditor(scope.row)"
-                  style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block; text-align: left; width: 100%;"
-                >
+                <el-link type="primary" :underline="false" @dblclick="article.handleOpenEditor(scope.row)" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block; text-align: left; width: 100%">
                   {{ scope.row.title }}
                 </el-link>
               </div>
@@ -159,13 +148,7 @@
       <pagination v-show="article.total > 0" v-model:limit="article.queryParams.pageSize" v-model:page="article.queryParams.pageNum" :total="article.total" @pagination="article.getList" />
     </el-card>
 
-    <article-form
-      v-model="article.open"
-      :title="article.title"
-      :initial-data="article.form"
-      :subject-list="subject.state.list"
-      @success="handleArticleSuccess"
-    />
+    <article-form v-model="article.open" :title="article.title" :initial-data="article.form" :subject-list="subject.state.list" @success="handleArticleSuccess" />
 
     <preview ref="previewRef" />
   </div>
@@ -185,9 +168,9 @@ const { post_article_publish_status, post_article_audit_status, post_article_sou
 // 获取来源标签类型
 const getSourceTagType = (source) => {
   const typeMap = {
-    '0': '', // 原创
-    '1': 'success', // 转载
-    '2': 'warning' // 翻译
+    0: '', // 原创
+    1: 'success', // 转载
+    2: 'warning' // 翻译
   }
   return typeMap[source] || ''
 }
@@ -281,7 +264,7 @@ const handleArticleSuccess = () => {
   subject.getList().then(() => {
     // 恢复之前选中的专栏
     if (currentSelectNode.id && currentSelectNode.id !== 0) {
-      const found = subject.state.list.find(item => item.id === currentSelectNode.id)
+      const found = subject.state.list.find((item) => item.id === currentSelectNode.id)
       if (found) {
         subject.state.selectNode = found
       }
