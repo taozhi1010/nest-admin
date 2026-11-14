@@ -18,15 +18,15 @@
 
     <el-row class="mb8" :gutter="10">
       <el-col :span="1.5">
-        <el-button v-hasPermi="['system:menu:add']" icon="Plus" plain type="primary" @click="menu.handleAdd">新增</el-button>
+        <el-button v-hasPermi="['system:menu:add']" icon="Plus" plain type="primary" @click="handleAdd">新增</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button icon="Sort" plain type="info" @click="menu.toggleExpandAll">展开/折叠</el-button>
+        <el-button icon="Sort" plain type="info" @click="toggleExpandAll">展开/折叠</el-button>
       </el-col>
       <right-toolbar v-model:show-search="menu.showSearch" @query-table="menu.getList" />
     </el-row>
 
-    <el-table v-if="menu.refreshTable" v-loading="menu.loading" :data="menu.menuList" :default-expand-all="menu.isExpandAll" row-key="menuId" :tree-props="{ children: 'children', hasChildren: 'hasChildren' }">
+    <el-table v-if="refreshTable" v-loading="menu.loading" :data="menu.list" :default-expand-all="isExpandAll" row-key="menuId" :tree-props="{ children: 'children', hasChildren: 'hasChildren' }">
       <el-table-column label="菜单名称" prop="menuName" :show-overflow-tooltip="true" width="160" />
       <el-table-column align="center" label="图标" prop="icon" width="100">
         <template #default="scope">
@@ -48,8 +48,8 @@
       </el-table-column>
       <el-table-column align="center" class-name="small-padding fixed-width" label="操作" width="210">
         <template #default="scope">
-          <el-button v-hasPermi="['system:menu:edit']" icon="Edit" link type="primary" @click="menu.handleUpdate(scope.row)">修改</el-button>
-          <el-button v-hasPermi="['system:menu:add']" icon="Plus" link type="primary" @click="menu.handleAdd(scope.row)">新增</el-button>
+          <el-button v-hasPermi="['system:menu:edit']" icon="Edit" link type="primary" @click="handleUpdate(scope.row)">修改</el-button>
+          <el-button v-hasPermi="['system:menu:add']" icon="Plus" link type="primary" @click="handleAdd(scope.row)">新增</el-button>
           <el-button v-hasPermi="['system:menu:remove']" icon="Delete" link type="primary" @click="menu.handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
@@ -57,11 +57,11 @@
 
     <!-- 添加或修改菜单对话框 -->
     <el-dialog v-model="menu.open" append-to-body :title="menu.title" width="680px">
-      <el-form ref="menuRef" v-no-enter label-width="100px" :model="menu.form" :rules="menu.rules">
+      <el-form ref="menuRef" v-no-enter label-width="100px" :model="menu.form" :rules="rules">
         <el-row>
           <el-col :span="24">
             <el-form-item label="上级菜单">
-              <el-tree-select v-model="menu.form.parentId" check-strictly :data="menu.menuOptions" placeholder="选择上级菜单" :props="{ value: 'menuId', label: 'menuName', children: 'children' }" value-key="menuId" />
+              <el-tree-select v-model="menu.form.parentId" check-strictly :data="menuOptions" placeholder="选择上级菜单" :props="{ value: 'menuId', label: 'menuName', children: 'children' }" value-key="menuId" />
             </el-form-item>
           </el-col>
           <el-col :span="24">
@@ -75,9 +75,9 @@
           </el-col>
           <el-col v-if="menu.form.menuType != 'F'" :span="24">
             <el-form-item label="菜单图标" prop="icon">
-              <el-popover v-model:visible="menu.showChooseIcon" placement="bottom-start" trigger="click" :width="540" @show="menu.showSelectIcon">
+              <el-popover v-model:visible="showChooseIcon" placement="bottom-start" trigger="click" :width="540" @show="showSelectIcon">
                 <template #reference>
-                  <el-input v-model.trim="menu.form.icon" v-click-outside="menu.hideSelectIcon" placeholder="点击选择图标" readonly @blur="menu.showSelectIcon">
+                  <el-input v-model.trim="menu.form.icon" v-click-outside="hideSelectIcon" placeholder="点击选择图标" readonly @blur="showSelectIcon">
                     <template #prefix>
                       <svg-icon v-if="menu.form.icon" class="el-input__icon" :icon-class="menu.form.icon" style="height: 32px; width: 16px" />
                       <el-icon v-else style="height: 32px; width: 16px">
@@ -86,7 +86,7 @@
                     </template>
                   </el-input>
                 </template>
-                <icon-select ref="iconSelectRef" :active-icon="menu.form.icon" @selected="menu.selected" />
+                <icon-select ref="iconSelectRef" :active-icon="menu.form.icon" @selected="selected" />
               </el-popover>
             </el-form-item>
           </el-col>
@@ -235,193 +235,101 @@ import SvgIcon from '@/components/SvgIcon'
 import IconSelect from '@/components/IconSelect'
 import { ClickOutside as vClickOutside } from 'element-plus'
 import { useDict } from '@/composables/useDict'
-import { resetForm } from '@/composables/useForm'
+import { useCrud } from '@/composables/useCrud'
 import { handleTree, parseTime } from '@/composables/useCommon'
 
 const { sys_show_hide, sys_normal_disable, getDictLabel } = useDict('sys_show_hide', 'sys_normal_disable')
 
-// 表单 ref
+// 表单 ref 与页面特有状态
 const queryRef = ref(null)
 const menuRef = ref(null)
 const iconSelectRef = ref(null)
+const menuOptions = ref([])
+const showChooseIcon = ref(false)
+const refreshTable = ref(true)
+const isExpandAll = ref(false)
 
-// 菜单管理
-const menu = reactive({
-  // 列表状态
-  menuList: [],
-  loading: true,
-  showSearch: true,
-  refreshTable: true,
-  isExpandAll: false,
-  menuOptions: [],
-  showChooseIcon: false,
+// 表单验证规则
+const rules = {
+  menuName: [{ required: true, message: '菜单名称不能为空', trigger: 'blur' }],
+  orderNum: [{ required: true, message: '菜单顺序不能为空', trigger: 'blur' }],
+  path: [{ required: true, message: '路由地址不能为空', trigger: 'blur' }]
+}
 
-  // 查询参数
-  queryParams: {
-    menuName: undefined,
-    visible: undefined
+// 菜单管理（树形表格，后端返回全量数据无分页）
+const menu = useCrud({
+  api: {
+    // 后端返回平铺数组，转树形后适配 useCrud 的 { data: { list } } 信封
+    list: async (params) => {
+      const response = await listMenu(params)
+      return { data: { list: handleTree(response.data, 'menuId'), total: 0 } }
+    },
+    get: getMenu,
+    add: addMenu,
+    update: updateMenu,
+    del: delMenu
   },
-
-  // 弹窗状态
-  open: false,
-  title: '',
-
-  // 表单数据
-  form: {},
-
-  // 表单验证规则
-  rules: {
-    menuName: [{ required: true, message: '菜单名称不能为空', trigger: 'blur' }],
-    orderNum: [{ required: true, message: '菜单顺序不能为空', trigger: 'blur' }],
-    path: [{ required: true, message: '路由地址不能为空', trigger: 'blur' }]
-  },
-
-  // 方法集合
-  // 查询菜单列表
-  getList: () => {
-    menu.loading = true
-    listMenu(menu.queryParams).then((response) => {
-      menu.menuList = handleTree(response.data, 'menuId')
-      menu.loading = false
-    })
-  },
-
-  // 查询菜单下拉树结构
-  getTreeselect: async () => {
-    menu.menuOptions = []
-    const response = await listMenu()
-    const menuData = { menuId: 0, menuName: '主类目', children: [] }
-    menuData.children = handleTree(response.data, 'menuId')
-    menu.menuOptions.push(menuData)
-  },
-
-  // 取消按钮
-  cancel: () => {
-    menu.open = false
-    menu.reset()
-  },
-
-  // 表单重置
-  reset: () => {
-    Object.assign(menu.form, {
-      menuId: undefined,
-      parentId: 0,
-      menuName: undefined,
-      icon: undefined,
-      menuType: 'M',
-      orderNum: undefined,
-      isFrame: '1',
-      isCache: '0',
-      visible: '0',
-      status: '0',
-      perms: undefined,
-      component: undefined,
-      path: undefined,
-      query: undefined
-    })
-    nextTick(() => {
-      resetForm(menuRef.value)
-    })
-  },
-
-  // 展示下拉图标
-  showSelectIcon: () => {
-    iconSelectRef.value.reset()
-    menu.showChooseIcon = true
-  },
-
-  // 选择图标
-  selected: (name) => {
-    menu.form.icon = name
-    menu.showChooseIcon = false
-  },
-
-  // 图标外层点击隐藏下拉列表
-  hideSelectIcon: (event) => {
-    const elem = event.relatedTarget || event.srcElement || event.target || event.currentTarget
-    const className = elem.className
-    if (className !== 'el-input__inner') {
-      menu.showChooseIcon = false
-    }
-  },
-
-  // 搜索按钮操作
-  handleQuery: () => {
-    menu.getList()
-  },
-
-  // 重置按钮操作
-  resetQuery: () => {
-    resetForm(queryRef.value)
-    menu.handleQuery()
-  },
-
-  // 新增按钮操作
-  handleAdd: async (row) => {
-    await menu.getTreeselect()
-    menu.reset()
-    menu.form.parentId = row != null && row.menuId ? row.menuId : 0
-    menu.open = true
-    menu.title = '添加菜单'
-  },
-
-  // 展开/折叠操作
-  toggleExpandAll: () => {
-    menu.refreshTable = false
-    menu.isExpandAll = !menu.isExpandAll
-    nextTick(() => {
-      menu.refreshTable = true
-    })
-  },
-
-  // 修改按钮操作
-  handleUpdate: async (row) => {
-    await menu.getTreeselect()
-    const response = await getMenu(row.menuId)
-    Object.assign(menu.form, response.data)
-    menu.open = true
-    menu.title = '修改菜单'
-  },
-
-  // 提交按钮
-  submitForm: () => {
-    menuRef.value.validate(async (valid) => {
-      if (!valid) return
-
-      try {
-        if (menu.form.menuId != undefined) {
-          await updateMenu(menu.form)
-          ElMessage.success('修改成功')
-        } else {
-          await addMenu(menu.form)
-          ElMessage.success('新增成功')
-        }
-        menu.open = false
-        menu.getList()
-      } catch (e) {
-        console.error('提交失败:', e)
-      }
-    })
-  },
-
-  // 删除按钮操作
-  handleDelete: async (row) => {
-    try {
-      await ElMessageBox.confirm(`是否确认删除名称为"${row.menuName}"的数据项？`, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      })
-      await delMenu(row.menuId)
-      ElMessage.success('删除成功')
-      menu.getList()
-    } catch (e) {
-      if (e !== 'cancel') {
-        console.error('删除失败:', e)
-      }
-    }
-  }
+  idKey: 'menuId',
+  name: '菜单',
+  query: { menuName: undefined, visible: undefined },
+  form: { menuId: undefined, parentId: 0, menuName: undefined, icon: undefined, menuType: 'M', orderNum: undefined, isFrame: '1', isCache: '0', visible: '0', status: '0', perms: undefined, component: undefined, path: undefined, query: undefined },
+  queryRef,
+  formRef: menuRef
 })
+
+// 查询菜单下拉树结构
+const getTreeselect = async () => {
+  menuOptions.value = []
+  const response = await listMenu()
+  const menuData = { menuId: 0, menuName: '主类目', children: [] }
+  menuData.children = handleTree(response.data, 'menuId')
+  menuOptions.value.push(menuData)
+}
+
+// 新增按钮操作：先取上级菜单下拉树，可选指定父节点（行内新增）
+const baseHandleAdd = menu.handleAdd
+const handleAdd = async (row) => {
+  await getTreeselect()
+  baseHandleAdd(row)
+  menu.form.parentId = row != null && row.menuId ? row.menuId : 0
+}
+
+// 修改按钮操作：先取上级菜单下拉树
+const baseHandleUpdate = menu.handleUpdate
+const handleUpdate = async (row) => {
+  await getTreeselect()
+  await baseHandleUpdate(row)
+}
+
+// 展开/折叠操作
+const toggleExpandAll = () => {
+  refreshTable.value = false
+  isExpandAll.value = !isExpandAll.value
+  nextTick(() => {
+    refreshTable.value = true
+  })
+}
+
+// 展示下拉图标
+const showSelectIcon = () => {
+  iconSelectRef.value.reset()
+  showChooseIcon.value = true
+}
+
+// 选择图标
+const selected = (name) => {
+  menu.form.icon = name
+  showChooseIcon.value = false
+}
+
+// 图标外层点击隐藏下拉列表
+const hideSelectIcon = (event) => {
+  const elem = event.relatedTarget || event.srcElement || event.target || event.currentTarget
+  const className = elem.className
+  if (className !== 'el-input__inner') {
+    showChooseIcon.value = false
+  }
+}
 
 // 初始化加载
 menu.getList()
