@@ -1,20 +1,20 @@
 <template>
   <div class="app-container">
     <div class="main-card">
-      <el-form v-show="showSearch" ref="queryRef" v-no-enter :inline="true" label-width="68px" :model="queryParams">
+      <el-form v-show="operlog.showSearch" ref="queryRef" v-no-enter :inline="true" label-width="68px" :model="operlog.queryParams">
       <el-form-item label="系统模块" prop="title">
-        <el-input v-model="queryParams.title" clearable placeholder="请输入系统模块" style="width: 240px" @keyup.enter="handleQuery" />
+        <el-input v-model="operlog.queryParams.title" clearable placeholder="请输入系统模块" style="width: 240px" @keyup.enter="operlog.handleQuery" />
       </el-form-item>
       <el-form-item label="操作人员" prop="operName">
-        <el-input v-model="queryParams.operName" clearable placeholder="请输入操作人员" style="width: 240px" @keyup.enter="handleQuery" />
+        <el-input v-model="operlog.queryParams.operName" clearable placeholder="请输入操作人员" style="width: 240px" @keyup.enter="operlog.handleQuery" />
       </el-form-item>
       <el-form-item label="类型" prop="businessType">
-        <el-select v-model="queryParams.businessType" clearable placeholder="操作类型" style="width: 240px">
+        <el-select v-model="operlog.queryParams.businessType" clearable placeholder="操作类型" style="width: 240px">
           <el-option v-for="dict in sys_oper_type" :key="dict.value" :label="dict.label" :value="dict.value" />
         </el-select>
       </el-form-item>
       <el-form-item label="状态" prop="status">
-        <el-select v-model="queryParams.status" clearable placeholder="操作状态" style="width: 240px">
+        <el-select v-model="operlog.queryParams.status" clearable placeholder="操作状态" style="width: 240px">
           <el-option v-for="dict in sys_common_status" :key="dict.value" :label="dict.label" :value="dict.value" />
         </el-select>
       </el-form-item>
@@ -22,14 +22,14 @@
         <el-date-picker v-model="dateRange" :default-time="[new Date(2000, 1, 1, 0, 0, 0), new Date(2000, 1, 1, 23, 59, 59)]" end-placeholder="结束日期" range-separator="-" start-placeholder="开始日期" type="daterange" value-format="YYYY-MM-DD HH:mm:ss" />
       </el-form-item>
       <el-form-item>
-        <el-button icon="Search" type="primary" @click="handleQuery">搜索</el-button>
+        <el-button icon="Search" type="primary" @click="operlog.handleQuery">搜索</el-button>
         <el-button icon="Refresh" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
 
     <el-row class="mb8" :gutter="10">
       <el-col :span="1.5">
-        <el-button v-hasPermi="['monitor:operlog:remove']" :disabled="multiple" icon="Delete" plain type="danger" @click="handleDelete">删除</el-button>
+        <el-button v-hasPermi="['monitor:operlog:remove']" :disabled="operlog.multiple" icon="Delete" plain type="danger" @click="operlog.handleDelete">删除</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button v-hasPermi="['monitor:operlog:remove']" icon="Delete" plain type="danger" @click="handleClean">清空</el-button>
@@ -37,10 +37,10 @@
       <el-col :span="1.5">
         <el-button v-hasPermi="['monitor:operlog:export']" icon="Download" plain type="warning" @click="handleExport">导出</el-button>
       </el-col>
-      <right-toolbar v-model:show-search="showSearch" @query-table="getList" />
+      <right-toolbar v-model:show-search="operlog.showSearch" @query-table="operlog.getList" />
     </el-row>
 
-    <el-table ref="operlogRef" v-loading="loading" :data="operlogList" :default-sort="defaultSort" @selection-change="handleSelectionChange" @sort-change="handleSortChange">
+    <el-table ref="operlogRef" v-loading="operlog.loading" :data="operlog.list" :default-sort="defaultSort" @selection-change="operlog.handleSelectionChange" @sort-change="handleSortChange">
       <el-table-column align="center" type="selection" width="50" />
       <el-table-column align="center" label="日志编号" prop="operId" />
       <el-table-column align="center" label="系统模块" prop="title" :show-overflow-tooltip="true" />
@@ -73,7 +73,7 @@
       </el-table-column>
     </el-table>
 
-    <pagination v-show="total > 0" v-model:limit="queryParams.pageSize" v-model:page="queryParams.pageNum" :total="total" @pagination="getList" />
+    <pagination v-show="operlog.total > 0" v-model:limit="operlog.queryParams.pageSize" v-model:page="operlog.queryParams.pageNum" :total="operlog.total" @pagination="operlog.getList" />
 
     <!-- 操作日志详细 -->
     <el-dialog v-model="open" append-to-body title="操作日志详细" width="700px">
@@ -126,99 +126,60 @@
 <script setup name="Operlog">
 import { list, delOperlog, cleanOperlog } from '@/api/monitor/operlog'
 import { useDict } from '@/composables/useDict'
-import { resetForm } from '@/composables/useForm'
+import { useCrud } from '@/composables/useCrud'
 import { addDateRange, parseTime } from '@/composables/useCommon'
 import { download } from '@/composables/useRequest'
 
 const { sys_oper_type, sys_common_status, getDictLabel } = useDict('sys_oper_type', 'sys_common_status')
 
 const operlogRef = ref(null)
-const operlogList = ref([])
+const queryRef = ref(null)
 const open = ref(false)
-const loading = ref(true)
-const showSearch = ref(true)
-const ids = ref([])
-const single = ref(true)
-const multiple = ref(true)
-const total = ref(0)
-const title = ref('')
+const form = ref({})
 const dateRange = ref([])
 const defaultSort = ref({ prop: 'operTime', order: 'descending' })
 
-const data = reactive({
-  form: {},
-  queryParams: {
-    pageNum: 1,
-    pageSize: 10,
-    title: undefined,
-    operName: undefined,
-    businessType: undefined,
-    status: undefined
-  }
+// 操作日志列表（无新增/编辑）
+const operlog = useCrud({
+  api: {
+    // 列表查询注入日期范围参数
+    list: (params) => list(addDateRange(params, dateRange.value)),
+    del: delOperlog
+  },
+  idKey: 'operId',
+  name: '日志',
+  query: { title: undefined, operName: undefined, businessType: undefined, status: undefined, orderByColumn: undefined, isAsc: undefined },
+  queryRef
 })
 
-const { queryParams, form } = toRefs(data)
-
-/** 查询登录日志 */
-function getList() {
-  loading.value = true
-  list(addDateRange(queryParams.value, dateRange.value)).then((response) => {
-    operlogList.value = response.data.list
-    total.value = response.data.total
-    loading.value = false
-  })
-}
-/** 操作日志类型字典翻译 */
-function typeFormat(row, column) {
-  return getDictLabel('sys_oper_type', row.businessType)
-}
-/** 搜索按钮操作 */
-function handleQuery() {
-  queryParams.value.pageNum = 1
-  getList()
-}
-/** 重置按钮操作 */
-function resetQuery() {
+// 重置按钮操作：额外清空日期范围并恢复默认排序
+const baseResetQuery = operlog.resetQuery
+const resetQuery = () => {
   dateRange.value = []
-  resetForm('queryRef')
-  queryParams.value.pageNum = 1
+  baseResetQuery()
   if (operlogRef.value) {
     operlogRef.value.sort(defaultSort.value.prop, defaultSort.value.order)
   }
 }
-/** 多选框选中数据 */
-function handleSelectionChange(selection) {
-  ids.value = selection.map((item) => item.operId)
-  multiple.value = !selection.length
+
+/** 操作日志类型字典翻译 */
+function typeFormat(row, column) {
+  return getDictLabel('sys_oper_type', row.businessType)
 }
+
 /** 排序触发事件 */
-function handleSortChange(column, prop, order) {
-  queryParams.value.orderByColumn = column.prop
-  queryParams.value.isAsc = column.order
-  getList()
+function handleSortChange(column) {
+  operlog.queryParams.orderByColumn = column.prop
+  operlog.queryParams.isAsc = column.order
+  operlog.getList()
 }
+
 /** 详细按钮操作 */
 function handleView(row) {
   open.value = true
   form.value = row
 }
-/** 删除按钮操作 */
-function handleDelete(row) {
-  const operIds = row.operId || ids.value
-  ElMessageBox.confirm(`是否确认删除日志编号为"${operIds}"的数据项?`, '系统提示', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'warning'
-  })
-    .then(function () {
-      return delOperlog(operIds)
-    })
-    .then(() => {
-      getList()
-      ElMessage.success('删除成功')
-    })
-    .catch(() => {})
-}
+
 /** 清空按钮操作 */
 function handleClean() {
   ElMessageBox.confirm('是否确认清空所有操作日志数据项?', '系统提示', {
@@ -230,21 +191,22 @@ function handleClean() {
       return cleanOperlog()
     })
     .then(() => {
-      getList()
+      operlog.getList()
       ElMessage.success('清空成功')
     })
     .catch(() => {})
 }
+
 /** 导出按钮操作 */
 function handleExport() {
   download(
     'monitor/operlog/export',
     {
-      ...queryParams.value
+      ...operlog.queryParams
     },
     `config_${new Date().getTime()}.xlsx`
   )
 }
 
-getList()
+operlog.getList()
 </script>
