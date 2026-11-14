@@ -220,6 +220,10 @@ const article = useCrud({
   idKey: 'id',
   name: '文章',
   query: { title: undefined, subjectId: undefined, author: undefined, publishStatus: undefined, auditStatus: undefined, isAsc: 'descending', orderByColumn: 'createTime' },
+  texts: {
+    // 单行删除带文章标题，批量删除带选中篇数
+    deleteConfirm: (ids, row) => `是否确认删除文章${row?.title ? `"${row.title}"` : `选中的 ${Array.isArray(ids) ? ids.length : 1} 篇文章`}？`
+  },
   queryRef: queryArticleRef
 })
 

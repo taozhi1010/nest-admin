@@ -149,6 +149,10 @@ const dept = useCrud({
   name: '部门',
   query: { deptName: undefined, status: undefined },
   form: { deptId: undefined, parentId: undefined, deptName: undefined, orderNum: 0, leader: undefined, phone: undefined, email: undefined, status: '0' },
+  texts: {
+    // 删除确认显示部门名称而非编号
+    deleteConfirm: (ids, row) => `是否确认删除名称为"${row?.deptName ?? ids}"的数据项?`
+  },
   queryRef,
   formRef: deptRef
 })

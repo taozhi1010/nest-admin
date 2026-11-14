@@ -146,6 +146,10 @@ const subject = useCrud({
   name: '专栏',
   query: { title: undefined, publishStatus: undefined, auditStatus: undefined, isAsc: 'descending', orderByColumn: 'createTime' },
   form: { id: undefined, title: undefined, desc: undefined, cover: undefined, publishStatus: '1', auditStatus: '0', sort: 0 },
+  texts: {
+    // 单行删除带专栏标题
+    deleteConfirm: (ids, row) => `是否确认删除专栏${row?.title ? `"${row.title}"` : `编号为"${ids}"的数据项`}？`
+  },
   queryRef,
   formRef: subjectRef
 })

@@ -60,10 +60,33 @@ export interface CrudOptions {
   formRef?: Ref<FormInstance>
   /** 每页条数，默认 10；无真实分页的页面可传大值 */
   pageSize?: number
+  /** 自定义提示文案：不传全部走默认模板，有特殊需要的字段单独传入覆盖 */
+  texts?: CrudTexts
+}
+
+/**
+ * 提示文案配置：除 deleteConfirm 外均为字符串覆盖；
+ * 未配置的字段按 name 生成默认文案
+ */
+export interface CrudTexts {
+  /** 添加对话框标题，默认 `添加${name}` */
+  addTitle?: string
+  /** 修改对话框标题，默认 `修改${name}` */
+  updateTitle?: string
+  /** 新增成功提示，默认 '新增成功' */
+  addSuccess?: string
+  /** 修改成功提示，默认 '修改成功' */
+  updateSuccess?: string
+  /** 删除成功提示，默认 '删除成功' */
+  deleteSuccess?: string
+  /** 确认框标题，默认 '提示' */
+  confirmTitle?: string
+  /** 删除确认文案（deleteIds 为单行主键或选中主键数组，row 为单行删除时的行数据），默认 `是否确认删除${name}编号为"${deleteIds}"的数据项？` */
+  deleteConfirm?: (deleteIds: any, row?: any) => string
 }
 
 export function useCrud(options: CrudOptions) {
-  const { api, idKey, name } = options
+  const { api, idKey, name, texts } = options
   const initialQuery = { ...options.query }
   const initialForm = { ...options.form }
 
@@ -141,7 +164,7 @@ export function useCrud(options: CrudOptions) {
   const handleAdd = () => {
     reset()
     open.value = true
-    title.value = `添加${name}`
+    title.value = texts?.addTitle ?? `添加${name}`
   }
 
   /** 修改按钮操作：取详情回填表单 */
@@ -153,7 +176,7 @@ export function useCrud(options: CrudOptions) {
       const response = await api.get!(id)
       form.value = response.data
       open.value = true
-      title.value = `修改${name}`
+      title.value = texts?.updateTitle ?? `修改${name}`
     } catch (e) {
       console.error(`获取${name}信息失败:`, e)
     } finally {
@@ -168,10 +191,10 @@ export function useCrud(options: CrudOptions) {
       try {
         if (form.value[idKey] !== undefined) {
           await api.update!(form.value)
-          ElMessage.success('修改成功')
+          ElMessage.success(texts?.updateSuccess ?? '修改成功')
         } else {
           await api.add!(form.value)
-          ElMessage.success('新增成功')
+          ElMessage.success(texts?.addSuccess ?? '新增成功')
         }
         open.value = false
         getList()
@@ -195,14 +218,16 @@ export function useCrud(options: CrudOptions) {
   /** 删除按钮操作：单行删除按 row[idKey]，批量删除按选中 ids */
   const handleDelete = async (row?: any) => {
     const deleteIds = row?.[idKey] || ids.value
+    const confirmText =
+      texts?.deleteConfirm?.(deleteIds, row) ?? `是否确认删除${name}编号为"${deleteIds}"的数据项？`
     try {
-      await ElMessageBox.confirm(`是否确认删除${name}编号为"${deleteIds}"的数据项？`, '提示', {
+      await ElMessageBox.confirm(confirmText, texts?.confirmTitle ?? '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       })
       await api.del!(deleteIds)
-      ElMessage.success('删除成功')
+      ElMessage.success(texts?.deleteSuccess ?? '删除成功')
       getList()
     } catch (e) {
       if (e !== 'cancel') {

@@ -273,6 +273,10 @@ const menu = useCrud({
   name: '菜单',
   query: { menuName: undefined, visible: undefined },
   form: { menuId: undefined, parentId: 0, menuName: undefined, icon: undefined, menuType: 'M', orderNum: undefined, isFrame: '1', isCache: '0', visible: '0', status: '0', perms: undefined, component: undefined, path: undefined, query: undefined },
+  texts: {
+    // 删除确认显示菜单名称而非编号
+    deleteConfirm: (ids, row) => `是否确认删除名称为"${row?.menuName ?? ids}"的数据项？`
+  },
   queryRef,
   formRef: menuRef
 })
