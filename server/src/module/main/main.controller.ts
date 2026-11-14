@@ -1,12 +1,13 @@
 import { Controller, Get, Post, Body, HttpCode, Res, Headers, Query } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBody, ApiQuery } from '@nestjs/swagger';
 import { MainService } from './main.service';
-import { RegisterDto, LoginDto } from './dto/index';
+import { RegisterDto, LoginDto, SendEmailCodeDto } from './dto/index';
 import { createMath } from 'src/common/utils/captcha';
 import { isCaptchaRequired } from 'src/common/utils/login-captcha';
 import { ResultData } from 'src/common/utils/result';
 import { GenerateUUID } from 'src/common/utils/index';
 import { RedisService } from 'src/module/common/redis/redis.service';
+import { MailService } from 'src/module/common/mail/mail.service';
 import { CacheEnum } from 'src/common/enum/index';
 import { ConfigService } from 'src/module/system/config/config.service';
 import { ClientInfo, ClientInfoDto } from 'src/common/decorators/common.decorator';
@@ -19,6 +20,7 @@ export class MainController {
     private readonly mainService: MainService,
     private readonly redisService: RedisService,
     private readonly configService: ConfigService,
+    private readonly mailService: MailService,
   ) {}
   @ApiOperation({
     summary: '用户登录',
@@ -79,6 +81,29 @@ export class MainController {
       return ResultData.fail(400, '账号长度必须为 2 到 50 个字符');
     }
     return await this.mainService.checkUsername(name);
+  }
+
+  @ApiOperation({
+    summary: '获取注册页配置（是否开启邮箱验证码注册）',
+  })
+  @NotRequireAuth()
+  @Get('/register/config')
+  getRegisterConfig() {
+    return ResultData.ok({ emailRegisterEnabled: this.mailService.isEnabled() });
+  }
+
+  @ApiOperation({
+    summary: '发送注册邮箱验证码',
+  })
+  @ApiBody({
+    type: SendEmailCodeDto,
+    required: true,
+  })
+  @NotRequireAuth()
+  @Post('/register/emailCode')
+  @HttpCode(200)
+  sendEmailCode(@Body() dto: SendEmailCodeDto, @ClientInfo() clientInfo: ClientInfoDto) {
+    return this.mainService.sendEmailCode(dto.email, clientInfo.ipaddr);
   }
 
   @ApiOperation({

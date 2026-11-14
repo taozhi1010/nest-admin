@@ -25,6 +25,7 @@ import { RoleService } from '../role/role.service';
 import { DeptService } from '../dept/dept.service';
 
 import { ConfigService } from '../config/config.service';
+import { MailService } from 'src/module/common/mail/mail.service';
 import { SysRoleEntity } from '../role/entities/role.entity';
 import { SysMenuEntity } from '../menu/entities/menu.entity';
 import { UserType } from './dto/user';
@@ -53,6 +54,7 @@ export class UserService {
     private readonly redisService: RedisService,
     private readonly configService: ConfigService,
     private readonly dataSource: DataSource,
+    private readonly mailService: MailService,
   ) {}
   /**
    * 后台创建用户
@@ -525,8 +527,10 @@ export class UserService {
   /**
    * 注册
    */
-  @Captcha('user', 'always')
   async register(user: RegisterDto, ipaddr: string) {
+    // 注册验证：已配置邮件服务走邮箱验证码，否则走图片验证码
+    const verifyFail = await this.validateRegisterVerification(user);
+    if (verifyFail) return verifyFail;
     const loginDate = GetNowDate();
     // IP 注册频率限制：同一 IP 每小时最多 REGISTER_IP_LIMIT 次（含验证码失败的尝试）
     const rateCount = await this.redisService.incr(CacheEnum.REGISTER_RATE_KEY + ipaddr, REGISTER_RATE_EXPIRESIN);
@@ -542,6 +546,18 @@ export class UserService {
     if (checkUserNameUnique) {
       return ResultData.fail(500, `保存用户'${user.username}'失败，注册账号已存在`);
     }
+    // 邮箱占用查重（sys_user.email 无唯一索引，应用层兜底；未填邮箱时跳过）
+    if (user.email) {
+      const checkEmailUnique = await this.userRepo.findOne({
+        where: {
+          email: user.email,
+        },
+        select: ['userId'],
+      });
+      if (checkEmailUnique) {
+        return ResultData.fail(500, '该邮箱已被其他账号使用');
+      }
+    }
     user['userName'] = user.username;
     user['nickName'] = user.username;
     user['password'] = bcrypt.hashSync(user.password, bcrypt.genSaltSync(10));
@@ -554,7 +570,35 @@ export class UserService {
       }
       throw error;
     }
+    // 邮箱验证码一次性使用，注册成功后才作废（失败可凭原码重试）
+    if (user.email) {
+      await this.redisService.del(CacheEnum.EMAIL_CODE_KEY + user.email);
+    }
     return ResultData.ok();
+  }
+
+  /**
+   * 注册验证方式校验：
+   * - 已配置邮件服务（邮箱验证码注册开启）→ 校验邮箱验证码；验证通过不删码，注册失败可凭原码重试
+   * - 未配置 → 图片验证码（原 @Captcha('user','always') 行为）
+   * @returns null 表示校验通过，否则返回失败的 ResultData
+   */
+  private async validateRegisterVerification(user: RegisterDto): Promise<ResultData | null> {
+    if (this.mailService.isEnabled()) {
+      if (!user.email) return ResultData.fail(500, '请输入邮箱');
+      if (!user.emailCode) return ResultData.fail(500, '请输入邮箱验证码');
+      const code = await this.redisService.get(CacheEnum.EMAIL_CODE_KEY + user.email);
+      if (!code) return ResultData.fail(500, '邮箱验证码已过期，请重新获取');
+      if (String(code) !== String(user.emailCode)) return ResultData.fail(500, '邮箱验证码错误');
+      return null;
+    }
+    if (!user.code) return ResultData.fail(500, '请输入验证码');
+    const code = await this.redisService.get(CacheEnum.CAPTCHA_CODE_KEY + user.uuid);
+    if (!code) return ResultData.fail(500, '验证码已过期');
+    if (String(code) !== String(user.code)) return ResultData.fail(500, '验证码错误');
+    // 图片验证码一次性使用，校验通过后立即作废
+    await this.redisService.del(CacheEnum.CAPTCHA_CODE_KEY + user.uuid);
+    return null;
   }
 
   /**
@@ -563,6 +607,17 @@ export class UserService {
   async checkUsername(username: string) {
     const exist = await this.userRepo.findOne({
       where: { userName: username },
+      select: ['userId'],
+    });
+    return ResultData.ok({ exists: !!exist });
+  }
+
+  /**
+   * 检查邮箱是否已被其他账号使用（注册发码实时校验用，注册提交时后端仍会兜底校验）
+   */
+  async checkEmailRegistered(email: string) {
+    const exist = await this.userRepo.findOne({
+      where: { email },
       select: ['userId'],
     });
     return ResultData.ok({ exists: !!exist });
