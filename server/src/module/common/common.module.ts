@@ -4,6 +4,7 @@ import { AxiosModule } from './axios/axios.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { RedisClientOptions } from '@songkeys/nestjs-redis';
 import { DatabaseHealthService } from './database/database-health.service';
+import { MailService } from './mail/mail.service';
 
 @Global()
 @Module({
@@ -40,6 +41,7 @@ import { DatabaseHealthService } from './database/database-health.service';
 
     AxiosModule,
   ],
-  providers: [DatabaseHealthService],
+  providers: [DatabaseHealthService, MailService],
+  exports: [MailService],
 })
 export class CommonModule {}

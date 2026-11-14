@@ -53,5 +53,16 @@ export default () => {
       ...fileConfig.jwt,
       secretkey: process.env.JWT_SECRETKEY || fileConfig.jwt?.secretkey,
     },
+    mail: {
+      ...fileConfig.mail,
+      // 布尔项用 ?? 链：yml 里显式写 false 不能被兜底值覆盖成 true
+      enabled: String(process.env.MAIL_ENABLED ?? fileConfig.mail?.enabled ?? false) === 'true',
+      host: process.env.MAIL_HOST || fileConfig.mail?.host || '',
+      port: Number(process.env.MAIL_PORT || fileConfig.mail?.port || 465),
+      secure: String(process.env.MAIL_SECURE ?? fileConfig.mail?.secure ?? true) === 'true',
+      user: process.env.MAIL_USER || fileConfig.mail?.user || '',
+      pass: process.env.MAIL_PASS || fileConfig.mail?.pass || '',
+      from: process.env.MAIL_FROM || fileConfig.mail?.from || '',
+    },
   };
 };
