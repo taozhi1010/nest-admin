@@ -35,7 +35,7 @@
         <el-button v-hasPermi="['monitor:operlog:remove']" icon="Delete" plain type="danger" @click="handleClean">清空</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button v-hasPermi="['monitor:operlog:export']" icon="Download" plain type="warning" @click="handleExport">导出</el-button>
+        <el-button v-hasPermi="['monitor:operlog:export']" icon="Download" plain type="warning" @click="operlog.handleExport">导出</el-button>
       </el-col>
       <right-toolbar v-model:show-search="operlog.showSearch" @query-table="operlog.getList" />
     </el-row>
@@ -128,7 +128,6 @@ import { list, delOperlog, cleanOperlog } from '@/api/monitor/operlog'
 import { useDict } from '@/composables/useDict'
 import { useCrud } from '@/composables/useCrud'
 import { addDateRange, parseTime } from '@/composables/useCommon'
-import { download } from '@/composables/useRequest'
 
 const { sys_oper_type, sys_common_status, getDictLabel } = useDict('sys_oper_type', 'sys_common_status')
 
@@ -149,6 +148,7 @@ const operlog = useCrud({
   idKey: 'operId',
   name: '日志',
   query: { title: undefined, operName: undefined, businessType: undefined, status: undefined, orderByColumn: undefined, isAsc: undefined },
+  exportUrl: 'monitor/operlog/export',
   queryRef
 })
 
@@ -195,17 +195,6 @@ function handleClean() {
       ElMessage.success('清空成功')
     })
     .catch(() => {})
-}
-
-/** 导出按钮操作 */
-function handleExport() {
-  download(
-    'monitor/operlog/export',
-    {
-      ...operlog.queryParams
-    },
-    `config_${new Date().getTime()}.xlsx`
-  )
 }
 
 operlog.getList()

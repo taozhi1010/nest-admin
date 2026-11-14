@@ -31,7 +31,7 @@
         <el-button v-hasPermi="['monitor:job:remove']" icon="Delete" plain type="danger" @click="handleClean">清空</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button v-hasPermi="['monitor:job:export']" icon="Download" plain type="warning" @click="handleExport">导出</el-button>
+        <el-button v-hasPermi="['monitor:job:export']" icon="Download" plain type="warning" @click="jobLog.handleExport">导出</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button icon="Close" plain type="warning" @click="handleClose">关闭</el-button>
@@ -113,7 +113,6 @@ import { listJobLog, delJobLog, cleanJobLog } from '@/api/monitor/jobLog'
 import { useDict } from '@/composables/useDict'
 import { useCrud } from '@/composables/useCrud'
 import { addDateRange, parseTime } from '@/composables/useCommon'
-import { download } from '@/composables/useRequest'
 
 // ==================== Composables ====================
 const { closeOpenPage } = useTab()
@@ -136,6 +135,8 @@ const jobLog = useCrud({
   idKey: 'jobLogId',
   name: '调度日志',
   query: { jobName: undefined, jobGroup: undefined, status: undefined },
+  exportUrl: 'monitor/jobLog/export',
+  exportName: 'job_log',
   queryRef
 })
 
@@ -172,17 +173,6 @@ const handleClean = () => {
       ElMessage.success('清空成功')
     })
     .catch(() => {})
-}
-
-/** 导出按钮操作 */
-const handleExport = () => {
-  download(
-    'monitor/jobLog/export',
-    {
-      ...jobLog.queryParams
-    },
-    `job_log_${new Date().getTime()}.xlsx`
-  )
 }
 
 // 初始化加载：路由带 jobId 时回填任务名称/组名再查询

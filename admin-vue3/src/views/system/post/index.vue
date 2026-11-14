@@ -96,7 +96,6 @@ import { listPost, addPost, delPost, getPost, updatePost } from '@/api/system/po
 import { useDict } from '@/composables/useDict'
 import { useCrud } from '@/composables/useCrud'
 import { parseTime } from '@/composables/useCommon'
-import { download } from '@/composables/useRequest'
 
 const { sys_normal_disable, getDictLabel } = useDict('sys_normal_disable')
 
@@ -118,20 +117,10 @@ const post = useCrud({
   name: '岗位',
   query: { postCode: undefined, postName: undefined, status: undefined },
   form: { postId: undefined, postCode: undefined, postName: undefined, postSort: 0, status: '0', remark: undefined },
+  exportUrl: 'system/post/export',
   queryRef,
   formRef: postRef
 })
-
-// 导出按钮操作
-const handleExport = () => {
-  download(
-    'system/post/export',
-    {
-      ...post.queryParams
-    },
-    `post_${new Date().getTime()}.xlsx`
-  )
-}
 
 // 初始化加载
 post.getList()

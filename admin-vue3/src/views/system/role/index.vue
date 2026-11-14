@@ -29,7 +29,7 @@
         <el-button v-hasPermi="['system:role:remove']" :disabled="role.multiple" icon="Delete" plain type="danger" @click="role.handleDelete">删除</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button v-hasPermi="['system:role:export']" icon="Download" plain type="warning" @click="handleExport">导出</el-button>
+        <el-button v-hasPermi="['system:role:export']" icon="Download" plain type="warning" @click="role.handleExport">导出</el-button>
       </el-col>
       <right-toolbar v-model:show-search="role.showSearch" @query-table="role.getList" />
     </el-row>
@@ -162,7 +162,6 @@ import { roleMenuTreeselect, treeselect as menuTreeselect } from '@/api/system/m
 import { useDict } from '@/composables/useDict'
 import { useCrud } from '@/composables/useCrud'
 import { addDateRange, parseTime } from '@/composables/useCommon'
-import { download } from '@/composables/useRequest'
 
 // ==================== 实例和字典 ====================
 const { sys_normal_disable } = useDict('sys_normal_disable')
@@ -339,6 +338,7 @@ const role = useCrud({
   idKey: 'roleId',
   name: '角色',
   query: { roleName: undefined, roleKey: undefined, status: undefined },
+  exportUrl: 'system/role/export',
   form: {
     roleId: undefined,
     roleName: undefined,
@@ -362,17 +362,6 @@ const baseResetQuery = role.resetQuery
 const resetQuery = () => {
   dateRange.value = []
   baseResetQuery()
-}
-
-// 导出按钮操作
-const handleExport = () => {
-  download(
-    'system/role/export',
-    {
-      ...role.queryParams
-    },
-    `role_${new Date().getTime()}.xlsx`
-  )
 }
 
 // ==================== 新增/修改（先重置树状态） ====================

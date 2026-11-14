@@ -29,7 +29,7 @@
           <el-button v-hasPermi="['monitor:job:remove']" :disabled="job.multiple" icon="Delete" plain type="danger" @click="job.handleDelete">删除</el-button>
         </el-col>
         <el-col :span="1.5">
-          <el-button v-hasPermi="['monitor:job:export']" icon="Download" plain type="warning" @click="handleExport">导出</el-button>
+          <el-button v-hasPermi="['monitor:job:export']" icon="Download" plain type="warning" @click="job.handleExport">导出</el-button>
         </el-col>
         <el-col :span="1.5">
           <el-button v-hasPermi="['monitor:job:query']" icon="Operation" plain type="info" @click="handleJobLog">日志</el-button>
@@ -252,6 +252,7 @@ const job = useCrud({
   name: '任务',
   query: { jobName: undefined, jobGroup: undefined, status: undefined },
   form: { jobId: undefined, jobName: undefined, jobGroup: undefined, invokeTarget: undefined, cronExpression: undefined, misfirePolicy: 1, concurrent: 1, status: '0' },
+  exportUrl: 'monitor/job/export',
   queryRef,
   formRef: jobRef
 })
@@ -322,17 +323,6 @@ function crontabFill(value) {
 function handleJobLog(row) {
   const jobId = row.jobId || 0
   router.push(`/monitor/job-log/index/${jobId}`)
-}
-
-/** 导出按钮操作 */
-function handleExport() {
-  download(
-    'monitor/job/export',
-    {
-      ...job.queryParams
-    },
-    `job_${new Date().getTime()}.xlsx`
-  )
 }
 
 // 初始化加载

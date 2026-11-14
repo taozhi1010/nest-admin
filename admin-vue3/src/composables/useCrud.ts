@@ -1,6 +1,7 @@
 import type { Ref } from 'vue'
 import type { FormInstance } from 'element-plus'
 import { resetForm } from './useForm'
+import { download } from './useRequest'
 
 /**
  * 通用 CRUD 列表页状态机
@@ -60,6 +61,10 @@ export interface CrudOptions {
   formRef?: Ref<FormInstance>
   /** 每页条数，默认 10；无真实分页的页面可传大值 */
   pageSize?: number
+  /** 导出接口路径，如 'system/post/export'；传入后暴露 handleExport */
+  exportUrl?: string
+  /** 导出文件名前缀，默认取接口路径的模块段（system/post/export → post） */
+  exportName?: string
   /** 自定义提示文案：不传全部走默认模板，有特殊需要的字段单独传入覆盖 */
   texts?: CrudTexts
 }
@@ -236,6 +241,13 @@ export function useCrud(options: CrudOptions) {
     }
   }
 
+  /** 导出按钮操作：按当前查询条件下载数据（仅传入 exportUrl 的页面绑定） */
+  const handleExport = () => {
+    if (!options.exportUrl) return
+    const exportName = options.exportName ?? options.exportUrl.split('/').at(-2) ?? idKey
+    download(options.exportUrl, { ...queryParams }, `${exportName}_${new Date().getTime()}.xlsx`)
+  }
+
   // ==================== 返回 ====================
 
   return reactive({
@@ -263,6 +275,7 @@ export function useCrud(options: CrudOptions) {
     handleAdd,
     handleUpdate,
     handleDelete,
+    handleExport,
     submitForm,
     cancel,
     reset

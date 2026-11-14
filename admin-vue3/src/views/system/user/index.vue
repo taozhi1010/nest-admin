@@ -56,7 +56,7 @@
           </el-col>
           <el-col :span="1.5">
             <el-button v-hasPermi="['system:user:export']" icon="Download" plain type="warning"
-              @click="handleExport">导出</el-button>
+              @click="user.handleExport">导出</el-button>
           </el-col>
           <right-toolbar v-model:show-search="user.showSearch" :columns="columns" @query-table="user.getList" />
         </el-row>
@@ -373,6 +373,7 @@ const user = useCrud({
     postIds: [],
     roleIds: []
   },
+  exportUrl: 'system/user/export',
   queryRef,
   formRef: userRef
 })
@@ -477,17 +478,6 @@ const resetQuery = () => {
   dateRange.value = []
   deptTreeRef.value.setCurrentKey(null)
   baseResetQuery()
-}
-
-// 导出按钮操作
-const handleExport = () => {
-  download(
-    'system/user/export',
-    {
-      ...user.queryParams
-    },
-    `user_${new Date().getTime()}.xlsx`
-  )
 }
 
 // ==================== 页面特有操作 ====================

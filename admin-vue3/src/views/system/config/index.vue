@@ -116,7 +116,6 @@ import { listConfig, addConfig, delConfig, getConfig, updateConfig } from '@/api
 import { useDict } from '@/composables/useDict'
 import { useCrud } from '@/composables/useCrud'
 import { parseTime } from '@/composables/useCommon'
-import { download } from '@/composables/useRequest'
 
 const { sys_yes_no, getDictLabel } = useDict('sys_yes_no')
 
@@ -141,17 +140,6 @@ const config = useCrud({
   queryRef,
   formRef: configFormRef
 })
-
-// 导出按钮操作
-const handleExport = () => {
-  download(
-    'system/config/export',
-    {
-      ...config.queryParams
-    },
-    `config_${new Date().getTime()}.xlsx`
-  )
-}
 
 // 初始化加载
 config.getList()

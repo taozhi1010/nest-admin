@@ -33,7 +33,7 @@
         <el-button v-hasPermi="['monitor:logininfor:unlock']" :disabled="logininfor.single" icon="Unlock" plain type="primary" @click="handleUnlock">解锁</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button v-hasPermi="['monitor:logininfor:export']" icon="Download" plain type="warning" @click="handleExport">导出</el-button>
+        <el-button v-hasPermi="['monitor:logininfor:export']" icon="Download" plain type="warning" @click="logininfor.handleExport">导出</el-button>
       </el-col>
       <right-toolbar v-model:show-search="logininfor.showSearch" @query-table="logininfor.getList" />
     </el-row>
@@ -69,7 +69,6 @@ import { list, delLogininfor, cleanLogininfor, unlockLogininfor } from '@/api/mo
 import { useDict } from '@/composables/useDict'
 import { useCrud } from '@/composables/useCrud'
 import { addDateRange, parseTime } from '@/composables/useCommon'
-import { download } from '@/composables/useRequest'
 
 const { sys_common_status, getDictLabel } = useDict('sys_common_status')
 
@@ -89,6 +88,7 @@ const logininfor = useCrud({
   idKey: 'infoId',
   name: '访问记录',
   query: { ipaddr: undefined, userName: undefined, status: undefined, orderByColumn: undefined, isAsc: undefined },
+  exportUrl: 'monitor/logininfor/export',
   queryRef
 })
 
@@ -149,17 +149,6 @@ const handleUnlock = async () => {
       console.error('解锁失败:', e)
     }
   }
-}
-
-// 导出按钮操作
-const handleExport = () => {
-  download(
-    'monitor/logininfor/export',
-    {
-      ...logininfor.queryParams
-    },
-    `config_${new Date().getTime()}.xlsx`
-  )
 }
 
 // 初始化加载
