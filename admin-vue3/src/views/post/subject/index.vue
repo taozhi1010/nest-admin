@@ -31,7 +31,7 @@
       <right-toolbar v-model:show-search="subject.showSearch" @query-table="subject.getList" />
     </el-row>
 
-    <el-table v-loading="subject.loading" :data="subject.subjectList" @selection-change="subject.handleSelectionChange">
+    <el-table v-loading="subject.loading" :data="subject.list" @selection-change="subject.handleSelectionChange">
       <el-table-column align="center" type="selection" width="55" />
       <el-table-column align="left" label="专栏名称" prop="title" show-overflow-tooltip min-width="200" />
       <el-table-column align="center" label="专栏简介" prop="desc" show-overflow-tooltip min-width="200" />
@@ -66,8 +66,8 @@
     <pagination v-show="subject.total > 0" v-model:limit="subject.queryParams.pageSize" v-model:page="subject.queryParams.pageNum" :total="subject.total" @pagination="subject.getList" />
 
     <!-- 添加或修改专栏抽屉 -->
-    <el-drawer v-model="subject.open" :title="subject.drawerTitle" size="600px" direction="rtl">
-      <el-form ref="subjectRef" v-no-enter label-width="100px" :model="subject.form" :rules="subject.rules">
+    <el-drawer v-model="subject.open" :title="subject.title" size="600px" direction="rtl">
+      <el-form ref="subjectRef" v-no-enter label-width="100px" :model="subject.form" :rules="rules">
         <el-form-item label="专栏名称" prop="title">
           <el-input v-model.trim="subject.form.title" clearable maxlength="50" placeholder="请输入专栏名称" show-word-limit />
         </el-form-item>
@@ -106,7 +106,7 @@
 // ==================== 导入区域 ====================
 import { listSubject, addSubject, delSubject, getSubject, updateSubject } from '@/api/post/subject'
 import { useDict } from '@/composables/useDict'
-import { resetForm } from '@/composables/useForm'
+import { useCrud } from '@/composables/useCrud'
 import ImageUploadCover from '@/components/ImageUploadCover/index.vue'
 
 const { post_subject_publish_status, post_subject_audit_status, getDictLabel } = useDict('post_subject_publish_status', 'post_subject_audit_status')
@@ -115,55 +115,19 @@ const { post_subject_publish_status, post_subject_audit_status, getDictLabel } =
 const subjectRef = ref(null)
 const queryRef = ref(null)
 
-// ==================== 专栏管理（集中式管理） ====================
-const subject = reactive({
-  // 列表状态
-  subjectList: [],
-  open: false,
-  loading: true,
-  showSearch: true,
-  ids: [],
-  single: true,
-  multiple: true,
-  total: 0,
-  drawerTitle: '',
+// 表单校验规则
+const rules = {
+  title: [{ required: true, message: '专栏名称不能为空', trigger: 'blur' }],
+  desc: [{ required: true, message: '专栏简介不能为空', trigger: 'blur' }]
+}
 
-  // 查询参数
-  queryParams: {
-    pageNum: 1,
-    pageSize: 10,
-    title: undefined,
-    publishStatus: undefined,
-    auditStatus: undefined,
-    isAsc: 'descending',
-    orderByColumn: 'createTime'
-  },
-
-  // 表单数据
-  form: {
-    id: undefined,
-    title: undefined,
-    desc: undefined,
-    cover: undefined,
-    publishStatus: '1',
-    auditStatus: '0',
-    sort: 0
-  },
-
-  // 表单验证规则
-  rules: {
-    title: [{ required: true, message: '专栏名称不能为空', trigger: 'blur' }],
-    desc: [{ required: true, message: '专栏简介不能为空', trigger: 'blur' }]
-  },
-
-  // ==================== 方法集合 ====================
-  // 查询专栏列表
-  getList: async () => {
-    subject.loading = true
-    try {
-      const res = await listSubject(subject.queryParams)
-      subject.subjectList = res.data.list
-      subject.subjectList.forEach((item) => {
+// ==================== 专栏管理 ====================
+const subject = useCrud({
+  api: {
+    list: async (params) => {
+      const res = await listSubject(params)
+      // 格式化时间字段
+      res.data.list.forEach((item) => {
         if (item.createTime) {
           item.createTime = dayjs(item.createTime).format('YYYY-MM-DD HH:mm:ss')
         }
@@ -171,129 +135,33 @@ const subject = reactive({
           item.updateTime = dayjs(item.updateTime).format('YYYY-MM-DD HH:mm:ss')
         }
       })
-      subject.total = res.data.total
-    } finally {
-      subject.loading = false
-    }
+      return res
+    },
+    get: getSubject,
+    add: addSubject,
+    update: updateSubject,
+    del: delSubject
   },
-
-  // 取消按钮
-  cancel: () => {
-    subject.open = false
-    nextTick(() => {
-      subject.reset()
-    })
-  },
-
-  // 表单重置
-  reset: () => {
-    // 逐个属性赋值，保持响应式引用
-    subject.form.id = undefined
-    subject.form.title = undefined
-    subject.form.desc = undefined
-    subject.form.cover = undefined
-    subject.form.publishStatus = '1'
-    subject.form.auditStatus = '0'
-    subject.form.sort = 0
-    nextTick(() => {
-      if (subjectRef.value) {
-        subjectRef.value.clearValidate()
-      }
-    })
-  },
-
-  // 上传前验证：必须填写标题和简介
-  validateBeforeUpload() {
-    if (!subject.form.title || !subject.form.title.trim()) {
-      ElMessage.warning('请先填写专栏名称')
-      return false
-    }
-    if (!subject.form.desc || !subject.form.desc.trim()) {
-      ElMessage.warning('请先填写专栏简介')
-      return false
-    }
-    return true
-  },
-
-  // 搜索按钮操作
-  handleQuery: () => {
-    subject.queryParams.pageNum = 1
-    subject.getList()
-  },
-
-  // 重置按钮操作
-  resetQuery: () => {
-    resetForm(queryRef.value)
-    subject.handleQuery()
-  },
-
-  // 多选框选中数据
-  handleSelectionChange: (selection) => {
-    subject.ids = selection.map((item) => item.id)
-    subject.single = selection.length != 1
-    subject.multiple = !selection.length
-  },
-
-  // 新增按钮操作
-  handleAdd: () => {
-    subject.reset()
-    nextTick(() => {
-      subject.open = true
-      subject.drawerTitle = '添加专栏'
-    })
-  },
-
-  // 修改按钮操作
-  handleUpdate: async (row) => {
-    subject.reset()
-    const id = row.id || subject.ids
-    const res = await getSubject(id)
-    Object.assign(subject.form, res.data)
-    subject.open = true
-    subject.drawerTitle = '修改专栏'
-  },
-
-  // 提交按钮
-  submitForm: () => {
-    subjectRef.value.validate(async (valid) => {
-      if (!valid) return
-
-      try {
-        if (subject.form.id !== undefined) {
-          await updateSubject(subject.form)
-          ElMessage.success('修改成功')
-        } else {
-          await addSubject(subject.form)
-          ElMessage.success('新增成功')
-        }
-        subject.open = false
-        subject.getList()
-      } catch (e) {
-        console.error('提交失败:', e)
-      }
-    })
-  },
-
-  // 删除按钮操作
-  handleDelete: async (row) => {
-    const ids = row.id || subject.ids
-    const titles = row.title ? `"${row.title}"` : `编号为"${ids}"的数据项`
-    try {
-      await ElMessageBox.confirm(`是否确认删除专栏${titles}？`, '系统提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      })
-      await delSubject(ids)
-      ElMessage.success('删除成功')
-      subject.getList()
-    } catch (e) {
-      if (e !== 'cancel') {
-        console.error('删除失败:', e)
-      }
-    }
-  }
+  idKey: 'id',
+  name: '专栏',
+  query: { title: undefined, publishStatus: undefined, auditStatus: undefined, isAsc: 'descending', orderByColumn: 'createTime' },
+  form: { id: undefined, title: undefined, desc: undefined, cover: undefined, publishStatus: '1', auditStatus: '0', sort: 0 },
+  queryRef,
+  formRef: subjectRef
 })
+
+// 上传前验证：必须填写标题和简介
+const validateBeforeUpload = () => {
+  if (!subject.form.title || !subject.form.title.trim()) {
+    ElMessage.warning('请先填写专栏名称')
+    return false
+  }
+  if (!subject.form.desc || !subject.form.desc.trim()) {
+    ElMessage.warning('请先填写专栏简介')
+    return false
+  }
+  return true
+}
 
 // 初始化加载
 subject.getList()

@@ -1,6 +1,6 @@
 <template>
   <div class="app-container article">
-    <el-card v-loading="loading" class="article-subject fill-card" shadow="never">
+    <el-card class="article-subject fill-card" shadow="never">
       <div class="article-subject-header">
         <el-input v-model="subject.query.title" class="search-input" placeholder="请输入专栏名称筛选" clearable @keyup.enter="subject.handleSearch" @blur="subject.handleSearchBlur" />
       </div>
@@ -47,7 +47,7 @@
       </div>
     </el-card>
 
-    <el-card v-loading="loading" class="article-table fill-card" shadow="never">
+    <el-card class="article-table fill-card" shadow="never">
       <!-- 专栏信息描述（仅在选择专栏时显示） -->
       <el-descriptions v-if="subject.state.selectNode.id && subject.state.selectNode.id !== 0" border :column="4">
         <el-descriptions-item label="专栏名称">{{ subject.state.selectNode.title }}</el-descriptions-item>
@@ -66,33 +66,33 @@
       <el-divider v-if="subject.state.selectNode.id && subject.state.selectNode.id !== 0" content-position="left">文章列表</el-divider>
 
       <!-- 搜索表单 -->
-      <el-form ref="queryArticleRef" v-no-enter :inline="true" :model="article.query">
+      <el-form ref="queryArticleRef" v-no-enter :inline="true" :model="article.queryParams">
         <el-form-item label="标题" prop="title">
-          <el-input v-model="article.query.title" clearable placeholder="请输入文章标题" style="width: 200px" @keyup.enter="article.handleQuery" @blur="article.handleQueryBlur" />
+          <el-input v-model="article.queryParams.title" clearable placeholder="请输入文章标题" style="width: 200px" @keyup.enter="article.handleQuery" @blur="handleQueryBlur" />
         </el-form-item>
         <el-form-item label="作者" prop="author">
-          <el-input v-model="article.query.author" clearable placeholder="请输入作者" style="width: 150px" @keyup.enter="article.handleQuery" @blur="article.handleQueryBlur" />
+          <el-input v-model="article.queryParams.author" clearable placeholder="请输入作者" style="width: 150px" @keyup.enter="article.handleQuery" @blur="handleQueryBlur" />
         </el-form-item>
         <el-form-item label="发布" prop="publishStatus">
-          <el-select v-model="article.query.publishStatus" clearable placeholder="请选择发布状态" style="width: 150px">
+          <el-select v-model="article.queryParams.publishStatus" clearable placeholder="请选择发布状态" style="width: 150px">
             <el-option v-for="dict in post_article_publish_status" :key="dict.value" :label="dict.label" :value="dict.value" />
           </el-select>
         </el-form-item>
         <el-form-item label="审核" prop="auditStatus">
-          <el-select v-model="article.query.auditStatus" clearable placeholder="请选择审核状态" style="width: 150px">
+          <el-select v-model="article.queryParams.auditStatus" clearable placeholder="请选择审核状态" style="width: 150px">
             <el-option v-for="dict in post_article_audit_status" :key="dict.value" :label="dict.label" :value="dict.value" />
           </el-select>
         </el-form-item>
         <el-form-item>
           <el-button icon="Search" type="primary" @click="article.handleQuery">搜索</el-button>
-          <el-button icon="Refresh" @click="article.handleReset">重置</el-button>
+          <el-button icon="Refresh" @click="article.resetQuery">重置</el-button>
         </el-form-item>
       </el-form>
 
       <!-- 操作按钮 -->
       <el-row class="mb8" :gutter="10">
         <el-col :span="1.5">
-          <el-button v-hasPermi="['post:Article:add']" icon="Plus" plain type="primary" @click="article.handleNewEditor">新增</el-button>
+          <el-button v-hasPermi="['post:Article:add']" icon="Plus" plain type="primary" @click="handleNewEditor">新增</el-button>
         </el-col>
         <el-col :span="1.5">
           <el-button v-hasPermi="['post:Article:remove']" :disabled="article.multiple" icon="Delete" plain type="danger" @click="article.handleDelete">删除</el-button>
@@ -148,21 +148,21 @@
         <el-table-column align="left" label="创建时间" prop="createTime" width="170" />
         <el-table-column align="center" class-name="small-padding fixed-width" fixed="right" label="操作" width="220">
           <template #default="scope">
-            <el-button icon="View" link type="primary" @click="article.handlePreview(scope.row)">预览</el-button>
-            <el-button v-hasPermi="['post:Article:edit']" icon="Edit" link type="primary" @click="article.form.handleUpdate(scope.row)">修改</el-button>
+            <el-button icon="View" link type="primary" @click="handlePreview(scope.row)">预览</el-button>
+            <el-button v-hasPermi="['post:Article:edit']" icon="Edit" link type="primary" @click="article.handleUpdate(scope.row)">修改</el-button>
             <el-button v-hasPermi="['post:Article:remove']" icon="Delete" link type="danger" @click="article.handleDelete(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
 
       <!-- 分页 -->
-      <pagination v-show="article.total > 0" v-model:limit="article.query.pageSize" v-model:page="article.query.pageNum" :total="article.total" @pagination="article.getList" />
+      <pagination v-show="article.total > 0" v-model:limit="article.queryParams.pageSize" v-model:page="article.queryParams.pageNum" :total="article.total" @pagination="article.getList" />
     </el-card>
 
-    <article-form 
-      v-model="article.form.open" 
-      :title="article.form.title" 
-      :initial-data="article.form.data" 
+    <article-form
+      v-model="article.open"
+      :title="article.title"
+      :initial-data="article.form"
       :subject-list="subject.state.list"
       @success="handleArticleSuccess"
     />
@@ -176,6 +176,7 @@ import { listArticle, delArticle, getArticle } from '@/api/post/article'
 import Preview from './components/Preview'
 import ArticleForm from './components/ArticleForm'
 import { useSubject } from '@/composables/post/useSubject'
+import { useCrud } from '@/composables/useCrud'
 
 const router = useRouter()
 
@@ -194,129 +195,77 @@ const getSourceTagType = (source) => {
 // 使用专栏管理 composable
 const subject = useSubject()
 
-const formRef = ref(null)
 const previewRef = ref()
 const queryArticleRef = ref(null)
-const loading = ref(false)
 
-const article = reactive({
-  loading: true,
-  showSearch: true,
-  query: {
-    pageNum: 1,
-    pageSize: 10,
-    title: undefined,
-    subjectId: undefined,
-    author: undefined,
-    publishStatus: undefined,
-    auditStatus: undefined,
-    isAsc: 'descending',
-    orderByColumn: 'createTime'
-  },
-  list: [],
-  total: 0,
-  single: true,
-  multiple: true,
-  ids: [],
-  getList: () => {
-    article.loading = true
-    listArticle(article.query).then((res) => {
-      article.list = res.data.list || []
-      if (article.list && article.list.length > 0) {
-        article.list.forEach((item) => {
-          if (item.updateTime) item.updateTime = dayjs(item.updateTime).format('YYYY-MM-DD HH:mm:ss')
-          if (item.createTime) item.createTime = dayjs(item.createTime).format('YYYY-MM-DD HH:mm:ss')
-          if (item.publishTime) item.publishTime = dayjs(item.publishTime).format('YYYY-MM-DD HH:mm:ss')
-          if (item.scheduledPublishTime) item.scheduledPublishTime = dayjs(item.scheduledPublishTime).format('YYYY-MM-DD HH:mm:ss')
-        })
-      }
-      article.total = res.data.total || 0
-      article.loading = false
-    }).catch(() => {
-      article.loading = false
-    })
-  },
-  handleSelectionChange: (selection) => {
-    article.ids = selection.map((item) => item.id)
-    article.single = selection.length != 1
-    article.multiple = !selection.length
-  },
-  handleDelete: (row) => {
-    const articleIds = row.id || row.articleId || article.ids
-    const titles = row.title ? `"${row.title}"` : `选中的 ${article.ids.length} 篇文章`
-    ElMessageBox.confirm(`是否确认删除文章${titles}？`, '系统提示', {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning'
-    })
-      .then(function () {
-        return delArticle(articleIds)
+// 文章管理（编辑对话框复用 ArticleForm 子组件，绑定 open/title/form）
+const article = useCrud({
+  api: {
+    list: async (params) => {
+      const res = await listArticle(params)
+      res.data.list = res.data.list || []
+      res.data.total = res.data.total || 0
+      // 格式化时间字段
+      res.data.list.forEach((item) => {
+        if (item.updateTime) item.updateTime = dayjs(item.updateTime).format('YYYY-MM-DD HH:mm:ss')
+        if (item.createTime) item.createTime = dayjs(item.createTime).format('YYYY-MM-DD HH:mm:ss')
+        if (item.publishTime) item.publishTime = dayjs(item.publishTime).format('YYYY-MM-DD HH:mm:ss')
+        if (item.scheduledPublishTime) item.scheduledPublishTime = dayjs(item.scheduledPublishTime).format('YYYY-MM-DD HH:mm:ss')
       })
-      .then(() => {
-        article.getList()
-        ElMessage.success('删除成功')
-      })
-      .catch(() => {})
+      return res
+    },
+    get: getArticle,
+    del: delArticle
   },
-  handleQuery: () => {
-    article.query.pageNum = 1
-    article.getList()
-  },
-  handleQueryBlur: () => {
-    article.query.title = article.query.title.trim()
-    article.query.author = article.query.author.trim()
-  },
-  handleReset: () => {
-    resetForm(queryArticleRef)
-    article.handleQuery()
-  },
-  form: {
-    open: false,
-    title: '',
-    data: {},
-    handleUpdate: (row) => {
-      const articleId = row.id || row.articleId || article.ids
-      getArticle(articleId).then((res) => {
-        article.form.data = res.data
-        article.form.open = true
-        article.form.title = '修改文章'
-      })
-    }
-  },
-  handlePreview: (row) => {
-    previewRef.value.handleOpen(row)
-  },
-  handleOpenEditor: (row) => {
-    const articleId = row.id || row.articleId
-    if (!articleId) {
-      ElMessage.warning('文章ID不存在')
-      return
-    }
-    // 在新窗口打开编辑器页面
-    const routeUrl = router.resolve({
-      path: '/post/article-editor',
-      query: { id: articleId }
-    })
-    window.open(routeUrl.href, '_blank')
-  },
-  handleNewEditor: () => {
-    // 在新窗口打开编辑器页面（新建模式）
-    const routeUrl = router.resolve({
-      path: '/post/article-editor'
-    })
-    window.open(routeUrl.href, '_blank')
-  }
+  idKey: 'id',
+  name: '文章',
+  query: { title: undefined, subjectId: undefined, author: undefined, publishStatus: undefined, auditStatus: undefined, isAsc: 'descending', orderByColumn: 'createTime' },
+  queryRef: queryArticleRef
 })
 
 subject.getList()
 article.getList()
 
+// 搜索框失焦处理（去除空格）
+const handleQueryBlur = () => {
+  article.queryParams.title = article.queryParams.title?.trim()
+  article.queryParams.author = article.queryParams.author?.trim()
+}
+
 // 处理专栏行点击
 const handleSubjectRowClick = (row) => {
   subject.handleRowClick(row, (subjectId) => {
-    article.query.subjectId = subjectId
+    article.queryParams.subjectId = subjectId
     article.getList()
   })
+}
+
+// 预览文章
+const handlePreview = (row) => {
+  previewRef.value.handleOpen(row)
+}
+
+// 打开编辑器（新窗口）
+const handleOpenEditor = (row) => {
+  const articleId = row.id || row.articleId
+  if (!articleId) {
+    ElMessage.warning('文章ID不存在')
+    return
+  }
+  // 在新窗口打开编辑器页面
+  const routeUrl = router.resolve({
+    path: '/post/article-editor',
+    query: { id: articleId }
+  })
+  window.open(routeUrl.href, '_blank')
+}
+
+// 新建文章（新窗口打开编辑器）
+const handleNewEditor = () => {
+  const routeUrl = router.resolve({
+    path: '/post/article-editor'
+  })
+  window.open(routeUrl.href, '_blank')
 }
 
 // 处理文章操作成功后的回调
