@@ -35,13 +35,7 @@ export function logout() {
 }
 
 // 注册方法
-export function register(username, password, code, uuid) {
-  const data = {
-    username,
-    password,
-    code,
-    uuid
-  }
+export function register(data) {
   return request({
     url: '/register',
     headers: {
@@ -61,6 +55,29 @@ export function checkUsername(username) {
     },
     method: 'get',
     params: { username }
+  })
+}
+
+// 获取注册页配置（是否开启邮箱验证码注册）
+export function getRegisterConfig() {
+  return request({
+    url: '/register/config',
+    headers: {
+      isToken: false
+    },
+    method: 'get'
+  })
+}
+
+// 发送注册邮箱验证码
+export function sendEmailCode(email) {
+  return request({
+    url: '/register/emailCode',
+    headers: {
+      isToken: false
+    },
+    method: 'post',
+    data: { email }
   })
 }
 
