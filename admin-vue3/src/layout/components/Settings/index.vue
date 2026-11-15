@@ -80,9 +80,6 @@
 </template>
 
 <script setup lang="ts">
-import axios from 'axios';
-
-import variables from '@/assets/styles/variables.module.scss';
 import { useDynamicTitle } from '@/composables/useDynamicTitle';
 import useAppStore from '@/store/modules/app';
 import usePermissionStore from '@/store/modules/permission';

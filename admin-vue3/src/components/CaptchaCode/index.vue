@@ -14,7 +14,7 @@
 </template>
 
 <script setup name="CaptchaCode">
-const props = defineProps({
+defineProps({
   // 验证码图片的 base64 字符串
   imgUrl: {
     type: String,

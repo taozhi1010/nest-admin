@@ -127,7 +127,6 @@
 <script setup name="Swagger">
 import { Document, Promotion, Link, Picture, PictureFilled, Collection } from '@element-plus/icons-vue';
 
-const activeTab = ref('swagger');
 const isDev = import.meta.env.VITE_APP_ENV === 'development';
 
 // 开发环境：直接访问后端地址（8080端口）

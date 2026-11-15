@@ -126,7 +126,6 @@ const props = defineProps({
 
 // ==================== 响应式数据 ====================
 const tabTitles = ref(['秒', '分钟', '小时', '日', '月', '周', '年']);
-const tabActive = ref(0);
 const crontab = reactive({
   hideComponent: [] as string[],
   expression: '',
@@ -191,14 +190,6 @@ function resolveExp() {
     // 没有传入的表达式 则还原
     clearCron();
   }
-}
-
-/**
- * Tab 切换事件
- * @param {number} index - 标签页索引
- */
-function tabCheck(index: number) {
-  tabActive.value = index;
 }
 
 /**

@@ -1,16 +1,17 @@
 /**
  * 自动导入插件配置
- * 
+ *
  * 功能说明：
  * 1. 自动导入 Vue、Vue Router、Pinia 等常用 API
  * 2. 自动导入 Element Plus 组件和方法
  * 3. 自动导入 composables 目录下的组合式函数
  * 4. 自动生成 TypeScript 类型声明
  */
-import autoImport from 'unplugin-auto-import/vite'
-import Components from 'unplugin-vue-components/vite'
-import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
-import type { PluginOption } from 'vite'
+import autoImport from 'unplugin-auto-import/vite';
+import { ElementPlusResolver } from 'unplugin-vue-components/resolvers';
+import Components from 'unplugin-vue-components/vite';
+
+import type { PluginOption } from 'vite';
 
 /**
  * 创建自动导入插件配置
@@ -21,8 +22,8 @@ export default function createAutoImport(): PluginOption[] {
     // 配置自动导入功能
     autoImport({
       imports: [
-        'vue', 
-        'vue-router', 
+        'vue',
+        'vue-router',
         'pinia',
         {
           dayjs: [['default', 'dayjs']],
@@ -40,5 +41,5 @@ export default function createAutoImport(): PluginOption[] {
     Components({
       resolvers: [ElementPlusResolver()] // Element Plus 组件自动导入
     })
-  ]
+  ];
 }

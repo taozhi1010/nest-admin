@@ -250,10 +250,6 @@ const handleDescBlur = () => {
   formData.desc = formData.desc.trim();
 };
 
-const handleContentBlur = () => {
-  formData.content = formData.content.trim();
-};
-
 // 作者显示名称：userName-nickName
 const authorDisplay = computed(() => {
   const info = formData.userInfo;

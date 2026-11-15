@@ -1,8 +1,10 @@
-import { defineConfig, loadEnv } from 'vite';
 import path from 'path';
-import type { UserConfig, ConfigEnv } from 'vite';
+
+import { defineConfig, loadEnv } from 'vite';
 
 import createVitePlugins from './vite/plugins/index.ts';
+
+import type { UserConfig, ConfigEnv } from 'vite';
 
 // 打包后的文件是否开启 hash
 const outputHash = true;

@@ -104,14 +104,14 @@ function isAffix(tag) {
 function isFirstView() {
   try {
     return selectedTag.value.fullPath === '/index' || selectedTag.value.fullPath === visitedViews.value[1].fullPath;
-  } catch (err) {
+  } catch {
     return false;
   }
 }
 function isLastView() {
   try {
     return selectedTag.value.fullPath === visitedViews.value[visitedViews.value.length - 1].fullPath;
-  } catch (err) {
+  } catch {
     return false;
   }
 }

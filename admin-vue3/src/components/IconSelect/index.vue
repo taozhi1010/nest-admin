@@ -19,7 +19,7 @@
 <script setup lang="ts">
 import icons from './requireIcons';
 
-const props = defineProps({
+defineProps({
   activeIcon: {
     type: String
   }

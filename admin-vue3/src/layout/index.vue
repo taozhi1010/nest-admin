@@ -1,7 +1,7 @@
 <template>
   <div class="app-wrapper" :class="classObj" :style="{ '--current-color': theme }">
     <div v-if="device === 'mobile' && sidebar.opened" class="drawer-bg" @click="handleClickOutside"></div>
-    <sidebar v-if="!sidebar.hide" class="sidebar-container" />
+    <Sidebar v-if="!sidebar.hide" class="sidebar-container" />
     <div class="main-container" :class="{ hasTagsView: needTagsView, sidebarHide: sidebar.hide }">
       <div :class="{ 'fixed-header': fixedHeader }">
         <navbar @set-layout="setLayout" />
@@ -24,7 +24,6 @@ import Sidebar from './components/Sidebar/index.vue';
 
 const settingsStore = useSettingsStore();
 const theme = computed(() => settingsStore.theme);
-const sideTheme = computed(() => settingsStore.sideTheme);
 const sidebar = computed(() => useAppStore().sidebar);
 const device = computed(() => useAppStore().device);
 const needTagsView = computed(() => settingsStore.tagsView);
@@ -37,7 +36,7 @@ const classObj = computed(() => ({
   mobile: device.value === 'mobile'
 }));
 
-const { width, height } = useWindowSize();
+const { width } = useWindowSize();
 const WIDTH = 992; // refer to Bootstrap's responsive design
 
 watchEffect(() => {

@@ -286,7 +286,7 @@
  * 4，用户再添加新用户的时候，需要做账号检测，已有账号不能再次添加
  */
 
-import { changeUserStatus, listUser, resetUserPwd, delUser, getUser, updateUser, addUser, deptTreeSelect, getAuthRole, updateAuthRole, importData } from '@/api/system/user';
+import { changeUserStatus, listUser, resetUserPwd, delUser, getUser, deptTreeSelect, getAuthRole, updateAuthRole, importData } from '@/api/system/user';
 import { addDateRange, parseTime } from '@/composables/useCommon';
 import { useCrud } from '@/composables/useCrud';
 import { useDict } from '@/composables/useDict';

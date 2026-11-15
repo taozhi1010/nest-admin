@@ -142,7 +142,7 @@
 </template>
 
 <script setup name="Index">
-import { Monitor, ChatDotRound, Guide, Goods, Document, Promotion, Link } from '@element-plus/icons-vue';
+import { Monitor, ChatDotRound, Guide, Goods } from '@element-plus/icons-vue';
 
 const version = ref('1.0.0');
 const isDev = import.meta.env.DEV;

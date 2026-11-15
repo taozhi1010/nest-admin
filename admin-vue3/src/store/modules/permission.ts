@@ -18,18 +18,6 @@ const InnerLink = () => import('@/layout/components/InnerLink/index.vue');
 // 匹配views里面所有的.vue文件
 const modules = import.meta.glob('./../../views/**/*.vue');
 
-interface AppRouteRecord {
-  path: string;
-  name?: string;
-  component?: any;
-  redirect?: string;
-  children?: AppRouteRecord[];
-  meta?: any;
-  permissions?: string[];
-  roles?: string[];
-  [key: string]: any;
-}
-
 interface PermissionState {
   routes: RouteRecordRaw[];
   addRoutes: RouteRecordRaw[];

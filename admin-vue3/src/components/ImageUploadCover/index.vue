@@ -377,11 +377,6 @@ async function customUpload(options) {
       // 转换为WebP格式
       const webpBlob = await convertToWebP(file, props.quality);
 
-      // 计算压缩率
-      const originalSize = (file.size / 1024).toFixed(2);
-      const compressedSize = (webpBlob.size / 1024).toFixed(2);
-      const compressionRate = ((1 - webpBlob.size / file.size) * 100).toFixed(1);
-
       // 创建新的File对象
       uploadFile = new File([webpBlob], file.name.replace(/\.[^.]+$/, '.webp'), {
         type: 'image/webp'
@@ -556,11 +551,6 @@ async function submitCrop() {
 
           // 转换为 WebP 格式
           const webpBlob = await convertToWebP(croppedFile, props.quality);
-
-          // 计算压缩率
-          const originalSize = (croppedFile.size / 1024).toFixed(2);
-          const compressedSize = (webpBlob.size / 1024).toFixed(2);
-          const compressionRate = ((1 - webpBlob.size / croppedFile.size) * 100).toFixed(1);
 
           // 创建新的 File 对象
           const uploadFile = new File([webpBlob], 'cover.webp', {

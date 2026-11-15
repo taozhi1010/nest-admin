@@ -27,7 +27,8 @@ const sizeOptions = ref([
 ]);
 
 function handleSetSize(size) {
-  const loadingInstance = ElLoading.service({
+  // 页面即将整页 reload,遮罩无需手动 close
+  ElLoading.service({
     lock: true,
     text: '正在设置布局大小，请稍等...',
     background: 'rgba(0, 0, 0, 0.7)'
