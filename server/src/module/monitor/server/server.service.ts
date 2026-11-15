@@ -28,7 +28,15 @@ export class ServerService {
   }
 
   async getDiskStatus() {
-    const disks = await nodeDiskInfo.getDiskInfoSync();
+    let disks: any[];
+    try {
+      disks = await nodeDiskInfo.getDiskInfoSync();
+    } catch (error) {
+      // node-disk-info uses WMIC on Windows, which is unavailable on newer
+      // Windows installations. Keep the monitor endpoint usable without disk data.
+      console.warn('[ServerMonitor] disk information unavailable:', error?.message ?? error);
+      return [];
+    }
     const sysFiles = disks.map((disk: any) => {
       return {
         dirName: disk._mounted,
