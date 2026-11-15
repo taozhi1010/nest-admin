@@ -87,6 +87,9 @@ export class ConfigService {
       },
       updateConfigDto,
     );
+    if (updateConfigDto.configKey) {
+      await this.redisService.del(`${CacheEnum.SYS_CONFIG_KEY}${updateConfigDto.configKey}`);
+    }
     return ResultData.ok();
   }
 
