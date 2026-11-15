@@ -34,13 +34,13 @@ import { WarningFilled, ArrowLeft, House } from '@element-plus/icons-vue';
 
 const router = useRouter();
 
-function back() {
+const back = () => {
   router.back();
-}
+};
 
-function goHome() {
+const goHome = () => {
   router.push('/');
-}
+};
 </script>
 
 <style lang="scss" scoped>

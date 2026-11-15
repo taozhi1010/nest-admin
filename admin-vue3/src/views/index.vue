@@ -196,13 +196,13 @@ const apiDocs = [
   }
 ];
 
-function goTarget(url) {
+const goTarget = (url) => {
   window.open(url, '_blank');
-}
+};
 
-function openApiDoc(url) {
+const openApiDoc = (url) => {
   window.open(url, '_blank');
-}
+};
 </script>
 
 <style scoped lang="scss">

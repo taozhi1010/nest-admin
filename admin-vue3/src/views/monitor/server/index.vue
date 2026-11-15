@@ -199,7 +199,7 @@ import { getServer } from '@/api/monitor/server';
 const server = ref<any>({});
 let loadingInstance = null;
 
-function getList() {
+const getList = () => {
   loadingInstance = ElLoading.service({
     lock: true,
     text: '正在加载服务监控数据，请稍候！',
@@ -212,7 +212,7 @@ function getList() {
       loadingInstance = null;
     }
   });
-}
+};
 
 getList();
 </script>

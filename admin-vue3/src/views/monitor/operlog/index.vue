@@ -163,31 +163,31 @@ const resetQuery = () => {
 };
 
 /** 操作日志类型字典翻译 */
-function typeFormat(row, column) {
+const typeFormat = (row, column) => {
   return getDictLabel('sys_oper_type', row.businessType);
-}
+};
 
 /** 排序触发事件 */
-function handleSortChange(column) {
+const handleSortChange = (column) => {
   operlog.queryParams.orderByColumn = column.prop;
   operlog.queryParams.isAsc = column.order;
   operlog.getList();
-}
+};
 
 /** 详细按钮操作 */
-function handleView(row) {
+const handleView = (row) => {
   open.value = true;
   form.value = row;
-}
+};
 
 /** 清空按钮操作 */
-function handleClean() {
+const handleClean = () => {
   ElMessageBox.confirm('是否确认清空所有操作日志数据项?', '系统提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'
   })
-    .then(function () {
+    .then(() => {
       return cleanOperlog();
     })
     .then(() => {
@@ -195,7 +195,7 @@ function handleClean() {
       ElMessage.success('清空成功');
     })
     .catch(() => {});
-}
+};
 
 operlog.getList();
 </script>

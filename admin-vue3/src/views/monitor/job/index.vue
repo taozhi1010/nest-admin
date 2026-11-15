@@ -256,12 +256,12 @@ const job = useCrud({
 });
 
 /** 任务组名字典翻译 */
-function jobGroupFormat(row, column) {
+const jobGroupFormat = (row, column) => {
   return getDictLabel('sys_job_group', row.jobGroup);
-}
+};
 
 // 点击状态标签切换状态
-function handleStatusClick(row) {
+const handleStatusClick = (row) => {
   const currentStatus = row.status;
   const newStatus = currentStatus === '0' ? '1' : '0';
   const text = newStatus === '0' ? '启用' : '停用';
@@ -270,58 +270,58 @@ function handleStatusClick(row) {
     cancelButtonText: '取消',
     type: 'warning'
   })
-    .then(function () {
+    .then(() => {
       return changeJobStatus(row.jobId, newStatus);
     })
     .then(() => {
       ElMessage.success(`${text}成功`);
       row.status = newStatus;
     })
-    .catch(function () {
+    .catch(() => {
       console.error('状态修改失败');
     });
-}
+};
 
 /* 立即执行一次 */
-function handleRun(row) {
+const handleRun = (row) => {
   ElMessageBox.confirm(`确认要立即执行一次"${row.jobName}"任务吗?`, '系统提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'
   })
-    .then(function () {
+    .then(() => {
       return runJob(row.jobId, row.jobGroup);
     })
     .then(() => {
       ElMessage.success('执行成功');
     })
     .catch(() => {});
-}
+};
 
 /** 任务详细信息 */
-function handleView(row) {
+const handleView = (row) => {
   getJob(row.jobId).then((response) => {
     job.form = response.data;
     openView.value = true;
   });
-}
+};
 
 /** cron表达式按钮操作 */
-function handleShowCron() {
+const handleShowCron = () => {
   expression.value = job.form.cronExpression;
   openCron.value = true;
-}
+};
 
 /** 确定后回传值 */
-function crontabFill(value) {
+const crontabFill = (value) => {
   job.form.cronExpression = value;
-}
+};
 
 /** 任务日志列表查询 */
-function handleJobLog(row) {
+const handleJobLog = (row) => {
   const jobId = row.jobId || 0;
   router.push(`/monitor/job-log/index/${jobId}`);
-}
+};
 
 // 初始化加载
 job.getList();

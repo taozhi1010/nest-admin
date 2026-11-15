@@ -341,18 +341,18 @@ const dictData = reactive({
 });
 
 // 字典数据变更后同步失效本地持久化缓存，并重新拉取全量字典
-function refreshLocalDictCache() {
+const refreshLocalDictCache = () => {
   useDictStore()
     .initDict({ force: true })
     .catch((error) => {
       console.error('字典缓存刷新失败:', error);
     });
-}
+};
 
-function handleDictChanged(refresh) {
+const handleDictChanged = (refresh) => {
   refresh();
   refreshLocalDictCache();
-}
+};
 
 watch(dictGroup.query, (val) => {
   dictGroupRef.value.filter(val.dictName);

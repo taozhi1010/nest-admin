@@ -59,13 +59,13 @@ const online = useCrud({
 });
 
 /** 强退按钮操作 */
-function handleForceLogout(row) {
+const handleForceLogout = (row) => {
   ElMessageBox.confirm(`是否确认强退名称为"${row.userName}"的用户?`, '系统提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'
   })
-    .then(function () {
+    .then(() => {
       return forceLogout(row.tokenId);
     })
     .then(() => {
@@ -73,7 +73,7 @@ function handleForceLogout(row) {
       ElMessage.success('删除成功');
     })
     .catch(() => {});
-}
+};
 
 // 初始化加载
 online.getList();

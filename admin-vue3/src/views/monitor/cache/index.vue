@@ -110,7 +110,7 @@ let commandstatsChart = null;
 let usedmemoryChart = null;
 
 // 解析内存值（如 "1.23M" -> 1.23, "456K" -> 0.456）
-function parseMemoryValue(memoryStr) {
+const parseMemoryValue = (memoryStr) => {
   if (!memoryStr) return 0;
   const match = memoryStr.match(/([\d.]+)\s*([KMGT]?B?)/i);
   if (!match) return parseFloat(memoryStr) || 0;
@@ -134,9 +134,9 @@ function parseMemoryValue(memoryStr) {
     default:
       return value;
   }
-}
+};
 
-function getList() {
+const getList = () => {
   loadingInstance = ElLoading.service({
     lock: true,
     text: '正在加载缓存监控数据，请稍候！',
@@ -210,7 +210,7 @@ function getList() {
       ]
     });
   });
-}
+};
 
 getList();
 

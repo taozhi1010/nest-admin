@@ -137,13 +137,13 @@ const swaggerUrl = ref(`${apiBaseUrl}/swagger-ui/`);
 const redocUrl = ref(`${apiBaseUrl}/docs`);
 const apifoxJsonUrl = ref(`${apiBaseUrl}/openapi.json`);
 
-function openApiDoc(url) {
+const openApiDoc = (url) => {
   window.open(url, '_blank');
-}
+};
 
-function openTool(url) {
+const openTool = (url) => {
   window.open(url, '_blank');
-}
+};
 </script>
 
 <style lang="scss" scoped>
