@@ -3,6 +3,7 @@
  * 全量字典持久化到 localStorage，启动时只校验版本号，版本变化才重新拉取
  */
 import { defineStore } from 'pinia';
+import { isEmpty } from 'radash';
 
 import { getDicts, getAllDicts, getDictVersion } from '@/api/system/dict/data';
 import { optionselect } from '@/api/system/dict/type';
@@ -247,7 +248,7 @@ const useDictStore = defineStore('dict', {
         }
       } catch (error) {
         console.warn('[字典] 全量加载失败:', error);
-        if (Object.keys(this.dicts).length === 0) {
+        if (isEmpty(this.dicts)) {
           await this.initDictFallback();
         }
       }
