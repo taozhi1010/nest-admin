@@ -61,9 +61,8 @@ export class UserService {
       throw new BadRequestException(`新增用户'${createUserDto.userName}'失败，登录账号已存在`);
     }
 
-    const salt = bcrypt.genSaltSync(10);
     if (createUserDto.password) {
-      createUserDto.password = await bcrypt.hashSync(createUserDto.password, salt);
+      createUserDto.password = await bcrypt.hash(createUserDto.password, 10);
     }
 
     let res;
@@ -421,7 +420,7 @@ export class UserService {
       return ResultData.fail(500, '系统用户不能重置密码');
     }
     if (body.password) {
-      body.password = await bcrypt.hashSync(body.password, bcrypt.genSaltSync(10));
+      body.password = await bcrypt.hash(body.password, 10);
     }
     await this.userRepo.update(
       {
@@ -804,11 +803,12 @@ export class UserService {
     if (updatePwdDto.oldPassword === updatePwdDto.newPassword) {
       return ResultData.fail(500, '新密码不能与旧密码相同');
     }
-    if (bcrypt.compareSync(user.user.password, updatePwdDto.oldPassword)) {
+    // 旧密码校验：compare(明文, 哈希)——此前参数顺序颠倒导致校验形同虚设
+    if (!(await bcrypt.compare(updatePwdDto.oldPassword, user.user.password))) {
       return ResultData.fail(500, '修改密码失败，旧密码错误');
     }
 
-    const password = await bcrypt.hashSync(updatePwdDto.newPassword, bcrypt.genSaltSync(10));
+    const password = await bcrypt.hash(updatePwdDto.newPassword, 10);
     await this.userRepo.update({ userId: user.user.userId }, { password: password });
     return ResultData.ok();
   }

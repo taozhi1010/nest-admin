@@ -104,8 +104,7 @@ export class UserExcelService {
 
       const successData: any[] = [];
       const errorData: any[] = [];
-      const salt = bcrypt.genSaltSync(10);
-      const defaultPassword = await bcrypt.hashSync('123456', salt); // 默认密码
+      const defaultPassword = await bcrypt.hash('123456', 10); // 默认密码
 
       // 从第二行开始解析数据
       for (let rowNumber = 2; rowNumber <= worksheet.rowCount; rowNumber++) {

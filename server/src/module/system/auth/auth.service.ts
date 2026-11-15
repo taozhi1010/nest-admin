@@ -90,7 +90,7 @@ export class AuthService {
       select: ['userId', 'password'],
     });
 
-    if (!(data && bcrypt.compareSync(user.password, data.password))) {
+    if (!(data && (await bcrypt.compare(user.password, data.password)))) {
       // 累计密码错误次数，达到阈值后下次登录需要验证码
       await recordLoginFailure(this.redisService, user.username);
       return ResultData.fail(500, `账号或密码错误`);
@@ -222,7 +222,7 @@ export class AuthService {
     }
     user['userName'] = user.username;
     user['nickName'] = user.username;
-    user['password'] = bcrypt.hashSync(user.password, bcrypt.genSaltSync(10));
+    user['password'] = await bcrypt.hash(user.password, 10);
     try {
       await this.userRepo.save({ ...user, userType: SYS_USER_TYPE.CUSTOM, loginDate });
     } catch (error) {
