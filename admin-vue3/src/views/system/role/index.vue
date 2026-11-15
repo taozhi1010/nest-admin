@@ -434,13 +434,9 @@ const handleDataScope = async (row) => {
     role.title = '分配数据权限';
 
     nextTick(() => {
-      deptTreeResponse.then((res) => {
-        nextTick(() => {
-          if (deptRef.value) {
-            deptRef.value.setCheckedKeys(res.checkedKeys);
-          }
-        });
-      });
+      if (deptRef.value) {
+        deptRef.value.setCheckedKeys(deptTreeResponse.data.checkedKeys);
+      }
     });
   } catch (e) {
     console.error('获取数据权限信息失败:', e);
