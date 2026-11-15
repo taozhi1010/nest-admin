@@ -1,4 +1,4 @@
-import defAva from '@/assets/images/avatar.webp'
+import defAva from '@/assets/images/avatar.webp';
 
 /**
  * 图片资源统一处理工具
@@ -6,9 +6,9 @@ import defAva from '@/assets/images/avatar.webp'
  */
 
 // 获取环境变量（兼容 TS 类型检查）
-const env = import.meta.env as any
-const VITE_APP_ENV = env?.VITE_APP_ENV
-const VITE_APP_BASE_API = env?.VITE_APP_BASE_API || ''
+const env = import.meta.env as any;
+const VITE_APP_ENV = env?.VITE_APP_ENV;
+const VITE_APP_BASE_API = env?.VITE_APP_BASE_API || '';
 
 /**
  * 判断是否为外部 URL（http:// 或 https:// 开头）
@@ -16,8 +16,8 @@ const VITE_APP_BASE_API = env?.VITE_APP_BASE_API || ''
  * @returns 是否为外部 URL
  */
 export function isExternalUrl(url: string): boolean {
-  if (!url) return false
-  return /^https?:\/\//.test(url)
+  if (!url) return false;
+  return /^https?:\/\//.test(url);
 }
 
 /**
@@ -26,8 +26,8 @@ export function isExternalUrl(url: string): boolean {
  * @returns 是否为本地相对路径
  */
 export function isLocalImagePath(path: string): boolean {
-  if (!path) return false
-  return /^\/?(uploads|profile)\//.test(path)
+  if (!path) return false;
+  return /^\/?(uploads|profile)\//.test(path);
 }
 
 /**
@@ -37,42 +37,39 @@ export function isLocalImagePath(path: string): boolean {
  * @param options.forceAbsolute 是否强制返回绝对 URL
  * @returns 完整的图片 URL
  */
-export function getImageUrl(
-  path: string,
-  options: { forceAbsolute?: boolean } = {}
-): string {
-  const { forceAbsolute = false } = options
+export function getImageUrl(path: string, options: { forceAbsolute?: boolean } = {}): string {
+  const { forceAbsolute = false } = options;
 
   // 1. 空值处理
-  if (!path) return ''
+  if (!path) return '';
 
   // 2. 外部 URL 直接返回
   if (isExternalUrl(path)) {
-    return path
+    return path;
   }
 
   // 3. 处理本地路径
-  let normalizedPath = path
+  let normalizedPath = path;
   // 确保路径以 / 开头
   if (!normalizedPath.startsWith('/')) {
-    normalizedPath = `/${normalizedPath}`
+    normalizedPath = `/${normalizedPath}`;
   }
 
   // 处理双斜杠问题（保留协议部分，只处理路径部分）
-  normalizedPath = normalizedPath.replace(/(?<!:)\//g, '/')
+  normalizedPath = normalizedPath.replace(/(?<!:)\//g, '/');
 
   // 4. 开发环境：返回相对路径，走 Vite 代理
   // 生产环境或强制绝对路径：拼接完整 URL
   if (VITE_APP_ENV === 'development' && !forceAbsolute) {
-    return normalizedPath
+    return normalizedPath;
   } else {
     // /profile 和 /uploads 由前端站点自身代理，不应再拼接 /api
     if (isLocalImagePath(normalizedPath)) {
-      return normalizedPath
+      return normalizedPath;
     }
     // 生产环境：拼接基础 URL
-    const baseUrl = VITE_APP_BASE_API.replace(/\/$/, '')
-    return `${baseUrl}${normalizedPath}`
+    const baseUrl = VITE_APP_BASE_API.replace(/\/$/, '');
+    return `${baseUrl}${normalizedPath}`;
   }
 }
 
@@ -82,12 +79,9 @@ export function getImageUrl(
  * @param options 配置选项
  * @returns 完整的图片 URL 数组
  */
-export function getImageUrlList(
-  paths: string[],
-  options: { forceAbsolute?: boolean } = {}
-): string[] {
-  if (!Array.isArray(paths)) return []
-  return paths.map((path) => getImageUrl(path, options))
+export function getImageUrlList(paths: string[], options: { forceAbsolute?: boolean } = {}): string[] {
+  if (!Array.isArray(paths)) return [];
+  return paths.map((path) => getImageUrl(path, options));
 }
 
 /**
@@ -96,12 +90,9 @@ export function getImageUrlList(
  * @param options 配置选项
  * @returns 图片 URL 数组
  */
-export function parseImageUrlList(
-  paths: string,
-  options: { forceAbsolute?: boolean } = {}
-): string[] {
-  if (!paths) return []
-  return getImageUrlList(paths.split(','), options)
+export function parseImageUrlList(paths: string, options: { forceAbsolute?: boolean } = {}): string[] {
+  if (!paths) return [];
+  return getImageUrlList(paths.split(','), options);
 }
 
 /**
@@ -110,8 +101,8 @@ export function parseImageUrlList(
  * @returns 逗号分隔的图片 URL 字符串
  */
 export function stringifyImageUrlList(urls: string[]): string {
-  if (!Array.isArray(urls) || urls.length === 0) return ''
-  return urls.join(',')
+  if (!Array.isArray(urls) || urls.length === 0) return '';
+  return urls.join(',');
 }
 
 /**
@@ -119,7 +110,7 @@ export function stringifyImageUrlList(urls: string[]): string {
  * @returns 默认头像 URL
  */
 export function getDefaultAvatar(): string {
-  return defAva
+  return defAva;
 }
 
 /**
@@ -128,13 +119,10 @@ export function getDefaultAvatar(): string {
  * @param options 配置选项
  * @returns 用户头像 URL
  */
-export function getUserAvatar(
-  avatarPath: string,
-  options: { forceAbsolute?: boolean } = {}
-): string {
+export function getUserAvatar(avatarPath: string, options: { forceAbsolute?: boolean } = {}): string {
   // 如果头像路径为空，返回默认头像
   if (!avatarPath || avatarPath.trim() === '') {
-    return getDefaultAvatar()
+    return getDefaultAvatar();
   }
-  return getImageUrl(avatarPath, options)
+  return getImageUrl(avatarPath, options);
 }

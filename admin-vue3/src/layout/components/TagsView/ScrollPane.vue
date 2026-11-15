@@ -5,90 +5,90 @@
 </template>
 
 <script setup lang="ts">
-import useTagsViewStore from '@/store/modules/tagsView'
+import useTagsViewStore from '@/store/modules/tagsView';
 
-const tagAndTagSpacing = ref(4)
-const scrollContainer = ref(null)
+const tagAndTagSpacing = ref(4);
+const scrollContainer = ref(null);
 
 const scrollWrapper = computed(() => {
   if (scrollContainer.value) {
-    return scrollContainer.value.$refs.wrapRef
+    return scrollContainer.value.$refs.wrapRef;
   }
-  return null
-})
+  return null;
+});
 
 onMounted(() => {
-  scrollWrapper.value.addEventListener('scroll', emitScroll, true)
-})
+  scrollWrapper.value.addEventListener('scroll', emitScroll, true);
+});
 onBeforeUnmount(() => {
-  scrollWrapper.value.removeEventListener('scroll', emitScroll)
-})
+  scrollWrapper.value.removeEventListener('scroll', emitScroll);
+});
 
 function handleScroll(e) {
-  const eventDelta = e.wheelDelta || -e.deltaY * 40
-  const $scrollWrapper = scrollWrapper.value
-  $scrollWrapper.scrollLeft = $scrollWrapper.scrollLeft + eventDelta / 4
+  const eventDelta = e.wheelDelta || -e.deltaY * 40;
+  const $scrollWrapper = scrollWrapper.value;
+  $scrollWrapper.scrollLeft = $scrollWrapper.scrollLeft + eventDelta / 4;
 }
-const emits = defineEmits()
+const emits = defineEmits();
 const emitScroll = () => {
-  emits('scroll')
-}
+  emits('scroll');
+};
 
-const tagsViewStore = useTagsViewStore()
-const visitedViews = computed(() => tagsViewStore.visitedViews)
+const tagsViewStore = useTagsViewStore();
+const visitedViews = computed(() => tagsViewStore.visitedViews);
 
 function moveToTarget(currentTag) {
-  if (!scrollContainer.value) return
-  
-  const $container = scrollContainer.value.$el
-  const $containerWidth = $container.offsetWidth
-  const $scrollWrapper = scrollWrapper.value
+  if (!scrollContainer.value) return;
 
-  let firstTag = null
-  let lastTag = null
+  const $container = scrollContainer.value.$el;
+  const $containerWidth = $container.offsetWidth;
+  const $scrollWrapper = scrollWrapper.value;
+
+  let firstTag = null;
+  let lastTag = null;
 
   // find first tag and last tag
   if (visitedViews.value.length > 0) {
-    firstTag = visitedViews.value[0]
-    lastTag = visitedViews.value[visitedViews.value.length - 1]
+    firstTag = visitedViews.value[0];
+    lastTag = visitedViews.value[visitedViews.value.length - 1];
   }
 
   if (firstTag === currentTag) {
-    $scrollWrapper.scrollLeft = 0
+    $scrollWrapper.scrollLeft = 0;
   } else if (lastTag === currentTag) {
-    $scrollWrapper.scrollLeft = $scrollWrapper.scrollWidth - $containerWidth
+    $scrollWrapper.scrollLeft = $scrollWrapper.scrollWidth - $containerWidth;
   } else {
-    const tagListDom = document.getElementsByClassName('tags-view-item')
-    const currentIndex = visitedViews.value.findIndex((item) => item === currentTag)
-    let prevTag = null
-    let nextTag = null
+    const tagListDom = document.getElementsByClassName('tags-view-item');
+    const currentIndex = visitedViews.value.findIndex((item) => item === currentTag);
+    let prevTag = null;
+    let nextTag = null;
     for (const k in tagListDom) {
       if (k !== 'length' && Object.hasOwnProperty.call(tagListDom, k)) {
         if (tagListDom[k].dataset.path === visitedViews.value[currentIndex - 1].path) {
-          prevTag = tagListDom[k]
+          prevTag = tagListDom[k];
         }
         if (tagListDom[k].dataset.path === visitedViews.value[currentIndex + 1].path) {
-          nextTag = tagListDom[k]
+          nextTag = tagListDom[k];
         }
       }
     }
 
     // the tag's offsetLeft after of nextTag
-    const afterNextTagOffsetLeft = nextTag.offsetLeft + nextTag.offsetWidth + tagAndTagSpacing.value
+    const afterNextTagOffsetLeft = nextTag.offsetLeft + nextTag.offsetWidth + tagAndTagSpacing.value;
 
     // the tag's offsetLeft before of prevTag
-    const beforePrevTagOffsetLeft = prevTag.offsetLeft - tagAndTagSpacing.value
+    const beforePrevTagOffsetLeft = prevTag.offsetLeft - tagAndTagSpacing.value;
     if (afterNextTagOffsetLeft > $scrollWrapper.scrollLeft + $containerWidth) {
-      $scrollWrapper.scrollLeft = afterNextTagOffsetLeft - $containerWidth
+      $scrollWrapper.scrollLeft = afterNextTagOffsetLeft - $containerWidth;
     } else if (beforePrevTagOffsetLeft < $scrollWrapper.scrollLeft) {
-      $scrollWrapper.scrollLeft = beforePrevTagOffsetLeft
+      $scrollWrapper.scrollLeft = beforePrevTagOffsetLeft;
     }
   }
 }
 
 defineExpose({
   moveToTarget
-})
+});
 </script>
 
 <style lang="scss" scoped>

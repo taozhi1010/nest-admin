@@ -51,11 +51,11 @@
 </template>
 
 <script setup name="Data">
-import { addData, updateData } from '@/api/system/dict/data'
-import { useDict } from '@/composables/useDict'
-import { resetForm } from '@/composables/useForm'
+import { addData, updateData } from '@/api/system/dict/data';
+import { useDict } from '@/composables/useDict';
+import { resetForm } from '@/composables/useForm';
 
-const { sys_normal_disable } = useDict('sys_normal_disable')
+const { sys_normal_disable } = useDict('sys_normal_disable');
 
 // 数据标签回显样式
 const listClassOptions = ref([
@@ -65,13 +65,13 @@ const listClassOptions = ref([
   { value: 'info', label: '信息' },
   { value: 'warning', label: '警告' },
   { value: 'danger', label: '危险' }
-])
+]);
 
-const tips = '样式属性代表数据字典的样式，比如：primary、success、info、warning、danger'
+const tips = '样式属性代表数据字典的样式，比如：primary、success、info、warning、danger';
 
-const dialogTableVisible = ref(false)
-const formRef = ref()
-const emit = defineEmits(['refresh'])
+const dialogTableVisible = ref(false);
+const formRef = ref();
+const emit = defineEmits(['refresh']);
 
 const form = reactive({
   loading: false,
@@ -90,56 +90,56 @@ const form = reactive({
     listClass: [{ required: true, message: '回显样式不能为空', trigger: 'change' }]
   },
   reset: () => {
-    form.loading = false
+    form.loading = false;
     nextTick(() => {
-      resetForm(formRef)
-    })
+      resetForm(formRef);
+    });
   },
   submit: () => {
     formRef.value.validate((valid) => {
       if (valid) {
-        form.loading = true
+        form.loading = true;
         if (form.model.dictCode != undefined) {
           updateData(form.model).then(() => {
-            ElMessage.success('修改成功')
-            form.reset()
-            dialogTableVisible.value = false
-            emit('refresh')
-          })
+            ElMessage.success('修改成功');
+            form.reset();
+            dialogTableVisible.value = false;
+            emit('refresh');
+          });
         } else {
           addData(form.model).then(() => {
-            ElMessage.success('新增成功')
-            form.reset()
-            dialogTableVisible.value = false
-            emit('refresh')
-          })
+            ElMessage.success('新增成功');
+            form.reset();
+            dialogTableVisible.value = false;
+            emit('refresh');
+          });
         }
       }
-    })
+    });
   },
   cancel: () => {
-    form.reset()
-    dialogTableVisible.value = false
+    form.reset();
+    dialogTableVisible.value = false;
   }
-})
+});
 
 const handleDialogOpen = (type, group, row) => {
-  form.title = type === 'add' ? `新增-${group.dictName}` : `修改-${group.dictName}`
-  dialogTableVisible.value = true
+  form.title = type === 'add' ? `新增-${group.dictName}` : `修改-${group.dictName}`;
+  dialogTableVisible.value = true;
 
   if (type === 'edit') {
-    form.model = Object.assign({}, row)
+    form.model = Object.assign({}, row);
   } else {
     nextTick(() => {
-      form.reset()
-      form.model.dictType = group.dictType
-    })
+      form.reset();
+      form.model.dictType = group.dictType;
+    });
   }
-}
+};
 
 defineExpose({
   handleDialogOpen
-})
+});
 </script>
 
 <style scoped lang="scss">
@@ -155,13 +155,13 @@ defineExpose({
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  
+
   .tip-icon {
     font-size: 14px;
     color: #909399;
     cursor: pointer;
     transition: color 0.3s;
-    
+
     &:hover {
       color: #409eff;
     }

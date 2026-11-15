@@ -31,14 +31,14 @@ const props = defineProps({
     default: 'default',
     validator: (value) => ['large', 'default', 'small'].includes(value)
   }
-})
+});
 
-const emit = defineEmits(['refresh'])
+const emit = defineEmits(['refresh']);
 
 // 点击事件
 const handleClick = () => {
-  emit('refresh')
-}
+  emit('refresh');
+};
 </script>
 
 <style lang="scss" scoped>

@@ -3,11 +3,11 @@
  * Copyright (c) 2019 ruoyi
  */
 
-import type { Directive, DirectiveBinding } from 'vue'
-import useUserStore from '@/store/modules/user'
+import type { Directive, DirectiveBinding } from 'vue';
+import useUserStore from '@/store/modules/user';
 
 interface HasRoleDirectiveBinding extends Omit<DirectiveBinding, 'value'> {
-  value: string | string[]
+  value: string | string[];
 }
 
 /**
@@ -16,24 +16,24 @@ interface HasRoleDirectiveBinding extends Omit<DirectiveBinding, 'value'> {
  */
 const hasRole: Directive<HTMLElement, string | string[]> = {
   mounted(el: HTMLElement, binding: HasRoleDirectiveBinding) {
-    const { value } = binding
-    const superAdmin = 'admin'
-    const roles = useUserStore().roles
+    const { value } = binding;
+    const superAdmin = 'admin';
+    const roles = useUserStore().roles;
 
     if (value && Array.isArray(value) && value.length > 0) {
-      const roleFlag = value
+      const roleFlag = value;
 
       const hasRole = roles.some((role: string) => {
-        return superAdmin === role || roleFlag.includes(role)
-      })
+        return superAdmin === role || roleFlag.includes(role);
+      });
 
       if (!hasRole) {
-        el.parentNode?.removeChild(el)
+        el.parentNode?.removeChild(el);
       }
     } else {
-      throw new Error('请设置角色权限标签值')
+      throw new Error('请设置角色权限标签值');
     }
   }
-}
+};
 
-export default hasRole
+export default hasRole;

@@ -1,12 +1,6 @@
 <template>
   <div class="header-search">
-    <el-input
-      class="search-input"
-      readonly
-      placeholder="搜索路由..."
-      :prefix-icon="Search"
-      @click="openSearch"
-    >
+    <el-input class="search-input" readonly placeholder="搜索路由..." :prefix-icon="Search" @click="openSearch">
       <template #suffix>
         <span class="kbd">Ctrl K</span>
       </template>
@@ -16,13 +10,13 @@
 </template>
 
 <script setup lang="ts">
-import { Search } from '@element-plus/icons-vue'
-import SearchModal from './components/SearchModal'
+import { Search } from '@element-plus/icons-vue';
+import SearchModal from './components/SearchModal';
 
-const searchModalRef = ref(null)
+const searchModalRef = ref(null);
 
 function openSearch() {
-  searchModalRef.value?.open()
+  searchModalRef.value?.open();
 }
 </script>
 
@@ -35,7 +29,7 @@ function openSearch() {
     :deep(.el-input__wrapper) {
       cursor: pointer;
       background-color: #f5f7fa;
-      
+
       &:hover {
         background-color: #e4e7ed;
       }

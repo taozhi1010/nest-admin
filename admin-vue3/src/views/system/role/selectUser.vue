@@ -31,7 +31,12 @@
           </template>
         </el-table-column>
       </el-table>
-      <pagination v-show="selectUser.total > 0" v-model:limit="selectUser.queryParams.pageSize" v-model:page="selectUser.queryParams.pageNum" :total="selectUser.total" @pagination="selectUser.getList" />
+      <pagination
+        v-show="selectUser.total > 0"
+        v-model:limit="selectUser.queryParams.pageSize"
+        v-model:page="selectUser.queryParams.pageNum"
+        :total="selectUser.total"
+        @pagination="selectUser.getList" />
     </el-row>
     <template #footer>
       <div class="dialog-footer">
@@ -44,26 +49,26 @@
 
 <script setup name="SelectUser">
 // ==================== 导入区域 ====================
-import { authUserSelectAll, unallocatedUserList } from '@/api/system/role'
-import { useDict } from '@/composables/useDict'
-import { useCrud } from '@/composables/useCrud'
-import { parseTime } from '@/composables/useCommon'
+import { authUserSelectAll, unallocatedUserList } from '@/api/system/role';
+import { useDict } from '@/composables/useDict';
+import { useCrud } from '@/composables/useCrud';
+import { parseTime } from '@/composables/useCommon';
 
 // ==================== Props 和 Emits ====================
 const props = defineProps({
   roleId: {
     type: [Number, String]
   }
-})
+});
 
-const emit = defineEmits(['ok'])
+const emit = defineEmits(['ok']);
 
 // ==================== 实例和字典 ====================
-const { getDictLabel } = useDict('sys_normal_disable')
+const { getDictLabel } = useDict('sys_normal_disable');
 
 // ==================== 表单引用 ====================
-const refTable = ref(null)
-const queryRef = ref(null)
+const refTable = ref(null);
+const queryRef = ref(null);
 
 // ==================== 选择用户列表（CRUD 状态机，仅列表） ====================
 const selectUser = useCrud({
@@ -73,47 +78,47 @@ const selectUser = useCrud({
   // roleId 由 show() 注入，不参与查询重置
   query: { userName: undefined, phonenumber: undefined },
   queryRef
-})
+});
 
 // 弹框显示状态
-const visible = ref(false)
+const visible = ref(false);
 
 // 选择行
 const clickRow = (row) => {
-  refTable.value.toggleRowSelection(row)
-}
+  refTable.value.toggleRowSelection(row);
+};
 
 // 选择授权用户操作
 const handleSelectUser = async () => {
-  const roleId = selectUser.queryParams.roleId
-  const uIds = selectUser.ids.join(',')
+  const roleId = selectUser.queryParams.roleId;
+  const uIds = selectUser.ids.join(',');
 
   if (uIds == '') {
-    ElMessage.error('请选择要分配的用户')
-    return
+    ElMessage.error('请选择要分配的用户');
+    return;
   }
 
   try {
-    const response = await authUserSelectAll({ roleId: +roleId, userIds: uIds })
-    ElMessage.success(response.msg)
+    const response = await authUserSelectAll({ roleId: +roleId, userIds: uIds });
+    ElMessage.success(response.msg);
     if (response.code === 200) {
-      visible.value = false
-      emit('ok')
+      visible.value = false;
+      emit('ok');
     }
   } catch (e) {
-    console.error('分配用户失败:', e)
+    console.error('分配用户失败:', e);
   }
-}
+};
 
 // 显示弹框
 const show = () => {
-  selectUser.queryParams.roleId = props.roleId
-  selectUser.getList()
-  visible.value = true
-}
+  selectUser.queryParams.roleId = props.roleId;
+  selectUser.getList();
+  visible.value = true;
+};
 
 // ==================== 暴露方法 ====================
 defineExpose({
   show
-})
+});
 </script>

@@ -50,8 +50,7 @@
         <el-table-column align="center" label="cron执行表达式" prop="cronExpression" :show-overflow-tooltip="true" />
         <el-table-column align="center" label="状态">
           <template #default="scope">
-            <el-tag :type="scope.row.status === '0' ? 'success' : 'danger'" style="cursor: pointer;"
-              @click="handleStatusClick(scope.row)">
+            <el-tag :type="scope.row.status === '0' ? 'success' : 'danger'" style="cursor: pointer" @click="handleStatusClick(scope.row)">
               {{ scope.row.status === '0' ? '正常' : '暂停' }}
             </el-tag>
           </template>
@@ -221,29 +220,29 @@
 </template>
 
 <script setup name="Job">
-import { listJob, getJob, delJob, addJob, updateJob, runJob, changeJobStatus } from '@/api/monitor/job'
-import Crontab from '@/components/Crontab'
-import { useCrud } from '@/composables/useCrud'
-const router = useRouter()
-import { useDict } from '@/composables/useDict'
-import { parseTime } from '@/composables/useCommon'
+import { listJob, getJob, delJob, addJob, updateJob, runJob, changeJobStatus } from '@/api/monitor/job';
+import Crontab from '@/components/Crontab';
+import { useCrud } from '@/composables/useCrud';
+const router = useRouter();
+import { useDict } from '@/composables/useDict';
+import { parseTime } from '@/composables/useCommon';
 
-const { sys_job_group, sys_job_status, getDictLabel } = useDict('sys_job_group', 'sys_job_status')
+const { sys_job_group, sys_job_status, getDictLabel } = useDict('sys_job_group', 'sys_job_status');
 
 // 表单 ref 与页面弹窗状态
-const jobRef = ref()
-const queryRef = ref()
-const openView = ref(false)
-const openCron = ref(false)
-const expression = ref('')
-const crontabRef = ref()
+const jobRef = ref();
+const queryRef = ref();
+const openView = ref(false);
+const openCron = ref(false);
+const expression = ref('');
+const crontabRef = ref();
 
 // 表单校验规则
 const rules = {
   jobName: [{ required: true, message: '任务名称不能为空', trigger: 'blur' }],
   invokeTarget: [{ required: true, message: '调用目标字符串不能为空', trigger: 'blur' }],
   cronExpression: [{ required: true, message: 'cron执行表达式不能为空', trigger: 'change' }]
-}
+};
 
 // 定时任务管理
 const job = useCrud({
@@ -255,33 +254,33 @@ const job = useCrud({
   exportUrl: 'monitor/job/export',
   queryRef,
   formRef: jobRef
-})
+});
 
 /** 任务组名字典翻译 */
 function jobGroupFormat(row, column) {
-  return getDictLabel('sys_job_group', row.jobGroup)
+  return getDictLabel('sys_job_group', row.jobGroup);
 }
 
 // 点击状态标签切换状态
 function handleStatusClick(row) {
-  const currentStatus = row.status
-  const newStatus = currentStatus === '0' ? '1' : '0'
-  let text = newStatus === '0' ? '启用' : '停用'
+  const currentStatus = row.status;
+  const newStatus = currentStatus === '0' ? '1' : '0';
+  let text = newStatus === '0' ? '启用' : '停用';
   ElMessageBox.confirm(`确认要"${text}" "${row.jobName}"任务吗?`, '系统提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'
   })
     .then(function () {
-      return changeJobStatus(row.jobId, newStatus)
+      return changeJobStatus(row.jobId, newStatus);
     })
     .then(() => {
-      ElMessage.success(`${text}成功`)
-      row.status = newStatus
+      ElMessage.success(`${text}成功`);
+      row.status = newStatus;
     })
     .catch(function () {
-      console.error('状态修改失败')
-    })
+      console.error('状态修改失败');
+    });
 }
 
 /* 立即执行一次 */
@@ -292,39 +291,39 @@ function handleRun(row) {
     type: 'warning'
   })
     .then(function () {
-      return runJob(row.jobId, row.jobGroup)
+      return runJob(row.jobId, row.jobGroup);
     })
     .then(() => {
-      ElMessage.success('执行成功')
+      ElMessage.success('执行成功');
     })
-    .catch(() => {})
+    .catch(() => {});
 }
 
 /** 任务详细信息 */
 function handleView(row) {
   getJob(row.jobId).then((response) => {
-    job.form = response.data
-    openView.value = true
-  })
+    job.form = response.data;
+    openView.value = true;
+  });
 }
 
 /** cron表达式按钮操作 */
 function handleShowCron() {
-  expression.value = job.form.cronExpression
-  openCron.value = true
+  expression.value = job.form.cronExpression;
+  openCron.value = true;
 }
 
 /** 确定后回传值 */
 function crontabFill(value) {
-  job.form.cronExpression = value
+  job.form.cronExpression = value;
 }
 
 /** 任务日志列表查询 */
 function handleJobLog(row) {
-  const jobId = row.jobId || 0
-  router.push(`/monitor/job-log/index/${jobId}`)
+  const jobId = row.jobId || 0;
+  router.push(`/monitor/job-log/index/${jobId}`);
 }
 
 // 初始化加载
-job.getList()
+job.getList();
 </script>

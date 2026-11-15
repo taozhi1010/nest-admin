@@ -14,15 +14,9 @@
             <el-tag type="danger" class="free-tag">免费开源</el-tag>
           </div>
           <div class="action-buttons">
-            <el-button icon="MostlyCloudy" type="primary" @click="goTarget('https://gitee.com/tao-zhi/nest-admin')">
-              访问码云
-            </el-button>
-            <el-button icon="HomeFilled" @click="goTarget('https://nest-admin.dooring.vip/prod-api/swagger-ui')">
-              访问文档
-            </el-button>
-            <el-button v-if="isDev" icon="Reading" @click="goTarget('/manual/')">
-              项目文档
-            </el-button>
+            <el-button icon="MostlyCloudy" type="primary" @click="goTarget('https://gitee.com/tao-zhi/nest-admin')">访问码云</el-button>
+            <el-button icon="HomeFilled" @click="goTarget('https://nest-admin.dooring.vip/prod-api/swagger-ui')">访问文档</el-button>
+            <el-button v-if="isDev" icon="Reading" @click="goTarget('/manual/')">项目文档</el-button>
           </div>
         </div>
       </el-col>
@@ -150,10 +144,10 @@
 </template>
 
 <script setup name="Index">
-import { Monitor, ChatDotRound, Guide, Goods, Document, Promotion, Link } from '@element-plus/icons-vue'
+import { Monitor, ChatDotRound, Guide, Goods, Document, Promotion, Link } from '@element-plus/icons-vue';
 
-const version = ref('1.0.0')
-const isDev = import.meta.env.DEV
+const version = ref('1.0.0');
+const isDev = import.meta.env.DEV;
 
 // 后端技术栈
 const backendTechs = [
@@ -165,7 +159,7 @@ const backendTechs = [
   { name: 'JWT', type: 'success' },
   { name: 'Swagger', type: 'primary' },
   { name: 'TypeScript', type: 'warning' }
-]
+];
 
 // 前端技术栈
 const frontendTechs = [
@@ -177,7 +171,7 @@ const frontendTechs = [
   { name: 'Axios', type: 'success' },
   { name: 'Sass', type: 'primary' },
   { name: 'ECharts', type: 'warning' }
-]
+];
 
 // 接口文档列表
 const apiDocs = [
@@ -202,14 +196,14 @@ const apiDocs = [
     url: `${window.location.origin}/openapi.json`,
     type: 'warning'
   }
-]
+];
 
 function goTarget(url) {
-  window.open(url, '_blank')
+  window.open(url, '_blank');
 }
 
 function openApiDoc(url) {
-  window.open(url, '_blank')
+  window.open(url, '_blank');
 }
 </script>
 

@@ -108,22 +108,22 @@
 </template>
 
 <script setup name="JobLog">
-import { getJob } from '@/api/monitor/job'
-import { listJobLog, delJobLog, cleanJobLog } from '@/api/monitor/jobLog'
-import { useDict } from '@/composables/useDict'
-import { useCrud } from '@/composables/useCrud'
-import { addDateRange, parseTime } from '@/composables/useCommon'
+import { getJob } from '@/api/monitor/job';
+import { listJobLog, delJobLog, cleanJobLog } from '@/api/monitor/jobLog';
+import { useDict } from '@/composables/useDict';
+import { useCrud } from '@/composables/useCrud';
+import { addDateRange, parseTime } from '@/composables/useCommon';
 
 // ==================== Composables ====================
-const { closeOpenPage } = useTab()
+const { closeOpenPage } = useTab();
 
-const { sys_common_status, sys_job_group, getDictLabel } = useDict('sys_common_status', 'sys_job_group')
+const { sys_common_status, sys_job_group, getDictLabel } = useDict('sys_common_status', 'sys_job_group');
 
-const queryRef = ref(null)
-const open = ref(false)
-const form = ref({})
-const dateRange = ref([])
-const route = useRoute()
+const queryRef = ref(null);
+const open = ref(false);
+const form = ref({});
+const dateRange = ref([]);
+const route = useRoute();
 
 // 调度日志列表（无新增/编辑）
 const jobLog = useCrud({
@@ -138,25 +138,25 @@ const jobLog = useCrud({
   exportUrl: 'monitor/jobLog/export',
   exportName: 'job_log',
   queryRef
-})
+});
 
 // 返回按钮
 const handleClose = () => {
-  closeOpenPage({ path: '/monitor/job' })
-}
+  closeOpenPage({ path: '/monitor/job' });
+};
 
 // 重置按钮操作：额外清空日期范围
-const baseResetQuery = jobLog.resetQuery
+const baseResetQuery = jobLog.resetQuery;
 const resetQuery = () => {
-  dateRange.value = []
-  baseResetQuery()
-}
+  dateRange.value = [];
+  baseResetQuery();
+};
 
 /** 详细按钮操作 */
 const handleView = (row) => {
-  open.value = true
-  form.value = row
-}
+  open.value = true;
+  form.value = row;
+};
 
 /** 清空按钮操作 */
 const handleClean = () => {
@@ -166,26 +166,26 @@ const handleClean = () => {
     type: 'warning'
   })
     .then(function () {
-      return cleanJobLog()
+      return cleanJobLog();
     })
     .then(() => {
-      jobLog.getList()
-      ElMessage.success('清空成功')
+      jobLog.getList();
+      ElMessage.success('清空成功');
     })
-    .catch(() => {})
-}
+    .catch(() => {});
+};
 
 // 初始化加载：路由带 jobId 时回填任务名称/组名再查询
-;(() => {
-  const jobId = route.params && route.params.jobId
+(() => {
+  const jobId = route.params && route.params.jobId;
   if (jobId !== undefined && jobId != 0) {
     getJob(jobId).then((response) => {
-      jobLog.queryParams.jobName = response.data.jobName
-      jobLog.queryParams.jobGroup = response.data.jobGroup
-      jobLog.getList()
-    })
+      jobLog.queryParams.jobName = response.data.jobName;
+      jobLog.queryParams.jobGroup = response.data.jobGroup;
+      jobLog.getList();
+    });
   } else {
-    jobLog.getList()
+    jobLog.getList();
   }
-})()
+})();
 </script>

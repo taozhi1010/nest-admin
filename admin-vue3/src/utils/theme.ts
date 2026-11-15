@@ -3,18 +3,12 @@
  * @param theme 主题颜色
  */
 export function handleThemeStyle(theme: string): void {
-  document.documentElement.style.setProperty('--el-color-primary', theme)
+  document.documentElement.style.setProperty('--el-color-primary', theme);
   for (let i = 1; i <= 9; i++) {
-    document.documentElement.style.setProperty(
-      `--el-color-primary-light-${i}`,
-      getLightColor(theme, i / 10)
-    )
+    document.documentElement.style.setProperty(`--el-color-primary-light-${i}`, getLightColor(theme, i / 10));
   }
   for (let i = 1; i <= 9; i++) {
-    document.documentElement.style.setProperty(
-      `--el-color-primary-dark-${i}`,
-      getDarkColor(theme, i / 10)
-    )
+    document.documentElement.style.setProperty(`--el-color-primary-dark-${i}`, getDarkColor(theme, i / 10));
   }
 }
 
@@ -24,9 +18,9 @@ export function handleThemeStyle(theme: string): void {
  * @returns rgb数组
  */
 export function hexToRgb(str: string): number[] {
-  str = str.replace('#', '')
-  const hexs = str.match(/../g) || []
-  return hexs.map((hex) => parseInt(hex, 16))
+  str = str.replace('#', '');
+  const hexs = str.match(/../g) || [];
+  return hexs.map((hex) => parseInt(hex, 16));
 }
 
 /**
@@ -37,8 +31,8 @@ export function hexToRgb(str: string): number[] {
  * @returns hex颜色字符串
  */
 export function rgbToHex(r: number, g: number, b: number): string {
-  const hexs = [r.toString(16), g.toString(16), b.toString(16)]
-  return `#${hexs.map((hex) => hex.padStart(2, '0')).join('')}`
+  const hexs = [r.toString(16), g.toString(16), b.toString(16)];
+  return `#${hexs.map((hex) => hex.padStart(2, '0')).join('')}`;
 }
 
 /**
@@ -48,11 +42,9 @@ export function rgbToHex(r: number, g: number, b: number): string {
  * @returns 变浅后的颜色
  */
 export function getLightColor(color: string, level: number): string {
-  const rgb = hexToRgb(color)
-  const lightRgb = rgb.map((channel) =>
-    Math.floor((255 - channel) * level + channel)
-  )
-  return rgbToHex(lightRgb[0], lightRgb[1], lightRgb[2])
+  const rgb = hexToRgb(color);
+  const lightRgb = rgb.map((channel) => Math.floor((255 - channel) * level + channel));
+  return rgbToHex(lightRgb[0], lightRgb[1], lightRgb[2]);
 }
 
 /**
@@ -62,7 +54,7 @@ export function getLightColor(color: string, level: number): string {
  * @returns 变深后的颜色
  */
 export function getDarkColor(color: string, level: number): string {
-  const rgb = hexToRgb(color)
-  const darkRgb = rgb.map((channel) => Math.floor(channel * (1 - level)))
-  return rgbToHex(darkRgb[0], darkRgb[1], darkRgb[2])
+  const rgb = hexToRgb(color);
+  const darkRgb = rgb.map((channel) => Math.floor(channel * (1 - level)));
+  return rgbToHex(darkRgb[0], darkRgb[1], darkRgb[2]);
 }

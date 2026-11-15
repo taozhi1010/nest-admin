@@ -29,7 +29,15 @@
         </div>
       </el-form-item>
       <el-form-item prop="confirmPassword">
-        <el-input v-model="registerForm.confirmPassword" auto-complete="new-password" maxlength="20" placeholder="确认密码" size="large" type="password" show-password @keyup.enter="handleRegister">
+        <el-input
+          v-model="registerForm.confirmPassword"
+          auto-complete="new-password"
+          maxlength="20"
+          placeholder="确认密码"
+          size="large"
+          type="password"
+          show-password
+          @keyup.enter="handleRegister">
           <template #prefix>
             <lock class="input-icon" />
           </template>
@@ -84,20 +92,20 @@
 </template>
 
 <script setup lang="ts">
-import { register, getRegisterConfig } from '@/api/login'
-import { authCodeInfo, getValidateCode } from '@/composables/auth/useLogin'
-import { createRegisterRules, computePasswordStrength } from '@/composables/auth/useRegisterCheck'
-import { useEmailCode } from '@/composables/auth/useEmailCode'
-import { ElMessage } from 'element-plus'
-import type { FormInstance } from 'element-plus'
+import { register, getRegisterConfig } from '@/api/login';
+import { authCodeInfo, getValidateCode } from '@/composables/auth/useLogin';
+import { createRegisterRules, computePasswordStrength } from '@/composables/auth/useRegisterCheck';
+import { useEmailCode } from '@/composables/auth/useEmailCode';
+import { ElMessage } from 'element-plus';
+import type { FormInstance } from 'element-plus';
 
-const router = useRouter()
-const registerRef = ref<FormInstance>()
-const registerLoading = ref(false)
+const router = useRouter();
+const registerRef = ref<FormInstance>();
+const registerLoading = ref(false);
 
 // 邮箱验证码注册是否开启（服务端 mail 配置决定）；未开启保持图片验证码
-const emailRegisterEnabled = ref(false)
-const { sending, countdown, handleSend: sendEmailCodeAction, syncCountdown: syncEmailCodeCountdown } = useEmailCode()
+const emailRegisterEnabled = ref(false);
+const { sending, countdown, handleSend: sendEmailCodeAction, syncCountdown: syncEmailCodeCountdown } = useEmailCode();
 
 const registerForm = reactive({
   username: '',
@@ -107,48 +115,48 @@ const registerForm = reactive({
   emailCode: '',
   code: '',
   uuid: ''
-})
+});
 
 // 密码变化时重新校验确认密码，避免陈旧的"两次密码不一致"提示残留
 watch(
   () => registerForm.password,
   () => {
     if (registerForm.confirmPassword) {
-      registerRef.value?.validateField('confirmPassword')
+      registerRef.value?.validateField('confirmPassword');
     }
   }
-)
+);
 
 // 邮箱变化时恢复剩余冷却倒计时（刷新页面/重开标签页后不重置）
 watch(
   () => registerForm.email,
   (email) => syncEmailCodeCountdown(email)
-)
+);
 
 // 注册校验规则统一由 useRegisterCheck 维护（账号占用 + 密码强度 + 两次一致），按验证方式区分验证码字段
-const registerRules = computed(() => createRegisterRules(registerForm, emailRegisterEnabled.value))
+const registerRules = computed(() => createRegisterRules(registerForm, emailRegisterEnabled.value));
 
 // 密码强度提示条：0=未输入 1=弱 2=中 3=强
-const pwdStrength = computed(() => computePasswordStrength(registerForm.password))
-const STRENGTH_LABELS = ['', '弱', '中', '强'] as const
-const pwdStrengthLabel = computed(() => STRENGTH_LABELS[pwdStrength.value])
+const pwdStrength = computed(() => computePasswordStrength(registerForm.password));
+const STRENGTH_LABELS = ['', '弱', '中', '强'] as const;
+const pwdStrengthLabel = computed(() => STRENGTH_LABELS[pwdStrength.value]);
 
 // 发送邮箱验证码（先校验邮箱格式，防抖防止连点）
 const handleSendCode = useDebounce(async () => {
   try {
-    await registerRef.value?.validateField('email')
+    await registerRef.value?.validateField('email');
   } catch {
-    return // 邮箱格式有误，表单已展示错误提示
+    return; // 邮箱格式有误，表单已展示错误提示
   }
-  sendEmailCodeAction(registerForm.email)
-}, 500)
+  sendEmailCodeAction(registerForm.email);
+}, 500);
 
 // 注册处理（防抖防止连点，loading 防止请求期间回车重复提交）
 const handleRegister = useDebounce(() => {
-  if (registerLoading.value) return
+  if (registerLoading.value) return;
   registerRef.value?.validate((valid) => {
     if (valid) {
-      registerLoading.value = true
+      registerLoading.value = true;
       const data = emailRegisterEnabled.value
         ? {
             username: registerForm.username,
@@ -161,43 +169,43 @@ const handleRegister = useDebounce(() => {
             password: registerForm.password,
             code: registerForm.code,
             uuid: authCodeInfo.uuid
-          }
+          };
       register(data)
         .then(() => {
-          ElMessage.success('注册成功')
+          ElMessage.success('注册成功');
           // 跳转登录页并带上账号，由登录页读取 query 预填
-          router.push({ path: '/login', query: { username: registerForm.username } })
+          router.push({ path: '/login', query: { username: registerForm.username } });
         })
         .catch(() => {
           // 失败提示由请求拦截器统一展示（如"注册账号已存在"）
           // 图片验证码作废需刷新；邮箱验证码未作废，可凭原码重试
           if (!emailRegisterEnabled.value) {
-            getValidateCode(registerForm, true, 'register')
+            getValidateCode(registerForm, true, 'register');
           }
         })
         .finally(() => {
-          registerLoading.value = false
-        })
+          registerLoading.value = false;
+        });
     }
-  })
-}, 500)
+  });
+}, 500);
 
 // 刷新验证码（防抖）
 const handleRefreshCaptcha = useDebounce(() => {
-  getValidateCode(registerForm, true, 'register')
-}, 1000)
+  getValidateCode(registerForm, true, 'register');
+}, 1000);
 
 // 注册验证码与账号无关，进入页面即获取；邮箱模式无需图片验证码，配置获取失败按传统模式兜底
 getRegisterConfig()
   .then((res) => {
-    emailRegisterEnabled.value = !!res.data?.emailRegisterEnabled
+    emailRegisterEnabled.value = !!res.data?.emailRegisterEnabled;
   })
   .catch(() => {})
   .finally(() => {
     if (!emailRegisterEnabled.value) {
-      getValidateCode(registerForm, false, 'register')
+      getValidateCode(registerForm, false, 'register');
     }
-  })
+  });
 </script>
 
 <style lang="scss" scoped>

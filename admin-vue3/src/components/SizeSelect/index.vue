@@ -16,24 +16,24 @@
 </template>
 
 <script setup lang="ts">
-import useAppStore from '@/store/modules/app'
+import useAppStore from '@/store/modules/app';
 
-const appStore = useAppStore()
-const size = computed(() => appStore.size)
+const appStore = useAppStore();
+const size = computed(() => appStore.size);
 const sizeOptions = ref([
   { label: '较大', value: 'large' },
   { label: '默认', value: 'default' },
   { label: '稍小', value: 'small' }
-])
+]);
 
 function handleSetSize(size) {
   const loadingInstance = ElLoading.service({
     lock: true,
     text: '正在设置布局大小，请稍等...',
     background: 'rgba(0, 0, 0, 0.7)'
-  })
-  appStore.setSize(size)
-  setTimeout('window.location.reload()', 1000)
+  });
+  appStore.setSize(size);
+  setTimeout('window.location.reload()', 1000);
 }
 </script>
 
@@ -44,7 +44,7 @@ function handleSetSize(size) {
   padding-right: 7px;
   display: inline-block;
   vertical-align: middle;
-  
+
   :deep(.svg-icon) {
     font-size: 22px;
     vertical-align: middle;

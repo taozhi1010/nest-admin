@@ -49,18 +49,23 @@
       </el-table-column>
     </el-table>
 
-    <pagination v-show="authUser.total > 0" v-model:limit="authUser.queryParams.pageSize" v-model:page="authUser.queryParams.pageNum" :total="authUser.total" @pagination="authUser.getList" />
+    <pagination
+      v-show="authUser.total > 0"
+      v-model:limit="authUser.queryParams.pageSize"
+      v-model:page="authUser.queryParams.pageNum"
+      :total="authUser.total"
+      @pagination="authUser.getList" />
     <select-user ref="selectRef" :role-id="authUser.queryParams.roleId" @ok="authUser.handleQuery" />
   </div>
 </template>
 
 <script setup name="AuthUser">
 // ==================== 导入区域 ====================
-import selectUser from './selectUser'
-import { allocatedUserList, authUserCancel, authUserCancelAll } from '@/api/system/role'
-import { useDict } from '@/composables/useDict'
-import { useCrud } from '@/composables/useCrud'
-import { parseTime } from '@/composables/useCommon'
+import selectUser from './selectUser';
+import { allocatedUserList, authUserCancel, authUserCancelAll } from '@/api/system/role';
+import { useDict } from '@/composables/useDict';
+import { useCrud } from '@/composables/useCrud';
+import { parseTime } from '@/composables/useCommon';
 
 // ==================== Props 和 Emits ====================
 const props = defineProps({
@@ -68,16 +73,16 @@ const props = defineProps({
     type: [Number, String],
     required: true
   }
-})
+});
 
-const emit = defineEmits(['close'])
+const emit = defineEmits(['close']);
 
 // ==================== 实例和字典 ====================
-const { sys_normal_disable, getDictLabel } = useDict('sys_normal_disable')
+const { sys_normal_disable, getDictLabel } = useDict('sys_normal_disable');
 
 // ==================== 表单引用 ====================
-const selectRef = ref(null)
-const queryRef = ref(null)
+const selectRef = ref(null);
+const queryRef = ref(null);
 
 // ==================== 授权用户列表（CRUD 状态机，仅列表） ====================
 const authUser = useCrud({
@@ -87,19 +92,19 @@ const authUser = useCrud({
   // roleId 由外部 watch 注入，不参与查询重置
   query: { userName: undefined, phonenumber: undefined },
   queryRef
-})
+});
 
 // ==================== 页面特有操作 ====================
 
 // 返回按钮
 const handleClose = () => {
-  emit('close')
-}
+  emit('close');
+};
 
 // 打开授权用户表弹窗
 const openSelectUser = () => {
-  selectRef.value.show()
-}
+  selectRef.value.show();
+};
 
 // 取消授权按钮操作
 const cancelAuthUser = async (row) => {
@@ -108,48 +113,48 @@ const cancelAuthUser = async (row) => {
       confirmButtonText: '确定',
       cancelButtonText: '取消',
       type: 'warning'
-    })
-    await authUserCancel({ userId: row.userId, roleId: +authUser.queryParams.roleId })
-    ElMessage.success('取消授权成功')
-    authUser.getList()
+    });
+    await authUserCancel({ userId: row.userId, roleId: +authUser.queryParams.roleId });
+    ElMessage.success('取消授权成功');
+    authUser.getList();
   } catch (e) {
     if (e !== 'cancel') {
-      console.error('取消授权失败:', e)
+      console.error('取消授权失败:', e);
     }
   }
-}
+};
 
 // 批量取消授权按钮操作
 const cancelAuthUserAll = async () => {
-  const roleId = authUser.queryParams.roleId
-  const uIds = authUser.ids.join(',')
+  const roleId = authUser.queryParams.roleId;
+  const uIds = authUser.ids.join(',');
   try {
     await ElMessageBox.confirm('是否取消选中用户授权数据项？', '提示', {
       confirmButtonText: '确定',
       cancelButtonText: '取消',
       type: 'warning'
-    })
-    await authUserCancelAll({ roleId: +roleId, userIds: uIds })
-    ElMessage.success('取消授权成功')
-    authUser.getList()
+    });
+    await authUserCancelAll({ roleId: +roleId, userIds: uIds });
+    ElMessage.success('取消授权成功');
+    authUser.getList();
   } catch (e) {
     if (e !== 'cancel') {
-      console.error('批量取消授权失败:', e)
+      console.error('批量取消授权失败:', e);
     }
   }
-}
+};
 
 // ==================== 监听 roleId 变化 ====================
 watch(
   () => props.roleId,
   (newVal) => {
     if (newVal) {
-      authUser.queryParams.roleId = newVal
-      authUser.getList()
+      authUser.queryParams.roleId = newVal;
+      authUser.getList();
     }
   },
   { immediate: true }
-)
+);
 </script>
 
 <style scoped>

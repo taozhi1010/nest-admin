@@ -192,26 +192,26 @@
 </template>
 
 <script setup lang="ts">
-import { ElLoading } from 'element-plus'
-import { getServer } from '@/api/monitor/server'
+import { ElLoading } from 'element-plus';
+import { getServer } from '@/api/monitor/server';
 
-const server = ref<any>({})
-let loadingInstance = null
+const server = ref<any>({});
+let loadingInstance = null;
 
 function getList() {
   loadingInstance = ElLoading.service({
     lock: true,
     text: '正在加载服务监控数据，请稍候！',
     background: 'rgba(0, 0, 0, 0.7)'
-  })
+  });
   getServer().then((response) => {
-    server.value = response.data
+    server.value = response.data;
     if (loadingInstance) {
-      loadingInstance.close()
-      loadingInstance = null
+      loadingInstance.close();
+      loadingInstance = null;
     }
-  })
+  });
 }
 
-getList()
+getList();
 </script>

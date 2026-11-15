@@ -108,24 +108,24 @@
 </template>
 
 <script setup name="Notice">
-import { listNotice, getNotice, delNotice, addNotice, updateNotice } from '@/api/system/notice'
-import { useDict } from '@/composables/useDict'
-import { useCrud } from '@/composables/useCrud'
-import { parseTime } from '@/composables/useCommon'
-import MdEditor from '@/components/MdEditor'
+import { listNotice, getNotice, delNotice, addNotice, updateNotice } from '@/api/system/notice';
+import { useDict } from '@/composables/useDict';
+import { useCrud } from '@/composables/useCrud';
+import { parseTime } from '@/composables/useCommon';
+import MdEditor from '@/components/MdEditor';
 
-const { sys_notice_status, sys_notice_type, getDictLabel, getDictTagType } = useDict('sys_notice_status', 'sys_notice_type')
+const { sys_notice_status, sys_notice_type, getDictLabel, getDictTagType } = useDict('sys_notice_status', 'sys_notice_type');
 
 // 表单 ref
-const queryRef = ref()
-const noticeFormRef = ref()
+const queryRef = ref();
+const noticeFormRef = ref();
 
 // 表单校验规则
 const rules = {
   noticeTitle: [{ required: true, message: '请输入公告标题', trigger: 'blur' }],
   noticeType: [{ required: true, message: '请选择公告类型', trigger: 'change' }],
   noticeContent: [{ required: true, message: '请输入公告内容', trigger: 'blur' }]
-}
+};
 
 // 公告管理
 const notice = useCrud({
@@ -136,15 +136,15 @@ const notice = useCrud({
   form: { noticeType: '1', status: '0' }, // 默认选中第一个类型（通知公告），默认启用状态
   queryRef,
   formRef: noticeFormRef
-})
+});
 
 // Markdown 内容变化
 const handleContentChange = ({ text, html }) => {
   // 内容变化时的处理逻辑
-}
+};
 
 // 初始化加载
-notice.getList()
+notice.getList();
 </script>
 
 <style lang="scss" scoped>

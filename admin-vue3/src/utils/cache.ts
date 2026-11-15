@@ -4,82 +4,82 @@
  */
 
 interface StorageCache {
-  set(key: string, value: string): void
-  get(key: string): string | null
-  setJSON(key: string, jsonValue: any): void
-  getJSON<T = any>(key: string): T | null
-  remove(key: string): void
+  set(key: string, value: string): void;
+  get(key: string): string | null;
+  setJSON(key: string, jsonValue: any): void;
+  getJSON<T = any>(key: string): T | null;
+  remove(key: string): void;
 }
 
 const sessionCache: StorageCache = {
   set(key: string, value: string): void {
     if (!sessionStorage) {
-      return
+      return;
     }
     if (key != null && value != null) {
-      sessionStorage.setItem(key, value)
+      sessionStorage.setItem(key, value);
     }
   },
   get(key: string): string | null {
     if (!sessionStorage) {
-      return null
+      return null;
     }
     if (key == null) {
-      return null
+      return null;
     }
-    return sessionStorage.getItem(key)
+    return sessionStorage.getItem(key);
   },
   setJSON(key: string, jsonValue: any): void {
     if (jsonValue != null) {
-      this.set(key, JSON.stringify(jsonValue))
+      this.set(key, JSON.stringify(jsonValue));
     }
   },
   getJSON<T = any>(key: string): T | null {
-    const value = this.get(key)
+    const value = this.get(key);
     if (value != null) {
-      return JSON.parse(value) as T
+      return JSON.parse(value) as T;
     }
-    return null
+    return null;
   },
   remove(key: string): void {
-    sessionStorage.removeItem(key)
+    sessionStorage.removeItem(key);
   }
-}
+};
 
 const localCache: StorageCache = {
   set(key: string, value: string): void {
     if (!localStorage) {
-      return
+      return;
     }
     if (key != null && value != null) {
-      localStorage.setItem(key, value)
+      localStorage.setItem(key, value);
     }
   },
   get(key: string): string | null {
     if (!localStorage) {
-      return null
+      return null;
     }
     if (key == null) {
-      return null
+      return null;
     }
-    return localStorage.getItem(key)
+    return localStorage.getItem(key);
   },
   setJSON(key: string, jsonValue: any): void {
     if (jsonValue != null) {
-      this.set(key, JSON.stringify(jsonValue))
+      this.set(key, JSON.stringify(jsonValue));
     }
   },
   getJSON<T = any>(key: string): T | null {
-    const value = this.get(key)
+    const value = this.get(key);
     if (value != null) {
-      return JSON.parse(value) as T
+      return JSON.parse(value) as T;
     }
-    return null
+    return null;
   },
   remove(key: string): void {
-    localStorage.removeItem(key)
+    localStorage.removeItem(key);
   }
-}
+};
 
 export default {
   /**
@@ -90,4 +90,4 @@ export default {
    * 本地缓存
    */
   local: localCache
-}
+};

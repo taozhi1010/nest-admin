@@ -7,7 +7,7 @@
         <span>页面加载中...</span>
       </div>
     </div>
-    
+
     <router-view v-slot="{ Component, route }">
       <!-- <transition name="fade-transform" mode="out-in"> -->
       <keep-alive :include="tagsViewStore.cachedViews">
@@ -20,12 +20,12 @@
 </template>
 
 <script setup lang="ts">
-import { Loading } from '@element-plus/icons-vue'
-import iframeToggle from './IframeToggle/index'
-import useTagsViewStore from '@/store/modules/tagsView'
-import { routeLoading } from '@/composables/useRouteLoading'
+import { Loading } from '@element-plus/icons-vue';
+import iframeToggle from './IframeToggle/index';
+import useTagsViewStore from '@/store/modules/tagsView';
+import { routeLoading } from '@/composables/useRouteLoading';
 
-const tagsViewStore = useTagsViewStore()
+const tagsViewStore = useTagsViewStore();
 </script>
 
 <style lang="scss" scoped>
@@ -67,7 +67,7 @@ const tagsViewStore = useTagsViewStore()
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  
+
   .loading-content {
     display: flex;
     flex-direction: column;
@@ -75,7 +75,7 @@ const tagsViewStore = useTagsViewStore()
     gap: 12px;
     color: #409eff;
     font-size: 14px;
-    
+
     .el-icon {
       font-size: 32px;
     }

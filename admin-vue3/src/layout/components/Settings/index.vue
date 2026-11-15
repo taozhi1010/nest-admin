@@ -9,7 +9,8 @@
         <div v-if="sideTheme === 'theme-dark'" class="setting-drawer-block-checbox-selectIcon" style="display: block">
           <i aria-label="图标: check" class="anticon anticon-check">
             <svg aria-hidden="true" class data-icon="check" :fill="theme" focusable="false" height="1em" viewBox="64 64 896 896" width="1em">
-              <path d="M912 190h-69.9c-9.8 0-19.1 4.5-25.1 12.2L404.7 724.5 207 474a32 32 0 0 0-25.1-12.2H112c-6.7 0-10.4 7.7-6.3 12.9l273.9 347c12.8 16.2 37.4 16.2 50.3 0l488.4-618.9c4.1-5.1.4-12.8-6.3-12.8z" />
+              <path
+                d="M912 190h-69.9c-9.8 0-19.1 4.5-25.1 12.2L404.7 724.5 207 474a32 32 0 0 0-25.1-12.2H112c-6.7 0-10.4 7.7-6.3 12.9l273.9 347c12.8 16.2 37.4 16.2 50.3 0l488.4-618.9c4.1-5.1.4-12.8-6.3-12.8z" />
             </svg>
           </i>
         </div>
@@ -19,7 +20,8 @@
         <div v-if="sideTheme === 'theme-light'" class="setting-drawer-block-checbox-selectIcon" style="display: block">
           <i aria-label="图标: check" class="anticon anticon-check">
             <svg aria-hidden="true" class data-icon="check" :fill="theme" focusable="false" height="1em" viewBox="64 64 896 896" width="1em">
-              <path d="M912 190h-69.9c-9.8 0-19.1 4.5-25.1 12.2L404.7 724.5 207 474a32 32 0 0 0-25.1-12.2H112c-6.7 0-10.4 7.7-6.3 12.9l273.9 347c12.8 16.2 37.4 16.2 50.3 0l488.4-618.9c4.1-5.1.4-12.8-6.3-12.8z" />
+              <path
+                d="M912 190h-69.9c-9.8 0-19.1 4.5-25.1 12.2L404.7 724.5 207 474a32 32 0 0 0-25.1-12.2H112c-6.7 0-10.4 7.7-6.3 12.9l273.9 347c12.8 16.2 37.4 16.2 50.3 0l488.4-618.9c4.1-5.1.4-12.8-6.3-12.8z" />
             </svg>
           </i>
         </div>
@@ -80,82 +82,82 @@
 </template>
 
 <script setup lang="ts">
-import variables from '@/assets/styles/variables.module.scss'
-import axios from 'axios'
-import { useDynamicTitle } from '@/composables/useDynamicTitle'
-import useAppStore from '@/store/modules/app'
-import useSettingsStore from '@/store/modules/settings'
-import usePermissionStore from '@/store/modules/permission'
-import { handleThemeStyle } from '@/utils/theme'
+import variables from '@/assets/styles/variables.module.scss';
+import axios from 'axios';
+import { useDynamicTitle } from '@/composables/useDynamicTitle';
+import useAppStore from '@/store/modules/app';
+import useSettingsStore from '@/store/modules/settings';
+import usePermissionStore from '@/store/modules/permission';
+import { handleThemeStyle } from '@/utils/theme';
 
-const appStore = useAppStore()
-const settingsStore = useSettingsStore()
-const permissionStore = usePermissionStore()
-const showSettings = ref(false)
-const theme = ref(settingsStore.theme)
-const sideTheme = ref(settingsStore.sideTheme)
-const storeSettings = computed(() => settingsStore)
-const predefineColors = ref(['#409EFF', '#ff4500', '#ff8c00', '#ffd700', '#90ee90', '#00ced1', '#1e90ff', '#c71585'])
-let loadingInstance = null
+const appStore = useAppStore();
+const settingsStore = useSettingsStore();
+const permissionStore = usePermissionStore();
+const showSettings = ref(false);
+const theme = ref(settingsStore.theme);
+const sideTheme = ref(settingsStore.sideTheme);
+const storeSettings = computed(() => settingsStore);
+const predefineColors = ref(['#409EFF', '#ff4500', '#ff8c00', '#ffd700', '#90ee90', '#00ced1', '#1e90ff', '#c71585']);
+let loadingInstance = null;
 
 /** 是否需要topnav */
 const topNav = computed({
   get: () => storeSettings.value.topNav,
   set: (val) => {
-    settingsStore.changeSetting({ key: 'topNav', value: val })
+    settingsStore.changeSetting({ key: 'topNav', value: val });
     if (!val) {
-      appStore.toggleSideBarHide(false)
-      permissionStore.setSidebarRouters(permissionStore.defaultRoutes)
+      appStore.toggleSideBarHide(false);
+      permissionStore.setSidebarRouters(permissionStore.defaultRoutes);
     }
   }
-})
+});
 /** 是否需要tagview */
 const tagsView = computed({
   get: () => storeSettings.value.tagsView,
   set: (val) => {
-    settingsStore.changeSetting({ key: 'tagsView', value: val })
+    settingsStore.changeSetting({ key: 'tagsView', value: val });
   }
-})
+});
 /** 是否需要固定头部 */
 const fixedHeader = computed({
   get: () => storeSettings.value.fixedHeader,
   set: (val) => {
-    settingsStore.changeSetting({ key: 'fixedHeader', value: val })
+    settingsStore.changeSetting({ key: 'fixedHeader', value: val });
   }
-})
+});
 /** 是否需要侧边栏的logo */
 const sidebarLogo = computed({
   get: () => storeSettings.value.sidebarLogo,
   set: (val) => {
-    settingsStore.changeSetting({ key: 'sidebarLogo', value: val })
+    settingsStore.changeSetting({ key: 'sidebarLogo', value: val });
   }
-})
+});
 /** 是否需要侧边栏的动态网页的title */
 const dynamicTitle = computed({
   get: () => storeSettings.value.dynamicTitle,
   set: (val) => {
-    settingsStore.changeSetting({ key: 'dynamicTitle', value: val })
+    settingsStore.changeSetting({ key: 'dynamicTitle', value: val });
     // 动态设置网页标题
-    const { updateTitle } = useDynamicTitle()
-    updateTitle()
+    const { updateTitle } = useDynamicTitle();
+    updateTitle();
   }
-})
+});
 
 function themeChange(val) {
-  settingsStore.changeSetting({ key: 'theme', value: val })
-  theme.value = val
-  handleThemeStyle(val)
+  settingsStore.changeSetting({ key: 'theme', value: val });
+  theme.value = val;
+  handleThemeStyle(val);
 }
 function handleTheme(val) {
-  settingsStore.changeSetting({ key: 'sideTheme', value: val })
-  sideTheme.value = val
+  settingsStore.changeSetting({ key: 'sideTheme', value: val });
+  sideTheme.value = val;
 }
 function saveSetting() {
   loadingInstance = ElLoading.service({
     lock: true,
     text: '正在保存到本地，请稍等...',
     background: 'rgba(0, 0, 0, 0.7)'
-  })
+  });
   let layoutSetting = {
     topNav: storeSettings.value.topNav,
     tagsView: storeSettings.value.tagsView,
@@ -164,31 +166,31 @@ function saveSetting() {
     dynamicTitle: storeSettings.value.dynamicTitle,
     sideTheme: storeSettings.value.sideTheme,
     theme: storeSettings.value.theme
-  }
-  localStorage.setItem('layout-setting', JSON.stringify(layoutSetting))
+  };
+  localStorage.setItem('layout-setting', JSON.stringify(layoutSetting));
   setTimeout(() => {
     if (loadingInstance) {
-      loadingInstance.close()
-      loadingInstance = null
+      loadingInstance.close();
+      loadingInstance = null;
     }
-  }, 1000)
+  }, 1000);
 }
 function resetSetting() {
   loadingInstance = ElLoading.service({
     lock: true,
     text: '正在清除设置缓存并刷新，请稍等...',
     background: 'rgba(0, 0, 0, 0.7)'
-  })
-  localStorage.removeItem('layout-setting')
-  setTimeout('window.location.reload()', 1000)
+  });
+  localStorage.removeItem('layout-setting');
+  setTimeout('window.location.reload()', 1000);
 }
 function openSetting() {
-  showSettings.value = true
+  showSettings.value = true;
 }
 
 defineExpose({
   openSetting
-})
+});
 </script>
 
 <style lang="scss" scoped>

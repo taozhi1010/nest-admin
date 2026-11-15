@@ -44,11 +44,11 @@
 </template>
 
 <script setup name="Online">
-import { forceLogout, list as initData } from '@/api/monitor/online'
-import { useCrud } from '@/composables/useCrud'
-import { parseTime } from '@/composables/useCommon'
+import { forceLogout, list as initData } from '@/api/monitor/online';
+import { useCrud } from '@/composables/useCrud';
+import { parseTime } from '@/composables/useCommon';
 
-const queryRef = ref(null)
+const queryRef = ref(null);
 
 // 在线用户列表（仅查询与强退）
 const online = useCrud({
@@ -57,7 +57,7 @@ const online = useCrud({
   name: '会话',
   query: { ipaddr: undefined, userName: undefined },
   queryRef
-})
+});
 
 /** 强退按钮操作 */
 function handleForceLogout(row) {
@@ -67,15 +67,15 @@ function handleForceLogout(row) {
     type: 'warning'
   })
     .then(function () {
-      return forceLogout(row.tokenId)
+      return forceLogout(row.tokenId);
     })
     .then(() => {
-      online.getList()
-      ElMessage.success('删除成功')
+      online.getList();
+      ElMessage.success('删除成功');
     })
-    .catch(() => {})
+    .catch(() => {});
 }
 
 // 初始化加载
-online.getList()
+online.getList();
 </script>

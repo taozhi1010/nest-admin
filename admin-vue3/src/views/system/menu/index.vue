@@ -26,7 +26,13 @@
         <right-toolbar v-model:show-search="menu.showSearch" @query-table="menu.getList" />
       </el-row>
 
-      <el-table v-if="refreshTable" v-loading="menu.loading" :data="menu.list" :default-expand-all="isExpandAll" row-key="menuId" :tree-props="{ children: 'children', hasChildren: 'hasChildren' }">
+      <el-table
+        v-if="refreshTable"
+        v-loading="menu.loading"
+        :data="menu.list"
+        :default-expand-all="isExpandAll"
+        row-key="menuId"
+        :tree-props="{ children: 'children', hasChildren: 'hasChildren' }">
         <el-table-column label="菜单名称" prop="menuName" :show-overflow-tooltip="true" width="160" />
         <el-table-column align="center" label="图标" prop="icon" width="100">
           <template #default="scope">
@@ -61,7 +67,13 @@
           <el-row>
             <el-col :span="24">
               <el-form-item label="上级菜单">
-                <el-tree-select v-model="menu.form.parentId" check-strictly :data="menuOptions" placeholder="选择上级菜单" :props="{ value: 'menuId', label: 'menuName', children: 'children' }" value-key="menuId" />
+                <el-tree-select
+                  v-model="menu.form.parentId"
+                  check-strictly
+                  :data="menuOptions"
+                  placeholder="选择上级菜单"
+                  :props="{ value: 'menuId', label: 'menuName', children: 'children' }"
+                  value-key="menuId" />
               </el-form-item>
             </el-col>
             <el-col :span="24">
@@ -230,39 +242,39 @@
 </template>
 
 <script setup name="Menu">
-import { addMenu, delMenu, getMenu, listMenu, updateMenu } from '@/api/system/menu'
-import SvgIcon from '@/components/SvgIcon'
-import IconSelect from '@/components/IconSelect'
-import { ClickOutside as vClickOutside } from 'element-plus'
-import { useDict } from '@/composables/useDict'
-import { useCrud } from '@/composables/useCrud'
-import { handleTree, parseTime } from '@/composables/useCommon'
+import { addMenu, delMenu, getMenu, listMenu, updateMenu } from '@/api/system/menu';
+import SvgIcon from '@/components/SvgIcon';
+import IconSelect from '@/components/IconSelect';
+import { ClickOutside as vClickOutside } from 'element-plus';
+import { useDict } from '@/composables/useDict';
+import { useCrud } from '@/composables/useCrud';
+import { handleTree, parseTime } from '@/composables/useCommon';
 
-const { sys_show_hide, sys_normal_disable, getDictLabel } = useDict('sys_show_hide', 'sys_normal_disable')
+const { sys_show_hide, sys_normal_disable, getDictLabel } = useDict('sys_show_hide', 'sys_normal_disable');
 
 // 表单 ref 与页面特有状态
-const queryRef = ref(null)
-const menuRef = ref(null)
-const iconSelectRef = ref(null)
-const menuOptions = ref([])
-const showChooseIcon = ref(false)
-const refreshTable = ref(true)
-const isExpandAll = ref(false)
+const queryRef = ref(null);
+const menuRef = ref(null);
+const iconSelectRef = ref(null);
+const menuOptions = ref([]);
+const showChooseIcon = ref(false);
+const refreshTable = ref(true);
+const isExpandAll = ref(false);
 
 // 表单验证规则
 const rules = {
   menuName: [{ required: true, message: '菜单名称不能为空', trigger: 'blur' }],
   orderNum: [{ required: true, message: '菜单顺序不能为空', trigger: 'blur' }],
   path: [{ required: true, message: '路由地址不能为空', trigger: 'blur' }]
-}
+};
 
 // 菜单管理（树形表格，后端返回全量数据无分页）
 const menu = useCrud({
   api: {
     // 后端返回平铺数组，转树形后适配 useCrud 的 { data: { list } } 信封
     list: async (params) => {
-      const response = await listMenu(params)
-      return { data: { list: handleTree(response.data, 'menuId'), total: 0 } }
+      const response = await listMenu(params);
+      return { data: { list: handleTree(response.data, 'menuId'), total: 0 } };
     },
     get: getMenu,
     add: addMenu,
@@ -272,69 +284,84 @@ const menu = useCrud({
   idKey: 'menuId',
   name: '菜单',
   query: { menuName: undefined, visible: undefined },
-  form: { menuId: undefined, parentId: 0, menuName: undefined, icon: undefined, menuType: 'M', orderNum: undefined, isFrame: '1', isCache: '0', visible: '0', status: '0', perms: undefined, component: undefined, path: undefined, query: undefined },
+  form: {
+    menuId: undefined,
+    parentId: 0,
+    menuName: undefined,
+    icon: undefined,
+    menuType: 'M',
+    orderNum: undefined,
+    isFrame: '1',
+    isCache: '0',
+    visible: '0',
+    status: '0',
+    perms: undefined,
+    component: undefined,
+    path: undefined,
+    query: undefined
+  },
   texts: {
     // 删除确认显示菜单名称而非编号
     deleteConfirm: (ids, row) => `是否确认删除名称为"${row?.menuName ?? ids}"的数据项？`
   },
   queryRef,
   formRef: menuRef
-})
+});
 
 // 查询菜单下拉树结构
 const getTreeselect = async () => {
-  menuOptions.value = []
-  const response = await listMenu()
-  const menuData = { menuId: 0, menuName: '主类目', children: [] }
-  menuData.children = handleTree(response.data, 'menuId')
-  menuOptions.value.push(menuData)
-}
+  menuOptions.value = [];
+  const response = await listMenu();
+  const menuData = { menuId: 0, menuName: '主类目', children: [] };
+  menuData.children = handleTree(response.data, 'menuId');
+  menuOptions.value.push(menuData);
+};
 
 // 新增按钮操作：先取上级菜单下拉树，可选指定父节点（行内新增）
-const baseHandleAdd = menu.handleAdd
+const baseHandleAdd = menu.handleAdd;
 const handleAdd = async (row) => {
-  await getTreeselect()
-  baseHandleAdd(row)
-  menu.form.parentId = row != null && row.menuId ? row.menuId : 0
-}
+  await getTreeselect();
+  baseHandleAdd(row);
+  menu.form.parentId = row != null && row.menuId ? row.menuId : 0;
+};
 
 // 修改按钮操作：先取上级菜单下拉树
-const baseHandleUpdate = menu.handleUpdate
+const baseHandleUpdate = menu.handleUpdate;
 const handleUpdate = async (row) => {
-  await getTreeselect()
-  await baseHandleUpdate(row)
-}
+  await getTreeselect();
+  await baseHandleUpdate(row);
+};
 
 // 展开/折叠操作
 const toggleExpandAll = () => {
-  refreshTable.value = false
-  isExpandAll.value = !isExpandAll.value
+  refreshTable.value = false;
+  isExpandAll.value = !isExpandAll.value;
   nextTick(() => {
-    refreshTable.value = true
-  })
-}
+    refreshTable.value = true;
+  });
+};
 
 // 展示下拉图标
 const showSelectIcon = () => {
-  iconSelectRef.value.reset()
-  showChooseIcon.value = true
-}
+  iconSelectRef.value.reset();
+  showChooseIcon.value = true;
+};
 
 // 选择图标
 const selected = (name) => {
-  menu.form.icon = name
-  showChooseIcon.value = false
-}
+  menu.form.icon = name;
+  showChooseIcon.value = false;
+};
 
 // 图标外层点击隐藏下拉列表
 const hideSelectIcon = (event) => {
-  const elem = event.relatedTarget || event.srcElement || event.target || event.currentTarget
-  const className = elem.className
+  const elem = event.relatedTarget || event.srcElement || event.target || event.currentTarget;
+  const className = elem.className;
   if (className !== 'el-input__inner') {
-    showChooseIcon.value = false
+    showChooseIcon.value = false;
   }
-}
+};
 
 // 初始化加载
-menu.getList()
+menu.getList();
 </script>

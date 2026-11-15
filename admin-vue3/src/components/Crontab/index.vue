@@ -102,17 +102,17 @@
 </template>
 
 <script setup lang="ts">
-import CrontabSecond from './second.vue'
-import CrontabMin from './min.vue'
-import CrontabHour from './hour.vue'
-import CrontabDay from './day.vue'
-import CrontabMonth from './month.vue'
-import CrontabWeek from './week.vue'
-import CrontabYear from './year.vue'
-import CrontabResult from './result.vue'
+import CrontabSecond from './second.vue';
+import CrontabMin from './min.vue';
+import CrontabHour from './hour.vue';
+import CrontabDay from './day.vue';
+import CrontabMonth from './month.vue';
+import CrontabWeek from './week.vue';
+import CrontabYear from './year.vue';
+import CrontabResult from './result.vue';
 
 // ==================== 事件与属性 ====================
-const emit = defineEmits(['hide', 'fill'])
+const emit = defineEmits(['hide', 'fill']);
 const props = defineProps({
   hideComponent: {
     type: Array as () => string[],
@@ -122,11 +122,11 @@ const props = defineProps({
     type: String,
     default: ''
   }
-})
+});
 
 // ==================== 响应式数据 ====================
-const tabTitles = ref(['秒', '分钟', '小时', '日', '月', '周', '年'])
-const tabActive = ref(0)
+const tabTitles = ref(['秒', '分钟', '小时', '日', '月', '周', '年']);
+const tabActive = ref(0);
 const crontab = reactive({
   hideComponent: [] as string[],
   expression: '',
@@ -139,22 +139,22 @@ const crontab = reactive({
     week: '?',
     year: ''
   }
-})
+});
 
 // ==================== 计算属性 ====================
 /**
  * Cron 表达式字符串
  */
 const crontabValueString = computed(() => {
-  const obj = crontab.valueObj
-  return `${obj.second} ${obj.min} ${obj.hour} ${obj.day} ${obj.month} ${obj.week}${obj.year === '' ? '' : ` ${obj.year}`}`
-})
+  const obj = crontab.valueObj;
+  return `${obj.second} ${obj.min} ${obj.hour} ${obj.day} ${obj.month} ${obj.week}${obj.year === '' ? '' : ` ${obj.year}`}`;
+});
 
 // ==================== 监听器 ====================
 watch(
   () => crontab.expression,
   () => resolveExp()
-)
+);
 
 // ==================== 方法集合 ====================
 /**
@@ -162,7 +162,7 @@ watch(
  * @param {string} key - 标签页标识
  */
 function shouldHide(key: string) {
-  return !(crontab.hideComponent && crontab.hideComponent.includes(key))
+  return !(crontab.hideComponent && crontab.hideComponent.includes(key));
 }
 
 /**
@@ -171,7 +171,7 @@ function shouldHide(key: string) {
 function resolveExp() {
   // 反解析表达式
   if (crontab.expression) {
-    const arr = crontab.expression.split(/\s+/)
+    const arr = crontab.expression.split(/\s+/);
     if (arr.length >= 6) {
       //6 位以上是合法表达式
       let obj = {
@@ -182,14 +182,14 @@ function resolveExp() {
         month: arr[4],
         week: arr[5],
         year: arr[6] ? arr[6] : ''
-      }
+      };
       crontab.valueObj = {
         ...obj
-      }
+      };
     }
   } else {
     // 没有传入的表达式 则还原
-    clearCron()
+    clearCron();
   }
 }
 
@@ -198,7 +198,7 @@ function resolveExp() {
  * @param {number} index - 标签页索引
  */
 function tabCheck(index: number) {
-  tabActive.value = index
+  tabActive.value = index;
 }
 
 /**
@@ -208,7 +208,7 @@ function tabCheck(index: number) {
  * @param {string} from - 来源组件
  */
 function updateCrontabValue(name: string, value: string, from: string) {
-  crontab.valueObj[name as keyof typeof crontab.valueObj] = value
+  crontab.valueObj[name as keyof typeof crontab.valueObj] = value;
 }
 
 /**
@@ -219,28 +219,28 @@ function updateCrontabValue(name: string, value: string, from: string) {
  */
 function checkNumber(value: number, minLimit: number, maxLimit: number) {
   // 检查必须为整数
-  value = Math.floor(value)
+  value = Math.floor(value);
   if (value < minLimit) {
-    value = minLimit
+    value = minLimit;
   } else if (value > maxLimit) {
-    value = maxLimit
+    value = maxLimit;
   }
-  return value
+  return value;
 }
 
 /**
  * 隐藏弹窗
  */
 function hidePopup() {
-  emit('hide')
+  emit('hide');
 }
 
 /**
  * 填充表达式
  */
 function submitFill() {
-  emit('fill', crontabValueString.value)
-  hidePopup()
+  emit('fill', crontabValueString.value);
+  hidePopup();
 }
 
 /**
@@ -256,14 +256,14 @@ function clearCron() {
     month: '*',
     week: '?',
     year: ''
-  }
+  };
 }
 
 // ==================== 生命周期 ====================
 onMounted(() => {
-  crontab.expression = props.expression
-  crontab.hideComponent = props.hideComponent
-})
+  crontab.expression = props.expression;
+  crontab.hideComponent = props.hideComponent;
+});
 </script>
 
 <style lang="scss" scoped>

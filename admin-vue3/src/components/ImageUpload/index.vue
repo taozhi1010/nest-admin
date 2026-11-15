@@ -1,6 +1,21 @@
 <template>
   <div class="component-upload-image">
-    <el-upload ref="imageUpload" :action="uploadImgUrl" :before-remove="handleDelete" :before-upload="handleBeforeUpload" :class="{ hide: fileList.length >= limit }" :file-list="fileList" :headers="headers" :limit="limit" list-type="picture-card" multiple :on-error="handleUploadError" :on-exceed="handleExceed" :on-preview="handlePictureCardPreview" :on-success="handleUploadSuccess" :show-file-list="true">
+    <el-upload
+      ref="imageUpload"
+      :action="uploadImgUrl"
+      :before-remove="handleDelete"
+      :before-upload="handleBeforeUpload"
+      :class="{ hide: fileList.length >= limit }"
+      :file-list="fileList"
+      :headers="headers"
+      :limit="limit"
+      list-type="picture-card"
+      multiple
+      :on-error="handleUploadError"
+      :on-exceed="handleExceed"
+      :on-preview="handlePictureCardPreview"
+      :on-success="handleUploadSuccess"
+      :show-file-list="true">
       <el-icon class="avatar-uploader-icon"><plus /></el-icon>
     </el-upload>
     <!-- 上传提示 -->
@@ -24,8 +39,8 @@
 </template>
 
 <script setup lang="ts">
-import { getToken } from '@/utils/auth'
-import { getImageUrl } from '@/utils/image'
+import { getToken } from '@/utils/auth';
+import { getImageUrl } from '@/utils/image';
 
 const props = defineProps({
   modelValue: [String, Object, Array],
@@ -49,123 +64,123 @@ const props = defineProps({
     type: Boolean,
     default: true
   }
-})
+});
 
-const imageUpload = ref(null)
-const emit = defineEmits(['update:modelValue'])
-const number = ref(0)
-const uploadList = ref([])
-const dialogImageUrl = ref('')
-const dialogVisible = ref(false)
-const baseUrl = import.meta.env.VITE_APP_ENV === 'development' ? '' : import.meta.env.VITE_APP_BASE_API
-const uploadImgUrl = ref(`${import.meta.env.VITE_APP_BASE_API}/common/upload`) // 上传的图片服务器地址
-const headers = ref({ Authorization: `Bearer ${getToken()}` })
-const fileList = ref([])
-const showTip = computed(() => props.isShowTip && (props.fileType || props.fileSize))
-let loadingInstance = null
+const imageUpload = ref(null);
+const emit = defineEmits(['update:modelValue']);
+const number = ref(0);
+const uploadList = ref([]);
+const dialogImageUrl = ref('');
+const dialogVisible = ref(false);
+const baseUrl = import.meta.env.VITE_APP_ENV === 'development' ? '' : import.meta.env.VITE_APP_BASE_API;
+const uploadImgUrl = ref(`${import.meta.env.VITE_APP_BASE_API}/common/upload`); // 上传的图片服务器地址
+const headers = ref({ Authorization: `Bearer ${getToken()}` });
+const fileList = ref([]);
+const showTip = computed(() => props.isShowTip && (props.fileType || props.fileSize));
+let loadingInstance = null;
 
 watch(
   () => props.modelValue,
   (val) => {
     if (val) {
       // 首先将值转为数组
-      const list = Array.isArray(val) ? val : props.modelValue.split(',')
+      const list = Array.isArray(val) ? val : props.modelValue.split(',');
       // 然后将数组转为对象数组
       fileList.value = list.map((item) => {
         if (typeof item === 'string') {
           // 使用统一的图片工具方法处理 URL
-          const imageUrl = getImageUrl(item)
-          item = { name: item, url: imageUrl }
+          const imageUrl = getImageUrl(item);
+          item = { name: item, url: imageUrl };
         }
-        return item
-      })
+        return item;
+      });
     } else {
-      fileList.value = []
-      return []
+      fileList.value = [];
+      return [];
     }
   },
   { deep: true, immediate: true }
-)
+);
 
 // 上传前loading加载
 function handleBeforeUpload(file) {
-  let isImg = false
+  let isImg = false;
   if (props.fileType.length) {
-    let fileExtension = ''
+    let fileExtension = '';
     if (file.name.lastIndexOf('.') > -1) {
-      fileExtension = file.name.slice(file.name.lastIndexOf('.') + 1)
+      fileExtension = file.name.slice(file.name.lastIndexOf('.') + 1);
     }
     isImg = props.fileType.some((type) => {
-      if (file.type.indexOf(type) > -1) return true
-      if (fileExtension && fileExtension.indexOf(type) > -1) return true
-      return false
-    })
+      if (file.type.indexOf(type) > -1) return true;
+      if (fileExtension && fileExtension.indexOf(type) > -1) return true;
+      return false;
+    });
   } else {
-    isImg = file.type.indexOf('image') > -1
+    isImg = file.type.indexOf('image') > -1;
   }
   if (!isImg) {
-    ElMessage.error(`文件格式不正确，请上传${props.fileType.join('/')}图片格式文件!`)
-    return false
+    ElMessage.error(`文件格式不正确，请上传${props.fileType.join('/')}图片格式文件!`);
+    return false;
   }
   if (props.fileSize) {
-    const isLt = file.size / 1024 / 1024 < props.fileSize
+    const isLt = file.size / 1024 / 1024 < props.fileSize;
     if (!isLt) {
-      ElMessage.error(`上传头像图片大小不能超过 ${props.fileSize} MB!`)
-      return false
+      ElMessage.error(`上传头像图片大小不能超过 ${props.fileSize} MB!`);
+      return false;
     }
   }
   loadingInstance = ElLoading.service({
     lock: true,
     text: '正在上传图片，请稍等...',
     background: 'rgba(0, 0, 0, 0.7)'
-  })
-  number.value++
+  });
+  number.value++;
 }
 
 // 文件个数超出
 function handleExceed() {
-  ElMessage.error(`上传文件数量不能超过 ${props.limit} 个!`)
+  ElMessage.error(`上传文件数量不能超过 ${props.limit} 个!`);
 }
 
 // 上传成功回调
 function handleUploadSuccess(res, file) {
   if (res.code === 200) {
-    uploadList.value.push({ name: res.fileName, url: res.fileName })
-    uploadedSuccessfully()
+    uploadList.value.push({ name: res.fileName, url: res.fileName });
+    uploadedSuccessfully();
   } else {
-    number.value--
+    number.value--;
     if (loadingInstance) {
-      loadingInstance.close()
-      loadingInstance = null
+      loadingInstance.close();
+      loadingInstance = null;
     }
-    ElMessage.error(res.msg)
+    ElMessage.error(res.msg);
     if (imageUpload.value) {
-      imageUpload.value.handleRemove(file)
+      imageUpload.value.handleRemove(file);
     }
-    uploadedSuccessfully()
+    uploadedSuccessfully();
   }
 }
 
 // 删除图片
 function handleDelete(file) {
-  const findex = fileList.value.map((f) => f.name).indexOf(file.name)
+  const findex = fileList.value.map((f) => f.name).indexOf(file.name);
   if (findex > -1 && uploadList.value.length === number.value) {
-    fileList.value.splice(findex, 1)
-    emit('update:modelValue', listToString(fileList.value))
-    return false
+    fileList.value.splice(findex, 1);
+    emit('update:modelValue', listToString(fileList.value));
+    return false;
   }
 }
 
 // 上传结束处理
 function uploadedSuccessfully() {
   if (number.value > 0 && uploadList.value.length === number.value) {
-    fileList.value = fileList.value.filter((f) => f.url !== undefined).concat(uploadList.value)
-    uploadList.value = []
-    number.value = 0
-    emit('update:modelValue', listToString(fileList.value))
+    fileList.value = fileList.value.filter((f) => f.url !== undefined).concat(uploadList.value);
+    uploadList.value = [];
+    number.value = 0;
+    emit('update:modelValue', listToString(fileList.value));
     if (loadingInstance) {
-      loadingInstance.close()
-      loadingInstance = null
+      loadingInstance.close();
+      loadingInstance = null;
     }
   }
 }
@@ -173,38 +188,38 @@ function uploadedSuccessfully() {
 // 上传失败
 function handleUploadError(err) {
   // 错误状态码下 el-upload 会把响应体（统一信封）透传到 err.message，解析出具体错误提示
-  let message = '上传图片失败'
+  let message = '上传图片失败';
   try {
-    const payload = JSON.parse(err?.message || '')
+    const payload = JSON.parse(err?.message || '');
     if (payload?.msg) {
-      message = payload.msg
+      message = payload.msg;
     }
   } catch {
     // 响应体不是信封 JSON 时保留默认提示
   }
-  ElMessage.error(message)
+  ElMessage.error(message);
   if (loadingInstance) {
-    loadingInstance.close()
-    loadingInstance = null
+    loadingInstance.close();
+    loadingInstance = null;
   }
 }
 
 // 预览
 function handlePictureCardPreview(file) {
-  dialogImageUrl.value = file.url
-  dialogVisible.value = true
+  dialogImageUrl.value = file.url;
+  dialogVisible.value = true;
 }
 
 // 对象转成指定字符串分隔
 function listToString(list, separator) {
-  let strs = ''
-  separator = separator || ','
+  let strs = '';
+  separator = separator || ',';
   for (let i in list) {
     if (undefined !== list[i].url && list[i].url.indexOf('blob:') !== 0) {
-      strs += list[i].url.replace(baseUrl, '') + separator
+      strs += list[i].url.replace(baseUrl, '') + separator;
     }
   }
-  return strs != '' ? strs.substr(0, strs.length - 1) : ''
+  return strs != '' ? strs.substr(0, strs.length - 1) : '';
 }
 </script>
 

@@ -17,38 +17,38 @@
 </template>
 
 <script setup lang="ts">
-import icons from './requireIcons'
+import icons from './requireIcons';
 
 const props = defineProps({
   activeIcon: {
     type: String
   }
-})
+});
 
-const iconName = ref('')
-const iconList = ref(icons)
-const emit = defineEmits(['selected'])
+const iconName = ref('');
+const iconList = ref(icons);
+const emit = defineEmits(['selected']);
 
 function filterIcons() {
-  iconList.value = icons
+  iconList.value = icons;
   if (iconName.value) {
-    iconList.value = icons.filter((item) => item.indexOf(iconName.value) !== -1)
+    iconList.value = icons.filter((item) => item.indexOf(iconName.value) !== -1);
   }
 }
 
 function selectedIcon(name) {
-  emit('selected', name)
-  document.body.click()
+  emit('selected', name);
+  document.body.click();
 }
 
 function reset() {
-  iconName.value = ''
-  iconList.value = icons
+  iconName.value = '';
+  iconList.value = icons;
 }
 
 defineExpose({
   reset
-})
+});
 </script>
 
 <style lang="scss" scoped>

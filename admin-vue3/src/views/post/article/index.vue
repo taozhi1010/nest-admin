@@ -8,7 +8,12 @@
       <div class="article-subject-body">
         <el-scrollbar height="100%" @scroll="subject.handleScroll">
           <div class="subject-list">
-            <div v-for="item in subject.state.list" :key="item.id" class="subject-item" :class="{ 'is-active': subject.state.selectNode.id === item.id }" @click="handleSubjectRowClick(item)">
+            <div
+              v-for="item in subject.state.list"
+              :key="item.id"
+              class="subject-item"
+              :class="{ 'is-active': subject.state.selectNode.id === item.id }"
+              @click="handleSubjectRowClick(item)">
               <div class="subject-item-content">
                 <div class="subject-item-name">{{ item.title || '未命名专栏' }}</div>
                 <div class="subject-item-info">
@@ -104,7 +109,11 @@
                 <el-tag v-if="scope.row.source" :type="getSourceTagType(scope.row.source)" effect="light" size="small">
                   {{ getDictLabel('post_article_source', scope.row.source) }}
                 </el-tag>
-                <el-link type="primary" :underline="false" @dblclick="article.handleOpenEditor(scope.row)" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block; text-align: left; width: 100%">
+                <el-link
+                  type="primary"
+                  :underline="false"
+                  @dblclick="article.handleOpenEditor(scope.row)"
+                  style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block; text-align: left; width: 100%">
                   {{ scope.row.title }}
                 </el-link>
               </div>
@@ -155,15 +164,21 @@
 </template>
 
 <script setup name="Article">
-import { listArticle, delArticle, getArticle } from '@/api/post/article'
-import Preview from './components/Preview'
-import ArticleForm from './components/ArticleForm'
-import { useSubject } from '@/composables/post/useSubject'
-import { useCrud } from '@/composables/useCrud'
+import { listArticle, delArticle, getArticle } from '@/api/post/article';
+import Preview from './components/Preview';
+import ArticleForm from './components/ArticleForm';
+import { useSubject } from '@/composables/post/useSubject';
+import { useCrud } from '@/composables/useCrud';
 
-const router = useRouter()
+const router = useRouter();
 
-const { post_article_publish_status, post_article_audit_status, post_article_source, post_subject_publish_status, post_subject_audit_status, getDictLabel, getDictTagType } = useDict('post_article_publish_status', 'post_article_audit_status', 'post_article_source', 'post_subject_publish_status', 'post_subject_audit_status')
+const { post_article_publish_status, post_article_audit_status, post_article_source, post_subject_publish_status, post_subject_audit_status, getDictLabel, getDictTagType } = useDict(
+  'post_article_publish_status',
+  'post_article_audit_status',
+  'post_article_source',
+  'post_subject_publish_status',
+  'post_subject_audit_status'
+);
 
 // 获取来源标签类型
 const getSourceTagType = (source) => {
@@ -171,31 +186,31 @@ const getSourceTagType = (source) => {
     0: '', // 原创
     1: 'success', // 转载
     2: 'warning' // 翻译
-  }
-  return typeMap[source] || ''
-}
+  };
+  return typeMap[source] || '';
+};
 
 // 使用专栏管理 composable
-const subject = useSubject()
+const subject = useSubject();
 
-const previewRef = ref()
-const queryArticleRef = ref(null)
+const previewRef = ref();
+const queryArticleRef = ref(null);
 
 // 文章管理（编辑对话框复用 ArticleForm 子组件，绑定 open/title/form）
 const article = useCrud({
   api: {
     list: async (params) => {
-      const res = await listArticle(params)
-      res.data.list = res.data.list || []
-      res.data.total = res.data.total || 0
+      const res = await listArticle(params);
+      res.data.list = res.data.list || [];
+      res.data.total = res.data.total || 0;
       // 格式化时间字段
       res.data.list.forEach((item) => {
-        if (item.updateTime) item.updateTime = dayjs(item.updateTime).format('YYYY-MM-DD HH:mm:ss')
-        if (item.createTime) item.createTime = dayjs(item.createTime).format('YYYY-MM-DD HH:mm:ss')
-        if (item.publishTime) item.publishTime = dayjs(item.publishTime).format('YYYY-MM-DD HH:mm:ss')
-        if (item.scheduledPublishTime) item.scheduledPublishTime = dayjs(item.scheduledPublishTime).format('YYYY-MM-DD HH:mm:ss')
-      })
-      return res
+        if (item.updateTime) item.updateTime = dayjs(item.updateTime).format('YYYY-MM-DD HH:mm:ss');
+        if (item.createTime) item.createTime = dayjs(item.createTime).format('YYYY-MM-DD HH:mm:ss');
+        if (item.publishTime) item.publishTime = dayjs(item.publishTime).format('YYYY-MM-DD HH:mm:ss');
+        if (item.scheduledPublishTime) item.scheduledPublishTime = dayjs(item.scheduledPublishTime).format('YYYY-MM-DD HH:mm:ss');
+      });
+      return res;
     },
     get: getArticle,
     del: delArticle
@@ -208,69 +223,69 @@ const article = useCrud({
     deleteConfirm: (ids, row) => `是否确认删除文章${row?.title ? `"${row.title}"` : `选中的 ${Array.isArray(ids) ? ids.length : 1} 篇文章`}？`
   },
   queryRef: queryArticleRef
-})
+});
 
-subject.getList()
-article.getList()
+subject.getList();
+article.getList();
 
 // 搜索框失焦处理（去除空格）
 const handleQueryBlur = () => {
-  article.queryParams.title = article.queryParams.title?.trim()
-  article.queryParams.author = article.queryParams.author?.trim()
-}
+  article.queryParams.title = article.queryParams.title?.trim();
+  article.queryParams.author = article.queryParams.author?.trim();
+};
 
 // 处理专栏行点击
 const handleSubjectRowClick = (row) => {
   subject.handleRowClick(row, (subjectId) => {
-    article.queryParams.subjectId = subjectId
-    article.getList()
-  })
-}
+    article.queryParams.subjectId = subjectId;
+    article.getList();
+  });
+};
 
 // 预览文章
 const handlePreview = (row) => {
-  previewRef.value.handleOpen(row)
-}
+  previewRef.value.handleOpen(row);
+};
 
 // 打开编辑器（新窗口）
 const handleOpenEditor = (row) => {
-  const articleId = row.id || row.articleId
+  const articleId = row.id || row.articleId;
   if (!articleId) {
-    ElMessage.warning('文章ID不存在')
-    return
+    ElMessage.warning('文章ID不存在');
+    return;
   }
   // 在新窗口打开编辑器页面
   const routeUrl = router.resolve({
     path: '/post/article-editor',
     query: { id: articleId }
-  })
-  window.open(routeUrl.href, '_blank')
-}
+  });
+  window.open(routeUrl.href, '_blank');
+};
 
 // 新建文章（新窗口打开编辑器）
 const handleNewEditor = () => {
   const routeUrl = router.resolve({
     path: '/post/article-editor'
-  })
-  window.open(routeUrl.href, '_blank')
-}
+  });
+  window.open(routeUrl.href, '_blank');
+};
 
 // 处理文章操作成功后的回调
 const handleArticleSuccess = () => {
   // 刷新文章列表
-  article.getList()
+  article.getList();
   // 刷新左侧专栏列表，保持选中状态
-  const currentSelectNode = { ...subject.state.selectNode }
+  const currentSelectNode = { ...subject.state.selectNode };
   subject.getList().then(() => {
     // 恢复之前选中的专栏
     if (currentSelectNode.id && currentSelectNode.id !== 0) {
-      const found = subject.state.list.find((item) => item.id === currentSelectNode.id)
+      const found = subject.state.list.find((item) => item.id === currentSelectNode.id);
       if (found) {
-        subject.state.selectNode = found
+        subject.state.selectNode = found;
       }
     }
-  })
-}
+  });
+};
 </script>
 
 <style lang="scss" scoped>

@@ -4,7 +4,17 @@
     <el-dialog v-model="dialogVisible" append-to-body title="修改头像" width="800px" @close="closeDialog" @opened="onDialogOpened">
       <el-row>
         <el-col :md="12" :style="{ height: '350px' }" :xs="24">
-          <vue-cropper v-if="cropperVisible" ref="cropperRef" :auto-crop="true" :auto-crop-height="200" :auto-crop-width="200" :fixed-box="true" :img="imgSource" :info="true" :output-type="'png'" @real-time="handleRealTime" />
+          <vue-cropper
+            v-if="cropperVisible"
+            ref="cropperRef"
+            :auto-crop="true"
+            :auto-crop-height="200"
+            :auto-crop-width="200"
+            :fixed-box="true"
+            :img="imgSource"
+            :info="true"
+            :output-type="'png'"
+            @real-time="handleRealTime" />
         </el-col>
         <el-col :md="12" :style="{ height: '350px' }" :xs="24">
           <div class="avatar-upload-preview">
@@ -46,12 +56,12 @@
 
 <script setup lang="ts">
 // ==================== 导入区域 ====================
-import 'vue-cropper/dist/index.css'
-import { VueCropper } from 'vue-cropper'
-import { uploadAvatar } from '@/api/system/user'
-import useUserStore from '@/store/modules/user'
-import { getImageUrl } from '@/utils/image'
-import defAva from '@/assets/images/avatar.webp'
+import 'vue-cropper/dist/index.css';
+import { VueCropper } from 'vue-cropper';
+import { uploadAvatar } from '@/api/system/user';
+import useUserStore from '@/store/modules/user';
+import { getImageUrl } from '@/utils/image';
+import defAva from '@/assets/images/avatar.webp';
 
 // ==================== Props ====================
 const props = defineProps({
@@ -59,147 +69,151 @@ const props = defineProps({
     type: Object,
     default: () => ({})
   }
-})
+});
 
 // ==================== Emits ====================
-const emit = defineEmits(['updateAvatar'])
+const emit = defineEmits(['updateAvatar']);
 
 // ==================== 实例和字段 ====================
-const userStore = useUserStore()
+const userStore = useUserStore();
 
 // ==================== 表单引用 ====================
-const cropperRef = ref(null)
+const cropperRef = ref(null);
 
 // ==================== 响应式数据 ====================
-const dialogVisible = ref(false)
-const cropperVisible = ref(false)
-const imgSource = ref('')
-const previews = ref({})
+const dialogVisible = ref(false);
+const cropperVisible = ref(false);
+const imgSource = ref('');
+const previews = ref({});
 
 // ==================== 监听 Props 变化 ====================
 // 监听 user prop 变化，更新头像显示
-watch(() => props.user?.avatar, (newAvatar) => {
-  // 如果头像为空，使用默认头像；否则使用 getImageUrl 处理
-  const imgUrl = newAvatar ? getImageUrl(newAvatar) : defAva
-  imgSource.value = imgUrl
-  // 同时更新 store，保持一致
-  userStore.avatar = imgUrl
-}, { immediate: true })
+watch(
+  () => props.user?.avatar,
+  (newAvatar) => {
+    // 如果头像为空，使用默认头像；否则使用 getImageUrl 处理
+    const imgUrl = newAvatar ? getImageUrl(newAvatar) : defAva;
+    imgSource.value = imgUrl;
+    // 同时更新 store，保持一致
+    userStore.avatar = imgUrl;
+  },
+  { immediate: true }
+);
 
 // ==================== 方法定义 ====================
 
 // 打开裁剪弹窗
 const openDialog = () => {
-  dialogVisible.value = true
-}
+  dialogVisible.value = true;
+};
 
 // 弹窗打开完成后的回调
 const onDialogOpened = () => {
-  cropperVisible.value = true
-}
+  cropperVisible.value = true;
+};
 
 // 关闭弹窗
 const closeDialog = () => {
-  dialogVisible.value = false
-  cropperVisible.value = false
+  dialogVisible.value = false;
+  cropperVisible.value = false;
   // 恢复原始图片
-  imgSource.value = userStore.avatar
-}
+  imgSource.value = userStore.avatar;
+};
 
 // 选择图片文件
 const handleFileSelect = (file) => {
   // 验证文件类型
   if (!file.type.startsWith('image/')) {
-    ElMessage.error('文件格式错误，请上传图片类型，如：JPG，PNG 后缀的文件')
-    return false
+    ElMessage.error('文件格式错误，请上传图片类型，如：JPG，PNG 后缀的文件');
+    return false;
   }
-  
+
   // 验证文件大小 2MB 以内
-  const maxSize = 2 * 1024 * 1024 // 2MB
+  const maxSize = 2 * 1024 * 1024; // 2MB
   if (file.size > maxSize) {
-    ElMessage.error('头像图片大小不能超过 2MB')
-    return false
+    ElMessage.error('头像图片大小不能超过 2MB');
+    return false;
   }
-  
+
   // 读取文件并显示
-  const reader = new FileReader()
-  reader.readAsDataURL(file)
+  const reader = new FileReader();
+  reader.readAsDataURL(file);
   reader.onload = () => {
-    imgSource.value = reader.result
-  }
-  return false // 阻止默认上传行为
-}
+    imgSource.value = reader.result;
+  };
+  return false; // 阻止默认上传行为
+};
 
 // 图片缩放
 const changeScale = (num) => {
-  num = num || 1
-  cropperRef.value?.changeScale(num)
-}
+  num = num || 1;
+  cropperRef.value?.changeScale(num);
+};
 
 // 向左旋转
 const rotateLeft = () => {
-  cropperRef.value?.rotateLeft()
-}
+  cropperRef.value?.rotateLeft();
+};
 
 // 向右旋转
 const rotateRight = () => {
-  cropperRef.value?.rotateRight()
-}
+  cropperRef.value?.rotateRight();
+};
 
 // 实时预览
 const handleRealTime = (data) => {
-  previews.value = data
-}
+  previews.value = data;
+};
 
 // 提交裁剪的图片
 const submitCrop = async () => {
   return new Promise((resolve, reject) => {
     cropperRef.value?.getCropBlob((blob) => {
       if (!blob) {
-        ElMessage.error('裁剪图片失败')
-        reject(new Error('裁剪失败'))
-        return
+        ElMessage.error('裁剪图片失败');
+        reject(new Error('裁剪失败'));
+        return;
       }
-      
+
       // 创建 FormData
-      const formData = new FormData()
+      const formData = new FormData();
       // 生成带时间戳的文件名，确保唯一
-      const fileName = `avatar_${Date.now()}.png`
-      formData.append('avatarfile', blob, fileName)
-      
+      const fileName = `avatar_${Date.now()}.png`;
+      formData.append('avatarfile', blob, fileName);
+
       // 上传到服务器
       uploadAvatar(formData)
         .then((response) => {
           // 后端返回的 data 就是完整的用户对象，包含 avatar 字段
-          const avatarPath = response.data.avatar || response.data.imgUrl
-          
+          const avatarPath = response.data.avatar || response.data.imgUrl;
+
           // 获取完整的图片 URL（使用统一工具方法）
-          const imgUrl = getImageUrl(avatarPath)
-          
+          const imgUrl = getImageUrl(avatarPath);
+
           // 1. 先通知父组件更新（这样外部头像会立即刷新）
-          emit('updateAvatar', avatarPath)
-          
+          emit('updateAvatar', avatarPath);
+
           // 2. 更新 Pinia Store
-          userStore.avatar = imgUrl
-          
+          userStore.avatar = imgUrl;
+
           // 3. 更新本地显示
-          imgSource.value = imgUrl
-          
+          imgSource.value = imgUrl;
+
           // 4. 关闭弹窗
-          closeDialog()
-          
+          closeDialog();
+
           // 5. 显示成功提示
-          ElMessage.success('修改成功')
-          resolve(response)
+          ElMessage.success('修改成功');
+          resolve(response);
         })
         .catch((error) => {
-          console.error('上传头像失败:', error)
-          ElMessage.error('上传头像失败，请重试')
-          reject(error)
-        })
-    })
-  })
-}
+          console.error('上传头像失败:', error);
+          ElMessage.error('上传头像失败，请重试');
+          reject(error);
+        });
+    });
+  });
+};
 </script>
 
 <style lang="scss" scoped>
