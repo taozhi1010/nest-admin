@@ -180,7 +180,7 @@ const handleView = (row) => {
 
 /** 清空按钮操作 */
 const handleClean = () => {
-  ElMessageBox.confirm('是否确认清空所有操作日志数据项?', '系统提示', {
+  ElMessageBox.confirm('是否确认清空所有操作日志数据项？', '系统提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'
