@@ -120,16 +120,22 @@ export function useCrud(options: CrudOptions) {
 
   // ==================== 方法 ====================
 
+  // 请求序号：快速翻页/连续搜索时丢弃过期响应，防止慢请求覆盖新数据
+  let requestSeq = 0;
+
   /** 加载列表 */
   const getList = async () => {
     if (!api.list) return;
+    const seq = ++requestSeq;
     loading.value = true;
     try {
       const response = await api.list(queryParams);
+      if (seq !== requestSeq) return;
       list.value = response.data.list;
       total.value = response.data.total;
     } finally {
-      loading.value = false;
+      // 仅最后一个请求有权关闭 loading，避免旧请求提前关闭新请求的加载态
+      if (seq === requestSeq) loading.value = false;
     }
   };
 
@@ -221,7 +227,7 @@ export function useCrud(options: CrudOptions) {
     }
   };
 
-  /** 删除按钮操作：单行删除按 row[idKey]，批量删除按选中 ids */
+  /** 删除按钮操作：单行删除按 row[idKey]，批量删除按选中 ids；删除后末页空页自动逐页回退 */
   const handleDelete = async (row?: any) => {
     const deleteIds = row?.[idKey] || ids.value;
     const confirmText = texts?.deleteConfirm?.(deleteIds, row) ?? `是否确认删除${name}编号为"${deleteIds}"的数据项？`;
@@ -233,7 +239,12 @@ export function useCrud(options: CrudOptions) {
       });
       await api.del!(deleteIds);
       ElMessage.success(texts?.deleteSuccess ?? '删除成功');
-      getList();
+      await getList();
+      // 删掉当前页全部数据后页面已空：逐页回退重新加载，避免停留在空白页
+      while (list.value.length === 0 && queryParams.pageNum > 1) {
+        queryParams.pageNum--;
+        await getList();
+      }
     } catch (e) {
       if (e !== 'cancel') {
         console.error('删除失败:', e);
