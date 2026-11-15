@@ -28,7 +28,7 @@
         <el-table-column align="center" label="浏览器" prop="browser" :show-overflow-tooltip="true" />
         <el-table-column align="center" label="登录时间" prop="loginTime" width="180">
           <template #default="scope">
-            <span>{{ parseTime(scope.row.loginTime) }}</span>
+            <span>{{ scope.row.loginTime ? dayjs(scope.row.loginTime).format('YYYY-MM-DD HH:mm:ss') : '' }}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" class-name="small-padding fixed-width" label="操作">
@@ -45,7 +45,6 @@
 
 <script setup name="Online">
 import { forceLogout, list as initData } from '@/api/monitor/online';
-import { parseTime } from '@/composables/useCommon';
 import { useCrud } from '@/composables/useCrud';
 
 const queryRef = ref(null);

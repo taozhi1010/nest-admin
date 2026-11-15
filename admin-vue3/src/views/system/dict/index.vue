@@ -77,7 +77,7 @@
           <el-table-column align="center" label="备注" prop="remark" :show-overflow-tooltip="true" />
           <el-table-column align="center" label="创建时间" prop="createTime" width="180">
             <template #default="scope">
-              <span>{{ parseTime(scope.row.createTime) }}</span>
+              <span>{{ scope.row.createTime ? dayjs(scope.row.createTime).format('YYYY-MM-DD HH:mm:ss') : '' }}</span>
             </template>
           </el-table-column>
           <el-table-column align="center" fixed="right" label="操作" width="160">
@@ -132,7 +132,7 @@
           <el-table-column align="center" label="备注" prop="remark" :show-overflow-tooltip="true" />
           <el-table-column align="center" label="创建时间" prop="createTime" width="180">
             <template #default="scope">
-              <span>{{ parseTime(scope.row.createTime) }}</span>
+              <span>{{ scope.row.createTime ? dayjs(scope.row.createTime).format('YYYY-MM-DD HH:mm:ss') : '' }}</span>
             </template>
           </el-table-column>
           <el-table-column align="center" fixed="right" label="操作" width="160">
@@ -153,7 +153,6 @@
 <script setup name="Dict">
 import { listData, delData } from '@/api/system/dict/data';
 import { listType, delType, refreshCache } from '@/api/system/dict/type';
-import { parseTime } from '@/composables/useCommon';
 import { useDict } from '@/composables/useDict';
 import { resetForm } from '@/composables/useForm';
 import { download } from '@/composables/useRequest';

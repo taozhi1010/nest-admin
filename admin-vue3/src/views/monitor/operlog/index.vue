@@ -58,7 +58,7 @@
         </el-table-column>
         <el-table-column align="center" label="操作日期" prop="operTime" :sort-orders="['descending', 'ascending']" sortable="custom" width="180">
           <template #default="scope">
-            <span>{{ parseTime(scope.row.operTime) }}</span>
+            <span>{{ scope.row.operTime ? dayjs(scope.row.operTime).format('YYYY-MM-DD HH:mm:ss') : '' }}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" label="消耗时间" prop="costTime" :show-overflow-tooltip="true" :sort-orders="['descending', 'ascending']" sortable="custom" width="110">
@@ -106,7 +106,7 @@
               <el-form-item label="消耗时间：">{{ form.costTime }}毫秒</el-form-item>
             </el-col>
             <el-col :span="10">
-              <el-form-item label="操作时间：">{{ parseTime(form.operTime) }}</el-form-item>
+              <el-form-item label="操作时间：">{{ form.operTime ? dayjs(form.operTime).format('YYYY-MM-DD HH:mm:ss') : '' }}</el-form-item>
             </el-col>
             <el-col :span="24">
               <el-form-item v-if="form.status === 1" label="异常信息：">{{ form.errorMsg }}</el-form-item>
@@ -125,7 +125,7 @@
 
 <script setup name="Operlog">
 import { list, delOperlog, cleanOperlog } from '@/api/monitor/operlog';
-import { addDateRange, parseTime } from '@/composables/useCommon';
+import { addDateRange } from '@/composables/useCommon';
 import { useCrud } from '@/composables/useCrud';
 import { useDict } from '@/composables/useDict';
 

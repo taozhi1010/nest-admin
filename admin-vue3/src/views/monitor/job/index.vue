@@ -182,7 +182,7 @@
               <el-form-item label="cron表达式：">{{ job.form.cronExpression }}</el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="下次执行时间：">{{ parseTime(job.form.nextValidTime) }}</el-form-item>
+              <el-form-item label="下次执行时间：">{{ job.form.nextValidTime ? dayjs(job.form.nextValidTime).format('YYYY-MM-DD HH:mm:ss') : '' }}</el-form-item>
             </el-col>
             <el-col :span="24">
               <el-form-item label="调用目标方法：">{{ job.form.invokeTarget }}</el-form-item>
@@ -224,7 +224,6 @@ import { listJob, getJob, delJob, addJob, updateJob, runJob, changeJobStatus } f
 import Crontab from '@/components/Crontab';
 import { useCrud } from '@/composables/useCrud';
 const router = useRouter();
-import { parseTime } from '@/composables/useCommon';
 import { useDict } from '@/composables/useDict';
 
 const { sys_job_group, sys_job_status, getDictLabel } = useDict('sys_job_group', 'sys_job_status');

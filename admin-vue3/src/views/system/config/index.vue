@@ -57,7 +57,7 @@
         <el-table-column align="center" label="备注" prop="remark" :show-overflow-tooltip="true" />
         <el-table-column align="center" label="创建时间" prop="createTime" width="180">
           <template #default="scope">
-            <span>{{ parseTime(scope.row.createTime) }}</span>
+            <span>{{ scope.row.createTime ? dayjs(scope.row.createTime).format('YYYY-MM-DD HH:mm:ss') : '' }}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" class-name="small-padding fixed-width" label="操作" width="150">
@@ -113,7 +113,6 @@
 
 <script setup name="Config">
 import { listConfig, addConfig, delConfig, getConfig, updateConfig } from '@/api/system/config';
-import { parseTime } from '@/composables/useCommon';
 import { useCrud } from '@/composables/useCrud';
 import { useDict } from '@/composables/useDict';
 

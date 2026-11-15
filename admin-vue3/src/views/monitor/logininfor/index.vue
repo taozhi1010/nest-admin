@@ -54,7 +54,7 @@
         <el-table-column align="center" label="描述" prop="msg" :show-overflow-tooltip="true" />
         <el-table-column align="center" label="访问时间" prop="loginTime" :sort-orders="['descending', 'ascending']" sortable="custom" width="180">
           <template #default="scope">
-            <span>{{ parseTime(scope.row.loginTime) }}</span>
+            <span>{{ scope.row.loginTime ? dayjs(scope.row.loginTime).format('YYYY-MM-DD HH:mm:ss') : '' }}</span>
           </template>
         </el-table-column>
       </el-table>
@@ -66,7 +66,7 @@
 
 <script setup name="Logininfor">
 import { list, delLogininfor, cleanLogininfor, unlockLogininfor } from '@/api/monitor/logininfor';
-import { addDateRange, parseTime } from '@/composables/useCommon';
+import { addDateRange } from '@/composables/useCommon';
 import { useCrud } from '@/composables/useCrud';
 import { useDict } from '@/composables/useDict';
 

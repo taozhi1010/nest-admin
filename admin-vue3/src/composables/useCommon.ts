@@ -1,5 +1,4 @@
-﻿import dayjs from 'dayjs';
-import { debounce, throttle } from 'radash';
+﻿import { debounce, throttle } from 'radash';
 
 import { download as _download } from './useRequest';
 
@@ -48,28 +47,6 @@ export function handleTree<T = any>(data: T[], id?: string, parentId?: string, c
   }
 
   return result;
-}
-
-// 格式映射：兼容旧的 {y} 格式
-const formatMap: Record<string, string> = {
-  '{y}': 'YYYY',
-  '{m}': 'MM',
-  '{d}': 'DD',
-  '{h}': 'HH',
-  '{i}': 'mm',
-  '{s}': 'ss'
-};
-
-/**
- * 日期格式化（使用 dayjs）
- */
-export function parseTime(time: any, pattern = '{y}-{m}-{d} {h}:{i}:{s}') {
-  if (arguments.length === 0 || !time) return null;
-  let format = pattern;
-  for (const k in formatMap) {
-    format = format.replace(new RegExp(k.replace(/[{}]/g, '\\$&'), 'g'), formatMap[k]);
-  }
-  return dayjs(time).format(format);
 }
 
 /**
@@ -161,20 +138,4 @@ export function useDebounce<T extends (...args: any[]) => any>(fn: T, delay: num
  */
 export function useThrottle<T extends (...args: any[]) => any>(fn: T, interval: number = 300) {
   return throttle({ interval }, fn);
-}
-
-/**
- * 通用工具函数 Composable
- * @example
- * const { parseTime, handleTree, getNormalPath, useDebounce, useThrottle } = useCommon()
- */
-export function useCommon() {
-  return {
-    parseTime,
-    addDateRange,
-    handleTree,
-    getNormalPath,
-    useDebounce,
-    useThrottle
-  };
 }

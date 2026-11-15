@@ -46,7 +46,7 @@
         </el-table-column>
         <el-table-column align="center" label="创建时间" prop="createTime" width="180">
           <template #default="scope">
-            <span>{{ parseTime(scope.row.createTime) }}</span>
+            <span>{{ scope.row.createTime ? dayjs(scope.row.createTime).format('YYYY-MM-DD HH:mm:ss') : '' }}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" class-name="small-padding fixed-width" label="操作" width="180">
@@ -93,7 +93,6 @@
 
 <script setup name="Post">
 import { listPost, addPost, delPost, getPost, updatePost } from '@/api/system/post';
-import { parseTime } from '@/composables/useCommon';
 import { useCrud } from '@/composables/useCrud';
 import { useDict } from '@/composables/useDict';
 

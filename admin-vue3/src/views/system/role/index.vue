@@ -50,7 +50,7 @@
         </el-table-column>
         <el-table-column align="center" label="创建时间" prop="createTime">
           <template #default="scope">
-            <span>{{ parseTime(scope.row.createTime) }}</span>
+            <span>{{ scope.row.createTime ? dayjs(scope.row.createTime).format('YYYY-MM-DD HH:mm:ss') : '' }}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" class-name="small-padding fixed-width" label="操作">
@@ -156,7 +156,7 @@
 <script setup name="Role">
 import { roleMenuTreeselect, treeselect as menuTreeselect } from '@/api/system/menu';
 import { addRole, changeRoleStatus, dataScope, delRole, getRole, listRole, updateRole, deptTreeSelect } from '@/api/system/role';
-import { addDateRange, parseTime } from '@/composables/useCommon';
+import { addDateRange } from '@/composables/useCommon';
 import { useCrud } from '@/composables/useCrud';
 import { useDict } from '@/composables/useDict';
 

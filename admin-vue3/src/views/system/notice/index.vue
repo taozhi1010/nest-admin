@@ -51,7 +51,7 @@
         <el-table-column align="center" label="创建者" prop="createBy" width="100" />
         <el-table-column align="center" label="创建时间" prop="createTime" width="110">
           <template #default="scope">
-            <span>{{ parseTime(scope.row.createTime, '{y}-{m}-{d}') }}</span>
+            <span>{{ scope.row.createTime ? dayjs(scope.row.createTime).format('YYYY-MM-DD') : '' }}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" label="操作" width="160">
@@ -110,7 +110,6 @@
 <script setup name="Notice">
 import { listNotice, getNotice, delNotice, addNotice, updateNotice } from '@/api/system/notice';
 import MdEditor from '@/components/MdEditor';
-import { parseTime } from '@/composables/useCommon';
 import { useCrud } from '@/composables/useCrud';
 import { useDict } from '@/composables/useDict';
 

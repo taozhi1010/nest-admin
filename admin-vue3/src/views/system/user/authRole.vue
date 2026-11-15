@@ -29,7 +29,7 @@
       <el-table-column align="center" label="权限字符" prop="roleKey" />
       <el-table-column align="center" label="创建时间" prop="createTime" width="180">
         <template #default="scope">
-          <span>{{ parseTime(scope.row.createTime) }}</span>
+          <span>{{ scope.row.createTime ? dayjs(scope.row.createTime).format('YYYY-MM-DD HH:mm:ss') : '' }}</span>
         </template>
       </el-table-column>
     </el-table>
@@ -48,7 +48,6 @@
 <script setup name="AuthRole">
 // ==================== 导入区域 ====================
 import { getAuthRole, updateAuthRole } from '@/api/system/user';
-import { parseTime } from '@/composables/useCommon';
 
 // ==================== Composables ====================
 const { closeOpenPage } = useTab();
