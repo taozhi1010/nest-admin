@@ -1,17 +1,5 @@
 <template>
-  <MdEditor
-    v-model="editorValue"
-    :theme="theme"
-    :preview="preview"
-    :previewTheme="previewTheme"
-    :codeTheme="codeTheme"
-    :showCodeRowNumber="true"
-    :toolbars="toolbars"
-    :placeholder="placeholder"
-    :height="height"
-    :style="{ minHeight }"
-    @onChange="handleChange"
-    @onUploadImg="handleUploadImg" />
+  <MdEditor v-model="editorValue" :theme="theme" :preview="preview" :previewTheme="previewTheme" :codeTheme="codeTheme" :showCodeRowNumber="true" :toolbars="toolbars" :placeholder="placeholder" :height="height" :style="{ minHeight }" @onChange="handleChange" @onUploadImg="handleUploadImg" />
 </template>
 
 <script setup lang="ts">

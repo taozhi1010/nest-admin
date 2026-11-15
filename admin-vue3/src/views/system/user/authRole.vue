@@ -17,13 +17,7 @@
     </el-form>
 
     <h4 class="form-header h4">角色信息</h4>
-    <el-table
-      ref="roleRef"
-      v-loading="authRole.loading"
-      :data="authRole.roles.slice((authRole.pageNum - 1) * authRole.pageSize, authRole.pageNum * authRole.pageSize)"
-      :row-key="authRole.getRowKey"
-      @row-click="authRole.clickRow"
-      @selection-change="authRole.handleSelectionChange">
+    <el-table ref="roleRef" v-loading="authRole.loading" :data="authRole.roles.slice((authRole.pageNum - 1) * authRole.pageSize, authRole.pageNum * authRole.pageSize)" :row-key="authRole.getRowKey" @row-click="authRole.clickRow" @selection-change="authRole.handleSelectionChange">
       <el-table-column align="center" label="序号" type="index" width="55">
         <template #default="scope">
           <span>{{ (authRole.pageNum - 1) * authRole.pageSize + scope.$index + 1 }}</span>

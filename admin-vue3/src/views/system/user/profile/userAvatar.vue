@@ -4,17 +4,7 @@
     <el-dialog v-model="dialogVisible" append-to-body title="修改头像" width="800px" @close="closeDialog" @opened="onDialogOpened">
       <el-row>
         <el-col :md="12" :style="{ height: '350px' }" :xs="24">
-          <vue-cropper
-            v-if="cropperVisible"
-            ref="cropperRef"
-            :auto-crop="true"
-            :auto-crop-height="200"
-            :auto-crop-width="200"
-            :fixed-box="true"
-            :img="imgSource"
-            :info="true"
-            :output-type="'png'"
-            @real-time="handleRealTime" />
+          <vue-cropper v-if="cropperVisible" ref="cropperRef" :auto-crop="true" :auto-crop-height="200" :auto-crop-width="200" :fixed-box="true" :img="imgSource" :info="true" :output-type="'png'" @real-time="handleRealTime" />
         </el-col>
         <el-col :md="12" :style="{ height: '350px' }" :xs="24">
           <div class="avatar-upload-preview">

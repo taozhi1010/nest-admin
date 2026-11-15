@@ -102,15 +102,7 @@
             <el-checkbox v-model="menuExpand" @change="handleCheckedTreeExpand($event, 'menu')">展开/折叠</el-checkbox>
             <el-checkbox v-model="menuNodeAll" @change="handleCheckedTreeNodeAll($event, 'menu')">全选/全不选</el-checkbox>
             <el-checkbox v-model="role.form.menuCheckStrictly" @change="handleCheckedTreeConnect($event, 'menu')">父子联动</el-checkbox>
-            <el-tree
-              ref="menuRef"
-              :check-strictly="!role.form.menuCheckStrictly"
-              class="tree-border"
-              :data="menuOptions"
-              empty-text="加载中，请稍候"
-              node-key="id"
-              :props="{ label: 'label', children: 'children' }"
-              show-checkbox />
+            <el-tree ref="menuRef" :check-strictly="!role.form.menuCheckStrictly" class="tree-border" :data="menuOptions" empty-text="加载中，请稍候" node-key="id" :props="{ label: 'label', children: 'children' }" show-checkbox />
           </el-form-item>
           <el-form-item label="备注">
             <el-input v-model.trim="role.form.remark" placeholder="请输入内容" type="textarea" />
@@ -142,16 +134,7 @@
             <el-checkbox v-model="deptExpand" @change="handleCheckedTreeExpand($event, 'dept')">展开/折叠</el-checkbox>
             <el-checkbox v-model="deptNodeAll" @change="handleCheckedTreeNodeAll($event, 'dept')">全选/全不选</el-checkbox>
             <el-checkbox v-model="role.form.deptCheckStrictly" @change="handleCheckedTreeConnect($event, 'dept')">父子联动</el-checkbox>
-            <el-tree
-              ref="deptRef"
-              :check-strictly="!role.form.deptCheckStrictly"
-              class="tree-border"
-              :data="deptOptions"
-              default-expand-all
-              empty-text="加载中，请稍候"
-              node-key="id"
-              :props="{ label: 'label', children: 'children' }"
-              show-checkbox />
+            <el-tree ref="deptRef" :check-strictly="!role.form.deptCheckStrictly" class="tree-border" :data="deptOptions" default-expand-all empty-text="加载中，请稍候" node-key="id" :props="{ label: 'label', children: 'children' }" show-checkbox />
           </el-form-item>
         </el-form>
         <template #footer>

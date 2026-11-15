@@ -19,14 +19,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="操作时间" style="width: 308px">
-          <el-date-picker
-            v-model="dateRange"
-            :default-time="[new Date(2000, 1, 1, 0, 0, 0), new Date(2000, 1, 1, 23, 59, 59)]"
-            end-placeholder="结束日期"
-            range-separator="-"
-            start-placeholder="开始日期"
-            type="daterange"
-            value-format="YYYY-MM-DD HH:mm:ss" />
+          <el-date-picker v-model="dateRange" :default-time="[new Date(2000, 1, 1, 0, 0, 0), new Date(2000, 1, 1, 23, 59, 59)]" end-placeholder="结束日期" range-separator="-" start-placeholder="开始日期" type="daterange" value-format="YYYY-MM-DD HH:mm:ss" />
         </el-form-item>
         <el-form-item>
           <el-button icon="Search" type="primary" @click="operlog.handleQuery">搜索</el-button>
@@ -47,13 +40,7 @@
         <right-toolbar v-model:show-search="operlog.showSearch" @query-table="operlog.getList" />
       </el-row>
 
-      <el-table
-        ref="operlogRef"
-        v-loading="operlog.loading"
-        :data="operlog.list"
-        :default-sort="defaultSort"
-        @selection-change="operlog.handleSelectionChange"
-        @sort-change="handleSortChange">
+      <el-table ref="operlogRef" v-loading="operlog.loading" :data="operlog.list" :default-sort="defaultSort" @selection-change="operlog.handleSelectionChange" @sort-change="handleSortChange">
         <el-table-column align="center" type="selection" width="50" />
         <el-table-column align="center" label="日志编号" prop="operId" />
         <el-table-column align="center" label="系统模块" prop="title" :show-overflow-tooltip="true" />

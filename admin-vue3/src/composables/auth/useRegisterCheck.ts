@@ -21,11 +21,7 @@ export interface RegisterFormModel {
  */
 export function createRegisterRules(form: RegisterFormModel, emailMode = false) {
   return {
-    username: [
-      { required: true, trigger: 'blur', message: '请输入您的账号' },
-      { min: 2, max: 50, trigger: 'blur', message: '账号长度必须为 2 到 50 个字符' },
-      createAccountExistsValidator()
-    ],
+    username: [{ required: true, trigger: 'blur', message: '请输入您的账号' }, { min: 2, max: 50, trigger: 'blur', message: '账号长度必须为 2 到 50 个字符' }, createAccountExistsValidator()],
     password: registerPasswordRules,
     confirmPassword: [{ required: true, trigger: 'blur', message: '请再次输入您的密码' }, createConfirmPasswordValidator(form)],
     ...(emailMode

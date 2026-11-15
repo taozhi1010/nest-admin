@@ -26,13 +26,7 @@
         <right-toolbar v-model:show-search="dept.showSearch" @query-table="dept.getList" />
       </el-row>
 
-      <el-table
-        v-if="refreshTable"
-        v-loading="dept.loading"
-        :data="dept.list"
-        :default-expand-all="isExpandAll"
-        row-key="deptId"
-        :tree-props="{ children: 'children', hasChildren: 'hasChildren' }">
+      <el-table v-if="refreshTable" v-loading="dept.loading" :data="dept.list" :default-expand-all="isExpandAll" row-key="deptId" :tree-props="{ children: 'children', hasChildren: 'hasChildren' }">
         <el-table-column label="部门名称" prop="deptName" width="260" />
         <el-table-column label="排序" prop="orderNum" width="200" />
         <el-table-column label="状态" prop="status" width="100">
@@ -60,13 +54,7 @@
           <el-row>
             <el-col v-if="dept.form.parentId !== 0" :span="24">
               <el-form-item label="上级部门" prop="parentId">
-                <el-tree-select
-                  v-model="dept.form.parentId"
-                  check-strictly
-                  :data="deptOptions"
-                  placeholder="选择上级部门"
-                  :props="{ value: 'deptId', label: 'deptName', children: 'children' }"
-                  value-key="deptId" />
+                <el-tree-select v-model="dept.form.parentId" check-strictly :data="deptOptions" placeholder="选择上级部门" :props="{ value: 'deptId', label: 'deptName', children: 'children' }" value-key="deptId" />
               </el-form-item>
             </el-col>
             <el-col :span="12">

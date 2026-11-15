@@ -8,16 +8,7 @@
             <el-input v-model.trim="deptName" clearable placeholder="请输入部门名称" prefix-icon="Search" style="margin-bottom: 20px" />
           </div>
           <div class="head-container">
-            <el-tree
-              ref="deptTreeRef"
-              :data="deptOptions"
-              default-expand-all
-              :expand-on-click-node="false"
-              :filter-node-method="filterNode"
-              highlight-current
-              node-key="id"
-              :props="{ label: 'label', children: 'children' }"
-              @node-click="handleNodeClick" />
+            <el-tree ref="deptTreeRef" :data="deptOptions" default-expand-all :expand-on-click-node="false" :filter-node-method="filterNode" highlight-current node-key="id" :props="{ label: 'label', children: 'children' }" @node-click="handleNodeClick" />
           </div>
         </el-col>
         <!--用户数据-->
@@ -122,13 +113,7 @@
             </el-col>
             <el-col :span="12">
               <el-form-item label="归属部门" prop="deptId">
-                <el-tree-select
-                  v-model="user.form.deptId"
-                  check-strictly
-                  :data="deptOptions"
-                  placeholder="请选择归属部门"
-                  :props="{ value: 'id', label: 'label', children: 'children' }"
-                  value-key="id" />
+                <el-tree-select v-model="user.form.deptId" check-strictly :data="deptOptions" placeholder="请选择归属部门" :props="{ value: 'id', label: 'label', children: 'children' }" value-key="id" />
               </el-form-item>
             </el-col>
           </el-row>

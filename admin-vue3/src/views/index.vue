@@ -5,9 +5,7 @@
       <el-col :lg="12" :sm="24">
         <div class="project-info">
           <h2 class="project-title">nest-admin后台管理框架</h2>
-          <p class="project-desc">
-            nest-admin管理系统基于Ruoyi框架使用nestjs实现，她可以用于所有的Web应用程序，如网站管理后台，网站会员中心，CMS，CRM，OA等等，当然，您也可以对她进行深度定制，以做出更强系统。所有前端后台代码封装过后十分精简易上手，出错概率低。系统会陆续更新一些实用功能。
-          </p>
+          <p class="project-desc">nest-admin管理系统基于Ruoyi框架使用nestjs实现，她可以用于所有的Web应用程序，如网站管理后台，网站会员中心，CMS，CRM，OA等等，当然，您也可以对她进行深度定制，以做出更强系统。所有前端后台代码封装过后十分精简易上手，出错概率低。系统会陆续更新一些实用功能。</p>
           <div class="version-info">
             <span class="version-label">当前版本:</span>
             <span class="version-number">v{{ version }}</span>

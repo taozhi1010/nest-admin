@@ -49,12 +49,7 @@
       </el-table-column>
     </el-table>
 
-    <pagination
-      v-show="authUser.total > 0"
-      v-model:limit="authUser.queryParams.pageSize"
-      v-model:page="authUser.queryParams.pageNum"
-      :total="authUser.total"
-      @pagination="authUser.getList" />
+    <pagination v-show="authUser.total > 0" v-model:limit="authUser.queryParams.pageSize" v-model:page="authUser.queryParams.pageNum" :total="authUser.total" @pagination="authUser.getList" />
     <select-user ref="selectRef" :role-id="authUser.queryParams.roleId" @ok="authUser.handleQuery" />
   </div>
 </template>

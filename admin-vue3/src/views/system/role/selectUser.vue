@@ -31,12 +31,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <pagination
-        v-show="selectUser.total > 0"
-        v-model:limit="selectUser.queryParams.pageSize"
-        v-model:page="selectUser.queryParams.pageNum"
-        :total="selectUser.total"
-        @pagination="selectUser.getList" />
+      <pagination v-show="selectUser.total > 0" v-model:limit="selectUser.queryParams.pageSize" v-model:page="selectUser.queryParams.pageNum" :total="selectUser.total" @pagination="selectUser.getList" />
     </el-row>
     <template #footer>
       <div class="dialog-footer">

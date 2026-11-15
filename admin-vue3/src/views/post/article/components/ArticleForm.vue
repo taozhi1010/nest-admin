@@ -25,14 +25,7 @@
             </el-col>
           </el-row>
           <el-form-item label="文章简介" prop="desc">
-            <el-input
-              v-model="formData.desc"
-              maxlength="500"
-              placeholder="请输入文章简介"
-              :autosize="{ minRows: 5, maxRows: 8 }"
-              :show-word-limit="true"
-              type="textarea"
-              @blur="handleDescBlur" />
+            <el-input v-model="formData.desc" maxlength="500" placeholder="请输入文章简介" :autosize="{ minRows: 5, maxRows: 8 }" :show-word-limit="true" type="textarea" @blur="handleDescBlur" />
           </el-form-item>
           <el-form-item label="封面图片" prop="cover">
             <ImageUploadCover v-model="formData.cover" path="article" :max-size="5" :quality="0.85" :before-upload-check="validateBeforeUpload" width="400px" aspect-ratio="16 / 9" />

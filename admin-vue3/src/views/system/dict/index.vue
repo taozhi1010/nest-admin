@@ -7,15 +7,7 @@
       </div>
 
       <div class="dict-tree-body">
-        <el-tree
-          ref="dictGroupRef"
-          :data="dictGroup.data"
-          :default-expand-all="true"
-          :default-expanded-keys="[0]"
-          :filter-node-method="dictGroup.filterNode"
-          :indent="10"
-          node-key="id"
-          :props="dictGroup.props">
+        <el-tree ref="dictGroupRef" :data="dictGroup.data" :default-expand-all="true" :default-expanded-keys="[0]" :filter-node-method="dictGroup.filterNode" :indent="10" node-key="id" :props="dictGroup.props">
           <template #default="{ node, data }">
             <span v-if="node.label !== '全部字典项'" class="custom-tree-node" @click="dictGroup.handleNodeSelect(data)">
               <span class="custom-tree-node-text" :title="node.label">{{ node.label }}</span>

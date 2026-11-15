@@ -8,12 +8,7 @@
       <div class="article-subject-body">
         <el-scrollbar height="100%" @scroll="subject.handleScroll">
           <div class="subject-list">
-            <div
-              v-for="item in subject.state.list"
-              :key="item.id"
-              class="subject-item"
-              :class="{ 'is-active': subject.state.selectNode.id === item.id }"
-              @click="handleSubjectRowClick(item)">
+            <div v-for="item in subject.state.list" :key="item.id" class="subject-item" :class="{ 'is-active': subject.state.selectNode.id === item.id }" @click="handleSubjectRowClick(item)">
               <div class="subject-item-content">
                 <div class="subject-item-name">{{ item.title || '未命名专栏' }}</div>
                 <div class="subject-item-info">
@@ -109,11 +104,7 @@
                 <el-tag v-if="scope.row.source" :type="getSourceTagType(scope.row.source)" effect="light" size="small">
                   {{ getDictLabel('post_article_source', scope.row.source) }}
                 </el-tag>
-                <el-link
-                  type="primary"
-                  :underline="false"
-                  @dblclick="handleOpenEditor(scope.row)"
-                  style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block; text-align: left; width: 100%">
+                <el-link type="primary" :underline="false" @dblclick="handleOpenEditor(scope.row)" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block; text-align: left; width: 100%">
                   {{ scope.row.title }}
                 </el-link>
               </div>
@@ -173,13 +164,7 @@ import Preview from './components/Preview';
 
 const router = useRouter();
 
-const { post_article_publish_status, getDictLabel, getDictTagType } = useDict(
-  'post_article_publish_status',
-  'post_article_audit_status',
-  'post_article_source',
-  'post_subject_publish_status',
-  'post_subject_audit_status'
-);
+const { post_article_publish_status, getDictLabel, getDictTagType } = useDict('post_article_publish_status', 'post_article_audit_status', 'post_article_source', 'post_subject_publish_status', 'post_subject_audit_status');
 
 // 获取来源标签类型
 const getSourceTagType = (source) => {

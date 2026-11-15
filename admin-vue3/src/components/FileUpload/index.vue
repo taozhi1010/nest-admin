@@ -1,18 +1,6 @@
 <template>
   <div class="upload-file">
-    <el-upload
-      ref="fileUpload"
-      :action="uploadFileUrl"
-      :before-upload="handleBeforeUpload"
-      class="upload-file-uploader"
-      :file-list="fileList"
-      :headers="headers"
-      :limit="limit"
-      multiple
-      :on-error="handleUploadError"
-      :on-exceed="handleExceed"
-      :on-success="handleUploadSuccess"
-      :show-file-list="false">
+    <el-upload ref="fileUpload" :action="uploadFileUrl" :before-upload="handleBeforeUpload" class="upload-file-uploader" :file-list="fileList" :headers="headers" :limit="limit" multiple :on-error="handleUploadError" :on-exceed="handleExceed" :on-success="handleUploadSuccess" :show-file-list="false">
       <!-- 上传按钮 -->
       <el-button type="primary">选取文件</el-button>
     </el-upload>

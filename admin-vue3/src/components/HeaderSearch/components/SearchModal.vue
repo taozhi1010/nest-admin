@@ -12,12 +12,7 @@
 
           <!-- 搜索结果列表 -->
           <div v-if="search.hasResults.value" class="search-results">
-            <div
-              v-for="(result, index) in search.results.value"
-              :key="index"
-              :class="['result-item', { active: index === search.activeIndex.value }]"
-              @click="selectResult(result.item)"
-              @mouseenter="search.activeIndex.value = index">
+            <div v-for="(result, index) in search.results.value" :key="index" :class="['result-item', { active: index === search.activeIndex.value }]" @click="selectResult(result.item)" @mouseenter="search.activeIndex.value = index">
               <div class="result-content">
                 <!-- 面包屑路径 -->
                 <div class="result-breadcrumb">

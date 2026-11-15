@@ -85,8 +85,7 @@ import MdEditor from '@/components/MdEditor/index.vue';
 import { useArticleEditor } from '@/composables/post/useArticleEditor';
 
 // 使用组合函数
-const { title, content, loading, isEdit, subjectList, sidebarCollapsed, articleData, post_article_source, handleTitleInput, toggleSidebar, handleSaveDraft, handlePublish } =
-  useArticleEditor();
+const { title, content, loading, isEdit, subjectList, sidebarCollapsed, articleData, post_article_source, handleTitleInput, toggleSidebar, handleSaveDraft, handlePublish } = useArticleEditor();
 </script>
 
 <style lang="scss" scoped>

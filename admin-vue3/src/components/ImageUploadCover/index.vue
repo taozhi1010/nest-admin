@@ -789,9 +789,7 @@ async function submitCrop() {
   overflow: hidden;
   background: #f5f5f5;
   // 添加棋盘格背景，模拟遮罩效果
-  background-image:
-    linear-gradient(45deg, #e0e0e0 25%, transparent 25%), linear-gradient(-45deg, #e0e0e0 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #e0e0e0 75%),
-    linear-gradient(-45deg, transparent 75%, #e0e0e0 75%);
+  background-image: linear-gradient(45deg, #e0e0e0 25%, transparent 25%), linear-gradient(-45deg, #e0e0e0 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #e0e0e0 75%), linear-gradient(-45deg, transparent 75%, #e0e0e0 75%);
   background-size: 20px 20px;
   background-position:
     0 0,

@@ -29,15 +29,7 @@
         </div>
       </el-form-item>
       <el-form-item prop="confirmPassword">
-        <el-input
-          v-model="registerForm.confirmPassword"
-          auto-complete="new-password"
-          maxlength="20"
-          placeholder="确认密码"
-          size="large"
-          type="password"
-          show-password
-          @keyup.enter="handleRegister">
+        <el-input v-model="registerForm.confirmPassword" auto-complete="new-password" maxlength="20" placeholder="确认密码" size="large" type="password" show-password @keyup.enter="handleRegister">
           <template #prefix>
             <lock class="input-icon" />
           </template>

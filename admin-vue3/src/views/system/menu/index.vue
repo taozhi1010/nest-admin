@@ -26,13 +26,7 @@
         <right-toolbar v-model:show-search="menu.showSearch" @query-table="menu.getList" />
       </el-row>
 
-      <el-table
-        v-if="refreshTable"
-        v-loading="menu.loading"
-        :data="menu.list"
-        :default-expand-all="isExpandAll"
-        row-key="menuId"
-        :tree-props="{ children: 'children', hasChildren: 'hasChildren' }">
+      <el-table v-if="refreshTable" v-loading="menu.loading" :data="menu.list" :default-expand-all="isExpandAll" row-key="menuId" :tree-props="{ children: 'children', hasChildren: 'hasChildren' }">
         <el-table-column label="菜单名称" prop="menuName" :show-overflow-tooltip="true" width="160" />
         <el-table-column align="center" label="图标" prop="icon" width="100">
           <template #default="scope">
@@ -67,13 +61,7 @@
           <el-row>
             <el-col :span="24">
               <el-form-item label="上级菜单">
-                <el-tree-select
-                  v-model="menu.form.parentId"
-                  check-strictly
-                  :data="menuOptions"
-                  placeholder="选择上级菜单"
-                  :props="{ value: 'menuId', label: 'menuName', children: 'children' }"
-                  value-key="menuId" />
+                <el-tree-select v-model="menu.form.parentId" check-strictly :data="menuOptions" placeholder="选择上级菜单" :props="{ value: 'menuId', label: 'menuName', children: 'children' }" value-key="menuId" />
               </el-form-item>
             </el-col>
             <el-col :span="24">

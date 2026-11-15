@@ -14,14 +14,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="登录时间" style="width: 308px">
-          <el-date-picker
-            v-model="dateRange"
-            :default-time="[new Date(2000, 1, 1, 0, 0, 0), new Date(2000, 1, 1, 23, 59, 59)]"
-            end-placeholder="结束日期"
-            range-separator="-"
-            start-placeholder="开始日期"
-            type="daterange"
-            value-format="YYYY-MM-DD HH:mm:ss" />
+          <el-date-picker v-model="dateRange" :default-time="[new Date(2000, 1, 1, 0, 0, 0), new Date(2000, 1, 1, 23, 59, 59)]" end-placeholder="结束日期" range-separator="-" start-placeholder="开始日期" type="daterange" value-format="YYYY-MM-DD HH:mm:ss" />
         </el-form-item>
         <el-form-item>
           <el-button icon="Search" type="primary" @click="logininfor.handleQuery">搜索</el-button>
@@ -45,13 +38,7 @@
         <right-toolbar v-model:show-search="logininfor.showSearch" @query-table="logininfor.getList" />
       </el-row>
 
-      <el-table
-        ref="logininforRef"
-        v-loading="logininfor.loading"
-        :data="logininfor.list"
-        :default-sort="defaultSort"
-        @selection-change="handleSelectionChange"
-        @sort-change="handleSortChange">
+      <el-table ref="logininforRef" v-loading="logininfor.loading" :data="logininfor.list" :default-sort="defaultSort" @selection-change="handleSelectionChange" @sort-change="handleSortChange">
         <el-table-column align="center" type="selection" width="55" />
         <el-table-column align="center" label="访问编号" prop="infoId" />
         <el-table-column align="center" label="用户账号" prop="userName" :show-overflow-tooltip="true" :sort-orders="['descending', 'ascending']" sortable="custom" />
@@ -72,12 +59,7 @@
         </el-table-column>
       </el-table>
 
-      <pagination
-        v-show="logininfor.total > 0"
-        v-model:limit="logininfor.queryParams.pageSize"
-        v-model:page="logininfor.queryParams.pageNum"
-        :total="logininfor.total"
-        @pagination="logininfor.getList" />
+      <pagination v-show="logininfor.total > 0" v-model:limit="logininfor.queryParams.pageSize" v-model:page="logininfor.queryParams.pageNum" :total="logininfor.total" @pagination="logininfor.getList" />
     </div>
   </div>
 </template>
