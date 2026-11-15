@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Body, Put, Param, Query, Res, Delete, Request, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBody, ApiConsumes, ApiQuery, ApiBearerAuth } from '@nestjs/swagger';
 import { UserService } from './user.service';
+import { UserExcelService } from './user-excel.service';
 import { Response } from 'express';
 import { RequirePermission } from 'src/common/decorators/require-premission.decorator';
 import { RequireRole } from 'src/common/decorators/require-role.decorator';
@@ -18,6 +19,7 @@ import { Operlog } from 'src/common/decorators/operlog.decorator';
 export class UserController {
   constructor(
     private readonly userService: UserService,
+    private readonly userExcelService: UserExcelService,
     private readonly uploadService: UploadService,
   ) {}
 
@@ -205,7 +207,7 @@ export class UserController {
   @RequirePermission('system:user:export')
   @Post('/export')
   async export(@Res() res: Response, @Body() body: ListUserDto, @User() user: UserDto): Promise<void> {
-    return this.userService.export(res, body, user.user);
+    return this.userExcelService.export(res, body, user.user);
   }
 
   @ApiOperation({ summary: '导入用户信息数据从 xlsx' })
@@ -213,13 +215,13 @@ export class UserController {
   @Post('/importData')
   @UseInterceptors(FileInterceptor('file'))
   async importData(@UploadedFile() file: Express.Multer.File, @Query('updateSupport') updateSupport: string, @User() user: UserDto) {
-    return this.userService.importData(file, updateSupport === '1', user);
+    return this.userExcelService.importData(file, updateSupport === '1', user);
   }
 
   @ApiOperation({ summary: '下载用户导入模板' })
   @RequirePermission('system:user:add')
   @Post('/downloadTemplate')
   async downloadTemplate(@Res() res: Response): Promise<void> {
-    return this.userService.downloadTemplate(res);
+    return this.userExcelService.downloadTemplate(res);
   }
 }

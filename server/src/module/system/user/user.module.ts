@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UserService } from './user.service';
+import { UserExcelService } from './user-excel.service';
 import { UserController } from './user.controller';
 import { UserEntity } from './entities/sys-user.entity';
 import { SysUserWithPostEntity } from './entities/user-width-post.entity';
@@ -24,7 +25,7 @@ import { SysPostEntity } from '../post/entities/post.entity';
     }),
   ],
   controllers: [UserController],
-  providers: [UserService],
-  exports: [UserService],
+  providers: [UserService, UserExcelService],
+  exports: [UserService, UserExcelService],
 })
 export class UserModule {}
