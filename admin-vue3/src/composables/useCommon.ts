@@ -75,6 +75,19 @@ export function addDateRange(params: any, dateRange: string[], propName?: string
 }
 
 /**
+ * 转换字符串，将 undefined、null 等转化为空字符串
+ * 替代原 ruoyi.js 中的 parseStrEmpty 方法
+ * @param str 待转换的字符串
+ * @returns 转换后的字符串
+ */
+export function parseStrEmpty(str: any): string {
+  if (!str || str === 'undefined' || str === 'null') {
+    return '';
+  }
+  return String(str);
+}
+
+/**
  * 返回规范化路径（移除多余的 /）
  * @param path 路径字符串
  */
