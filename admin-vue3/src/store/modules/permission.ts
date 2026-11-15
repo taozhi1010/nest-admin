@@ -52,9 +52,9 @@ const usePermissionStore = defineStore('permission', {
       return new Promise((resolve) => {
         // 向后端请求路由数据
         getRouters().then((res) => {
-          const sdata = JSON.parse(JSON.stringify(res.data));
-          const rdata = JSON.parse(JSON.stringify(res.data));
-          const defaultData = JSON.parse(JSON.stringify(res.data));
+          const sdata = structuredClone(res.data);
+          const rdata = structuredClone(res.data);
+          const defaultData = structuredClone(res.data);
           const sidebarRoutes = filterAsyncRouter(sdata);
           const rewriteRoutes = filterAsyncRouter(rdata, false, true);
           const defaultRoutes = filterAsyncRouter(defaultData);

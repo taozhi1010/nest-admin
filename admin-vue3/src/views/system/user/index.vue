@@ -757,8 +757,8 @@ const handleUpdate = async (row) => {
       sex: userData.sex,
       status: userData.status,
       remark: userData.remark,
-      postIds: postIds.length > 0 ? JSON.parse(JSON.stringify(postIds)) : [],
-      roleIds: roleIds.length > 0 ? JSON.parse(JSON.stringify(roleIds)) : []
+      postIds: postIds.length > 0 ? structuredClone(postIds) : [],
+      roleIds: roleIds.length > 0 ? structuredClone(roleIds) : []
     };
 
     // 更新岗位/角色下拉选项
