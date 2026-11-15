@@ -2,7 +2,7 @@
   <div class="app-container dict">
     <el-card v-loading="loading" class="dict-tree fill-card" shadow="never">
       <div class="dict-tree-header">
-        <el-button v-hasPermi="['system:dict:add']" class="dict-tree-header-item add-btn" size="mini" type="primary" @click="dictGroup.handleAdd">添加字典分类</el-button>
+        <el-button v-hasPermi="['system:dict:add']" class="dict-tree-header-item add-btn" size="small" type="primary" @click="dictGroup.handleAdd">添加字典分类</el-button>
         <el-input v-model="dictGroup.query.dictName" class="dict-tree-header-item search-input" placeholder="请输入字典项筛选" style="width: 200px" />
       </div>
 
