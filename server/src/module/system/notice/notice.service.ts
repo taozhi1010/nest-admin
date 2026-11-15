@@ -21,11 +21,11 @@ export class NoticeService {
     entity.where('entity.delFlag = :delFlag', { delFlag: '0' });
 
     if (query.noticeTitle) {
-      entity.andWhere(`entity.noticeTitle LIKE "%${query.noticeTitle}%"`);
+      entity.andWhere('entity.noticeTitle LIKE :noticeTitle', { noticeTitle: `%${query.noticeTitle}%` });
     }
 
     if (query.createBy) {
-      entity.andWhere(`entity.createBy LIKE "%${query.createBy}%"`);
+      entity.andWhere('entity.createBy LIKE :createBy', { createBy: `%${query.createBy}%` });
     }
 
     if (query.noticeType) {

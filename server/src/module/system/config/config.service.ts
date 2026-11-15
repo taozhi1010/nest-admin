@@ -27,11 +27,11 @@ export class ConfigService {
     entity.where('entity.delFlag = :delFlag', { delFlag: '0' });
 
     if (query.configName) {
-      entity.andWhere(`entity.configName LIKE "%${query.configName}%"`);
+      entity.andWhere('entity.configName LIKE :configName', { configName: `%${query.configName}%` });
     }
 
     if (query.configKey) {
-      entity.andWhere(`entity.configKey LIKE "%${query.configKey}%"`);
+      entity.andWhere('entity.configKey LIKE :configKey', { configKey: `%${query.configKey}%` });
     }
 
     if (query.configType) {

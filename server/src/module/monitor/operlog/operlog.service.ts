@@ -41,7 +41,7 @@ export class OperlogService {
       entity.andWhere('entity.operTime BETWEEN :start AND :end', { start: query.params.beginTime, end: query.params.endTime });
     }
 
-    if (query.orderByColumn && query.isAsc) {
+    if (query.orderByColumn && query.isAsc && this.isOperlogField(query.orderByColumn)) {
       const orderMap = {
         descending: 'DESC',
         ascending: 'ASC',
@@ -162,5 +162,12 @@ export class OperlogService {
     };
 
     await this.sysOperlogEntityRep.save(params);
+  }
+
+  /**
+   * 校验排序字段是否为实体真实列，防止 orderByColumn 拼接注入
+   */
+  private isOperlogField(field: string): boolean {
+    return this.sysOperlogEntityRep.metadata.columns.some((column) => column.propertyName === field);
   }
 }
