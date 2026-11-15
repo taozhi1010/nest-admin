@@ -20,7 +20,7 @@
 </template>
 
 <script setup lang="ts">
-let message = computed(() => {
+const message = computed(() => {
   return '找不到网页！';
 });
 </script>

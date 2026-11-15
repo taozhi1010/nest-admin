@@ -82,12 +82,13 @@
 </template>
 
 <script setup lang="ts">
-import variables from '@/assets/styles/variables.module.scss';
 import axios from 'axios';
+
+import variables from '@/assets/styles/variables.module.scss';
 import { useDynamicTitle } from '@/composables/useDynamicTitle';
 import useAppStore from '@/store/modules/app';
-import useSettingsStore from '@/store/modules/settings';
 import usePermissionStore from '@/store/modules/permission';
+import useSettingsStore from '@/store/modules/settings';
 import { handleThemeStyle } from '@/utils/theme';
 
 const appStore = useAppStore();
@@ -158,7 +159,7 @@ function saveSetting() {
     text: '正在保存到本地，请稍等...',
     background: 'rgba(0, 0, 0, 0.7)'
   });
-  let layoutSetting = {
+  const layoutSetting = {
     topNav: storeSettings.value.topNav,
     tagsView: storeSettings.value.tagsView,
     fixedHeader: storeSettings.value.fixedHeader,

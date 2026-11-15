@@ -171,13 +171,14 @@
 </template>
 
 <script setup name="Role">
+import { roleMenuTreeselect, treeselect as menuTreeselect } from '@/api/system/menu';
+import { addRole, changeRoleStatus, dataScope, delRole, getRole, listRole, updateRole, deptTreeSelect } from '@/api/system/role';
+import { addDateRange, parseTime } from '@/composables/useCommon';
+import { useCrud } from '@/composables/useCrud';
+import { useDict } from '@/composables/useDict';
+
 // ==================== 导入区域 ====================
 import AuthUser from './authUser.vue';
-import { addRole, changeRoleStatus, dataScope, delRole, getRole, listRole, updateRole, deptTreeSelect } from '@/api/system/role';
-import { roleMenuTreeselect, treeselect as menuTreeselect } from '@/api/system/menu';
-import { useDict } from '@/composables/useDict';
-import { useCrud } from '@/composables/useCrud';
-import { addDateRange, parseTime } from '@/composables/useCommon';
 
 // ==================== 实例和字典 ====================
 const { sys_normal_disable } = useDict('sys_normal_disable');
@@ -267,12 +268,12 @@ const resetTreeState = () => {
 // 树权限（展开/折叠）
 const handleCheckedTreeExpand = (value, type) => {
   if (type == 'menu') {
-    let treeList = menuOptions.value;
+    const treeList = menuOptions.value;
     for (let i = 0; i < treeList.length; i++) {
       menuRef.value.store.nodesMap[treeList[i].id].expanded = value;
     }
   } else if (type == 'dept') {
-    let treeList = deptOptions.value;
+    const treeList = deptOptions.value;
     for (let i = 0; i < treeList.length; i++) {
       deptRef.value.store.nodesMap[treeList[i].id].expanded = value;
     }
@@ -300,20 +301,20 @@ const handleCheckedTreeConnect = (value, type) => {
 // 所有菜单节点数据
 const getMenuAllCheckedKeys = () => {
   // 目前被选中的菜单节点
-  let checkedKeys = menuRef.value.getCheckedKeys();
+  const checkedKeys = menuRef.value.getCheckedKeys();
   // 半选中的菜单节点
-  let halfCheckedKeys = menuRef.value.getHalfCheckedKeys();
-  checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys);
+  const halfCheckedKeys = menuRef.value.getHalfCheckedKeys();
+  checkedKeys.unshift(...halfCheckedKeys);
   return checkedKeys;
 };
 
 // 所有部门节点数据
 const getDeptAllCheckedKeys = () => {
   // 目前被选中的部门节点
-  let checkedKeys = deptRef.value.getCheckedKeys();
+  const checkedKeys = deptRef.value.getCheckedKeys();
   // 半选中的部门节点
-  let halfCheckedKeys = deptRef.value.getHalfCheckedKeys();
-  checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys);
+  const halfCheckedKeys = deptRef.value.getHalfCheckedKeys();
+  checkedKeys.unshift(...halfCheckedKeys);
   return checkedKeys;
 };
 
@@ -331,7 +332,7 @@ const role = useCrud({
       // 获取角色菜单权限
       const roleMenuResponse = await getRoleMenuTreeselect(roleId);
       nextTick(() => {
-        let checkedKeys = roleMenuResponse.data.checkedKeys;
+        const checkedKeys = roleMenuResponse.data.checkedKeys;
         checkedKeys.forEach((v) => {
           nextTick(() => {
             menuRef.value.setChecked(v, true, false);
@@ -401,7 +402,7 @@ const handleUpdate = async (row) => {
 const handleStatusClick = async (row) => {
   const currentStatus = row.status;
   const newStatus = currentStatus === '0' ? '1' : '0';
-  let text = newStatus === '0' ? '启用' : '停用';
+  const text = newStatus === '0' ? '启用' : '停用';
   try {
     await ElMessageBox.confirm(`确认要"${text}" "${row.roleName}"角色吗？`, '提示', {
       confirmButtonText: '确定',

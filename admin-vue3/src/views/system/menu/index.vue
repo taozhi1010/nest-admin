@@ -242,13 +242,14 @@
 </template>
 
 <script setup name="Menu">
-import { addMenu, delMenu, getMenu, listMenu, updateMenu } from '@/api/system/menu';
-import SvgIcon from '@/components/SvgIcon';
-import IconSelect from '@/components/IconSelect';
 import { ClickOutside as vClickOutside } from 'element-plus';
-import { useDict } from '@/composables/useDict';
-import { useCrud } from '@/composables/useCrud';
+
+import { addMenu, delMenu, getMenu, listMenu, updateMenu } from '@/api/system/menu';
+import IconSelect from '@/components/IconSelect';
+import SvgIcon from '@/components/SvgIcon';
 import { handleTree, parseTime } from '@/composables/useCommon';
+import { useCrud } from '@/composables/useCrud';
+import { useDict } from '@/composables/useDict';
 
 const { sys_show_hide, sys_normal_disable, getDictLabel } = useDict('sys_show_hide', 'sys_normal_disable');
 

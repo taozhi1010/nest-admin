@@ -30,7 +30,7 @@ const realSrc = computed(() => {
   if (!props.src) {
     return;
   }
-  let real_src = props.src.split(',')[0];
+  const real_src = props.src.split(',')[0];
   return getImageUrl(real_src);
 });
 
@@ -38,7 +38,7 @@ const realSrcList = computed(() => {
   if (!props.src) {
     return;
   }
-  let real_src_list = props.src.split(',');
+  const real_src_list = props.src.split(',');
   return real_src_list.map((item) => getImageUrl(item));
 });
 

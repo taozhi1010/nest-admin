@@ -112,7 +112,7 @@
                 <el-link
                   type="primary"
                   :underline="false"
-                  @dblclick="article.handleOpenEditor(scope.row)"
+                  @dblclick="handleOpenEditor(scope.row)"
                   style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block; text-align: left; width: 100%">
                   {{ scope.row.title }}
                 </el-link>
@@ -165,14 +165,15 @@
 
 <script setup name="Article">
 import { listArticle, delArticle, getArticle } from '@/api/post/article';
-import Preview from './components/Preview';
-import ArticleForm from './components/ArticleForm';
 import { useSubject } from '@/composables/post/useSubject';
 import { useCrud } from '@/composables/useCrud';
 
+import ArticleForm from './components/ArticleForm';
+import Preview from './components/Preview';
+
 const router = useRouter();
 
-const { post_article_publish_status, post_article_audit_status, post_article_source, post_subject_publish_status, post_subject_audit_status, getDictLabel, getDictTagType } = useDict(
+const { post_article_publish_status, getDictLabel, getDictTagType } = useDict(
   'post_article_publish_status',
   'post_article_audit_status',
   'post_article_source',

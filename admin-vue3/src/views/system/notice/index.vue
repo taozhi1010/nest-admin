@@ -109,10 +109,10 @@
 
 <script setup name="Notice">
 import { listNotice, getNotice, delNotice, addNotice, updateNotice } from '@/api/system/notice';
-import { useDict } from '@/composables/useDict';
-import { useCrud } from '@/composables/useCrud';
-import { parseTime } from '@/composables/useCommon';
 import MdEditor from '@/components/MdEditor';
+import { parseTime } from '@/composables/useCommon';
+import { useCrud } from '@/composables/useCrud';
+import { useDict } from '@/composables/useDict';
 
 const { sys_notice_status, sys_notice_type, getDictLabel, getDictTagType } = useDict('sys_notice_status', 'sys_notice_type');
 

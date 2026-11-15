@@ -70,10 +70,11 @@
 </template>
 
 <script setup lang="ts">
-import { useRouteSearch } from '@/composables/useRouteSearch';
 import { Search, Guide } from '@element-plus/icons-vue';
-import { isHttp } from '@/composables/useValidator';
 import { useRouter } from 'vue-router';
+
+import { useRouteSearch } from '@/composables/useRouteSearch';
+import { isHttp } from '@/composables/useValidator';
 
 // 使用搜索 composable
 const search = useRouteSearch();

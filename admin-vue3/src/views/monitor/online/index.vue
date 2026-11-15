@@ -45,8 +45,8 @@
 
 <script setup name="Online">
 import { forceLogout, list as initData } from '@/api/monitor/online';
-import { useCrud } from '@/composables/useCrud';
 import { parseTime } from '@/composables/useCommon';
+import { useCrud } from '@/composables/useCrud';
 
 const queryRef = ref(null);
 

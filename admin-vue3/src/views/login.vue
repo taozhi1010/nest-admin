@@ -50,8 +50,9 @@
 </template>
 
 <script setup lang="ts">
-import useUserStore from '@/store/modules/user';
 import { authCodeInfo, getValidateCode, getUserCookie, setUserCookie, loginLoading } from '@/composables/auth/useLogin';
+import useUserStore from '@/store/modules/user';
+
 import type { LoginForm } from '@/composables/auth/useLogin';
 import type { FormInstance } from 'element-plus';
 

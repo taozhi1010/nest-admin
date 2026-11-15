@@ -1,7 +1,8 @@
-import useTagsViewStore from '@/store/modules/tagsView';
 import router from '@/router';
-import type { RouteLocationNormalizedLoaded } from 'vue-router';
+import useTagsViewStore from '@/store/modules/tagsView';
+
 import type { TagView } from '@/store/modules/tagsView';
+import type { RouteLocationNormalizedLoaded } from 'vue-router';
 
 /**
  * Tab 标签页操作 Composable

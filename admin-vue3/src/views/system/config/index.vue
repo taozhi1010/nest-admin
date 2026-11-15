@@ -113,9 +113,9 @@
 
 <script setup name="Config">
 import { listConfig, addConfig, delConfig, getConfig, updateConfig } from '@/api/system/config';
-import { useDict } from '@/composables/useDict';
-import { useCrud } from '@/composables/useCrud';
 import { parseTime } from '@/composables/useCommon';
+import { useCrud } from '@/composables/useCrud';
+import { useDict } from '@/composables/useDict';
 
 const { sys_yes_no, getDictLabel } = useDict('sys_yes_no');
 

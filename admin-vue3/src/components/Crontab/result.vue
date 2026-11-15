@@ -31,14 +31,14 @@ function expressionChange() {
   // 计算开�?隐藏结果
   isShow.value = false;
   // 获取规则数组[0秒�?分�?时�?日�?月�?星期�?年]
-  let ruleArr = props.ex.split(' ');
+  const ruleArr = props.ex.split(' ');
   // 用于记录进入循环的次�?
   let nums = 0;
   // 用于暂时存符号时间规则结果的数组
-  let resultArr = [];
+  const resultArr = [];
   // 获取当前时间精确至[年、月、日、时、分、秒]
-  let nTime = new Date();
-  let nYear = nTime.getFullYear();
+  const nTime = new Date();
+  const nYear = nTime.getFullYear();
   let nMonth = nTime.getMonth() + 1;
   let nDay = nTime.getDate();
   let nHour = nTime.getHours();
@@ -53,19 +53,19 @@ function expressionChange() {
   getWeekArr(ruleArr[5]);
   getYearArr(ruleArr[6], nYear);
   // 将获取到的数组赋�?方便使用
-  let sDate = dateArr.value[0];
-  let mDate = dateArr.value[1];
-  let hDate = dateArr.value[2];
-  let DDate = dateArr.value[3];
-  let MDate = dateArr.value[4];
-  let YDate = dateArr.value[5];
+  const sDate = dateArr.value[0];
+  const mDate = dateArr.value[1];
+  const hDate = dateArr.value[2];
+  const DDate = dateArr.value[3];
+  const MDate = dateArr.value[4];
+  const YDate = dateArr.value[5];
   // 获取当前时间在数组中的索�?
   let sIdx = getIndex(sDate, nSecond);
   let mIdx = getIndex(mDate, nMin);
   let hIdx = getIndex(hDate, nHour);
   let DIdx = getIndex(DDate, nDay);
   let MIdx = getIndex(MDate, nMonth);
-  let YIdx = getIndex(YDate, nYear);
+  const YIdx = getIndex(YDate, nYear);
   // 重置月日时分秒的函数(后面用的比较�?
   const resetSecond = function () {
     sIdx = 0;
@@ -113,7 +113,7 @@ function expressionChange() {
   }
   // 循环年份数组
   goYear: for (let Yi = YIdx; Yi < YDate.length; Yi++) {
-    let YY = YDate[Yi];
+    const YY = YDate[Yi];
     // 如果到达最大值时
     if (nMonth > MDate[MDate.length - 1]) {
       resetMonth();
@@ -174,7 +174,7 @@ function expressionChange() {
             }
           }
           // 获取达到条件的日期是星期X
-          let thisWeek = formatDate(new Date(`${YY}-${MM}-${thisDD} 00:00:00`), 'week');
+          const thisWeek = formatDate(new Date(`${YY}-${MM}-${thisDD} 00:00:00`), 'week');
           // 当星期日�?
           if (thisWeek === 1) {
             // 先找下一个日，并判断是否为月�?
@@ -195,7 +195,7 @@ function expressionChange() {
         } else if (dayRule.value === 'weekDay') {
           // 如果指定了是星期�?
           // 获取当前日期是属于星期几
-          let thisWeek = formatDate(new Date(`${YY}-${MM}-${DD} 00:00:00`), 'week');
+          const thisWeek = formatDate(new Date(`${YY}-${MM}-${DD} 00:00:00`), 'week');
           // 校验当前星期是否在星期池（dayRuleSup）中
           if (dayRuleSup.value.indexOf(thisWeek) < 0) {
             // 如果到达最大值时
@@ -212,7 +212,7 @@ function expressionChange() {
         } else if (dayRule.value === 'assWeek') {
           // 如果指定了是第几周的星期�?
           // 获取每月1号是属于星期�?
-          let thisWeek = formatDate(new Date(`${YY}-${MM}-${DD} 00:00:00`), 'week');
+          const thisWeek = formatDate(new Date(`${YY}-${MM}-${DD} 00:00:00`), 'week');
           if (dayRuleSup.value[1] >= thisWeek) {
             DD = (dayRuleSup.value[0] - 1) * 7 + dayRuleSup.value[1] - thisWeek + 1;
           } else {
@@ -228,7 +228,7 @@ function expressionChange() {
             }
           }
           // 获取月末最后一天是星期�?
-          let thisWeek = formatDate(new Date(`${YY}-${MM}-${thisDD} 00:00:00`), 'week');
+          const thisWeek = formatDate(new Date(`${YY}-${MM}-${thisDD} 00:00:00`), 'week');
           // 找到要求中最近的那个星期�?
           if (dayRuleSup.value < thisWeek) {
             DD -= thisWeek - dayRuleSup.value;
@@ -240,7 +240,7 @@ function expressionChange() {
         DD = DD < 10 ? `0${DD}` : DD;
         // 循环“时”数�?
         goHour: for (let hi = hIdx; hi < hDate.length; hi++) {
-          let hh = hDate[hi] < 10 ? `0${hDate[hi]}` : hDate[hi];
+          const hh = hDate[hi] < 10 ? `0${hDate[hi]}` : hDate[hi];
           // 如果到达最大值时
           if (nMin > mDate[mDate.length - 1]) {
             resetMin();
@@ -260,7 +260,7 @@ function expressionChange() {
           }
           // 循环"�?数组
           goMin: for (let mi = mIdx; mi < mDate.length; mi++) {
-            let mm = mDate[mi] < 10 ? `0${mDate[mi]}` : mDate[mi];
+            const mm = mDate[mi] < 10 ? `0${mDate[mi]}` : mDate[mi];
             // 如果到达最大值时
             if (nSecond > sDate[sDate.length - 1]) {
               resetSecond();
@@ -284,7 +284,7 @@ function expressionChange() {
             }
             // 循环"�?数组
             for (let si = sIdx; si <= sDate.length - 1; si++) {
-              let ss = sDate[si] < 10 ? `0${sDate[si]}` : sDate[si];
+              const ss = sDate[si] < 10 ? `0${sDate[si]}` : sDate[si];
               // 添加当前时间（时间合法性在日期循环时已经判断）
               if (MM !== '00' && DD !== '00') {
                 resultArr.push(`${YY}-${MM}-${DD} ${hh}:${mm}:${ss}`);
@@ -376,7 +376,7 @@ function getWeekArr(rule) {
       dayRuleSup.value = getCycleArr(rule, 7, false);
     } else if (rule.indexOf('#') >= 0) {
       dayRule.value = 'assWeek';
-      let matchRule = rule.match(/[0-9]{1}/g);
+      const matchRule = rule.match(/[0-9]{1}/g);
       dayRuleSup.value = [Number(matchRule[1]), Number(matchRule[0])];
       dateArr.value[3] = [1];
       if (dayRuleSup.value[1] === 7) {
@@ -456,7 +456,7 @@ function getSecondArr(rule) {
 }
 // 根据传进来的min-max返回一个顺序的数组
 function getOrderArr(min, max) {
-  let arr = [];
+  const arr = [];
   for (let i = min; i <= max; i++) {
     arr.push(i);
   }
@@ -464,8 +464,8 @@ function getOrderArr(min, max) {
 }
 // 根据规则中指定的零散值返回一个数�?
 function getAssignArr(rule) {
-  let arr = [];
-  let assiginArr = rule.split(',');
+  const arr = [];
+  const assiginArr = rule.split(',');
   for (let i = 0; i < assiginArr.length; i++) {
     arr[i] = Number(assiginArr[i]);
   }
@@ -474,10 +474,10 @@ function getAssignArr(rule) {
 }
 // 根据一定算术规则计算返回一个数�?
 function getAverageArr(rule, limit) {
-  let arr = [];
-  let agArr = rule.split('/');
+  const arr = [];
+  const agArr = rule.split('/');
   let min = Number(agArr[0]);
-  let step = Number(agArr[1]);
+  const step = Number(agArr[1]);
   while (min <= limit) {
     arr.push(min);
     min += step;
@@ -487,9 +487,9 @@ function getAverageArr(rule, limit) {
 // 根据规则返回一个具有周期性的数组
 function getCycleArr(rule, limit, status) {
   // status--表示是否�?开始（则从1开始）
-  let arr = [];
-  let cycleArr = rule.split('-');
-  let min = Number(cycleArr[0]);
+  const arr = [];
+  const cycleArr = rule.split('-');
+  const min = Number(cycleArr[0]);
   let max = Number(cycleArr[1]);
   if (min > max) {
     max += limit;
@@ -515,14 +515,14 @@ function compare(value1, value2) {
 // 格式化日期格式如�?017-9-19 18:04:33
 function formatDate(value, type) {
   // 计算日期相关�?
-  let time = typeof value == 'number' ? new Date(value) : value;
-  let Y = time.getFullYear();
-  let M = time.getMonth() + 1;
-  let D = time.getDate();
-  let h = time.getHours();
-  let m = time.getMinutes();
-  let s = time.getSeconds();
-  let week = time.getDay();
+  const time = typeof value == 'number' ? new Date(value) : value;
+  const Y = time.getFullYear();
+  const M = time.getMonth() + 1;
+  const D = time.getDate();
+  const h = time.getHours();
+  const m = time.getMinutes();
+  const s = time.getSeconds();
+  const week = time.getDay();
   // 如果传递了type的话
   if (type === undefined) {
     return `${Y}-${M < 10 ? `0${M}` : M}-${D < 10 ? `0${D}` : D} ${h < 10 ? `0${h}` : h}:${m < 10 ? `0${m}` : m}:${s < 10 ? `0${s}` : s}`;
@@ -533,8 +533,8 @@ function formatDate(value, type) {
 }
 // 检查日期是否存�?
 function checkDate(value) {
-  let time = new Date(value);
-  let format = formatDate(time);
+  const time = new Date(value);
+  const format = formatDate(time);
   return value === format;
 }
 onMounted(() => {

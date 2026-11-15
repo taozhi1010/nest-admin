@@ -3,10 +3,11 @@
  * 管理用户登录状态、个人信息、角色和权限等认证相关数据
  */
 import { defineStore } from 'pinia';
+
 import { login, logout, getInfo } from '@/api/login';
+import useDictStore from '@/store/modules/dict';
 import { getToken, setToken, removeToken } from '@/utils/auth';
 import { getUserAvatar } from '@/utils/image';
-import useDictStore from '@/store/modules/dict';
 
 interface UserInfo {
   username: string;

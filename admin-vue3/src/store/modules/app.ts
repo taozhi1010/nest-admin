@@ -1,9 +1,9 @@
+import Cookies from 'js-cookie';
 /**
  * 应用状态管理
  * 管理侧边栏展开/收起、设备类型（桌面/移动）、组件尺寸等全局 UI 状态
  */
 import { defineStore } from 'pinia';
-import Cookies from 'js-cookie';
 
 interface SidebarState {
   opened: boolean;

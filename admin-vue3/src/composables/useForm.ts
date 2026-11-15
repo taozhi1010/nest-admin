@@ -1,5 +1,6 @@
-import type { FormInstance, FormRules } from 'element-plus';
 import { getCurrentInstance } from 'vue';
+
+import type { FormInstance, FormRules } from 'element-plus';
 
 /**
  * 表单管理组合函数

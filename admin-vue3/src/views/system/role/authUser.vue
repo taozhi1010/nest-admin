@@ -60,12 +60,13 @@
 </template>
 
 <script setup name="AuthUser">
+import { allocatedUserList, authUserCancel, authUserCancelAll } from '@/api/system/role';
+import { parseTime } from '@/composables/useCommon';
+import { useCrud } from '@/composables/useCrud';
+import { useDict } from '@/composables/useDict';
+
 // ==================== 导入区域 ====================
 import selectUser from './selectUser';
-import { allocatedUserList, authUserCancel, authUserCancelAll } from '@/api/system/role';
-import { useDict } from '@/composables/useDict';
-import { useCrud } from '@/composables/useCrud';
-import { parseTime } from '@/composables/useCommon';
 
 // ==================== Props 和 Emits ====================
 const props = defineProps({
@@ -78,7 +79,7 @@ const props = defineProps({
 const emit = defineEmits(['close']);
 
 // ==================== 实例和字典 ====================
-const { sys_normal_disable, getDictLabel } = useDict('sys_normal_disable');
+const { getDictLabel } = useDict('sys_normal_disable');
 
 // ==================== 表单引用 ====================
 const selectRef = ref(null);

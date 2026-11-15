@@ -29,6 +29,7 @@
 
 <script setup lang="ts">
 import { ElMessage } from 'element-plus';
+
 import { addType, updateType } from '@/api/system/dict/type';
 import { useDict } from '@/composables/useDict';
 import { resetForm } from '@/composables/useForm';

@@ -11,6 +11,7 @@
 
 <script setup lang="ts">
 import { Search } from '@element-plus/icons-vue';
+
 import SearchModal from './components/SearchModal';
 
 const searchModalRef = ref(null);

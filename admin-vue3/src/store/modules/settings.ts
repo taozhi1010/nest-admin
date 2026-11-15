@@ -3,8 +3,9 @@
  * 管理主题、布局、标签页等个性化配置，支持持久化存储
  */
 import { defineStore } from 'pinia';
-import defaultSettings from '@/settings';
+
 import { useDynamicTitle } from '@/composables/useDynamicTitle';
+import defaultSettings from '@/settings';
 
 const { sideTheme, showSettings, topNav, tagsView, fixedHeader, sidebarLogo, dynamicTitle, title: defaultTitle } = defaultSettings;
 

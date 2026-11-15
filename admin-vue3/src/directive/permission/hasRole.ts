@@ -3,8 +3,9 @@
  * Copyright (c) 2019 ruoyi
  */
 
-import type { Directive, DirectiveBinding } from 'vue';
 import useUserStore from '@/store/modules/user';
+
+import type { Directive, DirectiveBinding } from 'vue';
 
 interface HasRoleDirectiveBinding extends Omit<DirectiveBinding, 'value'> {
   value: string | string[];

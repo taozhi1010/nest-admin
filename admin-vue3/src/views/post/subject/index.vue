@@ -75,7 +75,7 @@
             <el-input v-model.trim="subject.form.desc" maxlength="200" placeholder="请输入专栏简介" :rows="4" show-word-limit type="textarea" />
           </el-form-item>
           <el-form-item label="封面图片" prop="cover">
-            <ImageUploadCover v-model="subject.form.cover" path="subject" :max-size="5" :quality="0.85" :before-upload-check="subject.validateBeforeUpload" />
+            <ImageUploadCover v-model="subject.form.cover" path="subject" :max-size="5" :quality="0.85" :before-upload-check="validateBeforeUpload" />
           </el-form-item>
           <el-form-item label="发布状态" prop="publishStatus">
             <el-radio-group v-model="subject.form.publishStatus">
@@ -105,9 +105,9 @@
 <script setup name="Subject">
 // ==================== 导入区域 ====================
 import { listSubject, addSubject, delSubject, getSubject, updateSubject } from '@/api/post/subject';
-import { useDict } from '@/composables/useDict';
-import { useCrud } from '@/composables/useCrud';
 import ImageUploadCover from '@/components/ImageUploadCover/index.vue';
+import { useCrud } from '@/composables/useCrud';
+import { useDict } from '@/composables/useDict';
 
 const { post_subject_publish_status, post_subject_audit_status, getDictLabel } = useDict('post_subject_publish_status', 'post_subject_audit_status');
 

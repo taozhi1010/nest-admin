@@ -214,7 +214,7 @@ function handlePictureCardPreview(file) {
 function listToString(list, separator) {
   let strs = '';
   separator = separator || ',';
-  for (let i in list) {
+  for (const i in list) {
     if (undefined !== list[i].url && list[i].url.indexOf('blob:') !== 0) {
       strs += list[i].url.replace(baseUrl, '') + separator;
     }

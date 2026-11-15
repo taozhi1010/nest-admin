@@ -92,11 +92,13 @@
 </template>
 
 <script setup lang="ts">
+import { ElMessage } from 'element-plus';
+
 import { register, getRegisterConfig } from '@/api/login';
+import { useEmailCode } from '@/composables/auth/useEmailCode';
 import { authCodeInfo, getValidateCode } from '@/composables/auth/useLogin';
 import { createRegisterRules, computePasswordStrength } from '@/composables/auth/useRegisterCheck';
-import { useEmailCode } from '@/composables/auth/useEmailCode';
-import { ElMessage } from 'element-plus';
+
 import type { FormInstance } from 'element-plus';
 
 const router = useRouter();

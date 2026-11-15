@@ -1,9 +1,10 @@
-import Cookies from 'js-cookie';
-import { encrypt, decrypt } from '@/utils/jsencrypt';
-import { getCodeImg } from '@/api/login';
-import { isEmpty } from 'radash';
 import { ElMessage } from 'element-plus';
+import Cookies from 'js-cookie';
+import { isEmpty } from 'radash';
 import { reactive, ref } from 'vue';
+
+import { getCodeImg } from '@/api/login';
+import { encrypt, decrypt } from '@/utils/jsencrypt';
 
 /**
  * 登录表单相关逻辑

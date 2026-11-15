@@ -93,9 +93,9 @@
 
 <script setup name="Post">
 import { listPost, addPost, delPost, getPost, updatePost } from '@/api/system/post';
-import { useDict } from '@/composables/useDict';
-import { useCrud } from '@/composables/useCrud';
 import { parseTime } from '@/composables/useCommon';
+import { useCrud } from '@/composables/useCrud';
+import { useDict } from '@/composables/useDict';
 
 const { sys_normal_disable, getDictLabel } = useDict('sys_normal_disable');
 

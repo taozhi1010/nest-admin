@@ -58,10 +58,11 @@
 // ==================== 导入区域 ====================
 import 'vue-cropper/dist/index.css';
 import { VueCropper } from 'vue-cropper';
+
 import { uploadAvatar } from '@/api/system/user';
+import defAva from '@/assets/images/avatar.webp';
 import useUserStore from '@/store/modules/user';
 import { getImageUrl } from '@/utils/image';
-import defAva from '@/assets/images/avatar.webp';
 
 // ==================== Props ====================
 const props = defineProps({

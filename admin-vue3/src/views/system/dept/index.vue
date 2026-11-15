@@ -116,9 +116,9 @@
 
 <script setup name="Dept">
 import { listDept, getDept, delDept, addDept, updateDept, listDeptExcludeChild } from '@/api/system/dept';
-import { useDict } from '@/composables/useDict';
-import { useCrud } from '@/composables/useCrud';
 import { handleTree, parseTime } from '@/composables/useCommon';
+import { useCrud } from '@/composables/useCrud';
+import { useDict } from '@/composables/useDict';
 
 const { sys_normal_disable, getDictLabel } = useDict('sys_normal_disable');
 

@@ -110,9 +110,9 @@
 <script setup name="JobLog">
 import { getJob } from '@/api/monitor/job';
 import { listJobLog, delJobLog, cleanJobLog } from '@/api/monitor/jobLog';
-import { useDict } from '@/composables/useDict';
-import { useCrud } from '@/composables/useCrud';
 import { addDateRange, parseTime } from '@/composables/useCommon';
+import { useCrud } from '@/composables/useCrud';
+import { useDict } from '@/composables/useDict';
 
 // ==================== Composables ====================
 const { closeOpenPage } = useTab();

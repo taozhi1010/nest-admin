@@ -3,8 +3,9 @@
  * 自动注册所有 Element Plus 图标组件
  */
 
-import type { App } from 'vue';
 import * as components from '@element-plus/icons-vue';
+
+import type { App } from 'vue';
 
 export default {
   install: (app: App) => {

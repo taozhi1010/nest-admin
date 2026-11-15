@@ -224,8 +224,8 @@ import { listJob, getJob, delJob, addJob, updateJob, runJob, changeJobStatus } f
 import Crontab from '@/components/Crontab';
 import { useCrud } from '@/composables/useCrud';
 const router = useRouter();
-import { useDict } from '@/composables/useDict';
 import { parseTime } from '@/composables/useCommon';
+import { useDict } from '@/composables/useDict';
 
 const { sys_job_group, sys_job_status, getDictLabel } = useDict('sys_job_group', 'sys_job_status');
 
@@ -265,7 +265,7 @@ function jobGroupFormat(row, column) {
 function handleStatusClick(row) {
   const currentStatus = row.status;
   const newStatus = currentStatus === '0' ? '1' : '0';
-  let text = newStatus === '0' ? '启用' : '停用';
+  const text = newStatus === '0' ? '启用' : '停用';
   ElMessageBox.confirm(`确认要"${text}" "${row.jobName}"任务吗?`, '系统提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',

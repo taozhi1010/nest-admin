@@ -1,7 +1,8 @@
-import type { App } from 'vue';
-import hasRole from './permission/hasRole';
-import hasPermi from './permission/hasPermi';
 import submitNoEnter from './common/submitNoEnter';
+import hasPermi from './permission/hasPermi';
+import hasRole from './permission/hasRole';
+
+import type { App } from 'vue';
 
 /**
  * 注册全局自定义指令

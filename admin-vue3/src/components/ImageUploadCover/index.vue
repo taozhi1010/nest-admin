@@ -125,10 +125,11 @@
 </template>
 
 <script setup lang="ts">
-import { getToken } from '@/utils/auth';
 import { Plus, ZoomIn, Delete, Refresh } from '@element-plus/icons-vue';
-import 'vue-cropper/dist/index.css';
 import { VueCropper } from 'vue-cropper';
+import 'vue-cropper/dist/index.css';
+
+import { getToken } from '@/utils/auth';
 
 const props = defineProps({
   modelValue: {

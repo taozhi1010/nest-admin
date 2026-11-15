@@ -1,10 +1,12 @@
 import axios, { type AxiosInstance, type InternalAxiosRequestConfig, type AxiosResponse } from 'axios';
 import { ElNotification, ElMessageBox, ElMessage, ElLoading } from 'element-plus';
-import { getToken } from '@/utils/auth';
-import errorCode from '@/utils/errorCode';
-import cache from '@/utils/cache';
 import { saveAs } from 'file-saver';
+
 import useUserStore from '@/store/modules/user';
+import { getToken } from '@/utils/auth';
+import cache from '@/utils/cache';
+import errorCode from '@/utils/errorCode';
+
 import { isValidBlob } from './useValidator';
 
 // ==================== 类型定义 ====================
@@ -28,7 +30,7 @@ interface DownloadConfig {
 }
 
 // 是否显示重新登录
-export let isRelogin = { show: false };
+export const isRelogin = { show: false };
 
 // ==================== 工具函数 ====================
 
@@ -238,8 +240,7 @@ service.interceptors.response.use(
 
 // 通用下载方法
 export function download(url: string, params: any, filename: string, config?: DownloadConfig) {
-  let downloadLoadingInstance: ReturnType<typeof ElLoading.service>;
-  downloadLoadingInstance = ElLoading.service({ text: '正在下载数据，请稍候', background: 'rgba(0, 0, 0, 0.7)' });
+  const downloadLoadingInstance = ElLoading.service({ text: '正在下载数据，请稍候', background: 'rgba(0, 0, 0, 0.7)' });
 
   return service
     .post(url, params, {

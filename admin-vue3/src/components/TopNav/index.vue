@@ -21,11 +21,11 @@
 </template>
 
 <script setup lang="ts">
-import { constantRoutes } from '@/router';
 import { isHttp } from '@/composables/useValidator';
+import { constantRoutes } from '@/router';
 import useAppStore from '@/store/modules/app';
-import useSettingsStore from '@/store/modules/settings';
 import usePermissionStore from '@/store/modules/permission';
+import useSettingsStore from '@/store/modules/settings';
 
 // 顶部栏初始数
 const visibleNumber = ref(null);
@@ -47,7 +47,7 @@ const routers = computed(() => permissionStore.topbarRouters);
 
 // 顶部显示菜单
 const topMenus = computed(() => {
-  let topMenus = [];
+  const topMenus = [];
   routers.value.map((menu) => {
     if (menu.hidden !== true) {
       // 兼容顶部栏一级菜单内部跳�?
@@ -63,9 +63,9 @@ const topMenus = computed(() => {
 
 // 设置子路�?
 const childrenMenus = computed(() => {
-  let childrenMenus = [];
+  const childrenMenus = [];
   routers.value.map((router) => {
-    for (let item in router.children) {
+    for (const item in router.children) {
       if (router.children[item].parentPath === undefined) {
         if (router.path === '/') {
           router.children[item].path = `/${router.children[item].path}`;
@@ -115,7 +115,7 @@ function handleSelect(key, keyPath) {
     // 没有子路由路径内部打开
     const routeMenu = childrenMenus.value.find((item) => item.path === key);
     if (routeMenu && routeMenu.query) {
-      let query = JSON.parse(routeMenu.query);
+      const query = JSON.parse(routeMenu.query);
       router.push({ path: key, query: query });
     } else {
       router.push({ path: key });
@@ -129,7 +129,7 @@ function handleSelect(key, keyPath) {
 }
 
 function activeRoutes(key) {
-  let routes = [];
+  const routes = [];
   if (childrenMenus.value && childrenMenus.value.length > 0) {
     childrenMenus.value.map((item) => {
       if (key == item.parentPath || (key == 'index' && '' == item.path)) {

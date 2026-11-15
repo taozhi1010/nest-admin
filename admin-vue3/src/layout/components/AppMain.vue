@@ -21,9 +21,11 @@
 
 <script setup lang="ts">
 import { Loading } from '@element-plus/icons-vue';
-import iframeToggle from './IframeToggle/index';
-import useTagsViewStore from '@/store/modules/tagsView';
+
 import { routeLoading } from '@/composables/useRouteLoading';
+import useTagsViewStore from '@/store/modules/tagsView';
+
+import iframeToggle from './IframeToggle/index';
 
 const tagsViewStore = useTagsViewStore();
 </script>

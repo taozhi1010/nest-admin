@@ -28,12 +28,21 @@ export default defineConfigWithVueTs(
     rules: {
       // vue
       'vue/multi-word-component-names': 'off',
+      // 项目以 JS 为主的 SFC，不强制 <script lang>
+      'vue/block-lang': 'off',
 
       // typescript
       '@typescript-eslint/ban-ts-comment': 'off',
       '@typescript-eslint/no-empty-object-type': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
-      '@typescript-eslint/no-unused-vars': 'warn',
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
+        {
+          // 大量回调签名带未使用的占位参数（如 (row, column)），不报
+          args: 'none',
+          varsIgnorePattern: '^_'
+        }
+      ],
 
       // perfectionist
       'perfectionist/sort-exports': 'warn',

@@ -65,8 +65,10 @@ function refresh() {
 
 // 右侧列表元素变化
 function dataChange(data) {
-  for (let item in props.columns) {
+  // 既有设计：父组件传入 reactive 数组引用，此处直接改 visible 以联动列显隐
+  for (const item in props.columns) {
     const key = props.columns[item].key;
+    // eslint-disable-next-line vue/no-mutating-props -- 同上，见函数头注释
     props.columns[item].visible = !data.includes(key);
   }
 }
@@ -77,7 +79,7 @@ function showColumn() {
 }
 
 // 显隐列初始默认隐藏列
-for (let item in props.columns) {
+for (const item in props.columns) {
   if (props.columns[item].visible === false) {
     value.value.push(parseInt(item));
   }

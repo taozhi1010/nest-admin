@@ -92,7 +92,9 @@ const useTagsViewStore = defineStore('tags-view', {
     delCachedView(view: TagView) {
       return new Promise((resolve) => {
         const index = this.cachedViews.indexOf(view.name!);
-        index > -1 && this.cachedViews.splice(index, 1);
+        if (index > -1) {
+          this.cachedViews.splice(index, 1);
+        }
         resolve([...this.cachedViews]);
       });
     },
@@ -151,7 +153,7 @@ const useTagsViewStore = defineStore('tags-view', {
       });
     },
     updateVisitedView(view: TagView) {
-      for (let v of this.visitedViews) {
+      for (const v of this.visitedViews) {
         if (v.path === view.path) {
           Object.assign(v, view);
           break;

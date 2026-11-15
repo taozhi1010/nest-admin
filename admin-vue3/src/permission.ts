@@ -1,16 +1,19 @@
-import router from './router';
+import { ElMessage } from 'element-plus';
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
-import type { NavigationGuardNext, RouteLocationNormalized, NavigationFailure } from 'vue-router';
-import { getToken } from '@/utils/auth';
-import { isHttp } from '@/composables/useValidator';
+
 import { isRelogin } from '@/composables/useRequest';
-import useUserStore from '@/store/modules/user';
-import useSettingsStore from '@/store/modules/settings';
-import usePermissionStore from '@/store/modules/permission';
-import useDictStore from '@/store/modules/dict';
 import { setRouteLoading } from '@/composables/useRouteLoading';
-import { ElMessage } from 'element-plus';
+import { isHttp } from '@/composables/useValidator';
+import useDictStore from '@/store/modules/dict';
+import usePermissionStore from '@/store/modules/permission';
+import useSettingsStore from '@/store/modules/settings';
+import useUserStore from '@/store/modules/user';
+import { getToken } from '@/utils/auth';
+
+import router from './router';
+
+import type { NavigationGuardNext, RouteLocationNormalized, NavigationFailure } from 'vue-router';
 
 NProgress.configure({ showSpinner: false });
 
@@ -25,7 +28,9 @@ router.beforeEach(async (to: RouteLocationNormalized, from: RouteLocationNormali
   navigatingToPath = to.path; // 记录目标路径
 
   if (getToken()) {
-    to.meta.title && useSettingsStore().setTitle(to.meta.title as string);
+    if (to.meta.title) {
+      useSettingsStore().setTitle(to.meta.title as string);
+    }
     /* has token*/
     if (to.path === '/login' || to.path === '/register') {
       next({ path: '/' });

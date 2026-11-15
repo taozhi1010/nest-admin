@@ -3,6 +3,7 @@
  * 全量字典持久化到 localStorage，启动时只校验版本号，版本变化才重新拉取
  */
 import { defineStore } from 'pinia';
+
 import { getDicts, getAllDicts, getDictVersion } from '@/api/system/dict/data';
 import { optionselect } from '@/api/system/dict/type';
 

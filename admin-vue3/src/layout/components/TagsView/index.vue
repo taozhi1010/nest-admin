@@ -47,11 +47,12 @@
 </template>
 
 <script setup lang="ts">
-import ScrollPane from './ScrollPane';
 import { getNormalPath } from '@/composables/useCommon';
-import useTagsViewStore from '@/store/modules/tagsView';
-import useSettingsStore from '@/store/modules/settings';
 import usePermissionStore from '@/store/modules/permission';
+import useSettingsStore from '@/store/modules/settings';
+import useTagsViewStore from '@/store/modules/tagsView';
+
+import ScrollPane from './ScrollPane';
 
 // ==================== Composables ====================
 const { refreshPage, closePage, closeRightPage, closeLeftPage, closeOtherPage, closeAllPage } = useTab();

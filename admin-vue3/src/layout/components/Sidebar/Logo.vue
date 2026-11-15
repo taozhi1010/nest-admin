@@ -14,8 +14,8 @@
 </template>
 
 <script setup lang="ts">
-import variables from '@/assets/styles/variables.module.scss';
 import logo from '@/assets/logo/logo.png';
+import variables from '@/assets/styles/variables.module.scss';
 import useSettingsStore from '@/store/modules/settings';
 
 const props = defineProps({

@@ -1,34 +1,35 @@
-import { createApp, type App as VueApp } from 'vue';
-import Cookies from 'js-cookie';
+import * as ElementPlusIconsVue from '@element-plus/icons-vue'; // 引入所有图标
 import ElementPlus from 'element-plus';
 import locale from 'element-plus/es/locale/lang/zh-cn'; // 中文语言
+import Cookies from 'js-cookie';
 import 'element-plus/dist/index.css'; // 引入全局样式
-import * as ElementPlusIconsVue from '@element-plus/icons-vue'; // 引入所有图标
+import { createApp, type App as VueApp } from 'vue';
 
 import '@/assets/styles/index.scss'; // global css
-
-import App from './App.vue';
-import store from './store';
-import router from './router';
-import directive from './directive'; // directive
+// 文件上传组件
+import FileUpload from '@/components/FileUpload/index.vue';
+// 图片预览组件
+import ImagePreview from '@/components/ImagePreview/index.vue';
+// 图片上传组件
+import ImageUpload from '@/components/ImageUpload/index.vue';
+// 分页组件
+import Pagination from '@/components/Pagination/index.vue';
 
 // svg 图标
 import 'virtual:svg-icons-register';
+
+// 自定义表格工具组件
+import RightToolbar from '@/components/RightToolbar/index.vue';
 import SvgIcon from '@/components/SvgIcon/index.vue';
-import elementIcons from '@/components/SvgIcon/svgicon';
 
 import './permission'; // permission control
 
-// 分页组件
-import Pagination from '@/components/Pagination/index.vue';
-// 自定义表格工具组件
-import RightToolbar from '@/components/RightToolbar/index.vue';
-// 文件上传组件
-import FileUpload from '@/components/FileUpload/index.vue';
-// 图片上传组件
-import ImageUpload from '@/components/ImageUpload/index.vue';
-// 图片预览组件
-import ImagePreview from '@/components/ImagePreview/index.vue';
+import elementIcons from '@/components/SvgIcon/svgicon';
+
+import App from './App.vue';
+import directive from './directive'; // directive
+import router from './router';
+import store from './store';
 
 const app: VueApp = createApp(App);
 

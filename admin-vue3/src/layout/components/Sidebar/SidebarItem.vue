@@ -23,9 +23,10 @@
 </template>
 
 <script setup lang="ts">
-import { isExternal } from '@/composables/useValidator';
-import AppLink from './Link';
 import { getNormalPath } from '@/composables/useCommon';
+import { isExternal } from '@/composables/useValidator';
+
+import AppLink from './Link';
 
 const props = defineProps({
   // route object
@@ -81,7 +82,7 @@ function resolvePath(routePath, routeQuery) {
     return props.basePath;
   }
   if (routeQuery) {
-    let query = JSON.parse(routeQuery);
+    const query = JSON.parse(routeQuery);
     return { path: getNormalPath(`${props.basePath}/${routePath}`), query: query };
   }
   return getNormalPath(`${props.basePath}/${routePath}`);

@@ -1,7 +1,9 @@
 import Fuse from 'fuse.js';
+
+import usePermissionStore from '@/store/modules/permission';
+
 import { getNormalPath } from './useCommon';
 import { isHttp } from './useValidator';
-import usePermissionStore from '@/store/modules/permission';
 
 // 路由搜索项接口
 export interface RouteSearchItem {

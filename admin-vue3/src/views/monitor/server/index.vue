@@ -193,6 +193,7 @@
 
 <script setup lang="ts">
 import { ElLoading } from 'element-plus';
+
 import { getServer } from '@/api/monitor/server';
 
 const server = ref<any>({});

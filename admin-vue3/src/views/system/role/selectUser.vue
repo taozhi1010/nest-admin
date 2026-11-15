@@ -50,9 +50,9 @@
 <script setup name="SelectUser">
 // ==================== 导入区域 ====================
 import { authUserSelectAll, unallocatedUserList } from '@/api/system/role';
-import { useDict } from '@/composables/useDict';
-import { useCrud } from '@/composables/useCrud';
 import { parseTime } from '@/composables/useCommon';
+import { useCrud } from '@/composables/useCrud';
+import { useDict } from '@/composables/useDict';
 
 // ==================== Props 和 Emits ====================
 const props = defineProps({

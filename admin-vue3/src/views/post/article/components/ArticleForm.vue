@@ -88,11 +88,12 @@
 </template>
 
 <script setup name="ArticleForm">
+import { useRouter } from 'vue-router';
+
 import { addArticle, updateArticle } from '@/api/post/article';
-import { useDict } from '@/composables/useDict';
 import ImageUploadCover from '@/components/ImageUploadCover/index.vue';
 import MdViewer from '@/components/MdViewer/index.vue';
-import { useRouter } from 'vue-router';
+import { useDict } from '@/composables/useDict';
 
 const router = useRouter();
 

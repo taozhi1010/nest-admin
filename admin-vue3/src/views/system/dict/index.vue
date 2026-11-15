@@ -159,15 +159,16 @@
 </template>
 
 <script setup name="Dict">
-import dictGroupEdit from './components/dictGroupEdit';
-import dictDataEdit from './components/dictDataEdit';
-import { listType, delType, refreshCache } from '@/api/system/dict/type';
 import { listData, delData } from '@/api/system/dict/data';
-import { useDict } from '@/composables/useDict';
-import useDictStore from '@/store/modules/dict';
-import { resetForm } from '@/composables/useForm';
+import { listType, delType, refreshCache } from '@/api/system/dict/type';
 import { parseTime } from '@/composables/useCommon';
+import { useDict } from '@/composables/useDict';
+import { resetForm } from '@/composables/useForm';
 import { download } from '@/composables/useRequest';
+import useDictStore from '@/store/modules/dict';
+
+import dictDataEdit from './components/dictDataEdit';
+import dictGroupEdit from './components/dictGroupEdit';
 
 const { sys_normal_disable, getDictLabel } = useDict('sys_normal_disable');
 

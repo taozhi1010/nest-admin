@@ -102,14 +102,14 @@
 </template>
 
 <script setup lang="ts">
-import CrontabSecond from './second.vue';
-import CrontabMin from './min.vue';
-import CrontabHour from './hour.vue';
 import CrontabDay from './day.vue';
+import CrontabHour from './hour.vue';
+import CrontabMin from './min.vue';
 import CrontabMonth from './month.vue';
+import CrontabResult from './result.vue';
+import CrontabSecond from './second.vue';
 import CrontabWeek from './week.vue';
 import CrontabYear from './year.vue';
-import CrontabResult from './result.vue';
 
 // ==================== 事件与属性 ====================
 const emit = defineEmits(['hide', 'fill']);
@@ -174,7 +174,7 @@ function resolveExp() {
     const arr = crontab.expression.split(/\s+/);
     if (arr.length >= 6) {
       //6 位以上是合法表达式
-      let obj = {
+      const obj = {
         second: arr[0],
         min: arr[1],
         hour: arr[2],
