@@ -4,8 +4,8 @@ FROM node:20-bookworm-slim
 # 设置工作目录
 WORKDIR /app
 
-# 安装 pnpm（与 pnpm-lock.yaml 的 v9 格式匹配）
-RUN npm install -g pnpm@9 --registry=https://mirrors.cloud.tencent.com/npm/
+# 安装 pnpm（钉确切版本，与本地 npx pnpm@9.0.5 一致；lockfile v9 格式匹配）
+RUN npm install -g pnpm@9.0.5 --registry=https://mirrors.cloud.tencent.com/npm/
 
 # 复制依赖清单
 COPY package.json pnpm-lock.yaml ./
