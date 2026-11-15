@@ -1,8 +1,8 @@
 {
-  "printWidth": 9999,
+  "printWidth": 190,
   "tabWidth": 2,
   "useTabs": false,
-  "semi": false,
+  "semi": true,
   "singleQuote": true,
   "quoteProps": "as-needed",
   "jsxSingleQuote": true,
@@ -12,7 +12,7 @@
   "arrowParens": "always",
   "htmlWhitespaceSensitivity": "ignore",
   "vueIndentScriptAndStyle": false,
-  "endOfLine": "lf",
+  "endOfLine": "auto",
   "overrides": [
     {
       "files": "*.vue",
