@@ -11,7 +11,7 @@
     "build:prod": "vite build",
     "build:stage": "vite build --mode staging",
     "preview": "vite preview",
-    "prepare": "cd .. && node admin-vue3/node_modules/husky/bin.js admin-vue3/.husky"
+    "prepare": "cd .. && node admin-vue3/node_modules/husky/bin.js admin-vue3/.husky || true"
   },
   "dependencies": {
     "@element-plus/icons-vue": "2.3.2",

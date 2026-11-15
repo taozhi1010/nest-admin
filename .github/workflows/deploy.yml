@@ -127,10 +127,12 @@ jobs:
 
             # 前端单独构建；如果镜像源异常，保留旧前端，不阻塞后端部署
             echo "🔨 构建前端镜像..."
+            FRONTEND_BUILD_FAILED=0
             if docker compose build --no-cache admin-vue3; then
               echo "🚀 启动前端容器..."
               docker compose up -d admin-vue3
             else
+              FRONTEND_BUILD_FAILED=1
               echo "⚠️ 前端镜像构建失败，尝试保留现有前端镜像并继续部署后端"
               docker compose up -d --no-build admin-vue3 || true
             fi
@@ -168,3 +170,9 @@ jobs:
             echo "前端访问地址：http://${{ secrets.SERVER_HOST }}:8888"
             echo "后端 API 地址：http://${{ secrets.SERVER_HOST }}:8080"
             echo "=========================================="
+
+            # 后端已上线，但前端构建失败时把本次运行标红，防止"部署成功"假象掩盖前端未更新
+            if [ "$FRONTEND_BUILD_FAILED" = "1" ]; then
+              echo "❌ 前端镜像构建失败，线上前端仍为旧版本！请向上翻阅构建日志排查"
+              exit 1
+            fi
