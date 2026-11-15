@@ -126,7 +126,7 @@ export class RoleService {
       select: ['roleId'],
     });
 
-    const values = updateRoleDto.deptIds.map((id) => {
+    const values = (updateRoleDto.deptIds ?? []).map((id) => {
       return {
         roleId: updateRoleDto.roleId,
         deptId: id,
@@ -134,6 +134,7 @@ export class RoleService {
     });
     const dto = { ...updateRoleDto };
     delete (dto as any).deptIds;
+    delete (dto as any).menuIds;
 
     // 部门关联"先删后插"与角色信息更新打包为事务，任一步失败整体回滚
     const res = await this.dataSource.transaction(async (manager) => {
@@ -143,7 +144,9 @@ export class RoleService {
           roleId: updateRoleDto.roleId,
         });
       }
-      await manager.insert(SysRoleWithDeptEntity, values);
+      if (values.length) {
+        await manager.insert(SysRoleWithDeptEntity, values);
+      }
       return await manager.update(SysRoleEntity, { roleId: updateRoleDto.roleId }, dto);
     });
     return ResultData.ok(res);
