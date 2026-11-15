@@ -85,7 +85,7 @@ export class UserExcelService {
         用户邮箱: 'email',
         手机号码: 'phonenumber',
         性别: 'sex',
-        帐号状态: 'status',
+        账号状态: 'status',
         备注: 'remark',
       };
 
@@ -149,7 +149,7 @@ export class UserExcelService {
               if (['正常', '停用'].includes(value)) {
                 userData.status = value === '正常' ? '0' : value === '停用' ? '1' : '0';
               } else {
-                rowErrors.push(`帐号状态格式不正确（应为：正常/停用）：${value}`);
+                rowErrors.push(`账号状态格式不正确（应为：正常/停用）：${value}`);
               }
             } else if (key === 'email' && value) {
               // 邮箱格式验证
@@ -303,7 +303,7 @@ export class UserExcelService {
         { header: '用户邮箱', key: 'email', width: 25 },
         { header: '手机号码', key: 'phonenumber', width: 15 },
         { header: '性别', key: 'sex', width: 10, validation: ['男', '女', '未知'] },
-        { header: '帐号状态', key: 'status', width: 15, validation: ['正常', '停用'] },
+        { header: '账号状态', key: 'status', width: 15, validation: ['正常', '停用'] },
         { header: '备注', key: 'remark', width: 30 },
       ],
       exampleData: {
