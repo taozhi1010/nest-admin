@@ -135,7 +135,7 @@ export class AuthService {
     /**
      * 设置公司名称
      */
-    userData['deptName'] = deptData.deptName || '';
+    userData['deptName'] = deptData?.deptName || '';
     const roles = userData.roles.map((item) => item.roleKey);
 
     const userInfo = {
