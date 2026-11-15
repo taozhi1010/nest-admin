@@ -302,6 +302,10 @@ const getDeptAllCheckedKeys = () => {
 };
 
 // ==================== 角色管理（CRUD 状态机） ====================
+
+// 修改对话框待回显的菜单勾选 key（对话框打开后才应用到菜单树）
+let pendingMenuCheckedKeys = [];
+
 const role = useCrud({
   api: {
     // 列表查询注入日期范围参数
@@ -312,16 +316,9 @@ const role = useCrud({
       if (response.data) {
         response.data.roleSort = Number(response.data.roleSort);
       }
-      // 获取角色菜单权限
+      // 获取角色菜单权限；勾选回显暂存，待对话框打开、菜单树挂载后再应用
       const roleMenuResponse = await getRoleMenuTreeselect(roleId);
-      nextTick(() => {
-        const checkedKeys = roleMenuResponse.data.checkedKeys;
-        checkedKeys.forEach((v) => {
-          nextTick(() => {
-            menuRef.value.setChecked(v, true, false);
-          });
-        });
-      });
+      pendingMenuCheckedKeys = roleMenuResponse.data.checkedKeys || [];
       return response;
     },
     // 新增/修改前挂载选中的菜单节点
@@ -376,7 +373,17 @@ const handleAdd = () => {
 const crudHandleUpdate = role.handleUpdate;
 const handleUpdate = async (row) => {
   resetTreeState();
+  pendingMenuCheckedKeys = [];
   await crudHandleUpdate(row);
+  // 对话框已打开、菜单树已挂载，再逐个勾选回显（deep=false 避免父子联动级联勾选）
+  nextTick(() => {
+    if (!menuRef.value) return;
+    pendingMenuCheckedKeys.forEach((v) => {
+      nextTick(() => {
+        menuRef.value.setChecked(v, true, false);
+      });
+    });
+  });
 };
 
 // ==================== 页面特有操作 ====================
@@ -434,9 +441,14 @@ const handleDataScope = async (row) => {
     role.title = '分配数据权限';
 
     nextTick(() => {
-      if (deptRef.value) {
-        deptRef.value.setCheckedKeys(deptTreeResponse.data.checkedKeys);
-      }
+      if (!deptRef.value) return;
+      // 逐个 setChecked 且不级联：父子联动下 setCheckedKeys 会把半选父节点膨胀成整棵子树
+      const checkedKeys = deptTreeResponse.data.checkedKeys || [];
+      checkedKeys.forEach((v) => {
+        nextTick(() => {
+          deptRef.value.setChecked(v, true, false);
+        });
+      });
     });
   } catch (e) {
     console.error('获取数据权限信息失败:', e);
