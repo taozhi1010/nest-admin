@@ -35,7 +35,9 @@ export default function createAutoImport(): PluginOption[] {
       dirs: ['./src/composables'], // 自动扫描 composables 目录下所有文件
 
       // 全局导入，无需手动 import
-      injectAtEnd: true
+      injectAtEnd: true,
+      // 支持在模板中使用自动导入的 API（如 dayjs），默认仅对 script 生效
+      vueTemplate: true
     }),
     // 配置组件自动导入
     Components({
