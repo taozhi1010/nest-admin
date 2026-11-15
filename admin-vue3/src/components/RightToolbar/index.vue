@@ -2,13 +2,13 @@
   <div class="top-right-btn" :style="style">
     <el-row>
       <el-tooltip v-if="showSearch" class="item" :content="showSearch ? '隐藏搜索' : '显示搜索'" effect="dark" placement="top">
-        <el-button circle icon="Search" @click="toggleSearch()" />
+        <el-button circle :icon="Search" @click="toggleSearch()" />
       </el-tooltip>
       <el-tooltip class="item" content="刷新" effect="dark" placement="top">
-        <el-button circle icon="Refresh" @click="refresh()" />
+        <el-button circle :icon="Refresh" @click="refresh()" />
       </el-tooltip>
       <el-tooltip v-if="columns" class="item" content="显隐列" effect="dark" placement="top">
-        <el-button circle icon="Menu" @click="showColumn()" />
+        <el-button circle :icon="Menu" @click="showColumn()" />
       </el-tooltip>
     </el-row>
     <el-dialog v-model="open" append-to-body :title="title">
@@ -18,6 +18,7 @@
 </template>
 
 <script setup lang="ts">
+import { Menu, Refresh, Search } from '@element-plus/icons-vue';
 const props = defineProps({
   showSearch: {
     type: Boolean,

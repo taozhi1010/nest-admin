@@ -108,10 +108,10 @@
       <template #footer>
         <div class="crop-dialog-footer">
           <div class="footer-left">
-            <el-button icon="Plus" @click="changeScale(1)" title="放大" circle />
-            <el-button icon="Minus" @click="changeScale(-1)" title="缩小" circle />
-            <el-button icon="RefreshLeft" @click="rotateLeft" title="向左旋转" circle />
-            <el-button icon="RefreshRight" @click="rotateRight" title="向右旋转" circle />
+            <el-button :icon="Plus" @click="changeScale(1)" title="放大" circle />
+            <el-button :icon="Minus" @click="changeScale(-1)" title="缩小" circle />
+            <el-button :icon="RefreshLeft" @click="rotateLeft" title="向左旋转" circle />
+            <el-button :icon="RefreshRight" @click="rotateRight" title="向右旋转" circle />
           </div>
           <div class="footer-right">
             <el-button @click="closeCropDialog">取 消</el-button>
@@ -125,7 +125,7 @@
 </template>
 
 <script setup lang="ts">
-import { Plus, ZoomIn, Delete, Refresh } from '@element-plus/icons-vue';
+import { Delete, Minus, Plus, Refresh, RefreshLeft, RefreshRight, ZoomIn } from '@element-plus/icons-vue';
 import { VueCropper } from 'vue-cropper';
 import 'vue-cropper/dist/index.css';
 

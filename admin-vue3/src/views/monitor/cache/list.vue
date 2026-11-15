@@ -6,7 +6,7 @@
           <template #header>
             <collection style="width: 1em; height: 1em; vertical-align: middle" />
             <span style="vertical-align: middle">缓存列表</span>
-            <el-button icon="Refresh" link style="float: right; padding: 3px 0" type="primary" @click="refreshCacheNames()" />
+            <el-button :icon="Refresh" link style="float: right; padding: 3px 0" type="primary" @click="refreshCacheNames()" />
           </template>
           <el-table v-loading="loading" :data="cacheNames" height="100%" highlight-current-row style="width: 100%" @row-click="getCacheKeys">
             <el-table-column label="序号" type="index" width="60" />
@@ -16,7 +16,7 @@
             <el-table-column align="center" label="备注" prop="remark" :show-overflow-tooltip="true" />
             <el-table-column align="center" class-name="small-padding fixed-width" label="操作" width="60">
               <template #default="scope">
-                <el-button icon="Delete" link type="primary" @click="handleClearCacheName(scope.row)" />
+                <el-button :icon="Delete" link type="primary" @click="handleClearCacheName(scope.row)" />
               </template>
             </el-table-column>
           </el-table>
@@ -28,14 +28,14 @@
           <template #header>
             <key style="width: 1em; height: 1em; vertical-align: middle" />
             <span style="vertical-align: middle">键名列表</span>
-            <el-button icon="Refresh" link style="float: right; padding: 3px 0" type="primary" @click="refreshCacheKeys()" />
+            <el-button :icon="Refresh" link style="float: right; padding: 3px 0" type="primary" @click="refreshCacheKeys()" />
           </template>
           <el-table v-loading="subLoading" :data="cacheKeys" height="100%" highlight-current-row style="width: 100%" @row-click="handleCacheValue">
             <el-table-column label="序号" type="index" width="60" />
             <el-table-column align="center" :formatter="keyFormatter" label="缓存键名" :show-overflow-tooltip="true" />
             <el-table-column align="center" class-name="small-padding fixed-width" label="操作" width="60">
               <template #default="scope">
-                <el-button icon="Delete" link type="primary" @click="handleClearCacheKey(scope.row)" />
+                <el-button :icon="Delete" link type="primary" @click="handleClearCacheKey(scope.row)" />
               </template>
             </el-table-column>
           </el-table>
@@ -47,7 +47,7 @@
           <template #header>
             <document style="width: 1em; height: 1em; vertical-align: middle" />
             <span style="vertical-align: middle">缓存内容</span>
-            <el-button icon="Refresh" link style="float: right; padding: 3px 0" type="primary" @click="handleClearCacheAll()">清理全部</el-button>
+            <el-button :icon="Refresh" link style="float: right; padding: 3px 0" type="primary" @click="handleClearCacheAll()">清理全部</el-button>
           </template>
           <el-form :model="cacheForm">
             <el-row :gutter="32">
@@ -75,6 +75,8 @@
 </template>
 
 <script setup name="CacheList">
+import { Collection, Delete, Document, Key, Refresh } from '@element-plus/icons-vue';
+
 import { listCacheName, listCacheKey, getCacheValue, clearCacheName, clearCacheKey, clearCacheAll } from '@/api/monitor/cache';
 
 const cacheNames = ref([]);

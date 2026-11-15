@@ -50,6 +50,8 @@
 </template>
 
 <script setup lang="ts">
+import { Lock, User } from '@element-plus/icons-vue';
+
 import { authCodeInfo, getValidateCode, getUserCookie, setUserCookie, loginLoading } from '@/composables/auth/useLogin';
 import useUserStore from '@/store/modules/user';
 

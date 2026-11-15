@@ -25,16 +25,16 @@
           </el-upload>
         </el-col>
         <el-col :lg="{ span: 1, offset: 2 }" :md="2">
-          <el-button icon="Plus" @click="changeScale(1)" />
+          <el-button :icon="Plus" @click="changeScale(1)" />
         </el-col>
         <el-col :lg="{ span: 1, offset: 1 }" :md="2">
-          <el-button icon="Minus" @click="changeScale(-1)" />
+          <el-button :icon="Minus" @click="changeScale(-1)" />
         </el-col>
         <el-col :lg="{ span: 1, offset: 1 }" :md="2">
-          <el-button icon="RefreshLeft" @click="rotateLeft()" />
+          <el-button :icon="RefreshLeft" @click="rotateLeft()" />
         </el-col>
         <el-col :lg="{ span: 1, offset: 1 }" :md="2">
-          <el-button icon="RefreshRight" @click="rotateRight()" />
+          <el-button :icon="RefreshRight" @click="rotateRight()" />
         </el-col>
         <el-col :lg="{ span: 2, offset: 6 }" :md="2">
           <el-button type="primary" @click="submitCrop()">确认</el-button>
@@ -46,6 +46,7 @@
 
 <script setup lang="ts">
 // ==================== 导入区域 ====================
+import { Minus, Plus, RefreshLeft, RefreshRight, Upload } from '@element-plus/icons-vue';
 import 'vue-cropper/dist/index.css';
 import { VueCropper } from 'vue-cropper';
 

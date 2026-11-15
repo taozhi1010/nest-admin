@@ -98,6 +98,7 @@
 </template>
 
 <script setup name="Cache">
+import { Monitor, Odometer, PieChart } from '@element-plus/icons-vue';
 import * as echarts from 'echarts';
 
 import { getCache } from '@/api/monitor/cache';

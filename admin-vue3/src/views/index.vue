@@ -12,9 +12,9 @@
             <el-tag type="danger" class="free-tag">免费开源</el-tag>
           </div>
           <div class="action-buttons">
-            <el-button icon="MostlyCloudy" type="primary" @click="goTarget('https://gitee.com/tao-zhi/nest-admin')">访问码云</el-button>
-            <el-button icon="HomeFilled" @click="goTarget('https://nest-admin.dooring.vip/prod-api/swagger-ui')">访问文档</el-button>
-            <el-button v-if="isDev" icon="Reading" @click="goTarget('/manual/')">项目文档</el-button>
+            <el-button :icon="MostlyCloudy" type="primary" @click="goTarget('https://gitee.com/tao-zhi/nest-admin')">访问码云</el-button>
+            <el-button :icon="HomeFilled" @click="goTarget('https://nest-admin.dooring.vip/prod-api/swagger-ui')">访问文档</el-button>
+            <el-button v-if="isDev" :icon="Reading" @click="goTarget('/manual/')">项目文档</el-button>
           </div>
         </div>
       </el-col>
@@ -81,7 +81,7 @@
                   <p class="doc-desc">{{ doc.description }}</p>
                 </div>
                 <div class="doc-action">
-                  <el-button :type="doc.type" size="small" icon="TopRight">查看</el-button>
+                  <el-button :type="doc.type" size="small" :icon="TopRight">查看</el-button>
                 </div>
               </div>
             </el-card>
@@ -142,7 +142,7 @@
 </template>
 
 <script setup name="Index">
-import { Monitor, ChatDotRound, Guide, Goods } from '@element-plus/icons-vue';
+import { ChatDotRound, Goods, Guide, HomeFilled, Monitor, MostlyCloudy, Reading, TopRight } from '@element-plus/icons-vue';
 
 const version = ref('1.0.0');
 const isDev = import.meta.env.DEV;

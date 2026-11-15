@@ -14,6 +14,7 @@
 </template>
 
 <script setup name="CaptchaCode">
+import { Loading } from '@element-plus/icons-vue';
 defineProps({
   // 验证码图片的 base64 字符串
   imgUrl: {

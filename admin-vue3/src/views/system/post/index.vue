@@ -15,20 +15,20 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button icon="Search" type="primary" @click="post.handleQuery">搜索</el-button>
-          <el-button icon="Refresh" @click="post.resetQuery">重置</el-button>
+          <el-button :icon="Search" type="primary" @click="post.handleQuery">搜索</el-button>
+          <el-button :icon="Refresh" @click="post.resetQuery">重置</el-button>
         </el-form-item>
       </el-form>
 
       <el-row class="mb8" :gutter="10">
         <el-col :span="1.5">
-          <el-button v-hasPermi="['system:post:add']" icon="Plus" plain type="primary" @click="post.handleAdd">新增</el-button>
+          <el-button v-hasPermi="['system:post:add']" :icon="Plus" plain type="primary" @click="post.handleAdd">新增</el-button>
         </el-col>
         <el-col :span="1.5">
-          <el-button v-hasPermi="['system:post:remove']" :disabled="post.multiple" icon="Delete" plain type="danger" @click="post.handleDelete">删除</el-button>
+          <el-button v-hasPermi="['system:post:remove']" :disabled="post.multiple" :icon="Delete" plain type="danger" @click="post.handleDelete">删除</el-button>
         </el-col>
         <el-col :span="1.5">
-          <el-button v-hasPermi="['system:post:export']" icon="Download" plain type="warning" @click="post.handleExport">导出</el-button>
+          <el-button v-hasPermi="['system:post:export']" :icon="Download" plain type="warning" @click="post.handleExport">导出</el-button>
         </el-col>
         <right-toolbar v-model:show-search="post.showSearch" @query-table="post.getList" />
       </el-row>
@@ -51,8 +51,8 @@
         </el-table-column>
         <el-table-column align="center" class-name="small-padding fixed-width" label="操作" width="180">
           <template #default="scope">
-            <el-button v-hasPermi="['system:post:edit']" icon="Edit" link type="primary" @click="post.handleUpdate(scope.row)">修改</el-button>
-            <el-button v-hasPermi="['system:post:remove']" icon="Delete" link type="primary" @click="post.handleDelete(scope.row)">删除</el-button>
+            <el-button v-hasPermi="['system:post:edit']" :icon="Edit" link type="primary" @click="post.handleUpdate(scope.row)">修改</el-button>
+            <el-button v-hasPermi="['system:post:remove']" :icon="Delete" link type="primary" @click="post.handleDelete(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -92,6 +92,8 @@
 </template>
 
 <script setup name="Post">
+import { Delete, Download, Edit, Plus, Refresh, Search } from '@element-plus/icons-vue';
+
 import { listPost, addPost, delPost, getPost, updatePost } from '@/api/system/post';
 import { useCrud } from '@/composables/useCrud';
 import { useDict } from '@/composables/useDict';
