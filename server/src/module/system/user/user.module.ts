@@ -1,7 +1,5 @@
 import { Module, Global } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { JwtModule } from '@nestjs/jwt';
-import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UserService } from './user.service';
 import { UserExcelService } from './user-excel.service';
 import { UserController } from './user.controller';
@@ -16,13 +14,6 @@ import { SysPostEntity } from '../post/entities/post.entity';
 @Module({
   imports: [
     TypeOrmModule.forFeature([UserEntity, SysDeptEntity, SysRoleEntity, SysPostEntity, SysUserWithPostEntity, SysUserWithRoleEntity]),
-    JwtModule.registerAsync({
-      imports: [ConfigModule],
-      useFactory: async (config: ConfigService) => ({
-        secret: config.get('jwt.secretkey'),
-      }),
-      inject: [ConfigService],
-    }),
   ],
   controllers: [UserController],
   providers: [UserService, UserExcelService],

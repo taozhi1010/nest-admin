@@ -4,15 +4,15 @@ import { AuthGuard } from '@nestjs/passport';
 import { pathToRegexp } from 'path-to-regexp';
 import { ExecutionContext, ForbiddenException, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 
-import { UserService } from 'src/module/system/user/user.service';
+import { AuthService } from 'src/module/system/auth/auth.service';
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
   private globalWhiteList = [];
   constructor(
     private readonly reflector: Reflector,
-    @Inject(UserService)
-    private readonly userService: UserService,
+    @Inject(AuthService)
+    private readonly authService: AuthService,
     private readonly config: ConfigService,
   ) {
     super();
@@ -28,7 +28,6 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     }
 
     const isInWhiteList = this.checkWhiteList(ctx);
-    console.log('isInWhiteList', isInWhiteList);
     if (isInWhiteList) {
       await this.jumpActivate(ctx);
       return true;
@@ -38,7 +37,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     const accessToken = req.get('Authorization');
 
     if (!accessToken) throw new ForbiddenException('请重新登录');
-    const atUserId = await this.userService.parseToken(accessToken);
+    const atUserId = await this.authService.parseToken(accessToken);
     if (!atUserId) throw new UnauthorizedException('当前登录已过期，请重新登录');
     return await this.activate(ctx);
   }

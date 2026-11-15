@@ -1,6 +1,6 @@
-import { Controller, Get, Post, Body, HttpCode, Res, Headers, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, HttpCode, Res, Query } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBody, ApiQuery } from '@nestjs/swagger';
-import { MainService } from './main.service';
+import { AuthService } from './auth.service';
 import { RegisterDto, LoginDto, SendEmailCodeDto } from './dto/index';
 import { createMath } from 'src/common/utils/captcha';
 import { isCaptchaRequired } from 'src/common/utils/login-captcha';
@@ -9,19 +9,20 @@ import { GenerateUUID } from 'src/common/utils/index';
 import { RedisService } from 'src/module/common/redis/redis.service';
 import { MailService } from 'src/module/common/mail/mail.service';
 import { CacheEnum } from 'src/common/enum/index';
-import { ConfigService } from 'src/module/system/config/config.service';
+import { ConfigService } from '../config/config.service';
 import { ClientInfo, ClientInfoDto } from 'src/common/decorators/common.decorator';
-import { NotRequireAuth, User, UserDto } from 'src/module/system/user/user.decorator';
+import { NotRequireAuth, User, UserDto } from '../user/user.decorator';
 
-@ApiTags('根目录')
+@ApiTags('认证')
 @Controller('/')
-export class MainController {
+export class AuthController {
   constructor(
-    private readonly mainService: MainService,
+    private readonly authService: AuthService,
     private readonly redisService: RedisService,
     private readonly configService: ConfigService,
     private readonly mailService: MailService,
   ) {}
+
   @ApiOperation({
     summary: '用户登录',
   })
@@ -32,7 +33,7 @@ export class MainController {
   @Post('/login')
   @HttpCode(200)
   login(@Body() user: LoginDto, @ClientInfo() clientInfo: ClientInfoDto) {
-    return this.mainService.login(user, clientInfo);
+    return this.authService.login(user, clientInfo);
   }
 
   @ApiOperation({
@@ -45,11 +46,8 @@ export class MainController {
   @NotRequireAuth()
   @Post('/logout')
   @HttpCode(200)
-  async logout(@User() user: UserDto, @ClientInfo() clientInfo: ClientInfoDto) {
-    if (user?.token) {
-      await this.redisService.del(`${CacheEnum.LOGIN_TOKEN_KEY}${user.token}`);
-    }
-    return this.mainService.logout(clientInfo);
+  logout(@User() user: UserDto, @ClientInfo() clientInfo: ClientInfoDto) {
+    return this.authService.logout(user, clientInfo);
   }
 
   @ApiOperation({
@@ -62,7 +60,7 @@ export class MainController {
   @Post('/register')
   @HttpCode(200)
   register(@Body() user: RegisterDto, @ClientInfo() clientInfo: ClientInfoDto) {
-    return this.mainService.register(user, clientInfo.ipaddr);
+    return this.authService.register(user, clientInfo.ipaddr);
   }
 
   @ApiOperation({
@@ -80,7 +78,7 @@ export class MainController {
     if (name.length < 2 || name.length > 50) {
       return ResultData.fail(400, '账号长度必须为 2 到 50 个字符');
     }
-    return await this.mainService.checkUsername(name);
+    return await this.authService.checkUsername(name);
   }
 
   @ApiOperation({
@@ -103,7 +101,7 @@ export class MainController {
   @Post('/register/emailCode')
   @HttpCode(200)
   sendEmailCode(@Body() dto: SendEmailCodeDto, @ClientInfo() clientInfo: ClientInfoDto) {
-    return this.mainService.sendEmailCode(dto.email, clientInfo.ipaddr);
+    return this.authService.sendEmailCode(dto.email, clientInfo.ipaddr);
   }
 
   @ApiOperation({
@@ -164,6 +162,6 @@ export class MainController {
   @Get('/getRouters')
   getRouters(@User() user: UserDto) {
     const userId = user.user.userId.toString();
-    return this.mainService.getRouters(+userId);
+    return this.authService.getRouters(+userId);
   }
 }

@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Put, Param, Query, Res, Delete, Request, U
 import { ApiTags, ApiOperation, ApiBody, ApiConsumes, ApiQuery, ApiBearerAuth } from '@nestjs/swagger';
 import { UserService } from './user.service';
 import { UserExcelService } from './user-excel.service';
+import { AuthService } from '../auth/auth.service';
 import { Response } from 'express';
 import { RequirePermission } from 'src/common/decorators/require-premission.decorator';
 import { RequireRole } from 'src/common/decorators/require-role.decorator';
@@ -20,6 +21,7 @@ export class UserController {
   constructor(
     private readonly userService: UserService,
     private readonly userExcelService: UserExcelService,
+    private readonly authService: AuthService,
     private readonly uploadService: UploadService,
   ) {}
 
@@ -175,7 +177,7 @@ export class UserController {
     const uuid = user.token;
 
     const result = await this.userService.update(updateUserDto, userId);
-    await this.userService.updateRedisUserRolesAndPermissions(uuid, userId);
+    await this.authService.updateRedisUserRolesAndPermissions(uuid, userId);
 
     return result;
   }
