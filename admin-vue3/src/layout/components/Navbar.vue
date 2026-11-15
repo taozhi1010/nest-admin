@@ -41,7 +41,6 @@
 
 <script setup lang="ts">
 import { CaretBottom } from '@element-plus/icons-vue';
-import { ElMessageBox } from 'element-plus';
 
 import Breadcrumb from '@/components/Breadcrumb';
 import Hamburger from '@/components/Hamburger';
