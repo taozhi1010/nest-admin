@@ -4,12 +4,10 @@
     <div class="main-card">
       <el-form v-show="notice.showSearch" ref="queryRef" v-no-enter :inline="true" :model="notice.queryParams">
         <el-form-item label="公告标题" prop="noticeTitle">
-          <el-input v-model.trim="notice.queryParams.noticeTitle" clearable placeholder="请输入公告标题"
-            @keyup.enter="notice.handleQuery" />
+          <el-input v-model.trim="notice.queryParams.noticeTitle" clearable placeholder="请输入公告标题" @keyup.enter="notice.handleQuery" />
         </el-form-item>
         <el-form-item label="操作人员" prop="createBy">
-          <el-input v-model.trim="notice.queryParams.createBy" clearable placeholder="请输入操作人员"
-            @keyup.enter="notice.handleQuery" />
+          <el-input v-model.trim="notice.queryParams.createBy" clearable placeholder="请输入操作人员" @keyup.enter="notice.handleQuery" />
         </el-form-item>
         <el-form-item label="类型" prop="noticeType">
           <el-select v-model="notice.queryParams.noticeType" clearable placeholder="公告类型" style="width: 100px">
@@ -24,12 +22,10 @@
 
       <el-row class="mb8" :gutter="10">
         <el-col :span="1.5">
-          <el-button v-hasPermi="['system:notice:add']" icon="Plus" plain type="primary"
-            @click="notice.handleAdd">新增</el-button>
+          <el-button v-hasPermi="['system:notice:add']" icon="Plus" plain type="primary" @click="notice.handleAdd">新增</el-button>
         </el-col>
         <el-col :span="1.5">
-          <el-button v-hasPermi="['system:notice:remove']" :disabled="notice.multiple" icon="Delete" plain type="danger"
-            @click="notice.handleDelete">删除</el-button>
+          <el-button v-hasPermi="['system:notice:remove']" :disabled="notice.multiple" icon="Delete" plain type="danger" @click="notice.handleDelete">删除</el-button>
         </el-col>
         <right-toolbar v-model:show-search="notice.showSearch" @query-table="notice.getList" />
       </el-row>
@@ -39,12 +35,11 @@
         <el-table-column align="center" label="序号" type="index" width="60" />
         <el-table-column align="center" label="公告标题" prop="noticeTitle" :show-overflow-tooltip="true" min-width="300">
           <template #default="scope">
-            <div style="display: flex; justify-content: center; align-items: center; gap: 8px; width: 100%;">
+            <div style="display: flex; justify-content: center; align-items: center; gap: 8px; width: 100%">
               <el-tag :type="getDictTagType('sys_notice_type', scope.row.noticeType)" effect="light" size="small">
                 {{ getDictLabel('sys_notice_type', scope.row.noticeType) }}
               </el-tag>
-              <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ scope.row.noticeTitle
-              }}</span>
+              <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{ scope.row.noticeTitle }}</span>
             </div>
           </template>
         </el-table-column>
@@ -61,24 +56,18 @@
         </el-table-column>
         <el-table-column align="center" label="操作" width="160">
           <template #default="scope">
-            <el-button v-hasPermi="['system:notice:edit']" icon="Edit" link type="primary"
-              @click="notice.handleUpdate(scope.row)">
-              修改
-            </el-button>
-            <el-button v-hasPermi="['system:notice:remove']" icon="Delete" link type="danger"
-              @click="notice.handleDelete(scope.row)">删除</el-button>
+            <el-button v-hasPermi="['system:notice:edit']" icon="Edit" link type="primary" @click="notice.handleUpdate(scope.row)">修改</el-button>
+            <el-button v-hasPermi="['system:notice:remove']" icon="Delete" link type="danger" @click="notice.handleDelete(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
 
-      <pagination v-show="notice.total > 0" v-model:limit="notice.queryParams.pageSize"
-        v-model:page="notice.queryParams.pageNum" :total="notice.total" @pagination="notice.getList" />
+      <pagination v-show="notice.total > 0" v-model:limit="notice.queryParams.pageSize" v-model:page="notice.queryParams.pageNum" :total="notice.total" @pagination="notice.getList" />
 
       <!-- 添加或修改公告抽屉 -->
       <el-drawer v-model="notice.open" :title="notice.title" append-to-body class="drawer-full-width notice-drawer">
         <div class="drawer-content">
-          <el-form ref="noticeFormRef" v-no-enter v-loading="notice.formLoading" label-width="80px" :model="notice.form"
-            :rules="rules" class="notice-form">
+          <el-form ref="noticeFormRef" v-no-enter v-loading="notice.formLoading" label-width="80px" :model="notice.form" :rules="rules" class="notice-form">
             <el-row :gutter="20">
               <el-col :span="12">
                 <el-form-item label="公告标题" prop="noticeTitle">
@@ -88,8 +77,7 @@
               <el-col :span="6">
                 <el-form-item label="公告类型" prop="noticeType">
                   <el-select v-model="notice.form.noticeType" placeholder="请选择">
-                    <el-option v-for="dict in sys_notice_type" :key="dict.value" :label="dict.label"
-                      :value="dict.value" />
+                    <el-option v-for="dict in sys_notice_type" :key="dict.value" :label="dict.label" :value="dict.value" />
                   </el-select>
                 </el-form-item>
               </el-col>
