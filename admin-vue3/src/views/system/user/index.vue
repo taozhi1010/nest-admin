@@ -286,7 +286,7 @@
  * 4，用户再添加新用户的时候，需要做账号检测，已有账号不能再次添加
  */
 
-import { changeUserStatus, listUser, resetUserPwd, delUser, getUser, deptTreeSelect, getAuthRole, updateAuthRole, importData } from '@/api/system/user';
+import { changeUserStatus, listUser, resetUserPwd, delUser, getUser, deptTreeSelect, getAuthRole, updateAuthRole, importData, addUser, updateUser } from '@/api/system/user';
 import { addDateRange } from '@/composables/useCommon';
 import { useCrud } from '@/composables/useCrud';
 import { useDict } from '@/composables/useDict';
@@ -324,6 +324,9 @@ const user = useCrud({
   api: {
     // 列表查询注入日期范围参数
     list: (params) => listUser(addDateRange(params, dateRange.value)),
+    // 新增/修改走 useCrud 通用提交（postIds/roleIds 已在 form 内，页面只覆写对话框打开逻辑取岗位/角色选项）
+    add: addUser,
+    update: updateUser,
     del: delUser
   },
   idKey: 'userId',
@@ -757,8 +760,8 @@ const handleUpdate = async (row) => {
       sex: userData.sex,
       status: userData.status,
       remark: userData.remark,
-      postIds: postIds.length > 0 ? JSON.parse(JSON.stringify(postIds)) : [],
-      roleIds: roleIds.length > 0 ? JSON.parse(JSON.stringify(roleIds)) : []
+      postIds: postIds.length > 0 ? structuredClone(postIds) : [],
+      roleIds: roleIds.length > 0 ? structuredClone(roleIds) : []
     };
 
     // 更新岗位/角色下拉选项
