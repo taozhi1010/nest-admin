@@ -158,8 +158,10 @@ export class UserService {
 
     const [list, total] = await entity.getManyAndCount();
 
+    const safeList = list.map(({ password: _password, ...user }) => user);
+
     return ResultData.ok({
-      list,
+      list: safeList,
       total,
     });
   }
