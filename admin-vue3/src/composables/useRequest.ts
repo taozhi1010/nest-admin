@@ -1,5 +1,4 @@
 import axios, { type AxiosInstance, type InternalAxiosRequestConfig, type AxiosResponse } from 'axios';
-import { ElNotification, ElMessageBox, ElMessage, ElLoading } from 'element-plus';
 import { saveAs } from 'file-saver';
 
 import useUserStore from '@/store/modules/user';

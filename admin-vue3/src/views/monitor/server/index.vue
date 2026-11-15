@@ -193,7 +193,6 @@
 
 <script setup lang="ts">
 import { Cpu, MessageBox, Monitor, Tickets } from '@element-plus/icons-vue';
-import { ElLoading } from 'element-plus';
 
 import { getServer } from '@/api/monitor/server';
 

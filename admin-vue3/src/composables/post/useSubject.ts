@@ -1,5 +1,3 @@
-import { ElMessage, ElMessageBox } from 'element-plus';
-
 import { listSubject, delSubject } from '@/api/post/subject';
 
 /**

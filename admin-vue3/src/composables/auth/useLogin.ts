@@ -1,15 +1,13 @@
-import { ElMessage } from 'element-plus';
 import Cookies from 'js-cookie';
 import { isEmpty } from 'radash';
 import { reactive, ref } from 'vue';
 
 import { getCodeImg } from '@/api/login';
-import { encrypt, decrypt } from '@/utils/jsencrypt';
 
 /**
  * 登录表单相关逻辑
  * - 验证码：按账号获取验证码状态/图片，管理刷新状态
- * - 记住密码：登录信息的 Cookie 存取
+ * - 记住用户名：登录账号的 Cookie 存取
  */
 
 // ==================== 类型定义 ====================
@@ -93,34 +91,32 @@ export const getValidateCode = async (form: Pick<LoginForm, 'username' | 'code'>
   }
 };
 
-// ==================== 记住密码 ====================
+// ==================== 记住用户名 ====================
 
-const COOKIE_KEYS = ['username', 'password', 'rememberMe'];
+const COOKIE_KEYS = ['username', 'rememberMe'];
 
 /**
- * 从 Cookie 中恢复登录信息
+ * 从 Cookie 中恢复登录信息（密码不落 Cookie，记忆交给浏览器密码管理器）
  */
-export const getUserCookie = (data: LoginForm): Pick<LoginForm, 'username' | 'password' | 'rememberMe'> => {
+export const getUserCookie = (data: LoginForm): Pick<LoginForm, 'username' | 'rememberMe'> => {
   const username = Cookies.get('username');
-  const password = Cookies.get('password');
   const rememberMe = Cookies.get('rememberMe');
 
   return {
     username: isEmpty(username) ? data.username : username,
-    password: isEmpty(password) ? data.password : decrypt(password) || '',
     rememberMe: isEmpty(rememberMe) ? false : rememberMe === 'true'
   };
 };
 
 /**
- * 勾选记住密码时写入 Cookie，否则移除
+ * 勾选记住用户名时写入 Cookie，否则移除；顺带清掉旧版"记住密码"遗留的 password cookie
  */
 export const setUserCookie = (data: LoginForm): void => {
+  Cookies.remove('password');
   if (!data.rememberMe) {
     COOKIE_KEYS.forEach((key) => Cookies.remove(key));
     return;
   }
   Cookies.set('username', data.username, { expires: 30 });
-  Cookies.set('password', encrypt(data.password), { expires: 30 });
   Cookies.set('rememberMe', String(data.rememberMe), { expires: 30 });
 };

@@ -7,7 +7,6 @@ import { JwtAuthGuard } from 'src/common/guards/auth.guard';
 import { PermissionGuard } from 'src/common/guards/permission.guard';
 import { RolesGuard } from './common/guards/roles.guard';
 
-import { MainModule } from './module/main/main.module';
 import { UploadModule } from './module/upload/upload.module';
 import { SystemModule } from './module/system/system.module';
 import { CommonModule } from './module/common/common.module';
@@ -39,7 +38,6 @@ import { PostModule } from './module/post/post.module';
       },
     }),
 
-    MainModule,
     UploadModule,
 
     CommonModule,

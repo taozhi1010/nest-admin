@@ -32,7 +32,7 @@
       </el-form-item>
 
       <div class="login-options">
-        <el-checkbox v-model="loginForm.model.rememberMe" style="margin: 0px 0px 25px 0px">记住密码</el-checkbox>
+        <el-checkbox v-model="loginForm.model.rememberMe" style="margin: 0px 0px 25px 0px">记住用户名</el-checkbox>
         <el-link type="primary" style="margin: 0px 0px 25px 0px" @click="router.push('/register')">注册</el-link>
       </div>
 
@@ -90,7 +90,7 @@ const handleLogin = useDebounce(() => {
     if (valid) {
       loginLoading.value = true;
       loginForm.model.uuid = authCodeInfo.uuid;
-      // 勾选了需要记住密码设置在 cookie 中设置记住用户名和密码，否则移除
+      // 勾选记住用户名时写入 Cookie，否则移除
       setUserCookie(loginForm.model);
 
       // 调用 action 的登录方法
@@ -130,7 +130,7 @@ watch(
 // 先从cookie恢复用户信息，再按该账号的失败次数判断是否需要验证码
 const userData = getUserCookie(loginForm.model);
 Object.assign(loginForm.model, userData);
-// 注册成功跳转回来时预填账号，优先于记住密码的 cookie
+// 注册成功跳转回来时预填账号，优先于记住用户名的 cookie
 const queryUsername = route.query.username;
 if (typeof queryUsername === 'string' && queryUsername.trim()) {
   loginForm.model.username = queryUsername.trim();

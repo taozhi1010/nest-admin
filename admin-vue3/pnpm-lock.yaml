@@ -35,9 +35,6 @@ importers:
       js-cookie:
         specifier: 3.0.5
         version: 3.0.5
-      jsencrypt:
-        specifier: 3.5.4
-        version: 3.5.4
       md-editor-v3:
         specifier: ^6.4.2
         version: 6.5.6(vue@3.5.44(typescript@5.9.3))
@@ -2011,9 +2008,6 @@ packages:
 
   js-tokens@10.0.0:
     resolution: {integrity: sha512-lM/UBzQmfJRo9ABXbPWemivdCW8V2G8FHaHdypQaIy523snUjog0W71ayWXTjiR+ixeMyVHN2XcpnTd/liPg/Q==}
-
-  jsencrypt@3.5.4:
-    resolution: {integrity: sha512-kNjfYEMNASxrDGsmcSQh/rUTmcoRfSUkxnAz+MMywM8jtGu+fFEZ3nJjHM58zscVnwR0fYmG9sGkTDjqUdpiwA==}
 
   json-schema-traverse@0.4.1:
     resolution: {integrity: sha512-xbbCH5dCYU5T8LcEhhuh7HJ88HXuW3qsI3Y0zOZFKfZEHcpWiHU/Jxzk629Brsab/mMiHQti9wMP+845RPe3Vg==}
@@ -5107,8 +5101,6 @@ snapshots:
   js-cookie@3.0.5: {}
 
   js-tokens@10.0.0: {}
-
-  jsencrypt@3.5.4: {}
 
   json-schema-traverse@0.4.1: {}
 
