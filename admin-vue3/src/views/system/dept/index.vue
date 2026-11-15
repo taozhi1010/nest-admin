@@ -11,17 +11,17 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button icon="Search" type="primary" @click="dept.handleQuery">搜索</el-button>
-          <el-button icon="Refresh" @click="dept.resetQuery">重置</el-button>
+          <el-button :icon="Search" type="primary" @click="dept.handleQuery">搜索</el-button>
+          <el-button :icon="Refresh" @click="dept.resetQuery">重置</el-button>
         </el-form-item>
       </el-form>
 
       <el-row class="mb8" :gutter="10">
         <el-col :span="1.5">
-          <el-button v-hasPermi="['system:dept:add']" icon="Plus" plain type="primary" @click="handleAdd">新增</el-button>
+          <el-button v-hasPermi="['system:dept:add']" :icon="Plus" plain type="primary" @click="handleAdd">新增</el-button>
         </el-col>
         <el-col :span="1.5">
-          <el-button icon="Sort" plain type="info" @click="toggleExpandAll">展开/折叠</el-button>
+          <el-button :icon="Sort" plain type="info" @click="toggleExpandAll">展开/折叠</el-button>
         </el-col>
         <right-toolbar v-model:show-search="dept.showSearch" @query-table="dept.getList" />
       </el-row>
@@ -41,9 +41,9 @@
         </el-table-column>
         <el-table-column align="center" class-name="small-padding fixed-width" label="操作">
           <template #default="scope">
-            <el-button v-hasPermi="['system:dept:edit']" icon="Edit" link type="primary" @click="dept.handleUpdate(scope.row)">修改</el-button>
-            <el-button v-hasPermi="['system:dept:add']" icon="Plus" link type="primary" @click="handleAdd(scope.row)">新增</el-button>
-            <el-button v-if="scope.row.parentId != 0" v-hasPermi="['system:dept:remove']" icon="Delete" link type="primary" @click="dept.handleDelete(scope.row)">删除</el-button>
+            <el-button v-hasPermi="['system:dept:edit']" :icon="Edit" link type="primary" @click="dept.handleUpdate(scope.row)">修改</el-button>
+            <el-button v-hasPermi="['system:dept:add']" :icon="Plus" link type="primary" @click="handleAdd(scope.row)">新增</el-button>
+            <el-button v-if="scope.row.parentId != 0" v-hasPermi="['system:dept:remove']" :icon="Delete" link type="primary" @click="dept.handleDelete(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -103,6 +103,8 @@
 </template>
 
 <script setup name="Dept">
+import { Delete, Edit, Plus, Refresh, Search, Sort } from '@element-plus/icons-vue';
+
 import { listDept, getDept, delDept, addDept, updateDept, listDeptExcludeChild } from '@/api/system/dept';
 import { handleTree } from '@/composables/useCommon';
 import { useCrud } from '@/composables/useCrud';

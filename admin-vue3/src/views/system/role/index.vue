@@ -17,19 +17,19 @@
           <el-date-picker v-model="dateRange" end-placeholder="结束日期" range-separator="-" start-placeholder="开始日期" type="daterange" value-format="YYYY-MM-DD" />
         </el-form-item>
         <el-form-item>
-          <el-button icon="Search" type="primary" @click="role.handleQuery">搜索</el-button>
-          <el-button icon="Refresh" @click="resetQuery">重置</el-button>
+          <el-button :icon="Search" type="primary" @click="role.handleQuery">搜索</el-button>
+          <el-button :icon="Refresh" @click="resetQuery">重置</el-button>
         </el-form-item>
       </el-form>
       <el-row class="mb8" :gutter="10">
         <el-col :span="1.5">
-          <el-button v-hasPermi="['system:role:add']" icon="Plus" plain type="primary" @click="handleAdd">新增</el-button>
+          <el-button v-hasPermi="['system:role:add']" :icon="Plus" plain type="primary" @click="handleAdd">新增</el-button>
         </el-col>
         <el-col :span="1.5">
-          <el-button v-hasPermi="['system:role:remove']" :disabled="role.multiple" icon="Delete" plain type="danger" @click="role.handleDelete">删除</el-button>
+          <el-button v-hasPermi="['system:role:remove']" :disabled="role.multiple" :icon="Delete" plain type="danger" @click="role.handleDelete">删除</el-button>
         </el-col>
         <el-col :span="1.5">
-          <el-button v-hasPermi="['system:role:export']" icon="Download" plain type="warning" @click="role.handleExport">导出</el-button>
+          <el-button v-hasPermi="['system:role:export']" :icon="Download" plain type="warning" @click="role.handleExport">导出</el-button>
         </el-col>
         <right-toolbar v-model:show-search="role.showSearch" @query-table="role.getList" />
       </el-row>
@@ -56,16 +56,16 @@
         <el-table-column align="center" class-name="small-padding fixed-width" label="操作">
           <template #default="scope">
             <el-tooltip v-if="scope.row.roleId !== 1" content="修改" placement="top">
-              <el-button v-hasPermi="['system:role:edit']" icon="Edit" link type="primary" @click="handleUpdate(scope.row)" />
+              <el-button v-hasPermi="['system:role:edit']" :icon="Edit" link type="primary" @click="handleUpdate(scope.row)" />
             </el-tooltip>
             <el-tooltip v-if="scope.row.roleId !== 1" content="删除" placement="top">
-              <el-button v-hasPermi="['system:role:remove']" icon="Delete" link type="primary" @click="role.handleDelete(scope.row)" />
+              <el-button v-hasPermi="['system:role:remove']" :icon="Delete" link type="primary" @click="role.handleDelete(scope.row)" />
             </el-tooltip>
             <el-tooltip v-if="scope.row.roleId !== 1" content="数据权限" placement="top">
-              <el-button v-hasPermi="['system:role:edit']" icon="CircleCheck" link type="primary" @click="handleDataScope(scope.row)" />
+              <el-button v-hasPermi="['system:role:edit']" :icon="CircleCheck" link type="primary" @click="handleDataScope(scope.row)" />
             </el-tooltip>
             <el-tooltip v-if="scope.row.roleId !== 1" content="分配用户" placement="top">
-              <el-button v-hasPermi="['system:role:edit']" icon="User" link type="primary" @click="handleAuthUser(scope.row)" />
+              <el-button v-hasPermi="['system:role:edit']" :icon="User" link type="primary" @click="handleAuthUser(scope.row)" />
             </el-tooltip>
           </template>
         </el-table-column>
@@ -154,6 +154,8 @@
 </template>
 
 <script setup name="Role">
+import { CircleCheck, Delete, Download, Edit, Plus, QuestionFilled, Refresh, Search, User } from '@element-plus/icons-vue';
+
 import { roleMenuTreeselect, treeselect as menuTreeselect } from '@/api/system/menu';
 import { addRole, changeRoleStatus, dataScope, delRole, getRole, listRole, updateRole, deptTreeSelect } from '@/api/system/role';
 import { addDateRange } from '@/composables/useCommon';

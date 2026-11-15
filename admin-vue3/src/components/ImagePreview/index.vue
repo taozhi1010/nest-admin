@@ -9,6 +9,8 @@
 </template>
 
 <script setup lang="ts">
+import { PictureFilled } from '@element-plus/icons-vue';
+
 import { getImageUrl } from '@/utils/image';
 
 const props = defineProps({

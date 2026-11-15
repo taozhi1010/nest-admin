@@ -47,6 +47,8 @@
 </template>
 
 <script setup lang="ts">
+import { Back, CircleClose, Close, RefreshRight, Right } from '@element-plus/icons-vue';
+
 import { getNormalPath } from '@/composables/useCommon';
 import usePermissionStore from '@/store/modules/permission';
 import useSettingsStore from '@/store/modules/settings';

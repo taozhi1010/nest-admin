@@ -11,17 +11,17 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button icon="Search" type="primary" @click="menu.handleQuery">搜索</el-button>
-          <el-button icon="Refresh" @click="menu.resetQuery">重置</el-button>
+          <el-button :icon="Search" type="primary" @click="menu.handleQuery">搜索</el-button>
+          <el-button :icon="Refresh" @click="menu.resetQuery">重置</el-button>
         </el-form-item>
       </el-form>
 
       <el-row class="mb8" :gutter="10">
         <el-col :span="1.5">
-          <el-button v-hasPermi="['system:menu:add']" icon="Plus" plain type="primary" @click="handleAdd">新增</el-button>
+          <el-button v-hasPermi="['system:menu:add']" :icon="Plus" plain type="primary" @click="handleAdd">新增</el-button>
         </el-col>
         <el-col :span="1.5">
-          <el-button icon="Sort" plain type="info" @click="toggleExpandAll">展开/折叠</el-button>
+          <el-button :icon="Sort" plain type="info" @click="toggleExpandAll">展开/折叠</el-button>
         </el-col>
         <right-toolbar v-model:show-search="menu.showSearch" @query-table="menu.getList" />
       </el-row>
@@ -48,9 +48,9 @@
         </el-table-column>
         <el-table-column align="center" class-name="small-padding fixed-width" label="操作" width="210">
           <template #default="scope">
-            <el-button v-hasPermi="['system:menu:edit']" icon="Edit" link type="primary" @click="handleUpdate(scope.row)">修改</el-button>
-            <el-button v-hasPermi="['system:menu:add']" icon="Plus" link type="primary" @click="handleAdd(scope.row)">新增</el-button>
-            <el-button v-hasPermi="['system:menu:remove']" icon="Delete" link type="primary" @click="menu.handleDelete(scope.row)">删除</el-button>
+            <el-button v-hasPermi="['system:menu:edit']" :icon="Edit" link type="primary" @click="handleUpdate(scope.row)">修改</el-button>
+            <el-button v-hasPermi="['system:menu:add']" :icon="Plus" link type="primary" @click="handleAdd(scope.row)">新增</el-button>
+            <el-button v-hasPermi="['system:menu:remove']" :icon="Delete" link type="primary" @click="menu.handleDelete(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -230,6 +230,7 @@
 </template>
 
 <script setup name="Menu">
+import { Delete, Edit, Plus, QuestionFilled, Refresh, Search, Sort } from '@element-plus/icons-vue';
 import { ClickOutside as vClickOutside } from 'element-plus';
 
 import { addMenu, delMenu, getMenu, listMenu, updateMenu } from '@/api/system/menu';

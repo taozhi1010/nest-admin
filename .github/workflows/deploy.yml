@@ -85,6 +85,8 @@ jobs:
               echo "🔑 RUSTFS_ACCESS_KEY 使用 GitHub Secret 配置"
             fi
 
+            # 邮件（注册验证码）配置：来自 GitHub Secrets；Secret 未配置时 compose 兜底
+            # MAIL_ENABLED=false，邮件功能自动关闭，不影响其他功能
             # 创建或更新 .env 文件
             cat > .env << EOF
             MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}
@@ -102,6 +104,13 @@ jobs:
             RUSTFS_SECRET_KEY=${{ secrets.RUSTFS_SECRET_KEY }}
             RUSTFS_BUCKET=nest-admin
             JWT_SECRETKEY=${{ secrets.JWT_SECRETKEY }}
+            MAIL_ENABLED=${{ secrets.MAIL_ENABLED }}
+            MAIL_HOST=${{ secrets.MAIL_HOST }}
+            MAIL_PORT=465
+            MAIL_SECURE=true
+            MAIL_USER=${{ secrets.MAIL_USER }}
+            MAIL_PASS=${{ secrets.MAIL_PASS }}
+            MAIL_FROM=${{ secrets.MAIL_FROM }}
             SERVER_PORT=8080
             WEB_PORT=8888
             DEPLOY_PATH=/opt/deploy/nest-admin

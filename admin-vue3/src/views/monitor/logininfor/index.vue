@@ -17,23 +17,23 @@
           <el-date-picker v-model="dateRange" :default-time="[new Date(2000, 1, 1, 0, 0, 0), new Date(2000, 1, 1, 23, 59, 59)]" end-placeholder="结束日期" range-separator="-" start-placeholder="开始日期" type="daterange" value-format="YYYY-MM-DD HH:mm:ss" />
         </el-form-item>
         <el-form-item>
-          <el-button icon="Search" type="primary" @click="logininfor.handleQuery">搜索</el-button>
-          <el-button icon="Refresh" @click="resetQuery">重置</el-button>
+          <el-button :icon="Search" type="primary" @click="logininfor.handleQuery">搜索</el-button>
+          <el-button :icon="Refresh" @click="resetQuery">重置</el-button>
         </el-form-item>
       </el-form>
 
       <el-row class="mb8" :gutter="10">
         <el-col :span="1.5">
-          <el-button v-hasPermi="['monitor:logininfor:remove']" :disabled="logininfor.multiple" icon="Delete" plain type="danger" @click="logininfor.handleDelete">删除</el-button>
+          <el-button v-hasPermi="['monitor:logininfor:remove']" :disabled="logininfor.multiple" :icon="Delete" plain type="danger" @click="logininfor.handleDelete">删除</el-button>
         </el-col>
         <el-col :span="1.5">
-          <el-button v-hasPermi="['monitor:logininfor:remove']" icon="Delete" plain type="danger" @click="handleClean">清空</el-button>
+          <el-button v-hasPermi="['monitor:logininfor:remove']" :icon="Delete" plain type="danger" @click="handleClean">清空</el-button>
         </el-col>
         <el-col :span="1.5">
-          <el-button v-hasPermi="['monitor:logininfor:unlock']" :disabled="logininfor.single" icon="Unlock" plain type="primary" @click="handleUnlock">解锁</el-button>
+          <el-button v-hasPermi="['monitor:logininfor:unlock']" :disabled="logininfor.single" :icon="Unlock" plain type="primary" @click="handleUnlock">解锁</el-button>
         </el-col>
         <el-col :span="1.5">
-          <el-button v-hasPermi="['monitor:logininfor:export']" icon="Download" plain type="warning" @click="logininfor.handleExport">导出</el-button>
+          <el-button v-hasPermi="['monitor:logininfor:export']" :icon="Download" plain type="warning" @click="logininfor.handleExport">导出</el-button>
         </el-col>
         <right-toolbar v-model:show-search="logininfor.showSearch" @query-table="logininfor.getList" />
       </el-row>
@@ -65,6 +65,8 @@
 </template>
 
 <script setup name="Logininfor">
+import { Delete, Download, Refresh, Search, Unlock } from '@element-plus/icons-vue';
+
 import { list, delLogininfor, cleanLogininfor, unlockLogininfor } from '@/api/monitor/logininfor';
 import { addDateRange } from '@/composables/useCommon';
 import { useCrud } from '@/composables/useCrud';

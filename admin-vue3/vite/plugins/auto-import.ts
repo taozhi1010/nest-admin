@@ -26,8 +26,7 @@ export default function createAutoImport(): PluginOption[] {
         'vue-router',
         'pinia',
         {
-          dayjs: [['default', 'dayjs']],
-          'element-plus': ['ElMessage', 'ElMessageBox', 'ElNotification', 'ElLoading']
+          dayjs: [['default', 'dayjs']]
         }
       ],
       dts: true, // 启用类型声明生成

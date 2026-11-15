@@ -51,6 +51,8 @@
 </template>
 
 <script setup name="Data">
+import { QuestionFilled } from '@element-plus/icons-vue';
+
 import { addData, updateData } from '@/api/system/dict/data';
 import { useDict } from '@/composables/useDict';
 import { resetForm } from '@/composables/useForm';

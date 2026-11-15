@@ -16,17 +16,17 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button icon="Search" type="primary" @click="subject.handleQuery">搜索</el-button>
-          <el-button icon="Refresh" @click="subject.resetQuery">重置</el-button>
+          <el-button :icon="Search" type="primary" @click="subject.handleQuery">搜索</el-button>
+          <el-button :icon="Refresh" @click="subject.resetQuery">重置</el-button>
         </el-form-item>
       </el-form>
 
       <el-row class="mb8" :gutter="10">
         <el-col :span="1.5">
-          <el-button v-hasPermi="['post:subject:add']" icon="Plus" plain type="primary" @click="subject.handleAdd">新增</el-button>
+          <el-button v-hasPermi="['post:subject:add']" :icon="Plus" plain type="primary" @click="subject.handleAdd">新增</el-button>
         </el-col>
         <el-col :span="1.5">
-          <el-button v-hasPermi="['post:subject:remove']" :disabled="subject.multiple" icon="Delete" plain type="danger" @click="subject.handleDelete">删除</el-button>
+          <el-button v-hasPermi="['post:subject:remove']" :disabled="subject.multiple" :icon="Delete" plain type="danger" @click="subject.handleDelete">删除</el-button>
         </el-col>
         <right-toolbar v-model:show-search="subject.showSearch" @query-table="subject.getList" />
       </el-row>
@@ -57,8 +57,8 @@
         <el-table-column align="center" label="修改时间" prop="updateTime" width="180" />
         <el-table-column align="center" class-name="small-padding fixed-width" fixed="right" label="操作" width="180">
           <template #default="scope">
-            <el-button v-hasPermi="['post:subject:edit']" icon="Edit" link type="primary" @click="subject.handleUpdate(scope.row)">修改</el-button>
-            <el-button v-hasPermi="['post:subject:remove']" icon="Delete" link type="danger" @click="subject.handleDelete(scope.row)">删除</el-button>
+            <el-button v-hasPermi="['post:subject:edit']" :icon="Edit" link type="primary" @click="subject.handleUpdate(scope.row)">修改</el-button>
+            <el-button v-hasPermi="['post:subject:remove']" :icon="Delete" link type="danger" @click="subject.handleDelete(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -104,6 +104,8 @@
 
 <script setup name="Subject">
 // ==================== 导入区域 ====================
+import { Delete, Edit, Plus, Refresh, Search } from '@element-plus/icons-vue';
+
 import { listSubject, addSubject, delSubject, getSubject, updateSubject } from '@/api/post/subject';
 import ImageUploadCover from '@/components/ImageUploadCover/index.vue';
 import { useCrud } from '@/composables/useCrud';

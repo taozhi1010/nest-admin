@@ -1,8 +1,3 @@
-import * as ElementPlusIconsVue from '@element-plus/icons-vue'; // 引入所有图标
-import ElementPlus from 'element-plus';
-import locale from 'element-plus/es/locale/lang/zh-cn'; // 中文语言
-import Cookies from 'js-cookie';
-import 'element-plus/dist/index.css'; // 引入全局样式
 import { createApp, type App as VueApp } from 'vue';
 
 import '@/assets/styles/index.scss'; // global css
@@ -24,9 +19,6 @@ import RightToolbar from '@/components/RightToolbar/index.vue';
 import SvgIcon from '@/components/SvgIcon/index.vue';
 
 import './permission'; // permission control
-
-import elementIcons from '@/components/SvgIcon/svgicon';
-
 import App from './App.vue';
 import directive from './directive'; // directive
 import router from './router';
@@ -42,23 +34,10 @@ app.component('ImagePreview', ImagePreview);
 app.component('RightToolbar', RightToolbar);
 app.component('DictTag', DictTag);
 
-// 全局注册所有 Element Plus 图标
-Object.keys(ElementPlusIconsVue).forEach((key) => {
-  const componentName = key as keyof typeof ElementPlusIconsVue;
-  app.component(componentName, ElementPlusIconsVue[componentName]);
-});
-
 app.use(router);
 app.use(store);
-app.use(elementIcons);
 app.component('SvgIcon', SvgIcon);
 directive(app);
-
-app.use(ElementPlus, {
-  locale: locale,
-  // 支持 large、default、small
-  size: (Cookies.get('size') as 'large' | 'default' | 'small') || 'default'
-});
 
 app.mount('#app');
 

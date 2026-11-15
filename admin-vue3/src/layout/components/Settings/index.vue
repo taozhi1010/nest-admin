@@ -72,14 +72,16 @@
 
     <template #footer>
       <div class="drawer-footer">
-        <el-button icon="DocumentAdd" type="primary" @click="saveSetting">保存配置</el-button>
-        <el-button icon="Refresh" @click="resetSetting">重置配置</el-button>
+        <el-button :icon="DocumentAdd" type="primary" @click="saveSetting">保存配置</el-button>
+        <el-button :icon="Refresh" @click="resetSetting">重置配置</el-button>
       </div>
     </template>
   </el-drawer>
 </template>
 
 <script setup lang="ts">
+import { DocumentAdd, Refresh } from '@element-plus/icons-vue';
+
 import { useDynamicTitle } from '@/composables/useDynamicTitle';
 import useAppStore from '@/store/modules/app';
 import usePermissionStore from '@/store/modules/permission';

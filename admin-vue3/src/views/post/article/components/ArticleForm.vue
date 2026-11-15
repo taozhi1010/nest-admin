@@ -3,7 +3,7 @@
     <template #header>
       <div style="display: flex; align-items: center; gap: 12px">
         <span>{{ title }}</span>
-        <el-button v-if="formData.id || formData.articleId" type="primary" icon="Edit" @click="handleOpenEditor">在编辑器中打开</el-button>
+        <el-button v-if="formData.id || formData.articleId" type="primary" :icon="Edit" @click="handleOpenEditor">在编辑器中打开</el-button>
       </div>
     </template>
     <el-tabs v-model="activeTab">
@@ -81,6 +81,7 @@
 </template>
 
 <script setup name="ArticleForm">
+import { Edit } from '@element-plus/icons-vue';
 import { useRouter } from 'vue-router';
 
 import { addArticle, updateArticle } from '@/api/post/article';

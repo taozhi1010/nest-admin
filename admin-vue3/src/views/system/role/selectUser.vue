@@ -9,8 +9,8 @@
         <el-input v-model.trim="selectUser.queryParams.phonenumber" clearable placeholder="请输入手机号码" style="width: 200px" @keyup.enter="selectUser.handleQuery" />
       </el-form-item>
       <el-form-item>
-        <el-button icon="Search" type="primary" @click="selectUser.handleQuery">搜索</el-button>
-        <el-button icon="Refresh" @click="selectUser.resetQuery">重置</el-button>
+        <el-button :icon="Search" type="primary" @click="selectUser.handleQuery">搜索</el-button>
+        <el-button :icon="Refresh" @click="selectUser.resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
     <el-row>
@@ -44,6 +44,8 @@
 
 <script setup name="SelectUser">
 // ==================== 导入区域 ====================
+import { Refresh, Search } from '@element-plus/icons-vue';
+
 import { authUserSelectAll, unallocatedUserList } from '@/api/system/role';
 import { useCrud } from '@/composables/useCrud';
 

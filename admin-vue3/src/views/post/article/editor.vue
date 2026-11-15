@@ -21,7 +21,7 @@
       <div class="editor-sidebar" :class="{ collapsed: sidebarCollapsed }">
         <div class="sidebar-header">
           <span>文章属性</span>
-          <el-button class="collapse-btn" :icon="sidebarCollapsed ? 'Expand' : 'Fold'" circle size="small" @click="toggleSidebar" />
+          <el-button class="collapse-btn" :icon="sidebarCollapsed ? Expand : Fold" circle size="small" @click="toggleSidebar" />
         </div>
         <div class="sidebar-body">
           <el-form label-width="80px" size="small" class="sidebar-form">
@@ -80,6 +80,8 @@
 </template>
 
 <script setup name="ArticleEditor">
+import { Expand, Fold } from '@element-plus/icons-vue';
+
 import ImageUploadCover from '@/components/ImageUploadCover/index.vue';
 import MdEditor from '@/components/MdEditor/index.vue';
 import { useArticleEditor } from '@/composables/post/useArticleEditor';

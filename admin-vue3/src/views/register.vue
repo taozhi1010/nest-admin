@@ -84,6 +84,7 @@
 </template>
 
 <script setup lang="ts">
+import { Lock, User } from '@element-plus/icons-vue';
 import { ElMessage } from 'element-plus';
 
 import { register, getRegisterConfig } from '@/api/login';

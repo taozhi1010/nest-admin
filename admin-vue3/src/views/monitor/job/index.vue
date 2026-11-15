@@ -16,23 +16,23 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button icon="Search" type="primary" @click="job.handleQuery">搜索</el-button>
-          <el-button icon="Refresh" @click="job.resetQuery">重置</el-button>
+          <el-button :icon="Search" type="primary" @click="job.handleQuery">搜索</el-button>
+          <el-button :icon="Refresh" @click="job.resetQuery">重置</el-button>
         </el-form-item>
       </el-form>
 
       <el-row class="mb8" :gutter="10">
         <el-col :span="1.5">
-          <el-button v-hasPermi="['monitor:job:add']" icon="Plus" plain type="primary" @click="job.handleAdd">新增</el-button>
+          <el-button v-hasPermi="['monitor:job:add']" :icon="Plus" plain type="primary" @click="job.handleAdd">新增</el-button>
         </el-col>
         <el-col :span="1.5">
-          <el-button v-hasPermi="['monitor:job:remove']" :disabled="job.multiple" icon="Delete" plain type="danger" @click="job.handleDelete">删除</el-button>
+          <el-button v-hasPermi="['monitor:job:remove']" :disabled="job.multiple" :icon="Delete" plain type="danger" @click="job.handleDelete">删除</el-button>
         </el-col>
         <el-col :span="1.5">
-          <el-button v-hasPermi="['monitor:job:export']" icon="Download" plain type="warning" @click="job.handleExport">导出</el-button>
+          <el-button v-hasPermi="['monitor:job:export']" :icon="Download" plain type="warning" @click="job.handleExport">导出</el-button>
         </el-col>
         <el-col :span="1.5">
-          <el-button v-hasPermi="['monitor:job:query']" icon="Operation" plain type="info" @click="handleJobLog">日志</el-button>
+          <el-button v-hasPermi="['monitor:job:query']" :icon="Operation" plain type="info" @click="handleJobLog">日志</el-button>
         </el-col>
         <right-toolbar v-model:show-search="job.showSearch" @query-table="job.getList" />
       </el-row>
@@ -58,19 +58,19 @@
         <el-table-column align="center" class-name="small-padding fixed-width" label="操作" width="200">
           <template #default="scope">
             <el-tooltip content="修改" placement="top">
-              <el-button v-hasPermi="['monitor:job:edit']" icon="Edit" link type="primary" @click="job.handleUpdate(scope.row)" />
+              <el-button v-hasPermi="['monitor:job:edit']" :icon="Edit" link type="primary" @click="job.handleUpdate(scope.row)" />
             </el-tooltip>
             <el-tooltip content="删除" placement="top">
-              <el-button v-hasPermi="['monitor:job:remove']" icon="Delete" link type="primary" @click="job.handleDelete(scope.row)" />
+              <el-button v-hasPermi="['monitor:job:remove']" :icon="Delete" link type="primary" @click="job.handleDelete(scope.row)" />
             </el-tooltip>
             <el-tooltip content="执行一次" placement="top">
-              <el-button v-hasPermi="['monitor:job:changeStatus']" icon="CaretRight" link type="primary" @click="handleRun(scope.row)" />
+              <el-button v-hasPermi="['monitor:job:changeStatus']" :icon="CaretRight" link type="primary" @click="handleRun(scope.row)" />
             </el-tooltip>
             <el-tooltip content="任务详细" placement="top">
-              <el-button v-hasPermi="['monitor:job:query']" icon="View" link type="primary" @click="handleView(scope.row)" />
+              <el-button v-hasPermi="['monitor:job:query']" :icon="View" link type="primary" @click="handleView(scope.row)" />
             </el-tooltip>
             <el-tooltip content="调度日志" placement="top">
-              <el-button v-hasPermi="['monitor:job:query']" icon="Operation" link type="primary" @click="handleJobLog(scope.row)" />
+              <el-button v-hasPermi="['monitor:job:query']" :icon="Operation" link type="primary" @click="handleJobLog(scope.row)" />
             </el-tooltip>
           </template>
         </el-table-column>
@@ -220,6 +220,8 @@
 </template>
 
 <script setup name="Job">
+import { CaretRight, Delete, Download, Edit, Operation, Plus, QuestionFilled, Refresh, Search, View } from '@element-plus/icons-vue';
+
 import { listJob, getJob, delJob, addJob, updateJob, runJob, changeJobStatus } from '@/api/monitor/job';
 import Crontab from '@/components/Crontab';
 import { useCrud } from '@/composables/useCrud';

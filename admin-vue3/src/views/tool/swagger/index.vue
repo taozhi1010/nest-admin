@@ -18,7 +18,7 @@
               <p class="doc-desc">交互式 API 文档，支持在线调试</p>
             </div>
             <div class="doc-action">
-              <el-button type="primary" size="small" icon="TopRight">查看</el-button>
+              <el-button type="primary" size="small" :icon="TopRight">查看</el-button>
             </div>
           </div>
         </el-card>
@@ -36,7 +36,7 @@
               <p class="doc-desc">美观的 API 文档展示，易于阅读</p>
             </div>
             <div class="doc-action">
-              <el-button type="success" size="small" icon="TopRight">查看</el-button>
+              <el-button type="success" size="small" :icon="TopRight">查看</el-button>
             </div>
           </div>
         </el-card>
@@ -54,7 +54,7 @@
               <p class="doc-desc">OpenAPI 规范文件，支持导入 Apifox</p>
             </div>
             <div class="doc-action">
-              <el-button type="warning" size="small" icon="TopRight">查看</el-button>
+              <el-button type="warning" size="small" :icon="TopRight">查看</el-button>
             </div>
           </div>
         </el-card>
@@ -79,7 +79,7 @@
               <p class="doc-desc">PNG 转 WebP，免费快速，支持批量转换</p>
             </div>
             <div class="doc-action">
-              <el-button type="primary" size="small" icon="TopRight">使用</el-button>
+              <el-button type="primary" size="small" :icon="TopRight">使用</el-button>
             </div>
           </div>
         </el-card>
@@ -97,7 +97,7 @@
               <p class="doc-desc">中文界面，操作简单，支持拖拽上传</p>
             </div>
             <div class="doc-action">
-              <el-button type="success" size="small" icon="TopRight">使用</el-button>
+              <el-button type="success" size="small" :icon="TopRight">使用</el-button>
             </div>
           </div>
         </el-card>
@@ -115,7 +115,7 @@
               <p class="doc-desc">现代 JavaScript 工具库，提供 isEmpty 等实用函数</p>
             </div>
             <div class="doc-action">
-              <el-button type="warning" size="small" icon="TopRight">查看</el-button>
+              <el-button type="warning" size="small" :icon="TopRight">查看</el-button>
             </div>
           </div>
         </el-card>
@@ -125,7 +125,7 @@
 </template>
 
 <script setup name="Swagger">
-import { Document, Promotion, Link, Picture, PictureFilled, Collection } from '@element-plus/icons-vue';
+import { Collection, Document, Link, Picture, PictureFilled, Promotion, TopRight } from '@element-plus/icons-vue';
 
 const isDev = import.meta.env.VITE_APP_ENV === 'development';
 

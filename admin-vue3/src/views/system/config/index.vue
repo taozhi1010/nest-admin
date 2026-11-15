@@ -28,17 +28,17 @@
           <el-date-picker v-model="dateRange" end-placeholder="结束日期" range-separator="-" start-placeholder="开始日期" type="daterange" value-format="YYYY-MM-DD" />
         </el-form-item>
         <el-form-item>
-          <el-button icon="Search" type="primary" @click="config.handleQuery">搜索</el-button>
-          <el-button icon="Refresh" @click="config.resetQuery">重置</el-button>
+          <el-button :icon="Search" type="primary" @click="config.handleQuery">搜索</el-button>
+          <el-button :icon="Refresh" @click="config.resetQuery">重置</el-button>
         </el-form-item>
       </el-form>
 
       <el-row class="mb8" :gutter="10">
         <el-col :span="1.5">
-          <el-button v-hasPermi="['system:config:add']" icon="Plus" plain type="primary" @click="config.handleAdd">新增</el-button>
+          <el-button v-hasPermi="['system:config:add']" :icon="Plus" plain type="primary" @click="config.handleAdd">新增</el-button>
         </el-col>
         <el-col :span="1.5">
-          <el-button v-hasPermi="['system:config:remove']" :disabled="config.multiple" icon="Delete" plain type="danger" @click="config.handleDelete">删除</el-button>
+          <el-button v-hasPermi="['system:config:remove']" :disabled="config.multiple" :icon="Delete" plain type="danger" @click="config.handleDelete">删除</el-button>
         </el-col>
         <right-toolbar v-model:show-search="config.showSearch" @query-table="config.getList" />
       </el-row>
@@ -62,8 +62,8 @@
         </el-table-column>
         <el-table-column align="center" class-name="small-padding fixed-width" label="操作" width="150">
           <template #default="scope">
-            <el-button v-hasPermi="['system:config:edit']" icon="Edit" link type="primary" @click="config.handleUpdate(scope.row)">修改</el-button>
-            <el-button v-hasPermi="['system:config:remove']" icon="Delete" link type="primary" @click="config.handleDelete(scope.row)">删除</el-button>
+            <el-button v-hasPermi="['system:config:edit']" :icon="Edit" link type="primary" @click="config.handleUpdate(scope.row)">修改</el-button>
+            <el-button v-hasPermi="['system:config:remove']" :icon="Delete" link type="primary" @click="config.handleDelete(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -112,6 +112,8 @@
 </template>
 
 <script setup name="Config">
+import { Delete, Edit, Plus, QuestionFilled, Refresh, Search } from '@element-plus/icons-vue';
+
 import { listConfig, addConfig, delConfig, getConfig, updateConfig } from '@/api/system/config';
 import { useCrud } from '@/composables/useCrud';
 import { useDict } from '@/composables/useDict';

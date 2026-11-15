@@ -22,20 +22,20 @@
           <el-date-picker v-model="dateRange" :default-time="[new Date(2000, 1, 1, 0, 0, 0), new Date(2000, 1, 1, 23, 59, 59)]" end-placeholder="结束日期" range-separator="-" start-placeholder="开始日期" type="daterange" value-format="YYYY-MM-DD HH:mm:ss" />
         </el-form-item>
         <el-form-item>
-          <el-button icon="Search" type="primary" @click="operlog.handleQuery">搜索</el-button>
-          <el-button icon="Refresh" @click="resetQuery">重置</el-button>
+          <el-button :icon="Search" type="primary" @click="operlog.handleQuery">搜索</el-button>
+          <el-button :icon="Refresh" @click="resetQuery">重置</el-button>
         </el-form-item>
       </el-form>
 
       <el-row class="mb8" :gutter="10">
         <el-col :span="1.5">
-          <el-button v-hasPermi="['monitor:operlog:remove']" :disabled="operlog.multiple" icon="Delete" plain type="danger" @click="operlog.handleDelete">删除</el-button>
+          <el-button v-hasPermi="['monitor:operlog:remove']" :disabled="operlog.multiple" :icon="Delete" plain type="danger" @click="operlog.handleDelete">删除</el-button>
         </el-col>
         <el-col :span="1.5">
-          <el-button v-hasPermi="['monitor:operlog:remove']" icon="Delete" plain type="danger" @click="handleClean">清空</el-button>
+          <el-button v-hasPermi="['monitor:operlog:remove']" :icon="Delete" plain type="danger" @click="handleClean">清空</el-button>
         </el-col>
         <el-col :span="1.5">
-          <el-button v-hasPermi="['monitor:operlog:export']" icon="Download" plain type="warning" @click="operlog.handleExport">导出</el-button>
+          <el-button v-hasPermi="['monitor:operlog:export']" :icon="Download" plain type="warning" @click="operlog.handleExport">导出</el-button>
         </el-col>
         <right-toolbar v-model:show-search="operlog.showSearch" @query-table="operlog.getList" />
       </el-row>
@@ -68,7 +68,7 @@
         </el-table-column>
         <el-table-column align="center" class-name="small-padding fixed-width" label="操作">
           <template #default="scope">
-            <el-button v-hasPermi="['monitor:operlog:query']" icon="View" link type="primary" @click="handleView(scope.row, scope.index)">详细</el-button>
+            <el-button v-hasPermi="['monitor:operlog:query']" :icon="View" link type="primary" @click="handleView(scope.row, scope.index)">详细</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -127,6 +127,8 @@
 </template>
 
 <script setup name="Operlog">
+import { Delete, Download, Refresh, Search, View } from '@element-plus/icons-vue';
+
 import { list, delOperlog, cleanOperlog } from '@/api/monitor/operlog';
 import { addDateRange } from '@/composables/useCommon';
 import { useCrud } from '@/composables/useCrud';

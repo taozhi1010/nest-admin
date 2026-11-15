@@ -9,8 +9,8 @@
           <el-input v-model="online.queryParams.userName" clearable placeholder="请输入用户账号" style="width: 200px" @keyup.enter="online.handleQuery" />
         </el-form-item>
         <el-form-item>
-          <el-button icon="Search" type="primary" @click="online.handleQuery">搜索</el-button>
-          <el-button icon="Refresh" @click="online.resetQuery">重置</el-button>
+          <el-button :icon="Search" type="primary" @click="online.handleQuery">搜索</el-button>
+          <el-button :icon="Refresh" @click="online.resetQuery">重置</el-button>
         </el-form-item>
       </el-form>
       <el-table v-loading="online.loading" :data="online.list" style="width: 100%">
@@ -33,7 +33,7 @@
         </el-table-column>
         <el-table-column align="center" class-name="small-padding fixed-width" label="操作">
           <template #default="scope">
-            <el-button v-hasPermi="['monitor:online:forceLogout']" icon="Delete" link type="primary" @click="handleForceLogout(scope.row)">强退</el-button>
+            <el-button v-hasPermi="['monitor:online:forceLogout']" :icon="Delete" link type="primary" @click="handleForceLogout(scope.row)">强退</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -44,6 +44,8 @@
 </template>
 
 <script setup name="Online">
+import { Delete, Refresh, Search } from '@element-plus/icons-vue';
+
 import { forceLogout, list as initData } from '@/api/monitor/online';
 import { useCrud } from '@/composables/useCrud';
 

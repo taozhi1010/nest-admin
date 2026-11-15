@@ -15,17 +15,17 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button icon="Search" :loading="notice.loading" type="primary" @click="notice.handleQuery">搜索</el-button>
-          <el-button icon="Refresh" :loading="notice.loading" @click="notice.resetQuery">重置</el-button>
+          <el-button :icon="Search" :loading="notice.loading" type="primary" @click="notice.handleQuery">搜索</el-button>
+          <el-button :icon="Refresh" :loading="notice.loading" @click="notice.resetQuery">重置</el-button>
         </el-form-item>
       </el-form>
 
       <el-row class="mb8" :gutter="10">
         <el-col :span="1.5">
-          <el-button v-hasPermi="['system:notice:add']" icon="Plus" plain type="primary" @click="notice.handleAdd">新增</el-button>
+          <el-button v-hasPermi="['system:notice:add']" :icon="Plus" plain type="primary" @click="notice.handleAdd">新增</el-button>
         </el-col>
         <el-col :span="1.5">
-          <el-button v-hasPermi="['system:notice:remove']" :disabled="notice.multiple" icon="Delete" plain type="danger" @click="notice.handleDelete">删除</el-button>
+          <el-button v-hasPermi="['system:notice:remove']" :disabled="notice.multiple" :icon="Delete" plain type="danger" @click="notice.handleDelete">删除</el-button>
         </el-col>
         <right-toolbar v-model:show-search="notice.showSearch" @query-table="notice.getList" />
       </el-row>
@@ -54,8 +54,8 @@
         </el-table-column>
         <el-table-column align="center" label="操作" width="160">
           <template #default="scope">
-            <el-button v-hasPermi="['system:notice:edit']" icon="Edit" link type="primary" @click="notice.handleUpdate(scope.row)">修改</el-button>
-            <el-button v-hasPermi="['system:notice:remove']" icon="Delete" link type="danger" @click="notice.handleDelete(scope.row)">删除</el-button>
+            <el-button v-hasPermi="['system:notice:edit']" :icon="Edit" link type="primary" @click="notice.handleUpdate(scope.row)">修改</el-button>
+            <el-button v-hasPermi="['system:notice:remove']" :icon="Delete" link type="danger" @click="notice.handleDelete(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -106,6 +106,8 @@
 </template>
 
 <script setup name="Notice">
+import { Delete, Edit, Plus, Refresh, Search } from '@element-plus/icons-vue';
+
 import { listNotice, getNotice, delNotice, addNotice, updateNotice } from '@/api/system/notice';
 import MdEditor from '@/components/MdEditor';
 import { useCrud } from '@/composables/useCrud';

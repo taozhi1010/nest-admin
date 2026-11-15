@@ -5,7 +5,7 @@
         <!--部门数据-->
         <el-col :span="4" :xs="24">
           <div class="head-container">
-            <el-input v-model.trim="deptName" clearable placeholder="请输入部门名称" prefix-icon="Search" style="margin-bottom: 20px" />
+            <el-input v-model.trim="deptName" clearable placeholder="请输入部门名称" :prefix-icon="Search" style="margin-bottom: 20px" />
           </div>
           <div class="head-container">
             <el-tree ref="deptTreeRef" :data="deptOptions" default-expand-all :expand-on-click-node="false" :filter-node-method="filterNode" highlight-current node-key="id" :props="{ label: 'label', children: 'children' }" @node-click="handleNodeClick" />
@@ -29,23 +29,23 @@
               <el-date-picker v-model="dateRange" end-placeholder="结束日期" range-separator="-" start-placeholder="开始日期" type="daterange" value-format="YYYY-MM-DD" />
             </el-form-item>
             <el-form-item>
-              <el-button icon="Search" type="primary" @click="user.handleQuery">搜索</el-button>
-              <el-button icon="Refresh" @click="resetQuery">重置</el-button>
+              <el-button :icon="Search" type="primary" @click="user.handleQuery">搜索</el-button>
+              <el-button :icon="Refresh" @click="resetQuery">重置</el-button>
             </el-form-item>
           </el-form>
 
           <el-row class="mb8" :gutter="10">
             <el-col :span="1.5">
-              <el-button v-hasPermi="['system:user:add']" icon="Plus" plain type="primary" @click="handleAdd">新增</el-button>
+              <el-button v-hasPermi="['system:user:add']" :icon="Plus" plain type="primary" @click="handleAdd">新增</el-button>
             </el-col>
             <el-col :span="1.5">
-              <el-button v-hasPermi="['system:user:remove']" :disabled="user.multiple" icon="Delete" plain type="danger" @click="user.handleDelete">删除</el-button>
+              <el-button v-hasPermi="['system:user:remove']" :disabled="user.multiple" :icon="Delete" plain type="danger" @click="user.handleDelete">删除</el-button>
             </el-col>
             <el-col :span="1.5">
-              <el-button v-hasPermi="['system:user:import']" icon="Upload" plain type="info" @click="handleImport">导入</el-button>
+              <el-button v-hasPermi="['system:user:import']" :icon="Upload" plain type="info" @click="handleImport">导入</el-button>
             </el-col>
             <el-col :span="1.5">
-              <el-button v-hasPermi="['system:user:export']" icon="Download" plain type="warning" @click="user.handleExport">导出</el-button>
+              <el-button v-hasPermi="['system:user:export']" :icon="Download" plain type="warning" @click="user.handleExport">导出</el-button>
             </el-col>
             <right-toolbar v-model:show-search="user.showSearch" :columns="columns" @query-table="user.getList" />
           </el-row>
@@ -72,16 +72,16 @@
             <el-table-column align="center" class-name="small-padding fixed-width" label="操作" width="150">
               <template #default="scope">
                 <el-tooltip v-if="scope.row.userId !== 1" content="修改" placement="top">
-                  <el-button v-hasPermi="['system:user:edit']" icon="Edit" link type="primary" @click="handleUpdate(scope.row)" />
+                  <el-button v-hasPermi="['system:user:edit']" :icon="Edit" link type="primary" @click="handleUpdate(scope.row)" />
                 </el-tooltip>
                 <el-tooltip v-if="scope.row.userId !== 1" content="删除" placement="top">
-                  <el-button v-hasPermi="['system:user:remove']" icon="Delete" link type="danger" @click="user.handleDelete(scope.row)" />
+                  <el-button v-hasPermi="['system:user:remove']" :icon="Delete" link type="danger" @click="user.handleDelete(scope.row)" />
                 </el-tooltip>
                 <el-tooltip v-if="scope.row.userId !== 1" content="重置密码" placement="top">
-                  <el-button v-hasPermi="['system:user:resetPwd']" icon="Key" link type="primary" @click="handleResetPwd(scope.row)" />
+                  <el-button v-hasPermi="['system:user:resetPwd']" :icon="Key" link type="primary" @click="handleResetPwd(scope.row)" />
                 </el-tooltip>
                 <el-tooltip v-if="scope.row.userId !== 1" content="分配角色" placement="top">
-                  <el-button v-hasPermi="['system:user:edit']" icon="CircleCheck" link type="primary" @click="handleAuthRole(scope.row)" />
+                  <el-button v-hasPermi="['system:user:edit']" :icon="CircleCheck" link type="primary" @click="handleAuthRole(scope.row)" />
                 </el-tooltip>
               </template>
             </el-table-column>
@@ -285,6 +285,8 @@
  * 3，导入功能, 需要后端接口添加创建时间
  * 4，用户再添加新用户的时候，需要做账号检测，已有账号不能再次添加
  */
+
+import { CircleCheck, Delete, Download, Edit, Key, Plus, Refresh, Search, Upload, UploadFilled } from '@element-plus/icons-vue';
 
 import { changeUserStatus, listUser, resetUserPwd, delUser, getUser, deptTreeSelect, getAuthRole, updateAuthRole, importData, addUser, updateUser } from '@/api/system/user';
 import { addDateRange } from '@/composables/useCommon';
