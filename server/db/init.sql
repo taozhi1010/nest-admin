@@ -1107,6 +1107,9 @@ values
   );
 
 -- 三级菜单
+insert into sys_menu values ('202', '文件管理', '5', '3', 'file', 'post/file/index', '', '1', '0', 'C', '0', '0', 'post:file:list', 'file', 'admin', sysdate (), '', null, '文件管理菜单', '0');
+insert into sys_menu values ('203', '文件删除', '202', '1', '', '', '', '1', '0', 'F', '0', '0', 'post:file:remove', 'form', 'admin', sysdate (), '', null, '文件删除权限', '0');
+
 insert into
   sys_menu
 values

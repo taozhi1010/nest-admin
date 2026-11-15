@@ -1,15 +1,24 @@
-import { Controller, Get, Post, Body, Query, UploadedFile, UseInterceptors, HttpCode } from '@nestjs/common';
+import { Controller, Get, Post, Body, Query, UploadedFile, UseInterceptors, HttpCode, Delete, Param } from '@nestjs/common';
 import { UploadService } from './upload.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiTags, ApiOperation, ApiBody, ApiQuery } from '@nestjs/swagger';
 import { ChunkFileDto, ChunkMergeFileDto, CosAuthorizationDto, FileUploadDto, UploadIdDto } from './dto/index';
 import { ResultData } from 'src/common/utils/result';
 import { User, UserDto } from 'src/module/system/user/user.decorator';
+import { RequirePermission } from 'src/common/decorators/require-premission.decorator';
 
 @ApiTags('通用-文件上传')
 @Controller('common/upload')
 export class UploadController {
   constructor(private readonly uploadService: UploadService) {}
+
+  @Get('/list')
+  @RequirePermission('post:file:list')
+  findAll(@Query() query: any) { return this.uploadService.findAll(query); }
+
+  @Delete(':ids')
+  @RequirePermission('post:file:remove')
+  remove(@Param('ids') ids: string) { return this.uploadService.remove(ids.split(',')); }
 
   /**
    * 文件上传

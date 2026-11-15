@@ -1,6 +1,7 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { Like, In } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
 import { ResultData } from 'src/common/utils/result';
 import { SysUploadEntity } from './entities/upload.entity';
@@ -62,6 +63,25 @@ export class UploadService {
     const uploadId = GenerateUUID();
     await this.sysUploadEntityRep.save({ uploadId, ...res, ext: path.extname(res.newFileName), size: file.size });
     return res;
+  }
+
+  async findAll(query: { pageNum?: number; pageSize?: number; fileName?: string; ext?: string }) {
+    const pageNum = Math.max(Number(query.pageNum) || 1, 1);
+    const pageSize = Math.min(Math.max(Number(query.pageSize) || 10, 1), 100);
+    const where: any = { delFlag: '0' };
+    if (query.fileName) where.newFileName = Like(`%${query.fileName}%`);
+    if (query.ext) where.ext = query.ext.startsWith('.') ? query.ext : `.${query.ext}`;
+    const [list, total] = await this.sysUploadEntityRep.findAndCount({ where, order: { createTime: 'DESC' }, skip: (pageNum - 1) * pageSize, take: pageSize });
+    return ResultData.ok({ list, total, pageNum, pageSize });
+  }
+
+  async remove(ids: string[]) {
+    const records = await this.sysUploadEntityRep.findBy({ uploadId: In(ids) });
+    for (const record of records) {
+      await this.fileStorageFactory.deleteFile(record.fileName).catch(() => undefined);
+      await this.sysUploadEntityRep.update({ uploadId: record.uploadId }, { delFlag: '1' });
+    }
+    return ResultData.ok();
   }
 
   /**
