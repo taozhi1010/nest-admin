@@ -10,7 +10,8 @@
     "dev:clean": "node ../scripts/free-port.mjs 8888 && vite --strictPort",
     "build:prod": "vite build",
     "build:stage": "vite build --mode staging",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "prepare": "cd .. && node admin-vue3/node_modules/husky/bin.js admin-vue3/.husky"
   },
   "dependencies": {
     "@element-plus/icons-vue": "2.3.2",
@@ -66,5 +67,11 @@
   },
   "volta": {
     "node": "20.18.1"
+  },
+  "lint-staged": {
+    "*.{vue,js,ts}": [
+      "prettier --write",
+      "eslint --fix"
+    ]
   }
 }
