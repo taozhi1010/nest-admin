@@ -1,4 +1,4 @@
-﻿import { debounce, throttle } from 'radash';
+﻿import { debounce } from 'radash';
 
 import { download as _download } from './useRequest';
 
@@ -75,19 +75,6 @@ export function addDateRange(params: any, dateRange: string[], propName?: string
 }
 
 /**
- * 转换字符串，将 undefined、null 等转化为空字符串
- * 替代原 ruoyi.js 中的 parseStrEmpty 方法
- * @param str 待转换的字符串
- * @returns 转换后的字符串
- */
-export function parseStrEmpty(str: any): string {
-  if (!str || str === 'undefined' || str === 'null') {
-    return '';
-  }
-  return String(str);
-}
-
-/**
  * 返回规范化路径（移除多余的 /）
  * @param path 路径字符串
  */
@@ -120,22 +107,4 @@ export function getNormalPath(path: string): string {
  */
 export function useDebounce<T extends (...args: any[]) => any>(fn: T, delay: number = 300) {
   return debounce({ delay }, fn);
-}
-
-/**
- * 创建节流函数
- *
- * 节流：规定在一个单位时间内，只能触发一次函数。如果这个单位时间内触发多次函数，只有一次生效
- * 适用场景：滚动事件、按钮点击防止重复提交、鼠标移动等
- *
- * @param fn 要执行的函数
- * @param interval 间隔时间（毫秒），默认 300ms
- * @returns 节流后的函数
- * @example
- * const handleScroll = useThrottle(() => {
- *   console.log('滚动')
- * }, 100)
- */
-export function useThrottle<T extends (...args: any[]) => any>(fn: T, interval: number = 300) {
-  return throttle({ interval }, fn);
 }
