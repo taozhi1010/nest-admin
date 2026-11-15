@@ -97,7 +97,8 @@ const handleLogin = useDebounce(() => {
       userStore
         .login(loginForm.model)
         .then(() => {
-          router.push({ path: redirect.value });
+          // 等路由守卫完成（getInfo、字典、getRouters）再结束 loading，避免跳转期间按钮可再次点击
+          return router.push({ path: redirect.value });
         })
         .catch(() => {
           // 登录失败后重新判断：连续失败达到阈值时会开始显示验证码
