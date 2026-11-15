@@ -1,4 +1,5 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Res } from '@nestjs/common';
+import { Response } from 'express';
 import { OperlogService } from './operlog.service';
 import { CreateOperlogDto } from './dto/create-operlog.dto';
 import { UpdateOperlogDto } from './dto/update-operlog.dto';
@@ -73,5 +74,16 @@ export class OperlogController {
   @Operlog({ businessType: BusinessType.CLEAN })
   removeAll() {
     return this.operlogService.removeAll();
+  }
+
+  /**
+   * 导出操作日志
+   * @permission monitor:operlog:export
+   */
+  @ApiOperation({ summary: '导出操作日志为xlsx文件' })
+  @RequirePermission('monitor:operlog:export')
+  @Post('/export')
+  async export(@Res() res: Response, @Body() body: any): Promise<void> {
+    return this.operlogService.export(res, body);
   }
 }
