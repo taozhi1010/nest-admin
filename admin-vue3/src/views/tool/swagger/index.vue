@@ -61,7 +61,7 @@
       </el-col>
     </el-row>
 
-    <div class="section-header" style="margin-top: 40px;">
+    <div class="section-header" style="margin-top: 40px">
       <h3 class="section-title">实用工具</h3>
       <p class="section-desc">在线图片格式转换与开发资源</p>
     </div>
@@ -125,26 +125,25 @@
 </template>
 
 <script setup name="Swagger">
-import { Document, Promotion, Link, Picture, PictureFilled, Collection } from '@element-plus/icons-vue'
+import { Document, Promotion, Link, Picture, PictureFilled, Collection } from '@element-plus/icons-vue';
 
-const activeTab = ref('swagger')
-const isDev = import.meta.env.VITE_APP_ENV === 'development'
+const isDev = import.meta.env.VITE_APP_ENV === 'development';
 
 // 开发环境：直接访问后端地址（8080端口）
 // 生产环境：通过后端代理访问
-const apiBaseUrl = isDev ? 'http://localhost:8080' : window.location.origin
+const apiBaseUrl = isDev ? 'http://localhost:8080' : window.location.origin;
 
-const swaggerUrl = ref(`${apiBaseUrl}/swagger-ui/`)
-const redocUrl = ref(`${apiBaseUrl}/docs`)
-const apifoxJsonUrl = ref(`${apiBaseUrl}/openapi.json`)
+const swaggerUrl = ref(`${apiBaseUrl}/swagger-ui/`);
+const redocUrl = ref(`${apiBaseUrl}/docs`);
+const apifoxJsonUrl = ref(`${apiBaseUrl}/openapi.json`);
 
-function openApiDoc(url) {
-  window.open(url, '_blank')
-}
+const openApiDoc = (url) => {
+  window.open(url, '_blank');
+};
 
-function openTool(url) {
-  window.open(url, '_blank')
-}
+const openTool = (url) => {
+  window.open(url, '_blank');
+};
 </script>
 
 <style lang="scss" scoped>

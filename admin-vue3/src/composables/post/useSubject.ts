@@ -1,5 +1,6 @@
-import { listSubject, delSubject } from '@/api/post/subject'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus';
+
+import { listSubject, delSubject } from '@/api/post/subject';
 
 /**
  * 专栏管理 Composable
@@ -7,13 +8,13 @@ import { ElMessage, ElMessageBox } from 'element-plus'
  */
 export function useSubject() {
   // ==================== 响应式数据 ====================
-  const subjectListRef = ref(null)
+  const subjectListRef = ref(null);
 
   const query = reactive({
     pageNum: 1,
     pageSize: 20,
     title: ''
-  })
+  });
 
   const state = reactive({
     loading: false,
@@ -24,7 +25,7 @@ export function useSubject() {
     },
     selection: [],
     hasMore: true
-  })
+  });
 
   // ==================== 核心方法 ====================
 
@@ -33,49 +34,49 @@ export function useSubject() {
    * @param isLoadMore 是否为加载更多
    */
   const getList = async (isLoadMore = false) => {
-    if (state.loading || (!state.hasMore && isLoadMore)) return
+    if (state.loading || (!state.hasMore && isLoadMore)) return;
 
-    state.loading = true
+    state.loading = true;
     try {
-      const res = await listSubject(query)
-      const newList = res.data.list || []
+      const res = await listSubject(query);
+      const newList = res.data.list || [];
 
       if (isLoadMore) {
-        state.list = [...state.list, ...newList]
+        state.list = [...state.list, ...newList];
       } else {
-        state.list = newList
+        state.list = newList;
       }
 
       // 如果返回的数据少于 pageSize，说明没有更多数据了
-      state.hasMore = newList.length >= query.pageSize
+      state.hasMore = newList.length >= query.pageSize;
     } catch (error) {
-      console.error('获取专栏列表失败:', error)
+      console.error('获取专栏列表失败:', error);
     } finally {
-      state.loading = false
+      state.loading = false;
     }
-  }
+  };
 
   /**
    * 搜索专栏
    */
   const handleSearch = () => {
-    query.pageNum = 1
-    getList()
-  }
+    query.pageNum = 1;
+    getList();
+  };
 
   /**
    * 搜索框失焦处理
    */
   const handleSearchBlur = () => {
-    query.title = query.title.trim()
-  }
+    query.title = query.title.trim();
+  };
 
   /**
    * 删除专栏
    * @param row 专栏行数据
    */
   const handleDelete = (row) => {
-    const subjectIds = row.id || state.selection.map((item) => item.id).join(',')
+    const subjectIds = row.id || state.selection.map((item) => item.id).join(',');
 
     ElMessageBox.confirm(`是否确认删除专栏编号为"${subjectIds}"的数据项?`, '提示', {
       confirmButtonText: '确定',
@@ -83,20 +84,20 @@ export function useSubject() {
       type: 'warning'
     })
       .then(async () => {
-        state.loading = true
+        state.loading = true;
         try {
-          await delSubject(subjectIds)
-          ElMessage.success('删除成功')
-          query.pageNum = 1
-          await getList()
+          await delSubject(subjectIds);
+          ElMessage.success('删除成功');
+          query.pageNum = 1;
+          await getList();
         } catch (error) {
-          console.error('删除专栏失败:', error)
+          console.error('删除专栏失败:', error);
         } finally {
-          state.loading = false
+          state.loading = false;
         }
       })
-      .catch(() => {})
-  }
+      .catch(() => {});
+  };
 
   /**
    * 点击专栏行
@@ -104,19 +105,19 @@ export function useSubject() {
    * @param onSubjectChange 专栏切换回调函数
    */
   const handleRowClick = (row, onSubjectChange) => {
-    state.selectNode = row
+    state.selectNode = row;
     if (row.id !== 0 && onSubjectChange) {
-      onSubjectChange(row.id)
+      onSubjectChange(row.id);
     }
-  }
+  };
 
   /**
    * 选择变化
    * @param selection 选中的专栏列表
    */
   const handleSelectionChange = (selection) => {
-    state.selection = selection
-  }
+    state.selection = selection;
+  };
 
   /**
    * 滚动加载
@@ -126,19 +127,19 @@ export function useSubject() {
    */
   const handleScroll = ({ scrollTop, scrollHeight, clientHeight }) => {
     if (scrollTop + clientHeight >= scrollHeight - 50 && state.hasMore && !state.loading) {
-      query.pageNum++
-      getList(true)
+      query.pageNum++;
+      getList(true);
     }
-  }
+  };
 
   /**
    * 重置查询条件
    */
   const resetQuery = () => {
-    query.pageNum = 1
-    query.title = ''
-    getList()
-  }
+    query.pageNum = 1;
+    query.title = '';
+    getList();
+  };
 
   // ==================== 返回 ====================
   return {
@@ -153,5 +154,5 @@ export function useSubject() {
     handleSelectionChange,
     handleScroll,
     resetQuery
-  }
+  };
 }

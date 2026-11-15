@@ -1,21 +1,23 @@
-import { defineConfig, loadEnv } from 'vite'
-import path from 'path'
-import type { UserConfig, ConfigEnv } from 'vite'
+import path from 'path';
 
-import createVitePlugins from './vite/plugins/index.ts'
+import { defineConfig, loadEnv } from 'vite';
+
+import createVitePlugins from './vite/plugins/index.ts';
+
+import type { UserConfig, ConfigEnv } from 'vite';
 
 // 打包后的文件是否开启 hash
-const outputHash = true
+const outputHash = true;
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode, command }: ConfigEnv): UserConfig => {
   // 从项目根目录加载环境变量（Vite 默认行为）
-  const env = loadEnv(mode, process.cwd())
-  const { VITE_APP_ENV } = env
+  const env = loadEnv(mode, process.cwd());
+  const { VITE_APP_ENV } = env;
 
-  console.log('🔥 mode:', mode)
-  console.log('🔥 VITE_APP_BASE_API:', env.VITE_APP_BASE_API)
-  console.log('🔥 VITE_APP_TITLE:', env.VITE_APP_TITLE)
+  console.log('🔥 mode:', mode);
+  console.log('🔥 VITE_APP_BASE_API:', env.VITE_APP_BASE_API);
+  console.log('🔥 VITE_APP_TITLE:', env.VITE_APP_TITLE);
   return {
     // 部署生产环境和开发环境下的URL。
     // 默认情况下，vite 会假设你的应用是被部署在一个域名的根路径上
@@ -48,14 +50,14 @@ export default defineConfig(({ mode, command }: ConfigEnv): UserConfig => {
         // 图片资源代理（开发环境专用）
         '/uploads': {
           target: 'http://localhost:8080',
-          changeOrigin: true,
+          changeOrigin: true
           // 不重写路径，直接转发到后端的 /uploads
           // 后端静态资源路径：http://localhost:8080/uploads/avatar/xxx.png
         },
         // 头像资源代理（开发环境专用）
-        "/profile":{
+        '/profile': {
           target: 'http://localhost:8080',
-          changeOrigin: true,
+          changeOrigin: true
         },
         // 项目文档（VitePress，本地 docs 服务提供）
         '/manual': {
@@ -83,7 +85,7 @@ export default defineConfig(({ mode, command }: ConfigEnv): UserConfig => {
       sourcemap: false,
       rollupOptions: {
         onwarn: () => {
-          return
+          return;
         },
         output: {
           chunkFileNames: outputHash ? 'static/js/[name]-[hash].js' : 'static/js/[name].js',
@@ -94,65 +96,73 @@ export default defineConfig(({ mode, command }: ConfigEnv): UserConfig => {
             if (id.includes('node_modules')) {
               // echarts 单独拆分（大型图表库）
               if (id.includes('echarts')) {
-                return 'echarts'
+                return 'echarts';
               }
               // element-plus UI 库单独拆分
               if (id.includes('element-plus')) {
-                return 'element-plus'
+                return 'element-plus';
               }
               // Vue 相关库合并
               if (id.includes('vue') || id.includes('vue-router') || id.includes('pinia') || id.includes('@vue')) {
-                return 'vue-vendor'
+                return 'vue-vendor';
               }
               // 所有其他第三方库都合并到 vendor，避免碎片化
-              return 'vendor'
+              return 'vendor';
             }
-            
+
             // 对于 src 目录下的业务代码，按大模块分组
             // 系统管理模块 - 合并为一个
             if (id.includes('src/views/system/') || id.includes('src/api/system/')) {
-              return 'system-module'
+              return 'system-module';
             }
             // 监控模块
             if (id.includes('src/views/monitor') || id.includes('src/api/monitor')) {
-              return 'monitor-module'
+              return 'monitor-module';
             }
             // 工具模块
             if (id.includes('src/views/tool') || id.includes('src/api/tool')) {
-              return 'tool-module'
+              return 'tool-module';
             }
             // 游戏模块
             if (id.includes('src/views/game') || id.includes('src/api/game')) {
-              return 'game-module'
+              return 'game-module';
             }
             // layout、components、store、router、utils、api、composables、hooks 等全部合并
-            if (id.includes('src/layout') || id.includes('src/components') || 
-                id.includes('src/store') || id.includes('src/router') || 
-                id.includes('src/utils') || id.includes('src/api') ||
-                id.includes('src/composables') || id.includes('src/hooks') ||
-                id.includes('src/directive') || id.includes('src/plugins') ||
-                id.includes('src/settings') || id.includes('src/permission')) {
-              return 'core-app'
+            if (
+              id.includes('src/layout') ||
+              id.includes('src/components') ||
+              id.includes('src/store') ||
+              id.includes('src/router') ||
+              id.includes('src/utils') ||
+              id.includes('src/api') ||
+              id.includes('src/composables') ||
+              id.includes('src/hooks') ||
+              id.includes('src/directive') ||
+              id.includes('src/plugins') ||
+              id.includes('src/settings') ||
+              id.includes('src/permission')
+            ) {
+              return 'core-app';
             }
             // 登录页面单独拆分（首屏需要）
             if (id.includes('src/views/login')) {
-              return 'login-page'
+              return 'login-page';
             }
             // 注册、错误页面、重定向合并
             if (id.includes('src/views/register') || id.includes('src/views/error') || id.includes('src/views/redirect')) {
-              return 'auth-other-pages'
+              return 'auth-other-pages';
             }
             // 首页和个人中心
             if (id.includes('src/views/index') || id.includes('src/views/system/user/profile')) {
-              return 'dashboard-profile'
+              return 'dashboard-profile';
             }
             // 测试页面
             if (id.includes('src/views/test')) {
-              return 'test-pages'
+              return 'test-pages';
             }
           }
         }
-      },
+      }
     },
     //fix:error:stdin>:7356:1: warning: "@charset" must be the first rule in the file
     css: {
@@ -163,7 +173,7 @@ export default defineConfig(({ mode, command }: ConfigEnv): UserConfig => {
             AtRule: {
               charset: (atRule) => {
                 if (atRule.name === 'charset') {
-                  atRule.remove()
+                  atRule.remove();
                 }
               }
             }
@@ -175,5 +185,5 @@ export default defineConfig(({ mode, command }: ConfigEnv): UserConfig => {
       },
       devSourcemap: true
     }
-  }
-})
+  };
+});

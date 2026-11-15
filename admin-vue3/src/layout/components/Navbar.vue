@@ -40,35 +40,36 @@
 </template>
 
 <script setup lang="ts">
-import { ElMessageBox } from 'element-plus'
-import Breadcrumb from '@/components/Breadcrumb'
-import TopNav from '@/components/TopNav'
-import Hamburger from '@/components/Hamburger'
-import Screenfull from '@/components/Screenfull'
-import SizeSelect from '@/components/SizeSelect'
-import HeaderSearch from '@/components/HeaderSearch'
-import useAppStore from '@/store/modules/app'
-import useUserStore from '@/store/modules/user'
-import useSettingsStore from '@/store/modules/settings'
+import { ElMessageBox } from 'element-plus';
 
-const appStore = useAppStore()
-const userStore = useUserStore()
-const settingsStore = useSettingsStore()
+import Breadcrumb from '@/components/Breadcrumb';
+import Hamburger from '@/components/Hamburger';
+import HeaderSearch from '@/components/HeaderSearch';
+import Screenfull from '@/components/Screenfull';
+import SizeSelect from '@/components/SizeSelect';
+import TopNav from '@/components/TopNav';
+import useAppStore from '@/store/modules/app';
+import useSettingsStore from '@/store/modules/settings';
+import useUserStore from '@/store/modules/user';
+
+const appStore = useAppStore();
+const userStore = useUserStore();
+const settingsStore = useSettingsStore();
 
 function toggleSideBar() {
-  appStore.toggleSideBar()
+  appStore.toggleSideBar();
 }
 
 function handleCommand(command) {
   switch (command) {
     case 'setLayout':
-      setLayout()
-      break
+      setLayout();
+      break;
     case 'logout':
-      logout()
-      break
+      logout();
+      break;
     default:
-      break
+      break;
   }
 }
 
@@ -80,15 +81,15 @@ function logout() {
   })
     .then(() => {
       userStore.logOut().then(() => {
-        location.href = '/index'
-      })
+        location.href = '/index';
+      });
     })
-    .catch(() => {})
+    .catch(() => {});
 }
 
-const emits = defineEmits(['setLayout'])
+const emits = defineEmits(['setLayout']);
 function setLayout() {
-  emits('setLayout')
+  emits('setLayout');
 }
 </script>
 

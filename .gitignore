@@ -38,3 +38,4 @@ components.d.ts
 
 # 本地备份，不入库
 .local-backup/
+.zcode/

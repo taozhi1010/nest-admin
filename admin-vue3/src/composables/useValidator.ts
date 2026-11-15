@@ -1,53 +1,47 @@
-import { z } from 'zod'
+import { z } from 'zod';
 
 /**
  * URL 验证 Schema
  * 验证是否为有效的 HTTP/HTTPS URL
  */
-export const urlSchema = z.string().url('请输入有效的URL地址')
+export const urlSchema = z.string().url('请输入有效的URL地址');
 
 /**
  * 邮箱验证 Schema
  * 验证是否为有效的邮箱格式
  */
-export const emailSchema = z.string().email('请输入有效的邮箱地址')
+export const emailSchema = z.string().email('请输入有效的邮箱地址');
 
 /**
  * 用户名验证 Schema
  * 验证用户名是否在允许的列表中
  */
-export const usernameSchema = z.enum(['admin', 'editor']).describe('无效的用户名')
+export const usernameSchema = z.enum(['admin', 'editor']).describe('无效的用户名');
 
 /**
  * 小写字母验证 Schema
  * 验证是否只包含小写字母
  */
-export const lowerCaseSchema = z
-  .string()
-  .regex(/^[a-z]+$/, '只能包含小写字母')
+export const lowerCaseSchema = z.string().regex(/^[a-z]+$/, '只能包含小写字母');
 
 /**
  * 大写字母验证 Schema
  * 验证是否只包含大写字母
  */
-export const upperCaseSchema = z
-  .string()
-  .regex(/^[A-Z]+$/, '只能包含大写字母')
+export const upperCaseSchema = z.string().regex(/^[A-Z]+$/, '只能包含大写字母');
 
 /**
  * 字母验证 Schema
  * 验证是否只包含字母（大小写）
  */
-export const alphabetsSchema = z
-  .string()
-  .regex(/^[A-Za-z]+$/, '只能包含字母')
+export const alphabetsSchema = z.string().regex(/^[A-Za-z]+$/, '只能包含字母');
 
 /**
  * 外链路径验证 Schema
  * 验证是否为外部链接（http/https/mailto/tel）
  */
 export function isExternal(path: string): boolean {
-  return /^(https?:|mailto:|tel:)/.test(path)
+  return /^(https?:|mailto:|tel:)/.test(path);
 }
 
 /**
@@ -56,7 +50,7 @@ export function isExternal(path: string): boolean {
  * @returns 是否为HTTP或HTTPS协议
  */
 export function isHttp(url: string): boolean {
-  return url.indexOf('http://') !== -1 || url.indexOf('https://') !== -1
+  return url.indexOf('http://') !== -1 || url.indexOf('https://') !== -1;
 }
 
 /**
@@ -66,10 +60,10 @@ export function isHttp(url: string): boolean {
  */
 export function validURL(url: string): boolean {
   try {
-    urlSchema.parse(url)
-    return true
+    urlSchema.parse(url);
+    return true;
   } catch {
-    return false
+    return false;
   }
 }
 
@@ -80,10 +74,10 @@ export function validURL(url: string): boolean {
  */
 export function validUsername(username: string): boolean {
   try {
-    usernameSchema.parse(username.trim())
-    return true
+    usernameSchema.parse(username.trim());
+    return true;
   } catch {
-    return false
+    return false;
   }
 }
 
@@ -94,10 +88,10 @@ export function validUsername(username: string): boolean {
  */
 export function validLowerCase(str: string): boolean {
   try {
-    lowerCaseSchema.parse(str)
-    return true
+    lowerCaseSchema.parse(str);
+    return true;
   } catch {
-    return false
+    return false;
   }
 }
 
@@ -108,10 +102,10 @@ export function validLowerCase(str: string): boolean {
  */
 export function validUpperCase(str: string): boolean {
   try {
-    upperCaseSchema.parse(str)
-    return true
+    upperCaseSchema.parse(str);
+    return true;
   } catch {
-    return false
+    return false;
   }
 }
 
@@ -122,10 +116,10 @@ export function validUpperCase(str: string): boolean {
  */
 export function validAlphabets(str: string): boolean {
   try {
-    alphabetsSchema.parse(str)
-    return true
+    alphabetsSchema.parse(str);
+    return true;
   } catch {
-    return false
+    return false;
   }
 }
 
@@ -136,10 +130,10 @@ export function validAlphabets(str: string): boolean {
  */
 export function validEmail(email: string): boolean {
   try {
-    emailSchema.parse(email)
-    return true
+    emailSchema.parse(email);
+    return true;
   } catch {
-    return false
+    return false;
   }
 }
 
@@ -149,7 +143,7 @@ export function validEmail(email: string): boolean {
  * @returns 是否为字符串类型
  */
 export function isString(value: unknown): value is string {
-  return typeof value === 'string' || value instanceof String
+  return typeof value === 'string' || value instanceof String;
 }
 
 /**
@@ -158,7 +152,7 @@ export function isString(value: unknown): value is string {
  * @returns 是否为数组类型
  */
 export function isArray<T>(value: unknown): value is T[] {
-  return Array.isArray(value)
+  return Array.isArray(value);
 }
 
 /**
@@ -168,7 +162,7 @@ export function isArray<T>(value: unknown): value is T[] {
  * @returns 如果 type 不是 application/json 则返回 true（表示是有效文件）
  */
 export function isValidBlob(blob: Blob): boolean {
-  return blob.type !== 'application/json'
+  return blob.type !== 'application/json';
 }
 
 /**
@@ -179,8 +173,8 @@ export function isValidBlob(blob: Blob): boolean {
  * @returns 验证结果 { success: boolean, data?: T, error?: ZodError }
  */
 export function safeValidate<T>(schema: z.ZodType<T>, data: unknown) {
-  const result = schema.safeParse(data)
-  return result
+  const result = schema.safeParse(data);
+  return result;
 }
 
 /**
@@ -190,7 +184,7 @@ export function safeValidate<T>(schema: z.ZodType<T>, data: unknown) {
  * @returns Zod 字符串 Schema
  */
 export function createRegexSchema(pattern: RegExp, message: string) {
-  return z.string().regex(pattern, message)
+  return z.string().regex(pattern, message);
 }
 
 /**
@@ -201,12 +195,9 @@ export function createRegexSchema(pattern: RegExp, message: string) {
  * @returns Zod 数字 Schema
  */
 export function createNumberRangeSchema(min: number, max: number, message?: string) {
-  let schema = z.number().min(min).max(max)
+  let schema = z.number().min(min).max(max);
   if (message) {
-    schema = schema.refine(
-      (val) => val >= min && val <= max,
-      { message }
-    )
+    schema = schema.refine((val) => val >= min && val <= max, { message });
   }
-  return schema
+  return schema;
 }

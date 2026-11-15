@@ -5,18 +5,18 @@
 </template>
 
 <script setup lang="ts">
-import { MdPreview } from 'md-editor-v3'
-import 'md-editor-v3/lib/preview.css'
+import { MdPreview } from 'md-editor-v3';
+import 'md-editor-v3/lib/preview.css';
 
 const props = defineProps({
   modelValue: {
     type: String,
     default: ''
   }
-})
+});
 
 // 使用计算属性直接绑定，保持响应�?
-const content = computed(() => props.modelValue)
+const content = computed(() => props.modelValue);
 </script>
 
 <style lang="scss" scoped>

@@ -10,45 +10,45 @@
 </template>
 
 <script setup lang="ts">
-const route = useRoute()
-const router = useRouter()
-const levelList = ref([])
+const route = useRoute();
+const router = useRouter();
+const levelList = ref([]);
 
 function getBreadcrumb() {
   // only show routes with meta.title
-  let matched = route.matched.filter((item) => item.meta && item.meta.title)
-  const first = matched[0]
+  let matched = route.matched.filter((item) => item.meta && item.meta.title);
+  const first = matched[0];
   // 判断是否为首�?
   if (!isDashboard(first)) {
-    matched = [{ path: '/index', meta: { title: '首页' } }].concat(matched)
+    matched = [{ path: '/index', meta: { title: '首页' } }].concat(matched);
   }
 
-  levelList.value = matched.filter((item) => item.meta && item.meta.title && item.meta.breadcrumb !== false)
+  levelList.value = matched.filter((item) => item.meta && item.meta.title && item.meta.breadcrumb !== false);
 }
 function isDashboard(route) {
-  const name = route && route.name
+  const name = route && route.name;
   if (!name) {
-    return false
+    return false;
   }
-  return name.trim() === 'Index'
+  return name.trim() === 'Index';
 }
 function handleLink(item) {
-  const { redirect, path } = item
+  const { redirect, path } = item;
   if (redirect) {
-    router.push(redirect)
-    return
+    router.push(redirect);
+    return;
   }
-  router.push(path)
+  router.push(path);
 }
 
 watchEffect(() => {
   // if you go to the redirect page, do not update the breadcrumbs
   if (route.path.startsWith('/redirect/')) {
-    return
+    return;
   }
-  getBreadcrumb()
-})
-getBreadcrumb()
+  getBreadcrumb();
+});
+getBreadcrumb();
 </script>
 
 <style lang="scss" scoped>

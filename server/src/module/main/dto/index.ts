@@ -1,4 +1,4 @@
-import { IsString, IsJSON, IsEnum, IsPhoneNumber, Min, IsOptional, IsBoolean, IsNumber, MinLength, MaxLength } from 'class-validator';
+import { IsString, IsJSON, IsEnum, IsEmail, IsPhoneNumber, Min, IsOptional, IsBoolean, IsNumber, MinLength, MaxLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export enum StatusEnum {
@@ -38,4 +38,32 @@ export class LoginDto {
   uuid?: string;
 }
 
-export class RegisterDto extends LoginDto {}
+export class RegisterDto extends LoginDto {
+  @ApiProperty({
+    required: false,
+    description: '邮箱，开启邮箱验证码注册时必填',
+  })
+  @IsOptional()
+  @IsEmail({}, { message: '邮箱格式不正确' })
+  @MaxLength(50, { message: '邮箱长度不能超过 50 个字符' })
+  email?: string;
+
+  @ApiProperty({
+    required: false,
+    description: '邮箱验证码，开启邮箱验证码注册时必填',
+  })
+  @IsOptional()
+  @IsString({ message: '邮箱验证码必须是字符串' })
+  @MaxLength(6, { message: '邮箱验证码必须是 6 位数字' })
+  emailCode?: string;
+}
+
+export class SendEmailCodeDto {
+  @ApiProperty({
+    required: true,
+    description: '接收验证码的邮箱',
+  })
+  @IsEmail({}, { message: '邮箱格式不正确' })
+  @MaxLength(50, { message: '邮箱长度不能超过 50 个字符' })
+  email: string;
+}

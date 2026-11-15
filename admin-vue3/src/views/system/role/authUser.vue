@@ -15,18 +15,18 @@
 
     <el-row class="mb8" :gutter="10">
       <el-col :span="1.5">
-        <el-button v-hasPermi="['system:role:add']" icon="Plus" plain type="primary" @click="authUser.openSelectUser">添加用户</el-button>
+        <el-button v-hasPermi="['system:role:add']" icon="Plus" plain type="primary" @click="openSelectUser">添加用户</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button v-hasPermi="['system:role:remove']" :disabled="authUser.multiple" icon="CircleClose" plain type="danger" @click="authUser.cancelAuthUserAll">批量取消授权</el-button>
+        <el-button v-hasPermi="['system:role:remove']" :disabled="authUser.multiple" icon="CircleClose" plain type="danger" @click="cancelAuthUserAll">批量取消授权</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button icon="Close" plain type="warning" @click="authUser.handleClose">关闭</el-button>
+        <el-button icon="Close" plain type="warning" @click="handleClose">关闭</el-button>
       </el-col>
       <right-toolbar v-model:show-search="authUser.showSearch" @query-table="authUser.getList" />
     </el-row>
 
-    <el-table v-loading="authUser.loading" :data="authUser.userList" @selection-change="authUser.handleSelectionChange">
+    <el-table v-loading="authUser.loading" :data="authUser.list" @selection-change="authUser.handleSelectionChange">
       <el-table-column align="center" type="selection" width="55" />
       <el-table-column label="用户账号" prop="userName" :show-overflow-tooltip="true" />
       <el-table-column label="用户昵称" prop="nickName" :show-overflow-tooltip="true" />
@@ -34,17 +34,17 @@
       <el-table-column label="手机" prop="phonenumber" :show-overflow-tooltip="true" />
       <el-table-column align="center" label="状态" prop="status">
         <template #default="scope">
-          <span>{{ getDictLabel('sys_normal_disable', scope.row.status) }}</span>
+          <dict-tag type="sys_normal_disable" :value="scope.row.status" />
         </template>
       </el-table-column>
       <el-table-column align="center" label="创建时间" prop="createTime" width="180">
         <template #default="scope">
-          <span>{{ parseTime(scope.row.createTime) }}</span>
+          <span>{{ scope.row.createTime ? dayjs(scope.row.createTime).format('YYYY-MM-DD HH:mm:ss') : '' }}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" class-name="small-padding fixed-width" label="操作">
         <template #default="scope">
-          <el-button v-hasPermi="['system:role:remove']" icon="CircleClose" link type="primary" @click="authUser.cancelAuthUser(scope.row)">取消授权</el-button>
+          <el-button v-hasPermi="['system:role:remove']" icon="CircleClose" link type="primary" @click="cancelAuthUser(scope.row)">取消授权</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -55,15 +55,11 @@
 </template>
 
 <script setup name="AuthUser">
-// ==================== 导入区域 ====================
-import selectUser from './selectUser'
-import { allocatedUserList, authUserCancel, authUserCancelAll } from '@/api/system/role'
-import { useDict } from '@/composables/useDict'
-import { parseTime } from '@/composables/useCommon'
-import { resetForm } from '@/composables/useForm'
+import { allocatedUserList, authUserCancel, authUserCancelAll } from '@/api/system/role';
+import { useCrud } from '@/composables/useCrud';
 
-// ==================== Composables ====================
-const { closeOpenPage } = useTab()
+// ==================== 导入区域 ====================
+import selectUser from './selectUser';
 
 // ==================== Props 和 Emits ====================
 const props = defineProps({
@@ -71,127 +67,87 @@ const props = defineProps({
     type: [Number, String],
     required: true
   }
-})
+});
 
-const emit = defineEmits(['close'])
+const emit = defineEmits(['close']);
 
 // ==================== 实例和字典 ====================
-const { sys_normal_disable, getDictLabel } = useDict('sys_normal_disable')
 
 // ==================== 表单引用 ====================
-const selectRef = ref(null)
-const queryRef = ref(null)
+const selectRef = ref(null);
+const queryRef = ref(null);
 
-// ==================== 授权用户管理（集中式管理） ====================
-const authUser = reactive({
-  // 响应式数据
-  userList: [],
-  loading: true,
-  showSearch: true,
-  multiple: true,
-  total: 0,
-  userIds: [],
+// ==================== 授权用户列表（CRUD 状态机，仅列表） ====================
+const authUser = useCrud({
+  api: { list: allocatedUserList },
+  idKey: 'userId',
+  name: '用户',
+  // roleId 由外部 watch 注入，不参与查询重置
+  query: { userName: undefined, phonenumber: undefined },
+  queryRef
+});
 
-  // 查询参数
-  queryParams: {
-    pageNum: 1,
-    pageSize: 10,
-    roleId: undefined,
-    userName: undefined,
-    phonenumber: undefined
-  },
+// ==================== 页面特有操作 ====================
 
-  // 方法集合
-  // 查询授权用户列表
-  getList: async () => {
-    authUser.loading = true
-    try {
-      const response = await allocatedUserList(authUser.queryParams)
-      authUser.userList = response.data.list
-      authUser.total = response.data.total
-    } finally {
-      authUser.loading = false
-    }
-  },
+// 返回按钮
+const handleClose = () => {
+  emit('close');
+};
 
-  // 返回按钮
-  handleClose: () => {
-    emit('close')
-  },
+// 打开授权用户表弹窗
+const openSelectUser = () => {
+  selectRef.value.show();
+};
 
-  // 搜索按钮操作
-  handleQuery: () => {
-    authUser.queryParams.pageNum = 1
-    authUser.getList()
-  },
-
-  // 重置按钮操作
-  resetQuery: () => {
-    resetForm(queryRef.value)
-    authUser.handleQuery()
-  },
-
-  // 多选框选中数据
-  handleSelectionChange: (selection) => {
-    authUser.userIds = selection.map((item) => item.userId)
-    authUser.multiple = !selection.length
-  },
-
-  // 打开授权用户表弹窗
-  openSelectUser: () => {
-    selectRef.value.show() 
-  },
-
-  // 取消授权按钮操作
-  cancelAuthUser: async (row) => {
-    try {
-      await ElMessageBox.confirm(`确认要取消该用户"${row.userName}"角色吗？`, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      })
-      await authUserCancel({ userId: row.userId, roleId: +authUser.queryParams.roleId })
-      ElMessage.success('取消授权成功')
-      authUser.getList()
-    } catch (e) {
-      if (e !== 'cancel') {
-        console.error('取消授权失败:', e)
-      }
-    }
-  },
-
-  // 批量取消授权按钮操作
-  cancelAuthUserAll: async () => {
-    const roleId = authUser.queryParams.roleId
-    const uIds = authUser.userIds.join(',')
-    try {
-      await ElMessageBox.confirm('是否取消选中用户授权数据项？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      })
-      await authUserCancelAll({ roleId: +roleId, userIds: uIds })
-      ElMessage.success('取消授权成功')
-      authUser.getList()
-    } catch (e) {
-      if (e !== 'cancel') {
-        console.error('批量取消授权失败:', e)
-      }
+// 取消授权按钮操作
+const cancelAuthUser = async (row) => {
+  try {
+    await ElMessageBox.confirm(`确认要取消该用户"${row.userName}"角色吗？`, '提示', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning'
+    });
+    await authUserCancel({ userId: row.userId, roleId: +authUser.queryParams.roleId });
+    ElMessage.success('取消授权成功');
+    authUser.getList();
+  } catch (e) {
+    if (e !== 'cancel') {
+      console.error('取消授权失败:', e);
     }
   }
-})
+};
+
+// 批量取消授权按钮操作
+const cancelAuthUserAll = async () => {
+  const roleId = authUser.queryParams.roleId;
+  const uIds = authUser.ids.join(',');
+  try {
+    await ElMessageBox.confirm('是否取消选中用户授权数据项？', '提示', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning'
+    });
+    await authUserCancelAll({ roleId: +roleId, userIds: uIds });
+    ElMessage.success('取消授权成功');
+    authUser.getList();
+  } catch (e) {
+    if (e !== 'cancel') {
+      console.error('批量取消授权失败:', e);
+    }
+  }
+};
 
 // ==================== 监听 roleId 变化 ====================
 watch(
   () => props.roleId,
   (newVal) => {
     if (newVal) {
-      authUser.queryParams.roleId = newVal
-      authUser.getList()
+      authUser.queryParams.roleId = newVal;
+      authUser.getList();
     }
   },
   { immediate: true }
-)
+);
 </script>
 
 <style scoped>

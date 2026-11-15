@@ -50,15 +50,16 @@
 </template>
 
 <script setup lang="ts">
-import useUserStore from '@/store/modules/user'
-import { authCodeInfo, getValidateCode, getUserCookie, setUserCookie, loginLoading } from '@/composables/auth/useLogin'
-import type { LoginForm } from '@/composables/auth/useLogin'
-import type { FormInstance } from 'element-plus'
+import { authCodeInfo, getValidateCode, getUserCookie, setUserCookie, loginLoading } from '@/composables/auth/useLogin';
+import useUserStore from '@/store/modules/user';
 
-const userStore = useUserStore()
-const route = useRoute()
-const router = useRouter()
-const loginRef = ref<FormInstance>()
+import type { LoginForm } from '@/composables/auth/useLogin';
+import type { FormInstance } from 'element-plus';
+
+const userStore = useUserStore();
+const route = useRoute();
+const router = useRouter();
+const loginRef = ref<FormInstance>();
 
 const loginForm = reactive<{ model: LoginForm }>({
   model: {
@@ -68,71 +69,71 @@ const loginForm = reactive<{ model: LoginForm }>({
     code: '',
     uuid: ''
   }
-})
+});
 
 // 只有后端要求验证码时才校验
 const loginRules = computed(() => ({
   username: [{ required: true, trigger: 'blur', message: '请输入您的账号' }],
   password: [{ required: true, trigger: 'blur', message: '请输入您的密码' }],
   ...(authCodeInfo.captchaEnabled ? { code: [{ required: true, trigger: 'change', message: '请输入验证码' }] } : {})
-}))
+}));
 
 // 登录成功后的跳转地址
-const redirect = computed(() => (route.query.redirect as string) || '/')
+const redirect = computed(() => (route.query.redirect as string) || '/');
 
 // 登录处理（防抖防止连点，loading 防止请求期间回车重复提交）
 const handleLogin = useDebounce(() => {
-  if (loginLoading.value) return
+  if (loginLoading.value) return;
   loginRef.value?.validate((valid) => {
     if (valid) {
-      loginLoading.value = true
-      loginForm.model.uuid = authCodeInfo.uuid
+      loginLoading.value = true;
+      loginForm.model.uuid = authCodeInfo.uuid;
       // 勾选了需要记住密码设置在 cookie 中设置记住用户名和密码，否则移除
-      setUserCookie(loginForm.model)
+      setUserCookie(loginForm.model);
 
       // 调用 action 的登录方法
       userStore
         .login(loginForm.model)
         .then(() => {
-          router.push({ path: redirect.value })
+          router.push({ path: redirect.value });
         })
         .catch(() => {
           // 登录失败后重新判断：连续失败达到阈值时会开始显示验证码
-          getValidateCode(loginForm.model)
+          getValidateCode(loginForm.model);
         })
         .finally(() => {
-          loginLoading.value = false
-        })
+          loginLoading.value = false;
+        });
     }
-  })
-}, 500)
+  });
+}, 500);
 
 // 刷新验证码（防抖）
 const handleRefreshCaptcha = useDebounce(() => {
-  getValidateCode(loginForm.model, true)
-}, 1000)
+  getValidateCode(loginForm.model, true);
+}, 1000);
 
 // 切换账号时重新判断该账号是否需要验证码
 const debouncedCheckCaptcha = useDebounce(() => {
-  getValidateCode(loginForm.model)
-}, 500)
+  getValidateCode(loginForm.model);
+}, 500);
 
 watch(
   () => loginForm.model.username,
   () => {
-    if (loginForm.model.username) debouncedCheckCaptcha()
+    if (loginForm.model.username) debouncedCheckCaptcha();
   }
-)
+);
 
 // 先从cookie恢复用户信息，再按该账号的失败次数判断是否需要验证码
-const userData = getUserCookie(loginForm.model)
-Object.assign(loginForm.model, userData)
+const userData = getUserCookie(loginForm.model);
+Object.assign(loginForm.model, userData);
 // 注册成功跳转回来时预填账号，优先于记住密码的 cookie
-const queryUsername = route.query.username
+const queryUsername = route.query.username;
 if (typeof queryUsername === 'string' && queryUsername.trim()) {
-  loginForm.model.username = queryUsername.trim()
+  loginForm.model.username = queryUsername.trim();
 }
-getValidateCode(loginForm.model)
+getValidateCode(loginForm.model);
 </script>
 
 <style lang="scss" scoped>

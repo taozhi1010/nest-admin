@@ -6,33 +6,19 @@
           <!-- 搜索输入框 -->
           <div class="search-input-wrapper">
             <el-icon class="search-icon"><Search /></el-icon>
-            <input
-              ref="searchInputRef"
-              v-model="search.query.value"
-              type="text"
-              class="search-input"
-              placeholder="搜索路由"
-              @input="handleInput"
-              @keydown="handleKeydown"
-            />
+            <input ref="searchInputRef" v-model="search.query.value" type="text" class="search-input" placeholder="搜索路由" @input="handleInput" @keydown="handleKeydown" />
             <kbd class="kbd">ESC</kbd>
           </div>
-          
+
           <!-- 搜索结果列表 -->
           <div v-if="search.hasResults.value" class="search-results">
-            <div
-              v-for="(result, index) in search.results.value"
-              :key="index"
-              :class="['result-item', { active: index === search.activeIndex.value }]"
-              @click="selectResult(result.item)"
-              @mouseenter="search.activeIndex.value = index"
-            >
+            <div v-for="(result, index) in search.results.value" :key="index" :class="['result-item', { active: index === search.activeIndex.value }]" @click="selectResult(result.item)" @mouseenter="search.activeIndex.value = index">
               <div class="result-content">
                 <!-- 面包屑路径 -->
                 <div class="result-breadcrumb">
                   <span v-for="(title, i) in result.item.title" :key="i" class="breadcrumb-item">
                     {{ title }}
-                    <span v-if="i < result.item.title.length - 1" class="breadcrumb-separator"> &gt; </span>
+                    <span v-if="i < result.item.title.length - 1" class="breadcrumb-separator">&gt;</span>
                   </span>
                 </div>
                 <!-- 路由路径 -->
@@ -43,7 +29,7 @@
               <el-icon v-else class="result-icon"><Guide /></el-icon>
             </div>
           </div>
-          
+
           <!-- 空状态 -->
           <div v-else-if="search.isEmptySearch.value" class="search-empty">
             <div class="empty-icon">
@@ -51,7 +37,7 @@
             </div>
             <p class="empty-text">未找到相关路由</p>
           </div>
-          
+
           <!-- 页脚提示 -->
           <div class="search-footer">
             <div class="footer-hints">
@@ -79,55 +65,56 @@
 </template>
 
 <script setup lang="ts">
-import { useRouteSearch } from '@/composables/useRouteSearch'
-import { Search, Guide } from '@element-plus/icons-vue'
-import { isHttp } from '@/composables/useValidator'
-import { useRouter } from 'vue-router'
+import { Search, Guide } from '@element-plus/icons-vue';
+import { useRouter } from 'vue-router';
+
+import { useRouteSearch } from '@/composables/useRouteSearch';
+import { isHttp } from '@/composables/useValidator';
 
 // 使用搜索 composable
-const search = useRouteSearch()
+const search = useRouteSearch();
 
 // 组件状态
-const show = ref(false)
-const searchInputRef = ref<HTMLInputElement | null>(null)
+const show = ref(false);
+const searchInputRef = ref<HTMLInputElement | null>(null);
 
 // 获取路由实例
-const router = useRouter()
+const router = useRouter();
 
 // 暴露方法给父组件
 defineExpose({
   open: openModal,
   close: closeModal
-})
+});
 
 /**
  * 打开搜索模态框
  */
 function openModal() {
-  show.value = true
+  show.value = true;
   // 等待 DOM 更新后聚焦输入框
   nextTick(() => {
-    searchInputRef.value?.focus()
-  })
+    searchInputRef.value?.focus();
+  });
   // 锁定背景滚动
-  document.body.style.overflow = 'hidden'
+  document.body.style.overflow = 'hidden';
 }
 
 /**
  * 关闭搜索模态框
  */
 function closeModal() {
-  show.value = false
-  search.resetSearch()
+  show.value = false;
+  search.resetSearch();
   // 恢复背景滚动
-  document.body.style.overflow = ''
+  document.body.style.overflow = '';
 }
 
 /**
  * 处理输入事件
  */
 function handleInput() {
-  search.handleSearch()
+  search.handleSearch();
 }
 
 /**
@@ -136,24 +123,24 @@ function handleInput() {
 function handleKeydown(event: KeyboardEvent) {
   switch (event.key) {
     case 'ArrowDown':
-      event.preventDefault()
-      search.navigateDown()
-      break
+      event.preventDefault();
+      search.navigateDown();
+      break;
     case 'ArrowUp':
-      event.preventDefault()
-      search.navigateUp()
-      break
+      event.preventDefault();
+      search.navigateUp();
+      break;
     case 'Enter':
-      event.preventDefault()
-      const selectedItem = search.selectCurrentResult()
+      event.preventDefault();
+      const selectedItem = search.selectCurrentResult();
       if (selectedItem) {
-        selectResult(selectedItem)
+        selectResult(selectedItem);
       }
-      break
+      break;
     case 'Escape':
-      event.preventDefault()
-      closeModal()
-      break
+      event.preventDefault();
+      closeModal();
+      break;
   }
 }
 
@@ -161,24 +148,24 @@ function handleKeydown(event: KeyboardEvent) {
  * 选择搜索结果
  */
 function selectResult(item: any) {
-  const path = item.path
+  const path = item.path;
   if (!path) {
     // 搜索历史记录，重新搜索
-    search.query.value = item.title[0]
-    search.handleSearch()
-    return
+    search.query.value = item.title[0];
+    search.handleSearch();
+    return;
   }
-  
+
   if (isHttp(path)) {
     // 外部链接，新窗口打开
-    const pindex = path.indexOf('http')
-    window.open(path.substr(pindex, path.length), '_blank')
+    const pindex = path.indexOf('http');
+    window.open(path.substr(pindex, path.length), '_blank');
   } else {
     // 内部路由跳转
-    router.push(path)
+    router.push(path);
   }
-  
-  closeModal()
+
+  closeModal();
 }
 
 // 监听全局键盘快捷键 Ctrl+K / Cmd+K
@@ -186,22 +173,22 @@ onMounted(() => {
   const handleGlobalKeydown = (event: KeyboardEvent) => {
     // 检测 Ctrl+K 或 Cmd+K
     if ((event.ctrlKey || event.metaKey) && event.key === 'k') {
-      event.preventDefault()
+      event.preventDefault();
       if (show.value) {
-        closeModal()
+        closeModal();
       } else {
-        openModal()
+        openModal();
       }
     }
-  }
-  
-  window.addEventListener('keydown', handleGlobalKeydown)
-  
+  };
+
+  window.addEventListener('keydown', handleGlobalKeydown);
+
   // 清理函数
   onUnmounted(() => {
-    window.removeEventListener('keydown', handleGlobalKeydown)
-  })
-})
+    window.removeEventListener('keydown', handleGlobalKeydown);
+  });
+});
 </script>
 
 <style lang="scss" src="./SearchModal.scss" scoped></style>

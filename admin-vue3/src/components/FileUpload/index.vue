@@ -32,7 +32,7 @@
 </template>
 
 <script setup lang="ts">
-import { getToken } from '@/utils/auth'
+import { getToken } from '@/utils/auth';
 
 const props = defineProps({
   modelValue: [String, Object, Array],
@@ -56,126 +56,126 @@ const props = defineProps({
     type: Boolean,
     default: true
   }
-})
+});
 
-const fileUpload = ref(null)
-const emit = defineEmits(['update:modelValue'])
-const number = ref(0)
-const uploadList = ref([])
-const baseUrl = import.meta.env.VITE_APP_BASE_API
-const uploadFileUrl = ref(`${import.meta.env.VITE_APP_BASE_API}/common/upload`) // 上传文件服务器地址
-const headers = ref({ Authorization: `Bearer ${getToken()}` })
-const fileList = ref([])
-const showTip = computed(() => props.isShowTip && (props.fileType || props.fileSize))
-let loadingInstance = null
+const fileUpload = ref(null);
+const emit = defineEmits(['update:modelValue']);
+const number = ref(0);
+const uploadList = ref([]);
+const baseUrl = import.meta.env.VITE_APP_BASE_API;
+const uploadFileUrl = ref(`${import.meta.env.VITE_APP_BASE_API}/common/upload`); // 上传文件服务器地址
+const headers = ref({ Authorization: `Bearer ${getToken()}` });
+const fileList = ref([]);
+const showTip = computed(() => props.isShowTip && (props.fileType || props.fileSize));
+let loadingInstance = null;
 
 watch(
   () => props.modelValue,
   (val) => {
     if (val) {
-      let temp = 1
+      let temp = 1;
       // 首先将值转为数组
-      const list = Array.isArray(val) ? val : props.modelValue.split(',')
+      const list = Array.isArray(val) ? val : props.modelValue.split(',');
       // 然后将数组转为对象数组
       fileList.value = list.map((item) => {
         if (typeof item === 'string') {
-          item = { name: item, url: item }
+          item = { name: item, url: item };
         }
-        item.uid = item.uid || new Date().getTime() + temp++
-        return item
-      })
+        item.uid = item.uid || new Date().getTime() + temp++;
+        return item;
+      });
     } else {
-      fileList.value = []
-      return []
+      fileList.value = [];
+      return [];
     }
   },
   { deep: true, immediate: true }
-)
+);
 
 // 上传前校检格式和大小
 function handleBeforeUpload(file) {
   // 校检文件类型
   if (props.fileType.length) {
-    const fileName = file.name.split('.')
-    const fileExt = fileName[fileName.length - 1]
-    const isTypeOk = props.fileType.indexOf(fileExt) >= 0
+    const fileName = file.name.split('.');
+    const fileExt = fileName[fileName.length - 1];
+    const isTypeOk = props.fileType.indexOf(fileExt) >= 0;
     if (!isTypeOk) {
-      ElMessage.error(`文件格式不正确, 请上传${props.fileType.join('/')}格式文件!`) 
-      return false
+      ElMessage.error(`文件格式不正确, 请上传${props.fileType.join('/')}格式文件!`);
+      return false;
     }
   }
   // 校检文件大小
   if (props.fileSize) {
-    const isLt = file.size / 1024 / 1024 < props.fileSize
+    const isLt = file.size / 1024 / 1024 < props.fileSize;
     if (!isLt) {
-      ElMessage.error(`上传文件大小不能超过 ${props.fileSize} MB!`)
-      return false
+      ElMessage.error(`上传文件大小不能超过 ${props.fileSize} MB!`);
+      return false;
     }
   }
   loadingInstance = ElLoading.service({
     lock: true,
     text: '正在上传文件，请稍候...',
     background: 'rgba(0, 0, 0, 0.7)'
-  })
-  number.value++
-  return true
+  });
+  number.value++;
+  return true;
 }
 
 // 文件个数超出
 function handleExceed() {
-  ElMessage.error(`上传文件数量不能超过 ${props.limit} 个!`)
+  ElMessage.error(`上传文件数量不能超过 ${props.limit} 个!`);
 }
 
 // 上传失败
 function handleUploadError(err) {
   // 错误状态码下 el-upload 会把响应体（统一信封）透传到 err.message，解析出具体错误提示
-  let message = '上传文件失败'
+  let message = '上传文件失败';
   try {
-    const payload = JSON.parse(err?.message || '')
+    const payload = JSON.parse(err?.message || '');
     if (payload?.msg) {
-      message = payload.msg
+      message = payload.msg;
     }
   } catch {
     // 响应体不是信封 JSON 时保留默认提示
   }
-  ElMessage.error(message)
+  ElMessage.error(message);
 }
 
 // 上传成功回调
 function handleUploadSuccess(res, file) {
   if (res.code === 200) {
-    uploadList.value.push({ name: res.fileName, url: res.fileName })
-    uploadedSuccessfully()
+    uploadList.value.push({ name: res.fileName, url: res.fileName });
+    uploadedSuccessfully();
   } else {
-    number.value--
+    number.value--;
     if (loadingInstance) {
-      loadingInstance.close()
-      loadingInstance = null
+      loadingInstance.close();
+      loadingInstance = null;
     }
-    ElMessage.error(res.msg)
+    ElMessage.error(res.msg);
     if (fileUpload.value) {
-      fileUpload.value.handleRemove(file)
+      fileUpload.value.handleRemove(file);
     }
-    uploadedSuccessfully()
+    uploadedSuccessfully();
   }
 }
 
 // 删除文件
 function handleDelete(index) {
-  fileList.value.splice(index, 1)
-  emit('update:modelValue', listToString(fileList.value))
+  fileList.value.splice(index, 1);
+  emit('update:modelValue', listToString(fileList.value));
 }
 
 // 上传结束处理
 function uploadedSuccessfully() {
   if (number.value > 0 && uploadList.value.length === number.value) {
-    fileList.value = fileList.value.filter((f) => f.url !== undefined).concat(uploadList.value)
-    uploadList.value = []
-    number.value = 0
-    emit('update:modelValue', listToString(fileList.value))
+    fileList.value = fileList.value.filter((f) => f.url !== undefined).concat(uploadList.value);
+    uploadList.value = [];
+    number.value = 0;
+    emit('update:modelValue', listToString(fileList.value));
     if (loadingInstance) {
-      loadingInstance.close()
-      loadingInstance = null
+      loadingInstance.close();
+      loadingInstance = null;
     }
   }
 }
@@ -183,22 +183,22 @@ function uploadedSuccessfully() {
 // 获取文件名称
 function getFileName(name) {
   if (name.lastIndexOf('/') > -1) {
-    return name.slice(name.lastIndexOf('/') + 1)
+    return name.slice(name.lastIndexOf('/') + 1);
   } else {
-    return ''
+    return '';
   }
 }
 
 // 对象转成指定字符串分隔
 function listToString(list, separator) {
-  let strs = ''
-  separator = separator || ','
-  for (let i in list) {
+  let strs = '';
+  separator = separator || ',';
+  for (const i in list) {
     if (list[i].url) {
-      strs += list[i].url + separator
+      strs += list[i].url + separator;
     }
   }
-  return strs != '' ? strs.substr(0, strs.length - 1) : ''
+  return strs != '' ? strs.substr(0, strs.length - 1) : '';
 }
 </script>
 

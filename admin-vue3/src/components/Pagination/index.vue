@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-import { scrollTo } from '@/utils/scroll-to'
+import { scrollTo } from '@/utils/scroll-to';
 
 const props = defineProps({
   total: {
@@ -23,7 +23,7 @@ const props = defineProps({
   pageSizes: {
     type: Array,
     default() {
-      return [10, 20, 30, 50]
+      return [10, 20, 30, 50];
     }
   },
   // 移动端页码按钮的数量端默认�?
@@ -47,38 +47,38 @@ const props = defineProps({
     type: Boolean,
     default: false
   }
-})
+});
 
-const emit = defineEmits()
+const emit = defineEmits(['update:page', 'update:limit', 'pagination']);
 const currentPage = computed({
   get() {
-    return props.page
+    return props.page;
   },
   set(val) {
-    emit('update:page', val)
+    emit('update:page', val);
   }
-})
+});
 const pageSize = computed({
   get() {
-    return props.limit
+    return props.limit;
   },
   set(val) {
-    emit('update:limit', val)
+    emit('update:limit', val);
   }
-})
+});
 function handleSizeChange(val) {
   if (currentPage.value * val > props.total) {
-    currentPage.value = 1
+    currentPage.value = 1;
   }
-  emit('pagination', { page: currentPage.value, limit: val })
+  emit('pagination', { page: currentPage.value, limit: val });
   if (props.autoScroll) {
-    scrollTo(0, 800)
+    scrollTo(0, 800);
   }
 }
 function handleCurrentChange(val) {
-  emit('pagination', { page: val, limit: pageSize.value })
+  emit('pagination', { page: val, limit: pageSize.value });
   if (props.autoScroll) {
-    scrollTo(0, 800)
+    scrollTo(0, 800);
   }
 }
 </script>

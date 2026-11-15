@@ -10,7 +10,8 @@
     "dev:clean": "node ../scripts/free-port.mjs 8888 && vite --strictPort",
     "build:prod": "vite build",
     "build:stage": "vite build --mode staging",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "prepare": "cd .. && node admin-vue3/node_modules/husky/bin.js admin-vue3/.husky"
   },
   "dependencies": {
     "@element-plus/icons-vue": "2.3.2",
@@ -37,9 +38,17 @@
   "devDependencies": {
     "@vitejs/plugin-vue": "^6.0.6",
     "@vue/compiler-sfc": "^3.5.33",
+    "@vue/eslint-config-prettier": "^10.2.0",
+    "@vue/eslint-config-typescript": "^14.9.0",
     "@vue/tsconfig": "^0.7.0",
     "esbuild": "^0.27.0",
+    "eslint": "^10.15.0",
+    "eslint-plugin-perfectionist": "^5.13.0",
+    "eslint-plugin-vue": "^10.12.1",
     "fast-glob": "^3.3.3",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.6.0",
+    "prettier": "^3.10.1",
     "sass": "^1.99.0",
     "typescript": "^5.8.3",
     "unplugin-auto-import": "^21.0.0",
@@ -58,5 +67,11 @@
   },
   "volta": {
     "node": "20.18.1"
+  },
+  "lint-staged": {
+    "*.{vue,js,ts}": [
+      "prettier --write",
+      "eslint --fix"
+    ]
   }
 }

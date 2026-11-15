@@ -1,9 +1,9 @@
-import dayjs from 'dayjs'
+import dayjs from 'dayjs';
 
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
-    $dayjs: typeof dayjs
+    $dayjs: typeof dayjs;
   }
 }
 
-export {}
+export {};
