@@ -147,12 +147,14 @@ export class AuthController {
     res.header('Pragma', 'no-cache');
     res.header('Expires', '0');
 
+    const { password: _password, ...safeUser } = user.user;
+
     return res.json({
       msg: '操作成功',
       code: 200,
       permissions: user.permissions,
       roles: user.roles,
-      user: user.user,
+      user: safeUser,
     });
   }
 

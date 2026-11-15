@@ -14,8 +14,14 @@ import { MailService } from './mail/mail.service';
         imports: [ConfigModule],
         inject: [ConfigService],
         useFactory: (config: ConfigService) => {
-          // 动态读取 config 中的 redis 配置
-          const redisConfig = config.get<any>('redis');
+          // Read scalar values explicitly. Some adapter versions silently fall
+          // back to localhost when a nested config object is passed through.
+          const redisConfig = {
+            host: config.get<string>('redis.host'),
+            port: config.get<number>('redis.port', 6379),
+            password: config.get<string>('redis.password'),
+            db: config.get<number>('redis.db', 0),
+          };
           return {
             closeClient: true,
             readyLog: true,
@@ -28,7 +34,11 @@ import { MailService } from './mail/mail.service';
                 console.log(`[Redis] 连接断开，第 ${times} 次重连，延迟 ${delay}ms`);
                 return delay;
               },
-              enableOfflineQueue: true,
+              // Do not leave requests pending forever when Redis is unavailable.
+              enableOfflineQueue: false,
+              // The configured endpoint is an IPv4 address. Explicitly avoid
+              // Node's dual-stack connection path on some Windows hosts.
+              family: 4,
               connectTimeout: 10000, // 连接超时 10 秒
               // 发送心跳保持连接活跃
               keepAlive: 5000, // 每 5 秒发送一次心跳
