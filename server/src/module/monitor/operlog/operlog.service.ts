@@ -1,8 +1,6 @@
 import { Injectable, Inject, Scope } from '@nestjs/common';
 import { IsNull, Not, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreateOperlogDto } from './dto/create-operlog.dto';
-import { UpdateOperlogDto } from './dto/update-operlog.dto';
 import { SysOperlogEntity } from './entities/operlog.entity';
 import { REQUEST } from '@nestjs/core';
 import { Request, Response } from 'express';
@@ -19,9 +17,6 @@ export class OperlogService {
     private readonly sysOperlogEntityRep: Repository<SysOperlogEntity>,
     private readonly axiosService: AxiosService,
   ) {}
-  create(createOperlogDto: CreateOperlogDto) {
-    return 'This action adds a new operlog';
-  }
 
   async findAll(query: any) {
     const entity = this.sysOperlogEntityRep.createQueryBuilder('entity');
@@ -118,11 +113,6 @@ export class OperlogService {
   async findOne(id: number) {
     const data = await this.sysOperlogEntityRep.findOne({ where: { operId: id } });
     return ResultData.ok(data);
-  }
-
-  async update(id: number, updateOperlogDto: UpdateOperlogDto) {
-    await this.sysOperlogEntityRep.update(id, updateOperlogDto);
-    return ResultData.ok();
   }
 
   async remove(id: number) {
