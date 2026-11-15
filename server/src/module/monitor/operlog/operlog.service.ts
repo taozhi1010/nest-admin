@@ -115,16 +115,19 @@ export class OperlogService {
     return ResultData.ok();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} operlog`;
+  async findOne(id: number) {
+    const data = await this.sysOperlogEntityRep.findOne({ where: { operId: id } });
+    return ResultData.ok(data);
   }
 
-  update(id: number, updateOperlogDto: UpdateOperlogDto) {
-    return `This action updates a #${id} operlog`;
+  async update(id: number, updateOperlogDto: UpdateOperlogDto) {
+    await this.sysOperlogEntityRep.update(id, updateOperlogDto);
+    return ResultData.ok();
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} operlog`;
+  async remove(id: number) {
+    await this.sysOperlogEntityRep.delete({ operId: id });
+    return ResultData.ok();
   }
 
   /**
