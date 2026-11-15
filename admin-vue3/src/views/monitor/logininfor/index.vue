@@ -48,7 +48,7 @@
         <el-table-column align="center" label="浏览器" prop="browser" :show-overflow-tooltip="true" />
         <el-table-column align="center" label="登录状态" prop="status">
           <template #default="scope">
-            <span>{{ getDictLabel('sys_common_status', scope.row.status) }}</span>
+            <dict-tag type="sys_common_status" :value="scope.row.status" />
           </template>
         </el-table-column>
         <el-table-column align="center" label="描述" prop="msg" :show-overflow-tooltip="true" />
@@ -70,7 +70,7 @@ import { addDateRange } from '@/composables/useCommon';
 import { useCrud } from '@/composables/useCrud';
 import { useDict } from '@/composables/useDict';
 
-const { sys_common_status, getDictLabel } = useDict('sys_common_status');
+const { sys_common_status } = useDict('sys_common_status');
 
 const logininforRef = ref(null);
 const queryRef = ref(null);

@@ -22,7 +22,7 @@
         <el-table-column label="手机" prop="phonenumber" :show-overflow-tooltip="true" />
         <el-table-column align="center" label="状态" prop="status">
           <template #default="scope">
-            <span>{{ getDictLabel('sys_normal_disable', scope.row.status) }}</span>
+            <dict-tag type="sys_normal_disable" :value="scope.row.status" />
           </template>
         </el-table-column>
         <el-table-column align="center" label="创建时间" prop="createTime" width="180">
@@ -46,7 +46,6 @@
 // ==================== 导入区域 ====================
 import { authUserSelectAll, unallocatedUserList } from '@/api/system/role';
 import { useCrud } from '@/composables/useCrud';
-import { useDict } from '@/composables/useDict';
 
 // ==================== Props 和 Emits ====================
 const props = defineProps({
@@ -58,7 +57,6 @@ const props = defineProps({
 const emit = defineEmits(['ok']);
 
 // ==================== 实例和字典 ====================
-const { getDictLabel } = useDict('sys_normal_disable');
 
 // ==================== 表单引用 ====================
 const refTable = ref(null);

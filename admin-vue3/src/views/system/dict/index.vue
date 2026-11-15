@@ -71,7 +71,7 @@
           <el-table-column align="center" label="字典类型" prop="dictType" :show-overflow-tooltip="true" />
           <el-table-column align="center" label="状态" prop="status">
             <template #default="scope">
-              <span>{{ getDictLabel('sys_normal_disable', scope.row.status) }}</span>
+              <dict-tag type="sys_normal_disable" :value="scope.row.status" />
             </template>
           </el-table-column>
           <el-table-column align="center" label="备注" prop="remark" :show-overflow-tooltip="true" />
@@ -93,9 +93,7 @@
         <el-descriptions border :column="4">
           <el-descriptions-item label="字典项">{{ dictGroup.selectNode.dictName }}</el-descriptions-item>
           <el-descriptions-item label="字典编号">{{ dictGroup.selectNode.dictType }}</el-descriptions-item>
-          <el-descriptions-item label="状态">
-            {{ getDictLabel('sys_normal_disable', dictGroup.selectNode.status) }}
-          </el-descriptions-item>
+          <el-descriptions-item label="状态"><dict-tag type="sys_normal_disable" :value="dictGroup.selectNode.status" /></el-descriptions-item>
         </el-descriptions>
 
         <el-divider content-position="left">数据字典详情</el-divider>
@@ -126,7 +124,7 @@
           <el-table-column align="center" label="字典排序" prop="dictSort" />
           <el-table-column align="center" label="状态" prop="status">
             <template #default="scope">
-              <span>{{ getDictLabel('sys_normal_disable', scope.row.status) }}</span>
+              <dict-tag type="sys_normal_disable" :value="scope.row.status" />
             </template>
           </el-table-column>
           <el-table-column align="center" label="备注" prop="remark" :show-overflow-tooltip="true" />
@@ -161,7 +159,7 @@ import useDictStore from '@/store/modules/dict';
 import dictDataEdit from './components/dictDataEdit';
 import dictGroupEdit from './components/dictGroupEdit';
 
-const { sys_normal_disable, getDictLabel } = useDict('sys_normal_disable');
+const { sys_normal_disable } = useDict('sys_normal_disable');
 
 // 字典组树和列表的ref
 const dictGroupRef = ref();

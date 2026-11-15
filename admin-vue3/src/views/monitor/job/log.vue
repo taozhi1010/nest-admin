@@ -45,14 +45,14 @@
       <el-table-column align="center" label="任务名称" prop="jobName" :show-overflow-tooltip="true" />
       <el-table-column align="center" label="任务组名" prop="jobGroup" :show-overflow-tooltip="true">
         <template #default="scope">
-          <span>{{ getDictLabel('sys_job_group', scope.row.jobGroup) }}</span>
+          <dict-tag type="sys_job_group" :value="scope.row.jobGroup" />
         </template>
       </el-table-column>
       <el-table-column align="center" label="调用目标字符串" prop="invokeTarget" :show-overflow-tooltip="true" />
       <el-table-column align="center" label="日志信息" prop="jobMessage" :show-overflow-tooltip="true" />
       <el-table-column align="center" label="执行状态" prop="status">
         <template #default="scope">
-          <span>{{ getDictLabel('sys_common_status', scope.row.status) }}</span>
+          <dict-tag type="sys_common_status" :value="scope.row.status" />
         </template>
       </el-table-column>
       <el-table-column align="center" label="执行时间" prop="createTime" width="180">
@@ -117,7 +117,7 @@ import { useDict } from '@/composables/useDict';
 // ==================== Composables ====================
 const { closeOpenPage } = useTab();
 
-const { sys_common_status, sys_job_group, getDictLabel } = useDict('sys_common_status', 'sys_job_group');
+const { sys_common_status, sys_job_group } = useDict('sys_common_status', 'sys_job_group');
 
 const queryRef = ref(null);
 const open = ref(false);

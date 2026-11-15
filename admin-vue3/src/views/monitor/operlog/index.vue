@@ -46,14 +46,14 @@
         <el-table-column align="center" label="系统模块" prop="title" :show-overflow-tooltip="true" />
         <el-table-column align="center" label="操作类型" prop="businessType">
           <template #default="scope">
-            <span>{{ getDictLabel('sys_oper_type', scope.row.businessType) }}</span>
+            <dict-tag type="sys_oper_type" :value="scope.row.businessType" />
           </template>
         </el-table-column>
         <el-table-column align="center" label="操作人员" prop="operName" :show-overflow-tooltip="true" :sort-orders="['descending', 'ascending']" sortable="custom" width="110" />
         <el-table-column align="center" label="主机" prop="operIp" :show-overflow-tooltip="true" width="130" />
         <el-table-column align="center" label="操作状态" prop="status">
           <template #default="scope">
-            <span>{{ getDictLabel('sys_common_status', scope.row.status) }}</span>
+            <dict-tag type="sys_common_status" :value="scope.row.status" />
           </template>
         </el-table-column>
         <el-table-column align="center" label="操作日期" prop="operTime" :sort-orders="['descending', 'ascending']" sortable="custom" width="180">
@@ -80,7 +80,10 @@
         <el-form label-width="100px" :model="form">
           <el-row>
             <el-col :span="12">
-              <el-form-item label="操作模块：">{{ form.title }} / {{ typeFormat(form) }}</el-form-item>
+              <el-form-item label="操作模块：">
+                {{ form.title }} /
+                <dict-tag type="sys_oper_type" :value="form.businessType" />
+              </el-form-item>
               <el-form-item label="登录信息：">{{ form.operName }} / {{ form.operIp }} / {{ form.operLocation }}</el-form-item>
             </el-col>
             <el-col :span="12">
@@ -129,7 +132,7 @@ import { addDateRange } from '@/composables/useCommon';
 import { useCrud } from '@/composables/useCrud';
 import { useDict } from '@/composables/useDict';
 
-const { sys_oper_type, sys_common_status, getDictLabel } = useDict('sys_oper_type', 'sys_common_status');
+const { sys_oper_type, sys_common_status } = useDict('sys_oper_type', 'sys_common_status');
 
 const operlogRef = ref(null);
 const queryRef = ref(null);
@@ -160,11 +163,6 @@ const resetQuery = () => {
   if (operlogRef.value) {
     operlogRef.value.sort(defaultSort.value.prop, defaultSort.value.order);
   }
-};
-
-/** 操作日志类型字典翻译 */
-const typeFormat = (row, column) => {
-  return getDictLabel('sys_oper_type', row.businessType);
 };
 
 /** 排序触发事件 */

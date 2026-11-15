@@ -6,18 +6,19 @@ import 'element-plus/dist/index.css'; // 引入全局样式
 import { createApp, type App as VueApp } from 'vue';
 
 import '@/assets/styles/index.scss'; // global css
+import DictTag from '@/components/DictTag/index.vue';
 // 文件上传组件
 import FileUpload from '@/components/FileUpload/index.vue';
 // 图片预览组件
 import ImagePreview from '@/components/ImagePreview/index.vue';
 // 图片上传组件
 import ImageUpload from '@/components/ImageUpload/index.vue';
-// 分页组件
-import Pagination from '@/components/Pagination/index.vue';
 
 // svg 图标
 import 'virtual:svg-icons-register';
 
+// 分页组件
+import Pagination from '@/components/Pagination/index.vue';
 // 自定义表格工具组件
 import RightToolbar from '@/components/RightToolbar/index.vue';
 import SvgIcon from '@/components/SvgIcon/index.vue';
@@ -39,6 +40,7 @@ app.component('FileUpload', FileUpload);
 app.component('ImageUpload', ImageUpload);
 app.component('ImagePreview', ImagePreview);
 app.component('RightToolbar', RightToolbar);
+app.component('DictTag', DictTag);
 
 // 全局注册所有 Element Plus 图标
 Object.keys(ElementPlusIconsVue).forEach((key) => {

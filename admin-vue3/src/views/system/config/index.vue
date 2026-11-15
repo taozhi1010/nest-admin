@@ -51,7 +51,7 @@
         <el-table-column align="center" label="参数键值" prop="configValue" :show-overflow-tooltip="true" />
         <el-table-column align="center" label="系统内置" prop="configType">
           <template #default="scope">
-            <span>{{ getDictLabel('sys_yes_no', scope.row.configType) }}</span>
+            <dict-tag type="sys_yes_no" :value="scope.row.configType" />
           </template>
         </el-table-column>
         <el-table-column align="center" label="备注" prop="remark" :show-overflow-tooltip="true" />
@@ -116,7 +116,7 @@ import { listConfig, addConfig, delConfig, getConfig, updateConfig } from '@/api
 import { useCrud } from '@/composables/useCrud';
 import { useDict } from '@/composables/useDict';
 
-const { sys_yes_no, getDictLabel } = useDict('sys_yes_no');
+const { sys_yes_no } = useDict('sys_yes_no');
 
 // 表单 ref
 const queryRef = ref();

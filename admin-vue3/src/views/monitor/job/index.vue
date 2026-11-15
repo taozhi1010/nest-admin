@@ -43,7 +43,7 @@
         <el-table-column align="center" label="任务名称" prop="jobName" :show-overflow-tooltip="true" />
         <el-table-column align="center" label="任务组名" prop="jobGroup">
           <template #default="scope">
-            <span>{{ getDictLabel('sys_job_group', scope.row.jobGroup) }}</span>
+            <dict-tag type="sys_job_group" :value="scope.row.jobGroup" />
           </template>
         </el-table-column>
         <el-table-column align="center" label="调用目标字符串" prop="invokeTarget" :show-overflow-tooltip="true" />
@@ -175,7 +175,7 @@
               <el-form-item label="任务名称：">{{ job.form.jobName }}</el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="任务分组：">{{ jobGroupFormat(job.form) }}</el-form-item>
+              <el-form-item label="任务分组："><dict-tag type="sys_job_group" :value="job.form.jobGroup" /></el-form-item>
               <el-form-item label="创建时间：">{{ job.form.createTime }}</el-form-item>
             </el-col>
             <el-col :span="12">
@@ -226,7 +226,7 @@ import { useCrud } from '@/composables/useCrud';
 const router = useRouter();
 import { useDict } from '@/composables/useDict';
 
-const { sys_job_group, sys_job_status, getDictLabel } = useDict('sys_job_group', 'sys_job_status');
+const { sys_job_group, sys_job_status } = useDict('sys_job_group', 'sys_job_status');
 
 // 表单 ref 与页面弹窗状态
 const jobRef = ref();
@@ -254,11 +254,6 @@ const job = useCrud({
   queryRef,
   formRef: jobRef
 });
-
-/** 任务组名字典翻译 */
-const jobGroupFormat = (row, column) => {
-  return getDictLabel('sys_job_group', row.jobGroup);
-};
 
 // 点击状态标签切换状态
 const handleStatusClick = (row) => {

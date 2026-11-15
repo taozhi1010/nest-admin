@@ -13,9 +13,7 @@
                 <div class="subject-item-name">{{ item.title || '未命名专栏' }}</div>
                 <div class="subject-item-info">
                   <span class="subject-item-count">{{ item.articleCount || 0 }} 篇</span>
-                  <el-tag v-if="item.publishStatus" :type="getDictTagType('post_subject_publish_status', item.publishStatus)" effect="light" size="small">
-                    {{ getDictLabel('post_subject_publish_status', item.publishStatus) }}
-                  </el-tag>
+                  <dict-tag v-if="item.publishStatus" type="post_subject_publish_status" :value="item.publishStatus" />
                 </div>
               </div>
             </div>
@@ -46,14 +44,10 @@
       <el-descriptions v-if="subject.state.selectNode.id && subject.state.selectNode.id !== 0" border :column="4">
         <el-descriptions-item label="专栏名称">{{ subject.state.selectNode.title }}</el-descriptions-item>
         <el-descriptions-item label="发布状态">
-          <el-tag :type="getDictTagType('post_subject_publish_status', subject.state.selectNode.publishStatus)" effect="light">
-            {{ getDictLabel('post_subject_publish_status', subject.state.selectNode.publishStatus) }}
-          </el-tag>
+          <dict-tag type="post_subject_publish_status" :value="subject.state.selectNode.publishStatus" />
         </el-descriptions-item>
         <el-descriptions-item label="审核状态">
-          <el-tag :type="getDictTagType('post_subject_audit_status', subject.state.selectNode.auditStatus)" effect="light">
-            {{ getDictLabel('post_subject_audit_status', subject.state.selectNode.auditStatus) }}
-          </el-tag>
+          <dict-tag type="post_subject_audit_status" :value="subject.state.selectNode.auditStatus" />
         </el-descriptions-item>
       </el-descriptions>
 
@@ -101,9 +95,7 @@
           <template #default="scope">
             <el-tooltip :content="'双击打开编辑器'" placement="top" effect="light">
               <div style="display: flex; align-items: center; gap: 8px">
-                <el-tag v-if="scope.row.source" :type="getSourceTagType(scope.row.source)" effect="light" size="small">
-                  {{ getDictLabel('post_article_source', scope.row.source) }}
-                </el-tag>
+                <dict-tag v-if="scope.row.source" type="post_article_source" :value="scope.row.source" />
                 <el-link type="primary" :underline="false" @dblclick="handleOpenEditor(scope.row)" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block; text-align: left; width: 100%">
                   {{ scope.row.title }}
                 </el-link>
@@ -118,16 +110,12 @@
         </el-table-column>
         <el-table-column align="left" label="发布状态" prop="publishStatus" width="100">
           <template #default="scope">
-            <el-tag :type="getDictTagType('post_article_publish_status', scope.row.publishStatus)" effect="light" size="small">
-              {{ getDictLabel('post_article_publish_status', scope.row.publishStatus) }}
-            </el-tag>
+            <dict-tag type="post_article_publish_status" :value="scope.row.publishStatus" />
           </template>
         </el-table-column>
         <el-table-column align="left" label="审核状态" prop="auditStatus" width="100">
           <template #default="scope">
-            <el-tag :type="getDictTagType('post_article_audit_status', scope.row.auditStatus)" effect="light" size="small">
-              {{ getDictLabel('post_article_audit_status', scope.row.auditStatus) }}
-            </el-tag>
+            <dict-tag type="post_article_audit_status" :value="scope.row.auditStatus" />
           </template>
         </el-table-column>
         <el-table-column align="left" label="点赞" prop="likeNum" width="80" />
@@ -164,17 +152,7 @@ import Preview from './components/Preview';
 
 const router = useRouter();
 
-const { post_article_publish_status, getDictLabel, getDictTagType } = useDict('post_article_publish_status', 'post_article_audit_status', 'post_article_source', 'post_subject_publish_status', 'post_subject_audit_status');
-
-// 获取来源标签类型
-const getSourceTagType = (source) => {
-  const typeMap = {
-    0: '', // 原创
-    1: 'success', // 转载
-    2: 'warning' // 翻译
-  };
-  return typeMap[source] || '';
-};
+const { post_article_publish_status, post_article_audit_status } = useDict('post_article_publish_status', 'post_article_audit_status', 'post_article_source', 'post_subject_publish_status', 'post_subject_audit_status');
 
 // 使用专栏管理 composable
 const subject = useSubject();

@@ -44,12 +44,12 @@
         <el-table-column align="center" label="文章数量" prop="articleCount" width="100" />
         <el-table-column align="center" label="发布状态" prop="publishStatus" width="100">
           <template #default="scope">
-            <span>{{ getDictLabel('post_subject_publish_status', scope.row.publishStatus) }}</span>
+            <dict-tag type="post_subject_publish_status" :value="scope.row.publishStatus" />
           </template>
         </el-table-column>
         <el-table-column align="center" label="审核状态" prop="auditStatus" width="100">
           <template #default="scope">
-            <span>{{ getDictLabel('post_subject_audit_status', scope.row.auditStatus) }}</span>
+            <dict-tag type="post_subject_audit_status" :value="scope.row.auditStatus" />
           </template>
         </el-table-column>
         <el-table-column align="center" label="排序" prop="sort" width="80" />
@@ -109,7 +109,7 @@ import ImageUploadCover from '@/components/ImageUploadCover/index.vue';
 import { useCrud } from '@/composables/useCrud';
 import { useDict } from '@/composables/useDict';
 
-const { post_subject_publish_status, post_subject_audit_status, getDictLabel } = useDict('post_subject_publish_status', 'post_subject_audit_status');
+const { post_subject_publish_status, post_subject_audit_status } = useDict('post_subject_publish_status', 'post_subject_audit_status');
 
 // ==================== 表单引用 ====================
 const subjectRef = ref(null);

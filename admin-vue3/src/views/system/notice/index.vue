@@ -36,16 +36,14 @@
         <el-table-column align="center" label="公告标题" prop="noticeTitle" :show-overflow-tooltip="true" min-width="300">
           <template #default="scope">
             <div style="display: flex; justify-content: center; align-items: center; gap: 8px; width: 100%">
-              <el-tag :type="getDictTagType('sys_notice_type', scope.row.noticeType)" effect="light" size="small">
-                {{ getDictLabel('sys_notice_type', scope.row.noticeType) }}
-              </el-tag>
+              <dict-tag type="sys_notice_type" :value="scope.row.noticeType" />
               <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{ scope.row.noticeTitle }}</span>
             </div>
           </template>
         </el-table-column>
         <el-table-column align="center" label="状态" prop="status" width="80">
           <template #default="scope">
-            <span>{{ getDictLabel('sys_notice_status', scope.row.status) }}</span>
+            <dict-tag type="sys_notice_status" :value="scope.row.status" />
           </template>
         </el-table-column>
         <el-table-column align="center" label="创建者" prop="createBy" width="100" />
@@ -113,7 +111,7 @@ import MdEditor from '@/components/MdEditor';
 import { useCrud } from '@/composables/useCrud';
 import { useDict } from '@/composables/useDict';
 
-const { sys_notice_status, sys_notice_type, getDictLabel, getDictTagType } = useDict('sys_notice_status', 'sys_notice_type');
+const { sys_notice_status, sys_notice_type } = useDict('sys_notice_status', 'sys_notice_type');
 
 // 表单 ref
 const queryRef = ref();
