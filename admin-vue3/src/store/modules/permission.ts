@@ -10,7 +10,10 @@ import router, { constantRoutes, dynamicRoutes } from '@/router';
 
 import type { RouteRecordRaw } from 'vue-router';
 
-// 动态导入组件
+// 动态导入组件。Layout/InnerLink 虽已在 entry 静态图内，但此处必须保留动态导入：
+// 它是 router ↔ layout ↔ permissionStore 循环依赖的求值安全阀，改静态导入会触发
+// "Cannot access 'Layout' before initialization"（构建期的 INEFFECTIVE_DYNAMIC_IMPORT
+// 提示即此意，已在 vite.config.ts 中定向关闭该 check）
 const Layout = () => import('@/layout/index.vue');
 const ParentView = () => import('@/components/ParentView/index.vue');
 const InnerLink = () => import('@/layout/components/InnerLink/index.vue');
