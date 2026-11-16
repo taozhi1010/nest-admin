@@ -6,6 +6,7 @@ import { ChunkFileDto, ChunkMergeFileDto, CosAuthorizationDto, FileUploadDto, Up
 import { ResultData } from 'src/common/utils/result';
 import { User, UserDto } from 'src/module/system/user/user.decorator';
 import { RequirePermission } from 'src/common/decorators/require-premission.decorator';
+import { UPLOAD_MAX_SIZE_BYTES } from 'src/common/constant/index';
 
 @ApiTags('通用-文件上传')
 @Controller('common/upload')
@@ -39,7 +40,7 @@ export class UploadController {
   })
   @HttpCode(200)
   @Post()
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(FileInterceptor('file', { limits: { fileSize: UPLOAD_MAX_SIZE_BYTES } }))
   async singleFileUpload(@UploadedFile() file: Express.Multer.File, @Body() body: FileUploadDto, @User() user?: UserDto) {
     // path 已由 FileUploadDto 校验（可选，缺省时服务端落到 uploads 目录）
     const customPath = body.path;
@@ -86,7 +87,7 @@ export class UploadController {
   })
   @HttpCode(200)
   @Post('/chunk')
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(FileInterceptor('file', { limits: { fileSize: UPLOAD_MAX_SIZE_BYTES } }))
   chunkFileUpload(@UploadedFile() file: Express.Multer.File, @Body() body: ChunkFileDto) {
     return this.uploadService.chunkFileUpload(file, body);
   }

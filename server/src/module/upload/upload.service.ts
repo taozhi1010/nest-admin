@@ -7,6 +7,7 @@ import { ResultData } from 'src/common/utils/result';
 import { SysUploadEntity } from './entities/upload.entity';
 import { ChunkFileDto, ChunkMergeFileDto } from './dto/index';
 import { GenerateUUID } from 'src/common/utils/index';
+import { UPLOAD_DEFAULT_ALLOWED_EXTS } from 'src/common/constant/index';
 import fs from 'fs';
 import path from 'path';
 import iconv from 'iconv-lite';
@@ -42,6 +43,41 @@ export class UploadService {
   }
 
   /**
+   * 读取 yml 扩展名白名单（app.file.allowedExts，逗号分隔字符串或数组），未配置时回退默认名单
+   */
+  private getAllowedUploadExts(): string[] {
+    const raw = this.config.get('app.file.allowedExts');
+    const list = Array.isArray(raw) ? raw : typeof raw === 'string' && raw.trim() ? raw.split(',') : [];
+    const normalized = list
+      .map((ext) => String(ext).trim().toLowerCase())
+      .filter(Boolean)
+      .map((ext) => (ext.startsWith('.') ? ext : `.${ext}`));
+    return normalized.length ? normalized : UPLOAD_DEFAULT_ALLOWED_EXTS;
+  }
+
+  /**
+   * 域名与 key 拼接为 URL（不能用 path.join/posix.join，其会把 scheme 的 // 折叠成 /）
+   */
+  private joinUrl(domain: string, key: string): string {
+    const base = (domain || '').replace(/\/+$/, '');
+    return `${base}${key.startsWith('/') ? '' : '/'}${key}`;
+  }
+
+  /**
+   * 扩展名白名单校验：不通过时返回失败信封，通过返回 null
+   */
+  private checkUploadExt(fileName: string): ResultData | null {
+    const ext = path.extname(fileName || '').toLowerCase();
+    if (!ext) {
+      return ResultData.fail(500, '文件缺少扩展名，已拒绝上传');
+    }
+    if (!this.getAllowedUploadExts().includes(ext)) {
+      return ResultData.fail(500, `不支持的文件类型 '${ext}'，允许的类型：${this.getAllowedUploadExts().join(' ')}`);
+    }
+    return null;
+  }
+
+  /**
    * 单文件上传
    * @param file
    * @param customPath 自定义存储路径
@@ -53,6 +89,10 @@ export class UploadService {
     if (fileSize > this.config.get('app.file.maxSize')) {
       return ResultData.fail(500, `文件大小不能超过${this.config.get('app.file.maxSize')}MB`);
     }
+
+    // 扩展名白名单：拒绝 .html/.svg 等可内联执行类型，防止经静态服务造成存储型 XSS（头像上传复用此方法一并生效）
+    const extFail = this.checkUploadExt(file?.originalname);
+    if (extFail) return extFail;
 
     // 使用默认路径或自定义路径
     const storagePath = customPath || 'uploads';
@@ -121,6 +161,10 @@ export class UploadService {
    * 文件切片上传
    */
   async chunkFileUpload(file: Express.Multer.File, body: ChunkFileDto) {
+    // 单分片大小由 Multer limits（UPLOAD_MAX_SIZE_BYTES）兜底，这里校验目标文件扩展名
+    const extFail = this.checkUploadExt(body?.fileName);
+    if (extFail) return extFail;
+
     const rootPath = process.cwd();
     const baseDirPath = path.join(rootPath, this.config.get('app.file.location'));
     const chunckDirPath = path.join(baseDirPath, this.thunkDir, body.uploadId);
@@ -174,6 +218,11 @@ export class UploadService {
    */
   async chunkMergeFile(body: ChunkMergeFileDto) {
     const { uploadId, fileName } = body;
+
+    // 合并落盘前最终校验扩展名（历史分片可能建于规则变更前）
+    const extFail = this.checkUploadExt(fileName);
+    if (extFail) return extFail;
+
     const rootPath = process.cwd();
     const baseDirPath = path.join(rootPath, this.config.get('app.file.location'));
     const sourceFilesDir = path.join(baseDirPath, this.thunkDir, uploadId);
@@ -186,20 +235,21 @@ export class UploadService {
     const newFileName = this.getNewFileName(fileName);
     const targetFile = path.join(baseDirPath, newFileName);
     await this.thunkStreamMerge(sourceFilesDir, targetFile);
-    //文件相对地址
-    const relativeFilePath = targetFile.replace(baseDirPath, '');
-    const url = path.join(this.config.get('app.file.domain'), fileName);
-    const key = path.join('test', relativeFilePath);
+    //文件相对地址（统一正斜杠，避免 Windows 反斜杠写进 DB/COS key）
+    const relativeFilePath = targetFile.replace(baseDirPath, '').replace(/\\/g, '/');
+    // 修复硬编码 'test' 前缀：key 与单文件上传对齐，使用 serveRoot（默认 /profile）
+    const serveRoot = this.config.get('app.file.serveRoot') || '/profile';
+    const key = path.posix.join(serveRoot, relativeFilePath);
     const data = {
       fileName: key,
       newFileName: newFileName,
-      url: url,
+      url: this.joinUrl(this.config.get('app.file.domain'), key),
     };
     const stats = fs.statSync(targetFile);
 
     if (!this.isLocal) {
       this.uploadLargeFileCos(targetFile, key);
-      data.url = path.join(this.config.get('cos.domain'), key);
+      data.url = this.joinUrl(this.config.get('cos.domain'), key);
       // 写入上传记录
       await this.sysUploadEntityRep.save({ uploadId, ...data, ext: path.extname(data.newFileName), size: stats.size, status: '0' });
       return ResultData.ok(data);
