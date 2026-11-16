@@ -1,4 +1,4 @@
-import { Repository, In, Not } from 'typeorm';
+import { Repository, In, Not, DataSource } from 'typeorm';
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
@@ -10,7 +10,7 @@ import { ExportTable } from 'src/common/utils/export';
 import * as ExcelJS from 'exceljs';
 
 import { CacheEnum, DelFlagEnum, StatusEnum, DataScopeEnum } from 'src/common/enum/index';
-import { LOGIN_TOKEN_EXPIRESIN, SYS_USER_TYPE } from 'src/common/constant/index';
+import { LOGIN_TOKEN_EXPIRESIN, REGISTER_IP_LIMIT, REGISTER_RATE_EXPIRESIN, SYS_USER_TYPE } from 'src/common/constant/index';
 import { ResultData } from 'src/common/utils/result';
 import { CreateUserDto, UpdateUserDto, ListUserDto, ChangeStatusDto, ResetPwdDto, AllocatedListDto, UpdateProfileDto, UpdatePwdDto, ImportUserDto } from './dto/index';
 import { RegisterDto, LoginDto } from '../../main/dto/index';
@@ -32,6 +32,7 @@ import { UserDto } from './user.decorator';
 import { ClientInfoDto } from 'src/common/decorators/common.decorator';
 import { Cacheable, CacheEvict } from 'src/common/decorators/redis.decorator';
 import { Captcha } from 'src/common/decorators/captcha.decorator';
+import { recordLoginFailure, clearLoginFailure } from 'src/common/utils/login-captcha';
 
 @Injectable()
 export class UserService {
@@ -51,6 +52,7 @@ export class UserService {
     private readonly jwtService: JwtService,
     private readonly redisService: RedisService,
     private readonly configService: ConfigService,
+    private readonly dataSource: DataSource,
   ) {}
   /**
    * 后台创建用户
@@ -76,24 +78,26 @@ export class UserService {
       createUserDto.password = await bcrypt.hashSync(createUserDto.password, salt);
     }
 
-    const res = await this.userRepo.save({ ...createUserDto, userType: SYS_USER_TYPE.CUSTOM });
-    const postEntity = this.sysUserWithPostEntityRep.createQueryBuilder('postEntity');
-    const postValues = createUserDto.postIds.map((id) => {
-      return {
-        userId: res.userId,
-        postId: id,
-      };
-    });
-    postEntity.insert().values(postValues).execute();
-
-    const roleEntity = this.sysUserWithRoleEntityRep.createQueryBuilder('roleEntity');
-    const roleValues = createUserDto.roleIds.map((id) => {
-      return {
-        userId: res.userId,
-        roleId: id,
-      };
-    });
-    roleEntity.insert().values(roleValues).execute();
+    let res;
+    try {
+      // 用户与岗位/角色关联写入打包为事务，任一步失败整体回滚
+      res = await this.dataSource.transaction(async (manager) => {
+        const user = await manager.save(UserEntity, { ...createUserDto, userType: SYS_USER_TYPE.CUSTOM });
+        if (createUserDto.postIds?.length) {
+          await manager.insert(SysUserWithPostEntity, createUserDto.postIds.map((id) => ({ userId: user.userId, postId: id })));
+        }
+        if (createUserDto.roleIds?.length) {
+          await manager.insert(SysUserWithRoleEntity, createUserDto.roleIds.map((id) => ({ userId: user.userId, roleId: id })));
+        }
+        return user;
+      });
+    } catch (error) {
+      // 并发新增撞车时前置查重拦不住，靠 user_name 唯一索引兜底（ER_DUP_ENTRY）
+      if (error?.code === 'ER_DUP_ENTRY') {
+        throw new BadRequestException(`新增用户'${createUserDto.userName}'失败，登录账号已存在`);
+      }
+      throw error;
+    }
 
     return ResultData.ok();
   }
@@ -262,67 +266,47 @@ export class UserService {
       delete updateUserDto.status;
     }
 
-    if (updateUserDto?.postIds !== undefined) {
-      //用户已有岗位，先删除所有关联岗位
-      const hasPostId = await this.sysUserWithPostEntityRep.findOne({
-        where: {
-          userId: updateUserDto.userId,
-        },
-        select: ['postId'],
-      });
-
-      if (hasPostId) {
-        await this.sysUserWithPostEntityRep.delete({
+    // 岗位/角色关联的"先删后插"与用户信息更新打包为事务，任一步失败整体回滚
+    // （原实现散装多表写入且插入漏 await，中断时会留下删了旧关联但没插新关联的半成品）
+    const data = await this.dataSource.transaction(async (manager) => {
+      if (updateUserDto?.postIds !== undefined) {
+        //用户已有岗位，先删除所有关联岗位
+        await manager.delete(SysUserWithPostEntity, {
           userId: updateUserDto.userId,
         });
+        // 只有当 postIds 不为空时才插入新记录
+        if (updateUserDto.postIds && updateUserDto.postIds.length > 0) {
+          await manager.insert(
+            SysUserWithPostEntity,
+            updateUserDto.postIds.map((id) => ({ userId: updateUserDto.userId, postId: id })),
+          );
+        }
       }
-      // 只有当 postIds 不为空时才插入新记录
-      if (updateUserDto.postIds && updateUserDto.postIds.length > 0) {
-        const postEntity = this.sysUserWithPostEntityRep.createQueryBuilder('postEntity');
-        const postValues = updateUserDto.postIds.map((id) => {
-          return {
-            userId: updateUserDto.userId,
-            postId: id,
-          };
-        });
-        postEntity.insert().values(postValues).execute();
-      }
-    }
 
-    if (updateUserDto?.roleIds !== undefined) {
-      //用户已有角色，先删除所有关联角色
-      const hasRoletId = await this.sysUserWithRoleEntityRep.findOne({
-        where: {
-          userId: updateUserDto.userId,
-        },
-        select: ['roleId'],
-      });
-      if (hasRoletId) {
-        await this.sysUserWithRoleEntityRep.delete({
+      if (updateUserDto?.roleIds !== undefined) {
+        //用户已有角色，先删除所有关联角色
+        await manager.delete(SysUserWithRoleEntity, {
           userId: updateUserDto.userId,
         });
+        // 只有当 roleIds 不为空时才插入新记录
+        if (updateUserDto.roleIds && updateUserDto.roleIds.length > 0) {
+          await manager.insert(
+            SysUserWithRoleEntity,
+            updateUserDto.roleIds.map((id) => ({ userId: updateUserDto.userId, roleId: id })),
+          );
+        }
       }
-      // 只有当 roleIds 不为空时才插入新记录
-      if (updateUserDto.roleIds && updateUserDto.roleIds.length > 0) {
-        const roleEntity = this.sysUserWithRoleEntityRep.createQueryBuilder('roleEntity');
-        const roleValues = updateUserDto.roleIds.map((id) => {
-          return {
-            userId: updateUserDto.userId,
-            roleId: id,
-          };
-        });
-        roleEntity.insert().values(roleValues).execute();
-      }
-    }
 
-    delete updateUserDto.password;
-    delete (updateUserDto as any).dept;
-    delete (updateUserDto as any).roles;
-    delete (updateUserDto as any).roleIds;
-    delete (updateUserDto as any).postIds;
+      const dto = { ...updateUserDto };
+      delete dto.password;
+      delete (dto as any).dept;
+      delete (dto as any).roles;
+      delete (dto as any).roleIds;
+      delete (dto as any).postIds;
 
-    //更新用户信息
-    const data = await this.userRepo.update({ userId: updateUserDto.userId }, updateUserDto);
+      //更新用户信息
+      return await manager.update(UserEntity, { userId: updateUserDto.userId }, dto);
+    });
     return ResultData.ok(data);
   }
 
@@ -351,11 +335,15 @@ export class UserService {
       },
       select: ['userId', 'password'],
     });
-    this.clearCacheByUserId(data.userId);
 
     if (!(data && bcrypt.compareSync(user.password, data.password))) {
-      return ResultData.fail(500, `帐号或密码错误`);
+      // 累计密码错误次数，达到阈值后下次登录需要验证码
+      await recordLoginFailure(this.redisService, user.username);
+      return ResultData.fail(500, `账号或密码错误`);
     }
+
+    await clearLoginFailure(this.redisService, user.username);
+    this.clearCacheByUserId(data.userId);
 
     const userData = await this.getUserinfo(data.userId);
 
@@ -537,8 +525,14 @@ export class UserService {
   /**
    * 注册
    */
-  async register(user: RegisterDto) {
+  @Captcha('user', 'always')
+  async register(user: RegisterDto, ipaddr: string) {
     const loginDate = GetNowDate();
+    // IP 注册频率限制：同一 IP 每小时最多 REGISTER_IP_LIMIT 次（含验证码失败的尝试）
+    const rateCount = await this.redisService.incr(CacheEnum.REGISTER_RATE_KEY + ipaddr, REGISTER_RATE_EXPIRESIN);
+    if (rateCount > REGISTER_IP_LIMIT) {
+      return ResultData.fail(429, '注册过于频繁，请稍后再试');
+    }
     const checkUserNameUnique = await this.userRepo.findOne({
       where: {
         userName: user.username,
@@ -550,8 +544,28 @@ export class UserService {
     }
     user['userName'] = user.username;
     user['nickName'] = user.username;
-    await this.userRepo.save({ ...user, loginDate });
+    user['password'] = bcrypt.hashSync(user.password, bcrypt.genSaltSync(10));
+    try {
+      await this.userRepo.save({ ...user, userType: SYS_USER_TYPE.CUSTOM, loginDate });
+    } catch (error) {
+      // 并发注册撞车时前置查重拦不住，靠 user_name 唯一索引兜底（ER_DUP_ENTRY）
+      if (error?.code === 'ER_DUP_ENTRY') {
+        return ResultData.fail(500, `保存用户'${user.username}'失败，注册账号已存在`);
+      }
+      throw error;
+    }
     return ResultData.ok();
+  }
+
+  /**
+   * 检查账号是否已被注册（注册页实时校验用，注册提交时后端仍会兜底校验）
+   */
+  async checkUsername(username: string) {
+    const exist = await this.userRepo.findOne({
+      where: { userName: username },
+      select: ['userId'],
+    });
+    return ResultData.ok({ exists: !!exist });
   }
 
   /**
@@ -582,6 +596,22 @@ export class UserService {
   }
 
   /**
+   * 踢掉指定用户的全部在线会话
+   * 删除/停用/重置密码后必须调用：身份验证只查 Redis 会话快照、不回查用户表，不踢则已登录会话在过期前持续有效
+   * @param userIds
+   */
+  private async kickUserSessions(userIds: number[]) {
+    if (!userIds?.length) return;
+    const keys = await this.redisService.keys(`${CacheEnum.LOGIN_TOKEN_KEY}*`);
+    if (!keys.length) return;
+    const sessions = await this.redisService.mget(keys);
+    const delKeys = keys.filter((key, index) => userIds.includes(sessions[index]?.userId));
+    if (delKeys.length) {
+      await this.redisService.del(delKeys);
+    }
+  }
+
+  /**
    * 重置密码
    * @param body
    * @returns
@@ -602,6 +632,8 @@ export class UserService {
         password: body.password,
       },
     );
+    // 重置密码后立即踢掉全部在线会话，确保旧凭据即刻失效
+    await this.kickUserSessions([body.userId]);
     return ResultData.ok();
   }
 
@@ -611,13 +643,25 @@ export class UserService {
    * @returns
    */
   async remove(ids: number[]) {
-    // 忽略系统角色的删除
-    const data = await this.userRepo.update(
-      { userId: In(ids), userType: Not(SYS_USER_TYPE.SYS) },
-      {
-        delFlag: '1',
+    // 忽略系统用户的删除
+    const targets = await this.userRepo.find({
+      where: {
+        userId: In(ids),
+        userType: Not(SYS_USER_TYPE.SYS),
       },
-    );
+      select: ['userId'],
+    });
+    let data = null;
+    if (targets.length) {
+      data = await this.userRepo.update(
+        { userId: In(targets.map((t) => t.userId)) },
+        {
+          delFlag: '1',
+        },
+      );
+      // 被删用户的在线会话立即失效，避免已登录会话继续操作
+      await this.kickUserSessions(targets.map((t) => t.userId));
+    }
     return ResultData.ok(data);
   }
 
@@ -673,26 +717,17 @@ export class UserService {
   async updateAuthRole(query) {
     const roleIds = query.roleIds.split(',');
     if (roleIds?.length > 0) {
-      //用户已有角色,先删除所有关联角色
-      const hasRoletId = await this.sysUserWithRoleEntityRep.findOne({
-        where: {
-          userId: query.userId,
-        },
-        select: ['roleId'],
-      });
-      if (hasRoletId) {
-        await this.sysUserWithRoleEntityRep.delete({
+      // 角色关联"先删后插"打包为事务，任一步失败整体回滚
+      await this.dataSource.transaction(async (manager) => {
+        //用户已有角色,先删除所有关联角色
+        await manager.delete(SysUserWithRoleEntity, {
           userId: query.userId,
         });
-      }
-      const roleEntity = this.sysUserWithRoleEntityRep.createQueryBuilder('roleEntity');
-      const roleValues = roleIds.map((id) => {
-        return {
-          userId: query.userId,
-          roleId: id,
-        };
+        await manager.insert(
+          SysUserWithRoleEntity,
+          roleIds.map((id) => ({ userId: query.userId, roleId: id })),
+        );
       });
-      roleEntity.insert().values(roleValues).execute();
     }
 
     // 清除用户菜单缓存
@@ -724,6 +759,10 @@ export class UserService {
         status: changeStatusDto.status,
       },
     );
+    // 停用用户的在线会话立即失效（启用无需处理）
+    if (changeStatusDto.status === StatusEnum.STOP) {
+      await this.kickUserSessions([changeStatusDto.userId]);
+    }
     return ResultData.ok(res);
   }
 

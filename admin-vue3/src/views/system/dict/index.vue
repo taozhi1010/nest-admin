@@ -1,6 +1,6 @@
 <template>
   <div class="app-container dict">
-    <el-card v-loading="loading" class="dict-tree" shadow="never">
+    <el-card v-loading="loading" class="dict-tree fill-card" shadow="never">
       <div class="dict-tree-header">
         <el-button v-hasPermi="['system:dict:add']" class="dict-tree-header-item add-btn" icon="el-icon-plus" size="mini" type="primary" @click="dictGroup.handleAdd">添加字典分类</el-button>
         <el-input v-model="dictGroup.query.dictName" class="dict-tree-header-item search-input" placeholder="请输入字典项筛选" style="width: 200px" />
@@ -28,7 +28,7 @@
       </div>
     </el-card>
 
-    <el-card v-loading="loading" class="dict-table" shadow="never">
+    <el-card v-loading="loading" class="dict-table fill-card" shadow="never">
       <div v-if="dictGroup.selectNode.dictId === 0">
         <el-form ref="queryDictGroupRef" v-no-enter :inline="true" :model="dictGroup.query">
           <el-form-item label="字典名称" prop="menuName">
@@ -158,7 +158,8 @@ import { listData, delData } from '@/api/system/dict/data'
 import { useDict } from '@/composables/useDict'
 import useDictStore from '@/store/modules/dict'
 import { resetForm } from '@/composables/useForm'
-import { download, parseTime } from '@/composables/useCommon'
+import { parseTime } from '@/composables/useCommon'
+import { download } from '@/composables/useRequest'
 
 const { sys_normal_disable, getDictLabel } = useDict('sys_normal_disable')
 
@@ -367,10 +368,12 @@ dictGroup.request()
   &-tree {
     background-color: #ffffff;
     width: 250px;
-    height: calc(100vh - 200px);
+    // 高度与内部滚动由全局 .fill-card 统一处理
     margin-right: 20px;
 
     &-header {
+      flex-shrink: 0;
+
       &-item {
         width: 100%;
         margin-bottom: 10px;
@@ -388,16 +391,17 @@ dictGroup.request()
     }
 
     &-body {
-      height: calc(100vh - 320px);
+      // 占满卡片剩余空间，独立滚动
+      flex: 1;
+      min-height: 0;
       padding-right: 20px;
-      overflow-y: scroll;
+      overflow-y: auto;
     }
   }
 
   &-table {
     position: relative;
     width: calc(100% - 250px);
-    height: calc(100vh - 200px);
   }
 }
 

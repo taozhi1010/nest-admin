@@ -1,45 +1,61 @@
-import { defineConfig } from "vitepress";
+import { defineConfig } from 'vitepress'
 
-// https://vitepress.dev/reference/site-config
 export default defineConfig({
-  title: "nest-admin使用指南",
-  description: "帮助你更好的使用nest-admin",
+  base: '/manual/',
+  title: 'nest-admin 文档',
+  description: 'nest-admin 的部署与开发文档',
   themeConfig: {
-    // https://vitepress.dev/reference/default-theme-config
     nav: [
-      { text: "主页", link: "/" },
-      { text: "部署", link: "/deploy-online/step" },
-      { text: "开发", link: "/development-tips/partner" },
+      { text: '首页', link: '/' },
+      { text: '部署', link: '/deploy-online/step' },
+      { text: '自动部署', link: '/deploy-online/auto-deploy-overview' },
+      { text: '开发', link: '/development-tips/partner' },
+      { text: '发布记录', link: '/releases' },
     ],
 
     sidebar: {
-      "/deploy-online/": [
+      '/deploy-online/': [
         {
-          text: "线上部署",
+          text: '在线部署',
           items: [
-            { text: "流程简介", link: "/deploy-online/step" },
-            { text: "MySQL部署", link: "/deploy-online/mysql" },
-            { text: "Redis部署", link: "/deploy-online/redis" },
-            { text: "PM2部署", link: "/deploy-online/pm2" },
-            { text: "Nginx部署", link: "/deploy-online/nginx" },
+            { text: '部署概览', link: '/deploy-online/step' },
+            { text: 'MySQL', link: '/deploy-online/mysql' },
+            { text: 'Redis', link: '/deploy-online/redis' },
+            { text: 'PM2', link: '/deploy-online/pm2' },
+            { text: 'Nginx', link: '/deploy-online/nginx' },
+          ],
+        },
+        {
+          text: '自动部署',
+          items: [
+            { text: '最小闭环', link: '/deploy-online/auto-deploy-overview' },
+            { text: '密钥配置', link: '/deploy-online/auto-deploy-secrets' },
+            { text: '问题排查', link: '/deploy-online/auto-deploy-troubleshooting' },
+            { text: '命令速查', link: '/deploy-online/auto-deploy-checklist' },
           ],
         },
       ],
-      "/development-tips/": [
+      '/development-tips/': [
         {
-          text: "项目开发",
+          text: '开发',
           items: [
-            {
-              text: "协作开发",
-              link: "/development-tips/partner",
-            },
+            { text: '协作开发', link: '/development-tips/partner' },
+          ],
+        },
+      ],
+      '/releases': [
+        {
+          text: '发布记录',
+          items: [
+            { text: 'v1.0.1 · 2026-10-25', link: '/releases#v1-0-1' },
+            { text: 'v1.0.0 · 2026-10-25', link: '/releases#v1-0-0' },
           ],
         },
       ],
     },
 
     socialLinks: [
-      { icon: "github", link: "https://github.com/taozhi1010/nest-admin" },
+      { icon: 'github', link: 'https://github.com/taozhi1010/nest-admin' },
     ],
   },
-});
+})

@@ -2,14 +2,14 @@ import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { mw as requestIpMw } from 'request-ip';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from 'src/app.module';
-import { HttpExceptionsFilter } from 'src/common/filters/http-exceptions-filter';
-import { ValidationPipe } from '@nestjs/common';
+import { AllExceptionsFilter } from 'src/common/filters/all-exceptions-filter';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { join } from 'path';
 import { setupApiDocs } from 'src/common/utils/api-docs';
+import { setupProcessGuards } from 'src/common/utils/process-guard';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 
 async function bootstrap() {
@@ -83,7 +83,7 @@ async function bootstrap() {
   app.setGlobalPrefix(prefix);
   // 全局验证
   app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true }));
-  app.useGlobalFilters(new HttpExceptionsFilter());
+  app.useGlobalFilters(new AllExceptionsFilter());
 
   // web 安全，防常见漏洞
   // 注意：开发环境如果开启 nest static module 需要将 crossOriginResourcePolicy 设置为 false 否则静态资源 跨域不可访问
@@ -94,11 +94,13 @@ async function bootstrap() {
       contentSecurityPolicy: {
         directives: {
           defaultSrc: [`'self'`],
-          styleSrc: [`'self'`, `'unsafe-inline'`, 'cdn.redoc.ly', 'fonts.googleapis.com'],
-          fontSrc: [`'self'`, 'fonts.gstatic.com', 'cdn.redoc.ly'],
-          scriptSrc: [`'self'`, `'unsafe-inline'`, 'cdn.redoc.ly'],
-          imgSrc: [`'self'`, 'data:', 'cdn.redoc.ly'],
+          styleSrc: [`'self'`, `'unsafe-inline'`, 'cdn.redoc.ly', 'cdn.jsdelivr.net', 'fonts.googleapis.com'],
+          fontSrc: [`'self'`, 'data:', 'fonts.gstatic.com', 'cdn.redoc.ly', 'cdn.jsdelivr.net'],
+          scriptSrc: [`'self'`, `'unsafe-inline'`, 'cdn.redoc.ly', 'cdn.jsdelivr.net'],
+          imgSrc: [`'self'`, 'data:', 'cdn.redoc.ly', 'cdn.jsdelivr.net'],
+          connectSrc: [`'self'`, 'cdn.redoc.ly', 'cdn.jsdelivr.net'],
           frameAncestors: [`'self'`, 'http://localhost:*', 'https://localhost:*'], // 允许本地任意端口嵌套
+          upgradeInsecureRequests: null,
         },
       },
     }),
@@ -120,8 +122,10 @@ async function bootstrap() {
     next();
   });
 
-  // 获取真实 ip
-  app.use(requestIpMw({ attributeName: 'ip' }));
+  // 信任一层反向代理（nginx），使 request.ip 取 X-Forwarded-For 中的真实客户端 IP（登录日志/注册限流依赖）
+  // 注意：若后端端口可被公网直达，攻击者可伪造 X-Forwarded-For 绕过基于 IP 的限流，生产环境应仅暴露前端入口
+  app.set('trust proxy', 1);
+  app.enableShutdownHooks();
   //服务端口
   const port = config.get<number>('app.port') || 8080;
   await app.listen(port);
@@ -137,4 +141,8 @@ async function bootstrap() {
     `\n========================================\n`,
   );
 }
-bootstrap();
+setupProcessGuards();
+bootstrap().catch((error) => {
+  new Logger('Bootstrap').error(`服务启动失败：${error.stack ?? error.message}`);
+  process.exit(1);
+});

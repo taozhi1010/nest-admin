@@ -8,20 +8,20 @@
       </div>
       <div class="error-text">
         <h1 class="error-title">401</h1>
-        <h2 class="error-subtitle">未授权访问</h2>
+        <h2 class="error-subtitle">未锟斤拷权锟斤拷锟斤拷</h2>
         <p class="error-description">
-          抱歉，您没有权限访问此页面。
+          锟斤拷歉锟斤拷锟斤拷没锟斤拷权锟睫凤拷锟绞达拷页锟芥。
           <br />
-          请联系管理员获取相应权限。
+          锟斤拷锟斤拷系锟斤拷锟斤拷员锟斤拷取锟斤拷应权锟睫★拷
         </p>
         <div class="error-actions">
           <el-button type="primary" @click="back">
             <el-icon><arrow-left /></el-icon>
-            返回上一页
+            锟斤拷锟斤拷锟斤拷一页
           </el-button>
           <el-button @click="goHome">
             <el-icon><house /></el-icon>
-            返回首页
+            锟斤拷锟斤拷锟斤拷页
           </el-button>
         </div>
       </div>

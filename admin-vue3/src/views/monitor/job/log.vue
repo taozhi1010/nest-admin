@@ -112,7 +112,8 @@ import { getJob } from '@/api/monitor/job'
 import { listJobLog, delJobLog, cleanJobLog } from '@/api/monitor/jobLog'
 import { useDict } from '@/composables/useDict'
 import { resetForm } from '@/composables/useForm'
-import { addDateRange, download, parseTime } from '@/composables/useCommon'
+import { addDateRange, parseTime } from '@/composables/useCommon'
+import { download } from '@/composables/useRequest'
 
 // ==================== Composables ====================
 const { closeOpenPage } = useTab()

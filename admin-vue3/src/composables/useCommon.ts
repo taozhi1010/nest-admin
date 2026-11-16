@@ -118,9 +118,6 @@ export function parseStrEmpty(str: any): string {
   return String(str)
 }
 
-// 单独导出各个工具函数
-export const download = _download
-
 /**
  * 返回规范化路径（移除多余的 /）
  * @param path 路径字符串
@@ -183,14 +180,13 @@ export function useThrottle<T extends (...args: any[]) => any>(
 /**
  * 通用工具函数 Composable
  * @example
- * const { parseTime, handleTree, download, getNormalPath, useDebounce, useThrottle } = useCommon()
+ * const { parseTime, handleTree, getNormalPath, useDebounce, useThrottle } = useCommon()
  */
 export function useCommon() {
   return {
     parseTime,
     addDateRange,
     handleTree,
-    download,
     getNormalPath,
     useDebounce,
     useThrottle

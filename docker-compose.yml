@@ -1,62 +1,45 @@
-version: '3.8'
-
 services:
-  mysql:
-    image: mysql:8.0
-    container_name: nest-admin-mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-    ports:
-      - "3306:3306"
-    volumes:
-      - ./mysql_data:/var/lib/mysql
-      - ./server/db/init.sql:/docker-entrypoint-initdb.d/init.sql
-    command: --default-authentication-plugin=mysql_native_password
-    networks:
-      - nest-admin-net
-
-  redis:
-    image: redis:alpine
-    container_name: nest-admin-redis
-    ports:
-      - "${REDIS_PORT}:6379"
-    volumes:
-      - ./redis_data:/data
-    networks:
-      - nest-admin-net
-
   server:
     build:
       context: ./server
       dockerfile: Dockerfile
     container_name: nest-admin-server
+    restart: unless-stopped
     environment:
       NODE_ENV: production
-      # Pass environment variables to the container
-      MYSQL_HOST: ${MYSQL_HOST}
-      MYSQL_PORT: ${MYSQL_PORT}
-      MYSQL_USERNAME: ${MYSQL_USERNAME}
+      MYSQL_HOST: ${MYSQL_HOST:-host.docker.internal}
+      MYSQL_PORT: ${MYSQL_PORT:-3306}
+      MYSQL_USERNAME: ${MYSQL_USERNAME:-root}
       MYSQL_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
-      REDIS_HOST: ${REDIS_HOST}
-      REDIS_PORT: ${REDIS_PORT}
+      REDIS_HOST: ${REDIS_HOST:-host.docker.internal}
+      REDIS_PORT: ${REDIS_PORT:-6379}
       REDIS_PASSWORD: ${REDIS_PASSWORD}
+      REDIS_DB: ${REDIS_DB:-0}
+      RUSTFS_ENDPOINT: ${RUSTFS_ENDPOINT:-host.docker.internal}
+      RUSTFS_PORT: ${RUSTFS_PORT:-9000}
+      RUSTFS_ACCESS_KEY: ${RUSTFS_ACCESS_KEY}
+      RUSTFS_SECRET_KEY: ${RUSTFS_SECRET_KEY}
+      RUSTFS_BUCKET: ${RUSTFS_BUCKET:-nest-admin}
+      JWT_SECRETKEY: ${JWT_SECRETKEY}
     ports:
       - "${SERVER_PORT}:8080"
-    depends_on:
-      - mysql
-      - redis
     networks:
       - nest-admin-net
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
   admin-vue3:
     build:
       context: ./admin-vue3
       dockerfile: Dockerfile
     container_name: nest-admin-vue3
+    restart: unless-stopped
+    environment:
+      RUSTFS_ENDPOINT: ${RUSTFS_ENDPOINT:-host.docker.internal}
+      RUSTFS_PORT: ${RUSTFS_PORT:-9000}
     ports:
-      - "80:80"
+      - "${WEB_PORT}:80"
     depends_on:
       - server
     networks:

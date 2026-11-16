@@ -30,8 +30,11 @@ const tagsViewStore = useTagsViewStore()
 
 <style lang="scss" scoped>
 .app-main {
-  /* 50= navbar  50  */
-  min-height: calc(100vh - 50px);
+  // 顶部区域总高度：仅导航栏 = 50px；页面卡片高度令牌 --page-card-height 据此动态计算
+  --app-header-height: 50px;
+  // 页面卡片统一高度令牌：100vh - 顶部区域 - 上下边距 40（供 .main-card / .fill-card 使用）
+  --page-card-height: calc(100vh - var(--app-header-height) - 40px);
+  min-height: calc(100vh - var(--app-header-height));
   width: 100%;
   position: relative;
   overflow: hidden;
@@ -43,8 +46,8 @@ const tagsViewStore = useTagsViewStore()
 
 .hasTagsView {
   .app-main {
-    /* 84 = navbar + tags-view = 50 + 34 */
-    min-height: calc(100vh - 84px);
+    // navbar + tags-view = 50 + 34
+    --app-header-height: 84px;
   }
 
   .fixed-header + .app-main {

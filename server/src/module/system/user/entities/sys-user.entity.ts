@@ -11,10 +11,10 @@ export class UserEntity extends BaseEntity {
   @Column({ type: 'int', name: 'dept_id', default: null, comment: '部门ID' })
   public deptId: number;
 
-  @Column({ type: 'varchar', name: 'user_name', length: 30, nullable: false, comment: '用户账号' })
+  @Column({ type: 'varchar', name: 'user_name', length: 50, nullable: false, comment: '用户账号' })
   public userName: string;
 
-  @Column({ type: 'varchar', name: 'nick_name', length: 30, nullable: false, comment: '用户昵称' })
+  @Column({ type: 'varchar', name: 'nick_name', length: 50, nullable: false, comment: '用户昵称' })
   public nickName: string;
 
   //00系统用户

@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, In } from 'typeorm';
 import { ResultData } from 'src/common/utils/result';
 import { PostArticleEntity } from './entities/article.entity';
-import { CreatePostArticleDto, UpdatePostArticleDto, ListPostArticleDto, AuditPostArticleDto } from './dto/index';
+import { CreatePostArticleDto, UpdatePostArticleDto, ListPostArticleDto, AuditPostArticleDto, PublishStatusEnum } from './dto/index';
 import { UserDto } from 'src/module/system/user/user.decorator';
 import { UserEntity } from 'src/module/system/user/entities/sys-user.entity';
 
@@ -90,8 +90,8 @@ export class PostArticleService {
       entity.andWhere('article.source = :source', { source: query.source });
     }
 
-    // 排序
-    if (query.orderByColumn && query.isAsc) {
+    // 排序（校验排序字段是否为文章实体的合法属性，防止 ORDER BY 注入）
+    if (query.orderByColumn && query.isAsc && this.isArticleField(query.orderByColumn)) {
       const key = query.isAsc === 'ascending' ? 'ASC' : 'DESC';
       entity.orderBy(`article.${query.orderByColumn}`, key);
     }
@@ -174,6 +174,165 @@ export class PostArticleService {
     };
 
     // 将用户信息附加到文章数据中返回
+    return ResultData.ok(processedArticle);
+  }
+
+  /**
+   * 校验字段是否为文章实体的合法属性（防止 ORDER BY 注入）
+   */
+  private isArticleField(field: string): boolean {
+    return this.postArticleRepository.metadata.columns.some((column) => column.propertyName === field);
+  }
+
+  /**
+   * 查询文章列表（游客，仅返回已发布文章，不包含审核信息等内部数据）
+   * @param query 查询参数
+   * @returns 文章列表和总数
+   */
+  async findGuestAll(query: ListPostArticleDto) {
+    const entity = this.postArticleRepository.createQueryBuilder('article');
+    entity
+      .select([
+        'article.id',
+        'article.title',
+        'article.desc',
+        'article.subjectId',
+        'article.userId',
+        'article.cover',
+        'article.author',
+        'article.source',
+        'article.publishTime',
+        'article.likeNum',
+        'article.readNum',
+        'article.commentNum',
+        'article.createTime',
+      ])
+      .where('article.delFlag = :delFlag', { delFlag: '0' })
+      .andWhere('article.publishStatus = :publishStatus', { publishStatus: PublishStatusEnum.PUBLISHED });
+
+    // 按标题模糊搜索
+    if (query.title) {
+      entity.andWhere('article.title LIKE :title', { title: `%${query.title}%` });
+    }
+
+    // 按专栏ID筛选
+    if (query.subjectId) {
+      entity.andWhere('article.subjectId = :subjectId', { subjectId: query.subjectId });
+    }
+
+    // 按作者ID筛选
+    if (query.userId) {
+      entity.andWhere('article.userId = :userId', { userId: query.userId });
+    }
+
+    // 按文章来源筛选
+    if (query.source) {
+      entity.andWhere('article.source = :source', { source: query.source });
+    }
+
+    // 排序（字段走实体属性校验，防止 ORDER BY 注入），默认按发布时间倒序
+    if (query.orderByColumn && query.isAsc && this.isArticleField(query.orderByColumn)) {
+      const key = query.isAsc === 'ascending' ? 'ASC' : 'DESC';
+      entity.orderBy(`article.${query.orderByColumn}`, key);
+    } else {
+      entity.orderBy('article.publishTime', 'DESC');
+    }
+
+    // 分页
+    if (query.pageSize && query.pageNum) {
+      entity.skip(query.pageSize * (query.pageNum - 1)).take(query.pageSize);
+    }
+
+    const [list, total] = await entity.getManyAndCount();
+
+    // 为每篇文章关联查询作者公开信息（仅昵称与头像）
+    const processedList = await Promise.all(
+      list.map(async (item: any) => {
+        let userInfo = null;
+
+        if (item.userId) {
+          const user = await this.userRepository.findOne({
+            where: { userId: item.userId },
+            select: ['userId', 'nickName', 'avatar'],
+          });
+
+          if (user) {
+            userInfo = {
+              userId: user.userId,
+              nickName: user.nickName,
+              avatar: user.avatar,
+            };
+          }
+        }
+
+        return {
+          ...item,
+          userInfo,
+        };
+      }),
+    );
+
+    return ResultData.ok({
+      list: processedList,
+      total,
+    });
+  }
+
+  /**
+   * 查询文章详情（游客，仅返回已发布文章，不包含审核信息等内部数据）
+   * @param id 文章ID
+   * @returns 文章详情
+   */
+  async findGuestOne(id: number) {
+    const articleId = Number(id);
+    if (!articleId) {
+      return ResultData.fail(500, '文章不存在');
+    }
+
+    const article = await this.postArticleRepository.findOne({
+      where: { id: articleId, delFlag: '0', publishStatus: PublishStatusEnum.PUBLISHED },
+      select: [
+        'id',
+        'title',
+        'desc',
+        'subjectId',
+        'userId',
+        'content',
+        'cover',
+        'author',
+        'source',
+        'publishTime',
+        'likeNum',
+        'readNum',
+        'commentNum',
+        'createTime',
+      ],
+    });
+
+    if (!article) {
+      return ResultData.fail(500, '文章不存在');
+    }
+
+    // 根据文章中的 userId 查询作者公开信息（仅昵称与头像，不暴露登录名）
+    const user = await this.userRepository.findOne({
+      where: { userId: article.userId },
+      select: ['userId', 'nickName', 'avatar'],
+    });
+
+    const processedArticle = {
+      ...article,
+      content: article.content || '',
+      author: article.author || (user ? user.nickName : ''),
+      publishTime: article.publishTime || null,
+      userInfo: user
+        ? {
+            userId: user.userId,
+            nickName: user.nickName,
+            avatar: user.avatar || '',
+          }
+        : null,
+    };
+
     return ResultData.ok(processedArticle);
   }
 

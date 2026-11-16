@@ -1,8 +1,8 @@
-import { Controller, Get, Post, Body, Query, UploadedFile, UseInterceptors, HttpCode, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Query, UploadedFile, UseInterceptors, HttpCode } from '@nestjs/common';
 import { UploadService } from './upload.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiTags, ApiOperation, ApiBody, ApiQuery } from '@nestjs/swagger';
-import { ChunkFileDto, ChunkMergeFileDto, FileUploadDto, uploadIdDto } from './dto/index';
+import { ChunkFileDto, ChunkMergeFileDto, CosAuthorizationDto, FileUploadDto, UploadIdDto } from './dto/index';
 import { ResultData } from 'src/common/utils/result';
 import { User, UserDto } from 'src/module/system/user/user.decorator';
 
@@ -27,19 +27,18 @@ export class UploadController {
   @HttpCode(200)
   @Post()
   @UseInterceptors(FileInterceptor('file'))
-  async singleFileUpload(@UploadedFile() file: Express.Multer.File, @Req() req: any, @User() user?: UserDto) {
-    // 从请求体中获取 path 参数（multipart/form-data 中的表单字段）
-    const customPath = req.body?.path;
-
-    // 验证 path 参数
-    if (!customPath || !customPath.trim()) {
-      return ResultData.fail(400, '文件存储路径不能为空，请提供有效的 path 参数');
-    }
+  async singleFileUpload(@UploadedFile() file: Express.Multer.File, @Body() body: FileUploadDto, @User() user?: UserDto) {
+    // path 已由 FileUploadDto 校验（可选，缺省时服务端落到 uploads 目录）
+    const customPath = body.path;
 
     // 从用户信息中获取作者名（如果有登录用户）
     const authorName = user?.user?.nickName || user?.user?.userName;
 
     const res = await this.uploadService.singleFileUpload(file, customPath, authorName);
+    // 服务层校验失败（如超限）时返回的是失败信封，直接透传，避免 ok() 把失败包进外层成功
+    if (res?.code && res.code !== 200) {
+      return res;
+    }
     return ResultData.ok(res);
   }
 
@@ -94,11 +93,7 @@ export class UploadController {
   @HttpCode(200)
   @Post('/chunk/merge')
   chunkMergeFile(@Body() body: ChunkMergeFileDto) {
-    // 验证 path 参数
-    if (!body.path || !body.path.trim()) {
-      return ResultData.fail(400, '文件存储路径不能为空，请提供有效的 path 参数');
-    }
-
+    // uploadId/fileName/path 均已由 ChunkMergeFileDto 校验
     return this.uploadService.chunkMergeFile(body);
   }
 
@@ -112,12 +107,12 @@ export class UploadController {
     summary: '获取切片上传结果',
   })
   @ApiQuery({
-    type: uploadIdDto,
+    type: UploadIdDto,
     required: true,
   })
   @HttpCode(200)
   @Get('/chunk/result')
-  getChunkUploadResult(@Query() query: { uploadId: string }) {
+  getChunkUploadResult(@Query() query: UploadIdDto) {
     return this.uploadService.getChunkUploadResult(query.uploadId);
   }
 
@@ -132,7 +127,7 @@ export class UploadController {
     required: true,
   })
   @Get('/cos/authorization')
-  getAuthorization(@Query() query: { key: string }) {
+  getAuthorization(@Query() query: CosAuthorizationDto) {
     return this.uploadService.getAuthorization(query.key);
   }
 }

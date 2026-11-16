@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div class="main-card">
-      <el-form v-show="logininfor.showSearch" ref="logininfor.queryRef" v-no-enter :inline="true" label-width="68px" :model="logininfor.queryParams">
+      <el-form v-show="logininfor.showSearch" ref="queryRef" v-no-enter :inline="true" label-width="68px" :model="logininfor.queryParams">
       <el-form-item label="登录地址" prop="ipaddr">
         <el-input v-model="logininfor.queryParams.ipaddr" clearable placeholder="请输入登录地址" style="width: 240px" @keyup.enter="logininfor.handleQuery" />
       </el-form-item>
@@ -68,7 +68,8 @@
 import { list, delLogininfor, cleanLogininfor, unlockLogininfor } from '@/api/monitor/logininfor'
 import { useDict } from '@/composables/useDict'
 import { resetForm } from '@/composables/useForm'
-import { addDateRange, download, parseTime } from '@/composables/useCommon'
+import { addDateRange, parseTime } from '@/composables/useCommon'
+import { download } from '@/composables/useRequest'
 
 const { sys_common_status, getDictLabel } = useDict('sys_common_status')
 

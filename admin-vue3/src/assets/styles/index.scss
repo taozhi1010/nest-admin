@@ -126,20 +126,38 @@ aside {
   }
 }
 
+// 标准高度卡片（el-card 版）：卡片高度取统一令牌，内容区自动占满剩余空间并在卡片内滚动
+// 令牌 --page-card-height 定义在 AppMain.vue 的 .app-main 上（随顶部导航/标签栏高度自动适配）
+// 用法：<el-card class="fill-card">；内部若需独立滚动区域，子元素设 flex: 1 + min-height: 0 + overflow
+.fill-card {
+  height: var(--page-card-height);
+  display: flex;
+  flex-direction: column;
+
+  > .el-card__body {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: auto; // 内容超出时在卡片内滚动
+  }
+}
+
 //main-container全局样式
 .app-container {
   padding: 20px;
   background-color: #f0f2f5;
   min-height: calc(100vh - 84px); // 减去顶部导航栏高度
-  
+
   // 卡片容器样式
   .main-card {
     background: #fff;
     border-radius: 4px;
     padding: 20px;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
-    min-height: calc(100vh - 144px); // 最小高度：窗口高度 - 顶部导航栏 - 上下 padding
-    height: calc(100vh - 144px); // 撑满当前窗口（留出底边距）
+    // 高度令牌 --page-card-height 定义在 AppMain.vue 的 .app-main 上，随顶部区域高度自动适配
+    min-height: var(--page-card-height);
+    height: var(--page-card-height); // 撑满当前窗口，随窗口高度动态伸缩
     overflow: auto; // 内容超出时显示滚动条
   }
 }

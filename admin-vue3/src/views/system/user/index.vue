@@ -16,7 +16,7 @@
       </el-col>
       <!--用户数据-->
       <el-col :span="20" :xs="24">
-        <el-form v-show="user.showSearch" ref="user.queryRef" v-no-enter :inline="true" label-width="68px"
+        <el-form v-show="user.showSearch" ref="queryRef" v-no-enter :inline="true" label-width="68px"
           :model="user.queryParams">
           <el-form-item label="用户账号" prop="userName">
             <el-input v-model.trim="user.queryParams.userName" clearable placeholder="请输入用户账号" style="width: 240px"
@@ -117,7 +117,7 @@
         <el-row>
           <el-col :span="12">
             <el-form-item v-if="user.form.userId == undefined" label="用户账号" prop="userName">
-              <el-input v-model.trim="user.form.userName" maxlength="30" placeholder="请输入用户账号" />
+              <el-input v-model.trim="user.form.userName" maxlength="50" placeholder="请输入用户账号" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -130,7 +130,7 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="用户昵称" prop="nickName">
-              <el-input v-model.trim="user.form.nickName" maxlength="30" placeholder="请输入用户昵称" />
+              <el-input v-model.trim="user.form.nickName" maxlength="50" placeholder="请输入用户昵称" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -321,7 +321,8 @@ import { getToken } from '@/utils/auth'
 import { changeUserStatus, listUser, resetUserPwd, delUser, getUser, updateUser, addUser, deptTreeSelect, getAuthRole, updateAuthRole, importData } from '@/api/system/user'
 import { useDict } from '@/composables/useDict'
 import { resetForm } from '@/composables/useForm'
-import { addDateRange, download, parseTime } from '@/composables/useCommon'
+import { addDateRange, parseTime } from '@/composables/useCommon'
+import { download } from '@/composables/useRequest'
 
 // ==================== 实例和字典 ====================
 const { sys_normal_disable, sys_user_sex } = useDict('sys_normal_disable', 'sys_user_sex')
@@ -330,11 +331,11 @@ const { sys_normal_disable, sys_user_sex } = useDict('sys_normal_disable', 'sys_
 const userRef = ref(null)
 const deptTreeRef = ref(null)
 const uploadRef = ref(null)
+const queryRef = ref(null)
 
 // ==================== 用户管理（集中式管理） ====================
 const user = reactive({
   // 响应式数据
-  queryRef: null,
   userList: [],
   open: false,
   loading: true,
@@ -418,7 +419,7 @@ const user = reactive({
   rules: {
     userName: [
       { required: true, message: '用户账号不能为空', trigger: 'blur' },
-      { min: 2, max: 20, message: '用户账号长度必须介于 2 和 20 之间', trigger: 'blur' }
+      { min: 2, max: 50, message: '用户账号长度必须介于 2 和 50 之间', trigger: 'blur' }
     ],
     nickName: [{ required: true, message: '用户昵称不能为空', trigger: 'blur' }],
     password: [
@@ -486,7 +487,7 @@ const user = reactive({
   // 重置按钮操作
   resetQuery: () => {
     user.dateRange = []
-    resetForm(user.queryRef)
+    resetForm(queryRef.value)
     user.queryParams.deptId = undefined
     deptTreeRef.value.setCurrentKey(null)
     user.handleQuery()

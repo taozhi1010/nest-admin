@@ -2,7 +2,7 @@
   <!-- 参数设置 -->
   <div class="app-container">
     <div class="main-card">
-      <el-form v-show="config.showSearch" ref="config.queryRef" v-no-enter :inline="true" label-width="68px" :model="config.queryParams">
+      <el-form v-show="config.showSearch" ref="queryRef" v-no-enter :inline="true" label-width="68px" :model="config.queryParams">
         <el-form-item label="参数名称" prop="configName">
         <el-input v-model.trim="config.queryParams.configName" clearable placeholder="请输入参数名称" style="width: 160px" @keyup.enter="config.handleQuery" />
       </el-form-item>
@@ -115,7 +115,8 @@
 import { listConfig, addConfig, delConfig, getConfig, updateConfig } from '@/api/system/config'
 import { useDict } from '@/composables/useDict'
 import { resetForm } from '@/composables/useForm'
-import { download, parseTime } from '@/composables/useCommon'
+import { parseTime } from '@/composables/useCommon'
+import { download } from '@/composables/useRequest'
 
 const { sys_yes_no, getDictLabel } = useDict('sys_yes_no')
 
@@ -126,7 +127,6 @@ const configFormRef = ref()
 // 参数配置管理
 const config = reactive({
   // 响应式数据
-  queryRef: null,
   configList: [],
   open: false,
   loading: true,
@@ -192,7 +192,7 @@ const config = reactive({
 
   // 重置按钮操作
   resetQuery: () => {
-    resetForm(config.queryRef)
+    resetForm(queryRef.value)
     config.handleQuery()
   },
 

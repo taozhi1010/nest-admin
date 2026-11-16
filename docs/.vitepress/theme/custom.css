@@ -1,0 +1,83 @@
+/* 语言切换按钮 */
+.lang-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  margin-left: 12px;
+  padding: 2px;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 999px;
+}
+
+.lang-switch button {
+  padding: 1px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 18px;
+  color: var(--vp-c-text-2);
+  transition: color 0.2s, background-color 0.2s;
+}
+
+.lang-switch button:hover {
+  color: var(--vp-c-brand-1);
+}
+
+.lang-switch button.active {
+  color: #fff;
+  background-color: var(--vp-c-brand-1);
+}
+
+.lang-switch-screen {
+  margin: 16px 0 0;
+}
+
+@media (max-width: 767px) {
+  .lang-switch {
+    margin-left: 8px;
+  }
+
+  /* 小屏空间有限，切换按钮只在展开的菜单里显示，避免挤掉汉堡按钮 */
+  .VPNavBar .lang-switch {
+    display: none;
+  }
+
+  .lang-switch-screen {
+    margin: 16px 0 0;
+  }
+}
+
+/* 发布记录侧边栏时间线 */
+.VPSidebar .VPSidebarItem.level-0:has(a.link[href*='/releases']) > .items {
+  position: relative;
+}
+
+.VPSidebar .VPSidebarItem.level-0:has(a.link[href*='/releases']) > .items::before {
+  content: '';
+  position: absolute;
+  top: 14px;
+  bottom: 14px;
+  left: 3px;
+  width: 1px;
+  background-color: var(--vp-c-brand-3);
+  opacity: 0.5;
+}
+
+.VPSidebar .VPSidebarItem.level-1:has(> .item > a.link[href*='/releases']) {
+  position: relative;
+  padding-left: 20px;
+}
+
+.VPSidebar .VPSidebarItem.level-1:has(> .item > a.link[href*='/releases'])::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  z-index: 1;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: var(--vp-c-brand-1);
+  box-shadow: 0 0 0 3px var(--vp-c-bg);
+  transform: translateY(-50%);
+}

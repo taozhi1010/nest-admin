@@ -7,7 +7,6 @@ import { MenuModule } from './menu/menu.module';
 import { NoticeModule } from './notice/notice.module';
 import { PostModule } from './post/post.module';
 import { RoleModule } from './role/role.module';
-import { ToolModule } from './tool/tool.module';
 import { UserModule } from './user/user.module';
 
 @Global()
@@ -21,7 +20,6 @@ import { UserModule } from './user/user.module';
     NoticeModule,
     PostModule,
     RoleModule,
-    ToolModule,
     UserModule,
   ],
 })

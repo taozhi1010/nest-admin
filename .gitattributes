@@ -1,0 +1,2 @@
+# shell 脚本必须保持 LF，否则在 Git Bash / Linux 下无法执行
+*.sh text eol=lf

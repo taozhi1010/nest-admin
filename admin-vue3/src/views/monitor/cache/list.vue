@@ -2,13 +2,13 @@
   <div class="app-container">
     <el-row :gutter="10">
       <el-col :span="8">
-        <el-card style="height: calc(100vh - 125px)">
+        <el-card class="fill-card">
           <template #header>
             <collection style="width: 1em; height: 1em; vertical-align: middle" />
             <span style="vertical-align: middle">缓存列表</span>
             <el-button icon="Refresh" link style="float: right; padding: 3px 0" type="primary" @click="refreshCacheNames()" />
           </template>
-          <el-table v-loading="loading" :data="cacheNames" :height="tableHeight" highlight-current-row style="width: 100%" @row-click="getCacheKeys">
+          <el-table v-loading="loading" :data="cacheNames" height="100%" highlight-current-row style="width: 100%" @row-click="getCacheKeys">
             <el-table-column label="序号" type="index" width="60" />
 
             <el-table-column align="center" :formatter="nameFormatter" label="缓存名称" prop="cacheName" :show-overflow-tooltip="true" />
@@ -24,13 +24,13 @@
       </el-col>
 
       <el-col :span="8">
-        <el-card style="height: calc(100vh - 125px)">
+        <el-card class="fill-card">
           <template #header>
             <key style="width: 1em; height: 1em; vertical-align: middle" />
             <span style="vertical-align: middle">键名列表</span>
             <el-button icon="Refresh" link style="float: right; padding: 3px 0" type="primary" @click="refreshCacheKeys()" />
           </template>
-          <el-table v-loading="subLoading" :data="cacheKeys" :height="tableHeight" highlight-current-row style="width: 100%" @row-click="handleCacheValue">
+          <el-table v-loading="subLoading" :data="cacheKeys" height="100%" highlight-current-row style="width: 100%" @row-click="handleCacheValue">
             <el-table-column label="序号" type="index" width="60" />
             <el-table-column align="center" :formatter="keyFormatter" label="缓存键名" :show-overflow-tooltip="true" />
             <el-table-column align="center" class-name="small-padding fixed-width" label="操作" width="60">
@@ -43,7 +43,7 @@
       </el-col>
 
       <el-col :span="8">
-        <el-card :bordered="false" style="height: calc(100vh - 125px)">
+        <el-card class="fill-card">
           <template #header>
             <document style="width: 1em; height: 1em; vertical-align: middle" />
             <span style="vertical-align: middle">缓存内容</span>
@@ -83,16 +83,8 @@ const cacheForm = ref({})
 const loading = ref(true)
 const subLoading = ref(false)
 const nowCacheName = ref('')
-const tableHeight = ref(window.innerHeight - 200)
 
-// 监听窗口大小变化，动态调整表格高度
-function handleResize() {
-  tableHeight.value = window.innerHeight - 200
-}
-
-onMounted(() => {
-  window.addEventListener('resize', handleResize)
-})
+// 表格高度由全局 .fill-card + height="100%" 自适应，无需监听窗口尺寸
 
 /** 查询缓存名称列表 */
 function getCacheNames() {
@@ -170,9 +162,4 @@ function handleClearCacheAll() {
 }
 
 getCacheNames()
-
-// 组件卸载时清理
-onUnmounted(() => {
-  window.removeEventListener('resize', handleResize)
-})
 </script>

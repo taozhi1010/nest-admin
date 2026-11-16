@@ -1,17 +1,27 @@
-# 生产环境配置
-# 注意：请根据实际情况修改以下配置项
+# 生产环境配置（本文件入库，仅保留非敏感的项目结构配置）
+#
+# 为什么这个文件必须入库：
+#   src/config/index.ts 通过 readFileSync('./env/prod.yml') 硬读取本文件，
+#   缺失会导致服务启动即崩溃；nest-cli.json 的 assets 也只复制 **/*.yml。
+#
+# 敏感信息从哪来：
+#   数据库/Redis/RustFS/JWT 的地址、账号、密码全部由 src/config/index.ts 用
+#   process.env.* 覆盖本文件的空值。生产环境的值来自 .env（由 GitHub Actions
+#   用 GitHub Secrets 生成）→ docker-compose 的 environment → 容器环境变量。
+#   因此下面的空值不会影响线上运行，请勿把真实凭据填回本文件。
 
 app:
-  port: 8080                    # 服务端口
-  prefix: ''                    # API访问前缀
+  port: 8080                    # 服务端口（SERVER_PORT 可覆盖）
+  prefix: ''                    # API 访问前缀
   file:
-    storageType: ''             # 文件存储类型：minio | rustfs | local
-    location: ''                # 本地存储路径
+    # storageType / serveRoot 无法被环境变量覆盖，必须在此固定为生产值
+    storageType: 'rustfs'       # 文件存储类型：minio | rustfs | local
+    location: ''                # 本地存储路径（仅 local 类型使用）
     domain: ''                  # 文件访问域名
-    serveRoot: ''               # 文件虚拟路径
+    serveRoot: '/profile'       # 文件虚拟路径
     maxSize: 10                 # 文件大小限制 (MB)
 
-# MinIO 对象存储配置（保留兼容）
+# MinIO 对象存储配置（保留兼容，生产使用 rustfs）
 minio:
   endPoint: ''                  # MinIO 服务器地址
   port: 9000                    # MinIO API 端口
@@ -24,16 +34,16 @@ minio:
 
 # RustFS 对象存储配置
 rustfs:
-  endPoint: ''                  # RustFS 服务器地址
-  port: 9000                    # RustFS API 端口
+  endPoint: ''                  # RustFS 服务器地址，由 RUSTFS_ENDPOINT 覆盖
+  port: 9000                    # RustFS API 端口，由 RUSTFS_PORT 覆盖
   useSSL: false                 # 是否使用 SSL
-  accessKey: ''                 # RustFS Access Key
-  secretKey: ''                 # RustFS Secret Key
-  bucket: 'nest-admin'          # 存储桶名称
+  accessKey: ''                 # 由 RUSTFS_ACCESS_KEY 覆盖
+  secretKey: ''                 # 由 RUSTFS_SECRET_KEY 覆盖
+  bucket: 'nest-admin'          # 存储桶名称，由 RUSTFS_BUCKET 覆盖
   region: 'us-east-1'           # 区域
   domain: ''                    # RustFS 访问域名（可选）
 
-# 腾讯云cos配置（保留兼容）
+# 腾讯云 COS 配置（保留兼容）
 cos:
   secretId: ''                  # 腾讯云 Secret ID
   secretKey: ''                 # 腾讯云 Secret Key
@@ -44,11 +54,11 @@ cos:
 # 数据库配置
 db:
   mysql:
-    host: ''                    # 数据库地址
-    username: ''                # 数据库用户名
-    password: ''                # 数据库密码
-    database: ''                # 数据库名称
-    port: 3306                  # 数据库端口
+    host: ''                    # 由 MYSQL_HOST 覆盖
+    username: ''                # 由 MYSQL_USERNAME 覆盖
+    password: ''                # 由 MYSQL_PASSWORD 覆盖
+    database: ''                # 由 MYSQL_DATABASE 覆盖
+    port: 3306                  # 由 MYSQL_PORT 覆盖
     charset: 'utf8mb4'          # 字符集
     logger: 'file'              # 日志类型
     synchronize: false          # 生产环境必须设为 false
@@ -61,15 +71,15 @@ db:
 
 # redis 配置
 redis:
-  host: ''                      # Redis 地址
-  password: ''                  # Redis 密码
-  port: 6379                    # Redis 端口
-  db: 0                         # Redis 数据库编号
+  host: ''                      # 由 REDIS_HOST 覆盖
+  password: ''                  # 由 REDIS_PASSWORD 覆盖
+  port: 6379                    # 由 REDIS_PORT 覆盖
+  db: 0                         # 由 REDIS_DB 覆盖
   keyPrefix: ''                 # Key 前缀
 
 # jwt 配置
 jwt:
-  secretkey: ''                 # JWT 密钥（生产环境必须修改为复杂密钥）
+  secretkey: ''                 # 由 JWT_SECRETKEY 覆盖，严禁在此填写真实密钥
   expiresin: '24h'              # Token 过期时间
   refreshExpiresIn: '7d'        # 刷新 Token 过期时间
 

@@ -21,6 +21,6 @@ selenium-debug.log
 *.sln
 *.local
 
-package-lock.json
+# docs 站点用 npm 安装，package-lock.json 要入库
 yarn.lock
 pnpm-lock.yaml

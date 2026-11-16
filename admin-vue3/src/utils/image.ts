@@ -27,7 +27,7 @@ export function isExternalUrl(url: string): boolean {
  */
 export function isLocalImagePath(path: string): boolean {
   if (!path) return false
-  return /^\/?uploads\//.test(path)
+  return /^\/?(uploads|profile)\//.test(path)
 }
 
 /**
@@ -66,6 +66,10 @@ export function getImageUrl(
   if (VITE_APP_ENV === 'development' && !forceAbsolute) {
     return normalizedPath
   } else {
+    // /profile 和 /uploads 由前端站点自身代理，不应再拼接 /api
+    if (isLocalImagePath(normalizedPath)) {
+      return normalizedPath
+    }
     // 生产环境：拼接基础 URL
     const baseUrl = VITE_APP_BASE_API.replace(/\/$/, '')
     return `${baseUrl}${normalizedPath}`

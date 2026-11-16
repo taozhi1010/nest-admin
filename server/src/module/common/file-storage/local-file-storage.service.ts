@@ -96,6 +96,8 @@ export class LocalFileStorage implements IFileStorage {
     if (!originalname) {
       return originalname;
     }
+    // 剥离目录成分并消毒：仅保留字母数字、下划线、中文、中划线、点，阻断恶意文件名穿越落盘
+    originalname = path.basename(originalname).replace(/[^\w\u4e00-\u9fa5.-]+/g, '_');
     // 只取文件名部分，不包含扩展名
     const nameParts = originalname.split('.');
     if (nameParts.length > 1) {

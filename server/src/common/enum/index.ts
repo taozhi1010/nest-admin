@@ -39,6 +39,11 @@ export enum CacheEnum {
   PWD_ERR_CNT_KEY = 'pwd_err_cnt:',
 
   /**
+   * 注册 IP 频率限制 redis key
+   */
+  REGISTER_RATE_KEY = 'register_rate:',
+
+  /**
    * 登录账户密码错误次数 redis key
    */
   GZ_TYPE = 'gz_type:',

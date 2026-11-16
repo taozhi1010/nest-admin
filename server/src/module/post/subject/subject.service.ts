@@ -4,7 +4,7 @@ import { Repository, In } from 'typeorm';
 import { ResultData } from 'src/common/utils/result';
 import { PostSubjectEntity } from './entities/subject.entity';
 import { PostArticleEntity } from '../article/entities/article.entity';
-import { CreatePostSubjectDto, UpdatePostSubjectDto, ListPostSubjectDto } from './dto/index';
+import { CreatePostSubjectDto, UpdatePostSubjectDto, ListPostSubjectDto, PublishStatusEnum } from './dto/index';
 import { UserDto } from 'src/module/system/user/user.decorator';
 
 @Injectable()
@@ -50,7 +50,7 @@ export class PostSubjectService {
       entity.andWhere('subject.auditStatus = :auditStatus', { auditStatus: query.auditStatus });
     }
 
-    if (query.orderByColumn && query.isAsc) {
+    if (query.orderByColumn && query.isAsc && this.isSubjectField(query.orderByColumn)) {
       const key = query.isAsc === 'ascending' ? 'ASC' : 'DESC';
       entity.orderBy(`subject.${query.orderByColumn}`, key);
     }
@@ -85,6 +85,101 @@ export class PostSubjectService {
     }
 
     return ResultData.ok(subject);
+  }
+
+  /**
+   * 校验字段是否为专栏实体的合法属性（防止 ORDER BY 注入）
+   */
+  private isSubjectField(field: string): boolean {
+    return this.postSubjectRepository.metadata.columns.some((column) => column.propertyName === field);
+  }
+
+  /**
+   * 统计专栏下游客可见（已发布）的文章数量
+   */
+  private async countGuestArticles(subjectId: number): Promise<number> {
+    return this.postArticleRepository.count({
+      where: { subjectId, delFlag: '0', publishStatus: PublishStatusEnum.PUBLISHED },
+    });
+  }
+
+  /**
+   * 查询专栏列表（游客，仅返回已发布专栏，不包含审核信息等内部数据）
+   * @param query 查询参数
+   * @returns 专栏列表和总数
+   */
+  async findGuestAll(query: ListPostSubjectDto) {
+    const entity = this.postSubjectRepository.createQueryBuilder('subject');
+    entity
+      .select([
+        'subject.id',
+        'subject.title',
+        'subject.desc',
+        'subject.userId',
+        'subject.cover',
+        'subject.author',
+        'subject.createTime',
+      ])
+      .where('subject.delFlag = :delFlag', { delFlag: '0' })
+      .andWhere('subject.status = :status', { status: '0' })
+      .andWhere('subject.publishStatus = :publishStatus', { publishStatus: PublishStatusEnum.PUBLISHED });
+
+    if (query.title) {
+      entity.andWhere('subject.title LIKE :title', { title: `%${query.title}%` });
+    }
+
+    if (query.userId) {
+      entity.andWhere('subject.userId = :userId', { userId: query.userId });
+    }
+
+    // 排序（字段走实体属性校验，防止 ORDER BY 注入），默认按创建时间倒序
+    if (query.orderByColumn && query.isAsc && this.isSubjectField(query.orderByColumn)) {
+      const key = query.isAsc === 'ascending' ? 'ASC' : 'DESC';
+      entity.orderBy(`subject.${query.orderByColumn}`, key);
+    } else {
+      entity.orderBy('subject.createTime', 'DESC');
+    }
+
+    if (query.pageSize && query.pageNum) {
+      entity.skip(query.pageSize * (query.pageNum - 1)).take(query.pageSize);
+    }
+
+    const [list, total] = await entity.getManyAndCount();
+
+    // 为每个专栏统计游客可见（已发布）的文章数量
+    const processedList = await Promise.all(
+      list.map(async (subject) => ({
+        ...subject,
+        articleCount: await this.countGuestArticles(subject.id),
+      })),
+    );
+
+    return ResultData.ok({ list: processedList, total });
+  }
+
+  /**
+   * 查询专栏详情（游客，仅返回已发布专栏，不包含审核信息等内部数据）
+   * @param id 专栏ID
+   * @returns 专栏详情
+   */
+  async findGuestOne(id: number) {
+    const subjectId = Number(id);
+    if (!subjectId) {
+      return ResultData.fail(500, '专栏不存在');
+    }
+
+    const subject = await this.postSubjectRepository.findOne({
+      where: { id: subjectId, delFlag: '0', status: '0', publishStatus: PublishStatusEnum.PUBLISHED },
+      select: ['id', 'title', 'desc', 'userId', 'cover', 'author', 'createTime'],
+    });
+
+    if (!subject) {
+      return ResultData.fail(500, '专栏不存在');
+    }
+
+    const articleCount = await this.countGuestArticles(subjectId);
+
+    return ResultData.ok({ ...subject, articleCount });
   }
 
   async update(updateDto: UpdatePostSubjectDto) {

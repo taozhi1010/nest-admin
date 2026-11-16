@@ -8,3 +8,33 @@
 
 # Upload folder (local test files)
 /upload
+
+# Environment files (sensitive information)
+.env
+.env.*
+!.env.example
+
+# Build output
+dist/
+
+# Auto-generated files
+auto-imports.d.ts
+components.d.ts
+
+# AI 编码工具的工作目录与产物
+.lingma/
+.qoder/
+.cursor/
+.claude/
+.codex/
+.trae/
+.windsurf/
+.roo/
+.augment/
+.codebuddy/
+.aone/
+.workbuddy/
+.workbuddy-ai/
+
+# 本地备份，不入库
+.local-backup/

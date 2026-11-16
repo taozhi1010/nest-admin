@@ -1,7 +1,7 @@
 <template>
   <!-- 授权用户 -->
   <el-dialog v-model="selectUser.visible" append-to-body title="选择用户" top="5vh" width="800px">
-    <el-form ref="selectUser.queryRef" v-no-enter :inline="true" :model="selectUser.queryParams">
+    <el-form ref="queryRef" v-no-enter :inline="true" :model="selectUser.queryParams">
       <el-form-item label="用户账号" prop="userName">
         <el-input v-model.trim="selectUser.queryParams.userName" clearable placeholder="请输入用户账号" style="width: 200px" @keyup.enter="selectUser.handleQuery" />
       </el-form-item>
@@ -63,11 +63,11 @@ const { getDictLabel } = useDict('sys_normal_disable')
 
 // ==================== 表单引用 ====================
 const refTable = ref(null)
+const queryRef = ref(null)
 
 // ==================== 选择用户管理（集中式管理） ====================
 const selectUser = reactive({
   // 响应式数据
-  queryRef: null,
   userList: [],
   visible: false,
   total: 0,
@@ -112,7 +112,7 @@ const selectUser = reactive({
 
   // 重置按钮操作
   resetQuery: () => {
-    resetForm(selectUser.queryRef)
+    resetForm(queryRef.value)
     selectUser.handleQuery()
   },
 

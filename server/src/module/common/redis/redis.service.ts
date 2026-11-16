@@ -107,6 +107,17 @@ export class RedisService {
     return await this.client.del(...keys);
   }
 
+  /**
+   * 自增计数（key 不存在时从 1 开始），用于频率限制等计数场景
+   * @param key 存储 key 值
+   * @param ttl 可选，首次创建时设置的过期时间，单位 毫秒
+   */
+  async incr(key: string, ttl?: number): Promise<number> {
+    const count = await this.client.incr(key);
+    if (count === 1 && ttl) await this.client.pexpire(key, ttl);
+    return count;
+  }
+
   async ttl(key: string): Promise<number | null> {
     if (!key) return null;
     return await this.client.ttl(key);

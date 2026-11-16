@@ -26,7 +26,7 @@ const props = defineProps({
       return [10, 20, 30, 50]
     }
   },
-  // 移动端页码按钮的数量端默认�?
+  // 移动端页码按钮的数量端默认�?
   pagerCount: {
     type: Number,
     default: document.body.clientWidth < 992 ? 5 : 7
