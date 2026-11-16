@@ -1,7 +1,6 @@
 @use './_variables.scss' as *;
 @use './mixin.scss' as *;
 @use './transition.scss' as *;
-@use './element-ui.scss' as *;
 @use './sidebar.scss' as *;
 @use './ruoyi.scss' as *;
 
@@ -122,6 +121,14 @@ aside {
     &:hover {
       color: rgb(32, 160, 255);
     }
+  }
+}
+
+// 表格操作列紧凑内边距：14 个列表页通过 el-table-column 的 class-name="small-padding" 启用
+.small-padding {
+  .cell {
+    padding-left: 5px;
+    padding-right: 5px;
   }
 }
 
