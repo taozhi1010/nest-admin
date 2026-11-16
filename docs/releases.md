@@ -10,11 +10,46 @@ outline: false
 
 | 版本   | 发布日期   | 版本主题                                 | Git 标签 |
 | ------ | ---------- | ---------------------------------------- | -------- |
+| v1.2.0 | 2026-11-17 | 文件管理功能、上传与安全加固、CI 质检门禁 | `v1.2.0` |
 | v1.1.0 | 2026-11-15 | 注册体系、安全加固与前端工程化           | `v1.1.0` |
 | v1.0.1 | 2026-10-25 | 文档站接入前端：中英标题切换与发布记录   | `v1.0.1` |
 | v1.0.0 | 2026-10-25 | 首个部署版本：字典本地缓存与版本校验     | `v1.0.0` |
 
 ## 版本详情
+
+### v1.2.0
+
+**发布日期**：2026-11-17　**Git 标签**：`v1.2.0`
+
+文件管理功能、上传与安全加固、CI 质检门禁的一次集中更新。
+
+#### 新增
+
+- 内容管理新增文件管理页：图片预览、排序、扩展名筛选与时间范围搜索，支持批量删除；后端配套列表/扩展名枚举/删除接口
+- 部署流水线新增 `quality-gate` 质检门禁（frozen-lockfile 安装 + `tsc --noEmit` + 单元测试），部署 job 通过 `needs` 强制先过门禁；CI actions 全部钉版本（checkout v5、ssh-action v1.2.4）
+- config 启动校验（joi）：`JWT_SECRETKEY` 全环境必填非空，缺失直接拒绝启动；`NODE_ENV=test` 配置映射补齐
+- 上传链路加固：Multer `limits.fileSize` 10MB（单传/分片/头像三处）、扩展名白名单（可在 yml 配置 `allowedExts` 覆盖）、静态资源对非位图文件强制 `Content-Disposition: attachment`
+- 参数缓存统一 10 分钟 TTL；软删参数读取过滤、参数删除/重命名时同步失效缓存
+
+#### 变更
+
+- 样式清理：删除 `btn.scss`、`element-ui.scss`，解散 `ruoyi.scss`，清除 vue-element-admin 遗留演示样式与死类
+- 手动事件监听四处统一改为 `useEventListener`（TagsView / SearchModal / TopNav / ScrollPane），分页回顶改为原生 `scrollTo` smooth
+- 分片合并的对象 key 由硬编码 `test` 前缀改为 `serveRoot` 配置
+
+#### 修复
+
+- 文件页批量删除按钮误传 MouseEvent 导致确认后报错；顺带补列表竞态守卫与扩展名请求兜底
+- 密码哈希泄漏补齐收口：`/system/user/profile`、用户详情、角色分配/取消分配列表四处响应层剥离 `password`（会话快照与修改密码校验不受影响）
+- 用户状态切换/详情/会话信息空结果统一返回 400「用户不存在」，软删用户持有效凭证登录不再报错
+- 登录日志、操作日志写入失败不再产生未处理 Promise 异常，仅告警不影响主流程
+
+#### 升级注意
+
+- **上传行为变化**：`.svg`、`.html` 等白名单外扩展名被拒绝（防存储型 XSS），如需放开在 yml 配置 `allowedExts`
+- 非位图静态资源响应带 `Content-Disposition: attachment`，浏览器不再内联预览
+- 本地 `dist/main.js` 直启必须提供 `JWT_SECRETKEY` 环境变量或设置 `NODE_ENV=development`，否则拒绝启动（fail fast，属设计）
+- 用户相关接口响应不再包含 `password` 字段
 
 ### v1.1.0
 
