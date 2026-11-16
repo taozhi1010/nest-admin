@@ -227,3 +227,12 @@ onUnmounted(() => {
   }
 });
 </script>
+
+<style lang="scss" scoped>
+/* 原 ruoyi.scss 全局规则，仅本页使用，收编于此 */
+.card-box {
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-bottom: 10px;
+}
+</style>

@@ -84,11 +84,33 @@ function handleCurrentChange(val) {
 </script>
 
 <style scoped>
+/* 原散落在 ruoyi.scss/index.scss 全局的容器样式收编于此；数值为历次层叠后的实际生效值 */
 .pagination-container {
+  width: 100%;
+  position: relative;
+  height: 25px;
+  margin-top: 30px;
+  margin-bottom: 10px;
+  padding: 10px 20px;
   background: #fff;
-  padding: 32px 16px;
+
+  .el-pagination {
+    right: 0;
+    position: absolute;
+  }
 }
+
 .pagination-container.hidden {
   display: none;
+}
+
+@media (max-width: 768px) {
+  .pagination-container :deep(.el-pagination__jump) {
+    display: none !important;
+  }
+
+  .pagination-container :deep(.el-pagination__sizes) {
+    display: none !important;
+  }
 }
 </style>

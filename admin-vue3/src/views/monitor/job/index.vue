@@ -55,7 +55,7 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column align="center" class-name="small-padding fixed-width" label="操作" width="200">
+        <el-table-column align="center" class-name="small-padding" label="操作" width="200">
           <template #default="scope">
             <el-tooltip content="修改" placement="top">
               <el-button v-hasPermi="['monitor:job:edit']" :icon="Edit" link type="primary" @click="job.handleUpdate(scope.row)" />

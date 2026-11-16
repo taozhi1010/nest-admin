@@ -31,7 +31,7 @@
             <span>{{ scope.row.loginTime ? dayjs(scope.row.loginTime).format('YYYY-MM-DD HH:mm:ss') : '' }}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" class-name="small-padding fixed-width" label="操作">
+        <el-table-column align="center" class-name="small-padding" label="操作">
           <template #default="scope">
             <el-button v-hasPermi="['monitor:online:forceLogout']" :icon="Delete" link type="primary" @click="handleForceLogout(scope.row)">强退</el-button>
           </template>

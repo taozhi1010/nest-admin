@@ -2,7 +2,6 @@
 @use './mixin.scss' as *;
 @use './transition.scss' as *;
 @use './sidebar.scss' as *;
-@use './ruoyi.scss' as *;
 
 * {
   margin: 0;
@@ -132,6 +131,52 @@ aside {
   }
 }
 
+// ==================== EP 全局行为覆盖（原 ruoyi.scss 存活规则） ====================
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: inherit;
+  font-weight: 500;
+  line-height: 1.1;
+  color: inherit;
+}
+
+// 弹窗贴近顶部（EP 默认 15vh，设计上取 6vh）
+.el-dialog:not(.is-fullscreen) {
+  margin-top: 6vh !important;
+}
+
+.el-table {
+  .el-table__header-wrapper th {
+    word-break: break-word;
+    background-color: #f8f8f9 !important;
+    color: #515a6e;
+    height: 40px !important;
+    font-size: 13px;
+  }
+}
+
+.el-tree-node__content > .el-checkbox {
+  margin-right: 8px;
+}
+
+.el-card__header {
+  padding: 14px 15px 7px !important;
+  min-height: 40px;
+}
+
+.el-card__body {
+  padding: 15px 20px 20px 20px !important;
+}
+
+// 搜索表单与操作按钮区的标准间距（16 个列表页使用）
+.mb8 {
+  margin-bottom: 8px;
+}
+
 // 标准高度卡片（el-card 版）：卡片高度取统一令牌，内容区自动占满剩余空间并在卡片内滚动
 // 令牌 --page-card-height 定义在 AppMain.vue 的 .app-main 上（随顶部导航/标签栏高度自动适配）
 // 用法：<el-card class="fill-card">；内部若需独立滚动区域，子元素设 flex: 1 + min-height: 0 + overflow
@@ -171,10 +216,6 @@ aside {
 .components-container {
   margin: 30px 50px;
   position: relative;
-}
-
-.pagination-container {
-  margin-top: 30px;
 }
 
 .text-center {

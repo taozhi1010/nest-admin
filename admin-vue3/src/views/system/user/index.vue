@@ -69,7 +69,7 @@
                 <span>{{ scope.row.createTime ? dayjs(scope.row.createTime).format('YYYY-MM-DD HH:mm:ss') : '' }}</span>
               </template>
             </el-table-column>
-            <el-table-column align="center" class-name="small-padding fixed-width" label="操作" width="150">
+            <el-table-column align="center" class-name="small-padding" label="操作" width="150">
               <template #default="scope">
                 <el-tooltip v-if="scope.row.userId !== 1" content="修改" placement="top">
                   <el-button v-hasPermi="['system:user:edit']" :icon="Edit" link type="primary" @click="handleUpdate(scope.row)" />

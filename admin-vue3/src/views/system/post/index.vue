@@ -49,7 +49,7 @@
             <span>{{ scope.row.createTime ? dayjs(scope.row.createTime).format('YYYY-MM-DD HH:mm:ss') : '' }}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" class-name="small-padding fixed-width" label="操作" width="180">
+        <el-table-column align="center" class-name="small-padding" label="操作" width="180">
           <template #default="scope">
             <el-button v-hasPermi="['system:post:edit']" :icon="Edit" link type="primary" @click="post.handleUpdate(scope.row)">修改</el-button>
             <el-button v-hasPermi="['system:post:remove']" :icon="Delete" link type="primary" @click="post.handleDelete(scope.row)">删除</el-button>

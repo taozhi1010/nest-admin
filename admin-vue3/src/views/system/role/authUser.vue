@@ -42,7 +42,7 @@
           <span>{{ scope.row.createTime ? dayjs(scope.row.createTime).format('YYYY-MM-DD HH:mm:ss') : '' }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" class-name="small-padding fixed-width" label="操作">
+      <el-table-column align="center" class-name="small-padding" label="操作">
         <template #default="scope">
           <el-button v-hasPermi="['system:role:remove']" :icon="CircleClose" link type="primary" @click="cancelAuthUser(scope.row)">取消授权</el-button>
         </template>
