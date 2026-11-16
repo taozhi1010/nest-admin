@@ -123,7 +123,7 @@
         <el-table-column align="left" label="评论" prop="commentNum" width="80" />
         <el-table-column align="left" label="发布时间" prop="publishTime" width="170" />
         <el-table-column align="left" label="创建时间" prop="createTime" width="170" />
-        <el-table-column align="center" class-name="small-padding fixed-width" fixed="right" label="操作" width="220">
+        <el-table-column align="center" class-name="small-padding" fixed="right" label="操作" width="220">
           <template #default="scope">
             <el-button :icon="View" link type="primary" @click="handlePreview(scope.row)">预览</el-button>
             <el-button v-hasPermi="['post:Article:edit']" :icon="Edit" link type="primary" @click="article.handleUpdate(scope.row)">修改</el-button>

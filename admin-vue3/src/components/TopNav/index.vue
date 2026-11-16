@@ -21,6 +21,8 @@
 </template>
 
 <script setup lang="ts">
+import { useEventListener } from '@vueuse/core';
+
 import { isHttp } from '@/composables/useValidator';
 import { constantRoutes } from '@/router';
 import useAppStore from '@/store/modules/app';
@@ -145,12 +147,7 @@ function activeRoutes(key) {
   return routes;
 }
 
-onMounted(() => {
-  window.addEventListener('resize', setVisibleNumber);
-});
-onBeforeUnmount(() => {
-  window.removeEventListener('resize', setVisibleNumber);
-});
+useEventListener(window, 'resize', setVisibleNumber);
 
 onMounted(() => {
   setVisibleNumber();

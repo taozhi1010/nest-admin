@@ -55,7 +55,7 @@
         <el-table-column align="center" label="排序" prop="sort" width="80" />
         <el-table-column align="center" label="创建时间" prop="createTime" width="180" />
         <el-table-column align="center" label="修改时间" prop="updateTime" width="180" />
-        <el-table-column align="center" class-name="small-padding fixed-width" fixed="right" label="操作" width="180">
+        <el-table-column align="center" class-name="small-padding" fixed="right" label="操作" width="180">
           <template #default="scope">
             <el-button v-hasPermi="['post:subject:edit']" :icon="Edit" link type="primary" @click="subject.handleUpdate(scope.row)">修改</el-button>
             <el-button v-hasPermi="['post:subject:remove']" :icon="Delete" link type="danger" @click="subject.handleDelete(scope.row)">删除</el-button>

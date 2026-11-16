@@ -53,7 +53,7 @@
             <span>{{ scope.row.createTime ? dayjs(scope.row.createTime).format('YYYY-MM-DD HH:mm:ss') : '' }}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" class-name="small-padding fixed-width" label="操作">
+        <el-table-column align="center" class-name="small-padding" label="操作">
           <template #default="scope">
             <el-tooltip v-if="scope.row.roleId !== 1" content="修改" placement="top">
               <el-button v-hasPermi="['system:role:edit']" :icon="Edit" link type="primary" @click="handleUpdate(scope.row)" />
@@ -482,3 +482,14 @@ const submitDataScope = async () => {
 // ==================== 初始化加载 ====================
 role.getList();
 </script>
+
+<style lang="scss" scoped>
+/* 原 ruoyi.scss 全局规则，仅本页树形控件使用，收编于此 */
+.tree-border {
+  margin-top: 5px;
+  border: 1px solid #e5e6e7;
+  background: #ffffff none;
+  border-radius: 4px;
+  width: 100%;
+}
+</style>

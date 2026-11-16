@@ -134,3 +134,31 @@ const profile = reactive({
 // ==================== 初始化加载 ====================
 profile.getUser();
 </script>
+
+<style lang="scss" scoped>
+/* 原 ruoyi.scss 全局规则，仅本页用户信息面板使用，收编于此 */
+.pull-right {
+  float: right !important;
+}
+
+.list-group {
+  padding-left: 0px;
+  list-style: none;
+}
+
+.list-group-striped > .list-group-item {
+  border-left: 0;
+  border-right: 0;
+  border-radius: 0;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.list-group-item {
+  border-bottom: 1px solid #e7eaec;
+  border-top: 1px solid #e7eaec;
+  margin-bottom: -1px;
+  padding: 11px 0px;
+  font-size: 13px;
+}
+</style>

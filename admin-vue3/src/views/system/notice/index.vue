@@ -180,6 +180,12 @@ notice.getList();
 }
 
 .form-header {
+  /* 原 ruoyi.scss 全局视觉，收编于此 */
+  font-size: 15px;
+  color: #6379bb;
+  border-bottom: 1px solid #ddd;
+  margin: 8px 10px 25px 10px;
+  padding-bottom: 5px;
   flex-shrink: 0;
 }
 

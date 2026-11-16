@@ -11,6 +11,8 @@ app:
     domain: ''                  # 文件访问域名
     serveRoot: ''               # 文件虚拟路径
     maxSize: 10                 # 文件大小限制 (MB)
+    # 上传扩展名白名单（逗号分隔；未配置使用内置默认名单，.svg/.html 等可内联类型已刻意排除）
+    # allowedExts: '.jpg,.png,.pdf,.docx,.zip'
 
 # MinIO 对象存储配置（保留兼容）
 minio:

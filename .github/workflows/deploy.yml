@@ -6,13 +6,52 @@ on:
   workflow_dispatch:  # 允许手动触发
 
 jobs:
+  # 后端质检门禁：tsc + 单测不过不放行部署
+  quality-gate:
+    name: Backend quality gate (tsc + unit tests)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: server
+    steps:
+      # 1. 检出代码
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      # 2. 安装 pnpm（钉 9.0.5，与 lockfile v9 及 Dockerfile 一致）
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.0.5
+
+      # 3. Node 20 + pnpm 缓存
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+          cache-dependency-path: server/pnpm-lock.yaml
+
+      # 4. 安装依赖（frozen-lockfile 不动 lockfile）
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # 5. 类型检查（tsconfig.build.json 仅 src，排除必挂的 e2e 脚手架）
+      - name: Type check (tsc --noEmit)
+        run: npx tsc --noEmit -p tsconfig.build.json
+
+      # 6. 单元测试（纯 mock，无需 MySQL/Redis）
+      - name: Unit tests
+        run: pnpm test
+
   build-and-deploy:
+    needs: quality-gate
     runs-on: ubuntu-latest
     
     steps:
       # 1. 检出代码
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
       
       # 2. 设置 SSH 密钥
       - name: Setup SSH
@@ -42,7 +81,7 @@ jobs:
       
       # 5. 在服务器上清理旧资源、构建和部署
       - name: Clean, Build and Deploy on Server
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@v1.2.4
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}

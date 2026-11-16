@@ -1,6 +1,6 @@
 <template>
   <el-drawer v-model="drawer.visible" direction="rtl" size="1200px" title="文章详情">
-    <el-tabs v-model="drawer.activeName" class="demo-tabs" @tab-click="handleClick">
+    <el-tabs v-model="drawer.activeName" class="demo-tabs">
       <el-tab-pane label="基本信息" name="first">
         <h2 class="article-title">{{ form.model.title }}</h2>
         <el-descriptions direction="vertical">
@@ -39,10 +39,6 @@ const form = reactive({
 });
 
 const ids = ref([]);
-
-const handleClick = (tab) => {
-  console.log(tab);
-};
 
 const handleOpen = (row) => {
   const articleId = row.articleId || ids.value;

@@ -196,6 +196,7 @@ export class UserService {
         userId: userId,
       },
     });
+    if (!data) throw new BadRequestException('用户不存在');
 
     const dept = await this.sysDeptEntityRep.findOne({
       where: {
@@ -226,8 +227,10 @@ export class UserService {
 
     data['roles'] = allRoles.filter((item) => roleIds.includes(item.roleId));
 
+    // 剥离密码哈希，避免泄漏到响应与缓存值
+    const { password: _password, ...safeData } = data;
     return ResultData.ok({
-      data,
+      data: safeData,
       postIds,
       posts: allPosts,
       roles: allRoles,
@@ -384,6 +387,7 @@ export class UserService {
     });
 
     const data = await entity.getOne();
+    if (!data) throw new BadRequestException('用户不存在');
 
     const result = {
       ...data,
@@ -549,6 +553,7 @@ export class UserService {
       },
       select: ['userType'],
     });
+    if (!userData) throw new BadRequestException('用户不存在');
     if (userData.userType === SYS_USER_TYPE.SYS) {
       return ResultData.fail(500, '系统角色不可停用');
     }
@@ -609,8 +614,9 @@ export class UserService {
     //联查部门详情
     entity.leftJoinAndMapOne('user.dept', SysDeptEntity, 'dept', 'dept.deptId = user.deptId');
     const [list, total] = await entity.getManyAndCount();
+    const safeList = list.map(({ password: _password, ...user }) => user);
     return ResultData.ok({
-      list,
+      list: safeList,
       total,
     });
   }
@@ -646,8 +652,9 @@ export class UserService {
     //联查部门详情
     entity.leftJoinAndMapOne('user.dept', SysDeptEntity, 'dept', 'dept.deptId = user.deptId');
     const [list, total] = await entity.getManyAndCount();
+    const safeList = list.map(({ password: _password, ...user }) => user);
     return ResultData.ok({
-      list,
+      list: safeList,
       total,
     });
   }

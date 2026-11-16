@@ -47,3 +47,31 @@ export const enum SYS_USER_TYPE {
   CUSTOM = '10',
   CLIENT = '20',
 }
+
+/**
+ * 单文件大小上限（MB）
+ * 与 yml app.file.maxSize 保持一致；Multer limits 与服务层大小校验同源使用
+ */
+export const UPLOAD_MAX_SIZE_MB = 10;
+export const UPLOAD_MAX_SIZE_BYTES = UPLOAD_MAX_SIZE_MB * 1024 * 1024;
+
+/**
+ * 上传扩展名默认白名单（可用 yml app.file.allowedExts 覆盖，逗号分隔）
+ * .svg/.html 等可内联执行的类型刻意排除，防止经静态服务造成存储型 XSS
+ */
+export const UPLOAD_DEFAULT_ALLOWED_EXTS = [
+  // 图片
+  '.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.ico',
+  // 文档
+  '.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx', '.txt', '.md', '.csv',
+  // 压缩包
+  '.zip', '.rar', '.7z', '.tar', '.gz',
+  // 媒体
+  '.mp3', '.mp4', '.wav', '.mov', '.avi', '.webm', '.flv',
+];
+
+/**
+ * 允许内联展示（不加 Content-Disposition: attachment）的静态文件扩展名
+ * 仅限位图类图片；.svg 刻意排除（内联渲染有 XSS 风险）
+ */
+export const INLINE_IMAGE_EXT_PATTERN = /\.(png|jpe?g|gif|webp|bmp|ico)$/i;

@@ -232,4 +232,25 @@ const submitCrop = async () => {
   line-height: 110px;
   border-radius: 50%;
 }
+
+/* 以下三条原为 ruoyi.scss 全局规则，仅头像裁剪使用，收编于此 */
+.img-circle {
+  border-radius: 50%;
+}
+
+.img-lg {
+  width: 120px;
+  height: 120px;
+}
+
+.avatar-upload-preview {
+  position: absolute;
+  top: 50%;
+  transform: translate(50%, -50%);
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  box-shadow: 0 0 4px #ccc;
+  overflow: hidden;
+}
 </style>

@@ -100,4 +100,9 @@ for (const item in props.columns) {
 .my-el-transfer {
   text-align: center;
 }
+
+/* 原 ruoyi.scss 全局规则，仅本组件使用，收编于此 */
+.top-right-btn {
+  margin-left: auto;
+}
 </style>

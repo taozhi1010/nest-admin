@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <h4 class="form-header h4">基本信息</h4>
+    <h4 class="form-header">基本信息</h4>
     <el-form label-width="80px" :model="authRole.form">
       <el-row>
         <el-col :offset="2" :span="8">
@@ -16,7 +16,7 @@
       </el-row>
     </el-form>
 
-    <h4 class="form-header h4">角色信息</h4>
+    <h4 class="form-header">角色信息</h4>
     <el-table ref="roleRef" v-loading="authRole.loading" :data="authRole.roles.slice((authRole.pageNum - 1) * authRole.pageSize, authRole.pageNum * authRole.pageSize)" :row-key="authRole.getRowKey" @row-click="authRole.clickRow" @selection-change="authRole.handleSelectionChange">
       <el-table-column align="center" label="序号" type="index" width="55">
         <template #default="scope">
@@ -143,3 +143,14 @@ const authRole = reactive({
 // ==================== 初始化加载 ====================
 authRole.init();
 </script>
+
+<style lang="scss" scoped>
+/* 原 ruoyi.scss 全局规则，仅本页使用，收编于此 */
+.form-header {
+  font-size: 15px;
+  color: #6379bb;
+  border-bottom: 1px solid #ddd;
+  margin: 8px 10px 25px 10px;
+  padding-bottom: 5px;
+}
+</style>

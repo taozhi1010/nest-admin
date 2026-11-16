@@ -55,6 +55,7 @@
     "http-proxy-middleware": "^3.0.5",
     "iconv-lite": "^0.6.3",
     "ioredis": "^5.4.1",
+    "joi": "^18.3.2",
     "js-yaml": "^4.1.0",
     "lodash": "^4.17.21",
     "mime-types": "^2.1.35",

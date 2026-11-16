@@ -14,7 +14,7 @@
             <el-table-column align="center" :formatter="nameFormatter" label="缓存名称" prop="cacheName" :show-overflow-tooltip="true" />
 
             <el-table-column align="center" label="备注" prop="remark" :show-overflow-tooltip="true" />
-            <el-table-column align="center" class-name="small-padding fixed-width" label="操作" width="60">
+            <el-table-column align="center" class-name="small-padding" label="操作" width="60">
               <template #default="scope">
                 <el-button :icon="Delete" link type="primary" @click="handleClearCacheName(scope.row)" />
               </template>
@@ -33,7 +33,7 @@
           <el-table v-loading="subLoading" :data="cacheKeys" height="100%" highlight-current-row style="width: 100%" @row-click="handleCacheValue">
             <el-table-column label="序号" type="index" width="60" />
             <el-table-column align="center" :formatter="keyFormatter" label="缓存键名" :show-overflow-tooltip="true" />
-            <el-table-column align="center" class-name="small-padding fixed-width" label="操作" width="60">
+            <el-table-column align="center" class-name="small-padding" label="操作" width="60">
               <template #default="scope">
                 <el-button :icon="Delete" link type="primary" @click="handleClearCacheKey(scope.row)" />
               </template>

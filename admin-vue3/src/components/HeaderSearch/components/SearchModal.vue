@@ -66,6 +66,7 @@
 
 <script setup lang="ts">
 import { Search, Guide } from '@element-plus/icons-vue';
+import { useEventListener } from '@vueuse/core';
 import { useRouter } from 'vue-router';
 
 import { useRouteSearch } from '@/composables/useRouteSearch';
@@ -169,25 +170,16 @@ function selectResult(item: any) {
 }
 
 // 监听全局键盘快捷键 Ctrl+K / Cmd+K
-onMounted(() => {
-  const handleGlobalKeydown = (event: KeyboardEvent) => {
-    // 检测 Ctrl+K 或 Cmd+K
-    if ((event.ctrlKey || event.metaKey) && event.key === 'k') {
-      event.preventDefault();
-      if (show.value) {
-        closeModal();
-      } else {
-        openModal();
-      }
+useEventListener(window, 'keydown', (event: KeyboardEvent) => {
+  // 检测 Ctrl+K 或 Cmd+K
+  if ((event.ctrlKey || event.metaKey) && event.key === 'k') {
+    event.preventDefault();
+    if (show.value) {
+      closeModal();
+    } else {
+      openModal();
     }
-  };
-
-  window.addEventListener('keydown', handleGlobalKeydown);
-
-  // 清理函数
-  onUnmounted(() => {
-    window.removeEventListener('keydown', handleGlobalKeydown);
-  });
+  }
 });
 </script>
 

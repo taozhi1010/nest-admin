@@ -72,7 +72,8 @@ export class LocalFileStorage implements IFileStorage {
    * 删除本地文件
    */
   async deleteFile(fileName: string): Promise<void> {
-    const targetFile = path.join(this.baseDirPath, fileName);
+    const relativeName = fileName.startsWith(this.serveRoot) ? fileName.slice(this.serveRoot.length) : fileName;
+    const targetFile = path.join(this.baseDirPath, relativeName);
     if (fs.existsSync(targetFile)) {
       fs.unlinkSync(targetFile);
     }

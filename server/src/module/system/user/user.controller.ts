@@ -13,6 +13,7 @@ import { ResultData } from 'src/common/utils/result';
 import { User, UserDto, UserTool, UserToolType } from 'src/module/system/user/user.decorator';
 import { BusinessType } from 'src/common/constant/business.constant';
 import { Operlog } from 'src/common/decorators/operlog.decorator';
+import { UPLOAD_MAX_SIZE_BYTES } from 'src/common/constant/index';
 
 @ApiTags('用户管理')
 @ApiBearerAuth()
@@ -31,7 +32,9 @@ export class UserController {
   @RequirePermission('system:user:query')
   @Get('/profile')
   profile(@User() user: UserDto) {
-    return ResultData.ok(user.user);
+    // 会话快照含密码哈希（updatePwd 比对依赖），仅在响应层剥离
+    const { password: _password, ...info } = user.user;
+    return ResultData.ok(info);
   }
 
   @ApiOperation({
@@ -49,7 +52,7 @@ export class UserController {
   })
   @RequirePermission('system:user:edit')
   @Post('/profile/avatar')
-  @UseInterceptors(FileInterceptor('avatarfile'))
+  @UseInterceptors(FileInterceptor('avatarfile', { limits: { fileSize: UPLOAD_MAX_SIZE_BYTES } }))
   async avatar(@UploadedFile() avatarfile: Express.Multer.File, @User() user: UserDto) {
     if (!avatarfile) {
       return ResultData.fail(500, '请上传头像文件');

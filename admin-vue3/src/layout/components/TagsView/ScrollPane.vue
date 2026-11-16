@@ -5,6 +5,8 @@
 </template>
 
 <script setup lang="ts">
+import { useEventListener } from '@vueuse/core';
+
 import useTagsViewStore from '@/store/modules/tagsView';
 
 const tagAndTagSpacing = ref(4);
@@ -17,13 +19,6 @@ const scrollWrapper = computed(() => {
   return null;
 });
 
-onMounted(() => {
-  scrollWrapper.value.addEventListener('scroll', emitScroll, true);
-});
-onBeforeUnmount(() => {
-  scrollWrapper.value.removeEventListener('scroll', emitScroll);
-});
-
 function handleScroll(e) {
   const eventDelta = e.wheelDelta || -e.deltaY * 40;
   const $scrollWrapper = scrollWrapper.value;
@@ -33,6 +28,8 @@ const emits = defineEmits(['scroll']);
 const emitScroll = () => {
   emits('scroll');
 };
+// capture 沿用原监听；目标为 el-scrollbar 内部 wrap，挂载后 useEventListener 自动挂接并随组件卸载清理
+useEventListener(scrollWrapper, 'scroll', emitScroll, { capture: true });
 
 const tagsViewStore = useTagsViewStore();
 const visitedViews = computed(() => tagsViewStore.visitedViews);

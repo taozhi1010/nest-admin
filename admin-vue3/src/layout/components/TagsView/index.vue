@@ -48,6 +48,7 @@
 
 <script setup lang="ts">
 import { Back, CircleClose, Close, RefreshRight, Right } from '@element-plus/icons-vue';
+import { useEventListener } from '@vueuse/core';
 
 import { getNormalPath } from '@/composables/useCommon';
 import usePermissionStore from '@/store/modules/permission';
@@ -78,12 +79,9 @@ watch(route, () => {
   addTags();
   moveToCurrentTag();
 });
-watch(visible, (value) => {
-  if (value) {
-    document.body.addEventListener('click', closeMenu);
-  } else {
-    document.body.removeEventListener('click', closeMenu);
-  }
+// 点击任意处关闭右键菜单（含菜单项自身——各菜单处理器不自行关闭，故不用 onClickOutside）
+useEventListener(document.body, 'click', () => {
+  if (visible.value) closeMenu();
 });
 onMounted(() => {
   initTags();
