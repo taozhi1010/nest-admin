@@ -196,6 +196,7 @@ export class UserService {
         userId: userId,
       },
     });
+    if (!data) throw new BadRequestException('用户不存在');
 
     const dept = await this.sysDeptEntityRep.findOne({
       where: {
@@ -386,6 +387,7 @@ export class UserService {
     });
 
     const data = await entity.getOne();
+    if (!data) throw new BadRequestException('用户不存在');
 
     const result = {
       ...data,
@@ -551,6 +553,7 @@ export class UserService {
       },
       select: ['userType'],
     });
+    if (!userData) throw new BadRequestException('用户不存在');
     if (userData.userType === SYS_USER_TYPE.SYS) {
       return ResultData.fail(500, '系统角色不可停用');
     }

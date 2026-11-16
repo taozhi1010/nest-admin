@@ -1,5 +1,5 @@
 import { Repository } from 'typeorm';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { randomInt } from 'crypto';
@@ -37,6 +37,8 @@ import { AxiosService } from 'src/module/common/axios/axios.service';
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
+
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepo: Repository<UserEntity>,
@@ -68,12 +70,23 @@ export class AuthService {
     try {
       const loginLocation = await this.axiosService.getIpAddress(clientInfo.ipaddr);
       loginLog.loginLocation = loginLocation;
-    } catch (error) {}
+    } catch (error) {
+      this.logger.warn(`登录 IP 归属地解析失败: ${error?.message ?? error}`);
+    }
     const loginRes = await this.doLogin(user, loginLog);
     loginLog.status = loginRes.code === SUCCESS_CODE ? '0' : '1';
     loginLog.msg = loginRes.msg;
-    this.loginlogService.create(loginLog);
+    this.safeCreateLoginLog(loginLog);
     return loginRes;
+  }
+
+  /**
+   * 登录日志异步录入：失败仅告警，不影响登录主流程（防 unhandledRejection）
+   */
+  private safeCreateLoginLog(loginLog) {
+    this.loginlogService.create(loginLog).catch((error) => {
+      this.logger.warn(`登录日志录入失败: ${error?.message ?? error}`);
+    });
   }
 
   /**
@@ -181,8 +194,10 @@ export class AuthService {
     try {
       const loginLocation = await this.axiosService.getIpAddress(clientInfo.ipaddr);
       loginLog.loginLocation = loginLocation;
-    } catch (error) {}
-    this.loginlogService.create(loginLog);
+    } catch (error) {
+      this.logger.warn(`登出 IP 归属地解析失败: ${error?.message ?? error}`);
+    }
+    this.safeCreateLoginLog(loginLog);
     return ResultData.ok();
   }
 
