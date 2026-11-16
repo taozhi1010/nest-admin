@@ -24,6 +24,7 @@
 - 前端与后端都通过 Docker Compose 管理
 - 前端生产环境接口统一走同源 `/api`
 - `/profile/` 静态资源由前端 Nginx 直接代理到 RustFS
+- 注册邮箱验证码为可选能力：`MAIL_*` 未配置时自动关闭，不影响部署与其他功能
 
 ## 目录与关键文件
 
@@ -33,12 +34,13 @@
 - 前端 Nginx：`admin-vue3/nginx.conf`
 - 前端生产环境变量：`admin-vue3/.env.production`
 - 后端配置合并入口：`server/src/config/index.ts`
+- 后端生产配置默认值：`server/src/config/env/prod.yml`（含 `mail` 段）
 
 ## 部署流程
 
-1. 推送到 `feature-1.0` 分支（原 `deploy` 分支已合并进 `feature-1.0` 并删除）。
+1. 推送到 `master` 分支（或在 Actions 页面手动触发）。
 2. GitHub Actions 通过 SSH 将代码同步到服务器目录。
-3. Actions 在服务器生成 `.env`。
+3. Actions 在服务器生成 `.env`（MySQL / Redis / RustFS / JWT，以及可选的 `MAIL_*` 邮件配置）。
 4. 单独构建并启动后端容器。
 5. 单独构建并启动前端容器。
 6. 输出连通性诊断、容器状态和最近日志。
@@ -49,6 +51,7 @@
 - `REDIS_HOST=${SERVER_HOST}`
 - `RUSTFS_ENDPOINT=${SERVER_HOST}`
 - 前端 `VITE_APP_BASE_API=/api`
+- `MAIL_ENABLED` 由 Secret 控制，未配置时 Compose 兜底为 `false`；`MAIL_PORT=465`、`MAIL_SECURE=true` 固定写入
 
 ## 不再采用的旧做法
 

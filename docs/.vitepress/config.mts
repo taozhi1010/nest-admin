@@ -47,6 +47,7 @@ export default defineConfig({
         {
           text: '发布记录',
           items: [
+            { text: 'v1.1.0 · 2026-11-15', link: '/releases#v1-1-0' },
             { text: 'v1.0.1 · 2026-10-25', link: '/releases#v1-0-1' },
             { text: 'v1.0.0 · 2026-10-25', link: '/releases#v1-0-0' },
           ],
