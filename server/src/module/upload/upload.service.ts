@@ -1,7 +1,7 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Like, In } from 'typeorm';
+import { Like, In, Between, MoreThanOrEqual, LessThanOrEqual } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
 import { ResultData } from 'src/common/utils/result';
 import { SysUploadEntity } from './entities/upload.entity';
@@ -65,14 +65,36 @@ export class UploadService {
     return res;
   }
 
-  async findAll(query: { pageNum?: number; pageSize?: number; fileName?: string; ext?: string }) {
+  async findAll(query: { pageNum?: number; pageSize?: number; fileName?: string; ext?: string; beginTime?: string; endTime?: string; orderByColumn?: string; isAsc?: string }) {
     const pageNum = Math.max(Number(query.pageNum) || 1, 1);
     const pageSize = Math.min(Math.max(Number(query.pageSize) || 10, 1), 100);
     const where: any = { delFlag: '0' };
     if (query.fileName) where.newFileName = Like(`%${query.fileName}%`);
     if (query.ext) where.ext = query.ext.startsWith('.') ? query.ext : `.${query.ext}`;
-    const [list, total] = await this.sysUploadEntityRep.findAndCount({ where, order: { createTime: 'DESC' }, skip: (pageNum - 1) * pageSize, take: pageSize });
+    // 时间区间支持单边查询
+    if (query.beginTime && query.endTime) where.createTime = Between(query.beginTime, query.endTime);
+    else if (query.beginTime) where.createTime = MoreThanOrEqual(query.beginTime);
+    else if (query.endTime) where.createTime = LessThanOrEqual(query.endTime);
+    // 排序字段走白名单，防止 orderBy 拼接注入；默认按上传时间倒序
+    let order: any = { createTime: 'DESC' };
+    if (query.orderByColumn && query.isAsc && ['size', 'createTime'].includes(query.orderByColumn)) {
+      order = { [query.orderByColumn]: query.isAsc === 'ascending' ? 'ASC' : 'DESC' };
+    }
+    const [list, total] = await this.sysUploadEntityRep.findAndCount({ where, order, skip: (pageNum - 1) * pageSize, take: pageSize });
     return ResultData.ok({ list, total, pageNum, pageSize });
+  }
+
+  /**
+   * 扩展名下拉选项：库内实际存在的扩展名去重
+   */
+  async findExts() {
+    const rows = await this.sysUploadEntityRep
+      .createQueryBuilder('upload')
+      .select('DISTINCT upload.ext', 'ext')
+      .where('upload.delFlag = :delFlag', { delFlag: '0' })
+      .orderBy('ext', 'ASC')
+      .getRawMany();
+    return ResultData.ok(rows.map((row) => row.ext).filter(Boolean));
   }
 
   async remove(ids: string[]) {

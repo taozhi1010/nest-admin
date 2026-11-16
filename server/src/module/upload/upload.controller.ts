@@ -16,6 +16,10 @@ export class UploadController {
   @RequirePermission('post:file:list')
   findAll(@Query() query: any) { return this.uploadService.findAll(query); }
 
+  @Get('/exts')
+  @RequirePermission('post:file:list')
+  findExts() { return this.uploadService.findExts(); }
+
   @Delete(':ids')
   @RequirePermission('post:file:remove')
   remove(@Param('ids') ids: string) { return this.uploadService.remove(ids.split(',')); }
