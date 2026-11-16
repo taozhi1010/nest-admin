@@ -17,7 +17,7 @@
         </el-form-item>
       </el-form>
       <el-row class="mb8">
-        <el-button v-hasPermi="['post:file:remove']" :disabled="!selected.length" :icon="Delete" plain type="danger" @click="remove">删除</el-button>
+        <el-button v-hasPermi="['post:file:remove']" :disabled="!selected.length" :icon="Delete" plain type="danger" @click="remove()">删除</el-button>
         <right-toolbar v-model:show-search="showSearch" @query-table="getList" />
       </el-row>
       <el-table v-loading="loading" :data="list" :default-sort="{ prop: 'createTime', order: 'descending' }" @selection-change="selected = $event" @sort-change="handleSortChange">
@@ -56,16 +56,22 @@ const total = ref(0);
 const query = reactive({ pageNum: 1, pageSize: 10, fileName: '', ext: '', orderByColumn: undefined, isAsc: undefined });
 const dateRange = ref([]);
 const extOptions = ref([]);
-listFileExts().then((res) => (extOptions.value = res.data));
+listFileExts()
+  .then((res) => (extOptions.value = res.data))
+  .catch(() => ElMessage.error('获取文件类型失败'));
+// 请求序号：快速翻页/连续搜索时丢弃过期响应，防止慢请求覆盖新数据
+let requestSeq = 0;
 const getList = async () => {
+  const seq = ++requestSeq;
   loading.value = true;
   try {
     const params = { ...query, beginTime: dateRange.value?.[0], endTime: dateRange.value?.[1] };
     const res = await listFile(params);
+    if (seq !== requestSeq) return;
     list.value = res.data.list;
     total.value = res.data.total;
   } finally {
-    loading.value = false;
+    if (seq === requestSeq) loading.value = false;
   }
 };
 const handleSortChange = ({ prop, order }) => {
