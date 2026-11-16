@@ -226,8 +226,10 @@ export class UserService {
 
     data['roles'] = allRoles.filter((item) => roleIds.includes(item.roleId));
 
+    // 剥离密码哈希，避免泄漏到响应与缓存值
+    const { password: _password, ...safeData } = data;
     return ResultData.ok({
-      data,
+      data: safeData,
       postIds,
       posts: allPosts,
       roles: allRoles,
@@ -609,8 +611,9 @@ export class UserService {
     //联查部门详情
     entity.leftJoinAndMapOne('user.dept', SysDeptEntity, 'dept', 'dept.deptId = user.deptId');
     const [list, total] = await entity.getManyAndCount();
+    const safeList = list.map(({ password: _password, ...user }) => user);
     return ResultData.ok({
-      list,
+      list: safeList,
       total,
     });
   }
@@ -646,8 +649,9 @@ export class UserService {
     //联查部门详情
     entity.leftJoinAndMapOne('user.dept', SysDeptEntity, 'dept', 'dept.deptId = user.deptId');
     const [list, total] = await entity.getManyAndCount();
+    const safeList = list.map(({ password: _password, ...user }) => user);
     return ResultData.ok({
-      list,
+      list: safeList,
       total,
     });
   }

@@ -31,7 +31,9 @@ export class UserController {
   @RequirePermission('system:user:query')
   @Get('/profile')
   profile(@User() user: UserDto) {
-    return ResultData.ok(user.user);
+    // 会话快照含密码哈希（updatePwd 比对依赖），仅在响应层剥离
+    const { password: _password, ...info } = user.user;
+    return ResultData.ok(info);
   }
 
   @ApiOperation({
