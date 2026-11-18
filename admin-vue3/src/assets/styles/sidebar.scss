@@ -29,7 +29,7 @@
     -webkit-box-shadow: 2px 0 6px rgba(0,21,41,.35);
     box-shadow: 2px 0 6px rgba(0,21,41,.35);
 
-    // reset element-ui css
+    // 折叠时宽度瞬变（EP 默认给 0.3s width 过渡，侧栏折叠用瞬时更利落）
     .horizontal-collapse-transition {
       transition: 0s width ease-in-out, 0s padding-left ease-in-out, 0s padding-right ease-in-out;
     }
@@ -89,7 +89,6 @@
     }
 
     // menu hover
-    .sub-menu-title-noDropdown,
     .el-sub-menu__title {
       &:hover {
         background-color: rgba(0, 0, 0, 0.06) !important;
@@ -126,19 +125,6 @@
 
     .main-container {
       margin-left: 54px;
-    }
-
-    .sub-menu-title-noDropdown {
-      padding: 0 !important;
-      position: relative;
-
-      .el-tooltip {
-        padding: 0 !important;
-
-        .svg-icon {
-          margin-left: 20px;
-        }
-      }
     }
 
     .el-sub-menu {

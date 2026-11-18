@@ -1,6 +1,6 @@
 <template>
   <el-drawer v-model="drawer.visible" direction="rtl" size="1200px" title="文章详情">
-    <el-tabs v-model="drawer.activeName" class="demo-tabs" @tab-click="handleClick">
+    <el-tabs v-model="drawer.activeName" class="demo-tabs">
       <el-tab-pane label="基本信息" name="first">
         <h2 class="article-title">{{ form.model.title }}</h2>
         <el-descriptions direction="vertical">
@@ -20,50 +20,47 @@
 </template>
 
 <script setup lang="ts">
-import dayjs from 'dayjs'
-import { getArticle } from '@/api/post/article'
-import MdViewer from '@/components/MdViewer/index.vue'
-import { useDict } from '@/composables/useDict'
+import dayjs from 'dayjs';
 
-const { getDictLabel } = useDict('post_article_source')
+import { getArticle } from '@/api/post/article';
+import MdViewer from '@/components/MdViewer/index.vue';
+import { useDict } from '@/composables/useDict';
+
+const { getDictLabel } = useDict('post_article_source');
 
 const drawer = reactive({
   visible: false,
   activeName: 'first',
   title: '新增文章'
-})
+});
 
 const form = reactive({
   model: {} as any
-})
+});
 
-const ids = ref([])
-
-const handleClick = (tab) => {
-  console.log(tab)
-}
+const ids = ref([]);
 
 const handleOpen = (row) => {
-  const articleId = row.articleId || ids.value
+  const articleId = row.articleId || ids.value;
   getArticle(articleId).then((res) => {
-    drawer.title = `修改-${form.model.title}`
-    form.model = res.data
-    form.model.content = form.model.content.slice(1, -1).replace(/\\n/g, '\n')
+    drawer.title = `修改-${form.model.title}`;
+    form.model = res.data;
+    form.model.content = form.model.content.slice(1, -1).replace(/\\n/g, '\n');
 
-    form.model.updateTime = dayjs(form.model.updateTime).format('YYYY-MM-DD HH:mm:ss')
-    form.model.createTime = dayjs(form.model.createTime).format('YYYY-MM-DD HH:mm:ss')
-    form.model.publishTime = dayjs(form.model.publishTime).format('YYYY-MM-DD HH:mm:ss')
-    drawer.visible = true
-  })
-}
+    form.model.updateTime = dayjs(form.model.updateTime).format('YYYY-MM-DD HH:mm:ss');
+    form.model.createTime = dayjs(form.model.createTime).format('YYYY-MM-DD HH:mm:ss');
+    form.model.publishTime = dayjs(form.model.publishTime).format('YYYY-MM-DD HH:mm:ss');
+    drawer.visible = true;
+  });
+};
 const handleClose = () => {
-  drawer.visible = false
-}
+  drawer.visible = false;
+};
 
 defineExpose({
   handleOpen,
   handleClose
-})
+});
 </script>
 
 <style lang="scss" scoped>

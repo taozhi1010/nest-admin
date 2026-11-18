@@ -33,11 +33,11 @@ export class LoginlogService {
     entity.where('entity.delFlag = :delFlag', { delFlag: '0' });
 
     if (query.ipaddr) {
-      entity.andWhere(`entity.ipaddr LIKE "%${query.ipaddr}%"`);
+      entity.andWhere('entity.ipaddr LIKE :ipaddr', { ipaddr: `%${query.ipaddr}%` });
     }
 
     if (query.userName) {
-      entity.andWhere(`entity.userName LIKE "%${query.userName}%"`);
+      entity.andWhere('entity.userName LIKE :userName', { userName: `%${query.userName}%` });
     }
 
     if (query.status) {
@@ -49,7 +49,7 @@ export class LoginlogService {
     }
 
     // 排序处理 - 默认按登录时间倒序排列
-    if (query.orderByColumn && query.isAsc) {
+    if (query.orderByColumn && query.isAsc && this.isLoginlogField(query.orderByColumn)) {
       const key = query.isAsc === 'ascending' ? 'ASC' : 'DESC';
       entity.orderBy(`entity.${query.orderByColumn}`, key);
     } else {
@@ -131,5 +131,12 @@ export class LoginlogService {
       },
     };
     ExportTable(options, res);
+  }
+
+  /**
+   * 校验排序字段是否为实体真实列，防止 orderByColumn 拼接注入
+   */
+  private isLoginlogField(field: string): boolean {
+    return this.monitorLoginlogEntityRep.metadata.columns.some((column) => column.propertyName === field);
   }
 }

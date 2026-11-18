@@ -246,7 +246,7 @@ export class ImportUserDto {
   @IsString()
   sex?: string;
 
-  /** 帐号状态 */
+  /** 账号状态 */
   @ApiProperty({ required: false })
   @IsOptional()
   @IsString()

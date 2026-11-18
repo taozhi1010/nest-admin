@@ -3,11 +3,12 @@
  * Copyright (c) 2019 ruoyi
  */
 
-import type { Directive, DirectiveBinding } from 'vue'
-import useUserStore from '@/store/modules/user'
+import useUserStore from '@/store/modules/user';
+
+import type { Directive, DirectiveBinding } from 'vue';
 
 interface HasPermiDirectiveBinding extends Omit<DirectiveBinding, 'value'> {
-  value: string | string[]
+  value: string | string[];
 }
 
 /**
@@ -16,24 +17,24 @@ interface HasPermiDirectiveBinding extends Omit<DirectiveBinding, 'value'> {
  */
 const hasPermi: Directive<HTMLElement, string | string[]> = {
   mounted(el: HTMLElement, binding: HasPermiDirectiveBinding) {
-    const { value } = binding
-    const allPermission = '*:*:*'
-    const permissions = useUserStore().permissions
+    const { value } = binding;
+    const allPermission = '*:*:*';
+    const permissions = useUserStore().permissions;
 
     if (value && Array.isArray(value) && value.length > 0) {
-      const permissionFlag = value
+      const permissionFlag = value;
 
       const hasPermissions = permissions.some((permission: string) => {
-        return allPermission === permission || permissionFlag.includes(permission)
-      })
+        return allPermission === permission || permissionFlag.includes(permission);
+      });
 
       if (!hasPermissions) {
-        el.parentNode?.removeChild(el)
+        el.parentNode?.removeChild(el);
       }
     } else {
-      throw new Error('请设置操作权限标签值')
+      throw new Error('请设置操作权限标签值');
     }
   }
-}
+};
 
-export default hasPermi
+export default hasPermi;

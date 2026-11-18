@@ -5,9 +5,7 @@
     </el-form-item>
 
     <el-form-item>
-      <el-radio v-model="radioValue" :label="2">
-        不指定
-      </el-radio>
+      <el-radio v-model="radioValue" :label="2">不指定</el-radio>
     </el-form-item>
 
     <el-form-item>
@@ -51,7 +49,7 @@
 </template>
 
 <script setup lang="ts">
-const emit = defineEmits(['update'])
+const emit = defineEmits(['update']);
 const props = defineProps({
   cron: {
     type: Object,
@@ -69,15 +67,15 @@ const props = defineProps({
     type: Function,
     default: () => {}
   }
-})
-const radioValue = ref(2)
-const cycle01 = ref(2)
-const cycle02 = ref(3)
-const average01 = ref(1)
-const average02 = ref(2)
-const weekday = ref(2)
-const checkboxList = ref([])
-const checkCopy = ref([2])
+});
+const radioValue = ref(2);
+const cycle01 = ref(2);
+const cycle02 = ref(3);
+const average01 = ref(1);
+const average02 = ref(2);
+const weekday = ref(2);
+const checkboxList = ref([]);
+const checkCopy = ref([2]);
 const weekList = ref([
   { key: 1, value: '星期日' },
   { key: 2, value: '星期一' },
@@ -86,98 +84,98 @@ const weekList = ref([
   { key: 5, value: '星期四' },
   { key: 6, value: '星期五' },
   { key: 7, value: '星期六' }
-])
+]);
 const cycleTotal = computed(() => {
-  const checked01 = props.check(cycle01.value, 1, 6)
-  const checked02 = props.check(cycle02.value, cycle01.value + 1, 7)
-  return `${checked01}-${checked02}`
-})
+  const checked01 = props.check(cycle01.value, 1, 6);
+  const checked02 = props.check(cycle02.value, cycle01.value + 1, 7);
+  return `${checked01}-${checked02}`;
+});
 const averageTotal = computed(() => {
-  const checked01 = props.check(average01.value, 1, 4)
-  const checked02 = props.check(average02.value, 1, 7)
-  return `${checked02}#${checked01}`
-})
+  const checked01 = props.check(average01.value, 1, 4);
+  const checked02 = props.check(average02.value, 1, 7);
+  return `${checked02}#${checked01}`;
+});
 const weekdayTotal = computed(() => {
-  const checkedWeekday = props.check(weekday.value, 1, 7)
-  return `${checkedWeekday}L`
-})
+  const checkedWeekday = props.check(weekday.value, 1, 7);
+  return `${checkedWeekday}L`;
+});
 const checkboxString = computed(() => {
-  return checkboxList.value.join(',')
-})
+  return checkboxList.value.join(',');
+});
 watch(
   () => props.cron.week,
   (value) => changeRadioValue(value)
-)
+);
 // 监听 computed 值变化并同步 ref
 watch(cycleTotal, (value) => {
-  const [v1, v2] = value.split('-')
-  cycle01.value = Number(v1)
-  cycle02.value = Number(v2)
-})
+  const [v1, v2] = value.split('-');
+  cycle01.value = Number(v1);
+  cycle02.value = Number(v2);
+});
 watch(averageTotal, (value) => {
-  const parts = value.split('#')
-  average02.value = Number(parts[0])
-  average01.value = Number(parts[1])
-})
+  const parts = value.split('#');
+  average02.value = Number(parts[0]);
+  average01.value = Number(parts[1]);
+});
 watch(weekdayTotal, (value) => {
-  weekday.value = Number(value.replace('L', ''))
-})
-watch([radioValue, cycleTotal, averageTotal, weekdayTotal, checkboxString], () => onRadioChange())
+  weekday.value = Number(value.replace('L', ''));
+});
+watch([radioValue, cycleTotal, averageTotal, weekdayTotal, checkboxString], () => onRadioChange());
 function changeRadioValue(value) {
   if (value === '*') {
-    radioValue.value = 1
+    radioValue.value = 1;
   } else if (value === '?') {
-    radioValue.value = 2
+    radioValue.value = 2;
   } else if (value.indexOf('-') > -1) {
-    const indexArr = value.split('-')
-    cycle01.value = Number(indexArr[0])
-    cycle02.value = Number(indexArr[1])
-    radioValue.value = 3
+    const indexArr = value.split('-');
+    cycle01.value = Number(indexArr[0]);
+    cycle02.value = Number(indexArr[1]);
+    radioValue.value = 3;
   } else if (value.indexOf('#') > -1) {
-    const indexArr = value.split('#')
-    average01.value = Number(indexArr[1])
-    average02.value = Number(indexArr[0])
-    radioValue.value = 4
+    const indexArr = value.split('#');
+    average01.value = Number(indexArr[1]);
+    average02.value = Number(indexArr[0]);
+    radioValue.value = 4;
   } else if (value.indexOf('L') > -1) {
-    const indexArr = value.split('L')
-    weekday.value = Number(indexArr[0])
-    radioValue.value = 5
+    const indexArr = value.split('L');
+    weekday.value = Number(indexArr[0]);
+    radioValue.value = 5;
   } else {
-    checkboxList.value = [...new Set(value.split(',').map((item) => Number(item)))]
-    radioValue.value = 6
+    checkboxList.value = [...new Set(value.split(',').map((item) => Number(item)))];
+    radioValue.value = 6;
   }
 }
 function onRadioChange() {
   if (radioValue.value === 2 && props.cron.day === '?') {
-    emit('update', 'day', '*', 'week')
+    emit('update', 'day', '*', 'week');
   }
   if (radioValue.value !== 2 && props.cron.day !== '?') {
-    emit('update', 'day', '?', 'week')
+    emit('update', 'day', '?', 'week');
   }
   switch (radioValue.value) {
     case 1:
-      emit('update', 'week', '*', 'week')
-      break
+      emit('update', 'week', '*', 'week');
+      break;
     case 2:
-      emit('update', 'week', '?', 'week')
-      break
+      emit('update', 'week', '?', 'week');
+      break;
     case 3:
-      emit('update', 'week', cycleTotal.value, 'week')
-      break
+      emit('update', 'week', cycleTotal.value, 'week');
+      break;
     case 4:
-      emit('update', 'week', averageTotal.value, 'week')
-      break
+      emit('update', 'week', averageTotal.value, 'week');
+      break;
     case 5:
-      emit('update', 'week', weekdayTotal.value, 'week')
-      break
+      emit('update', 'week', weekdayTotal.value, 'week');
+      break;
     case 6:
       if (checkboxList.value.length === 0) {
-        checkboxList.value.push(checkCopy.value[0])
+        checkboxList.value.push(checkCopy.value[0]);
       } else {
-        checkCopy.value = checkboxList.value
+        checkCopy.value = checkboxList.value;
       }
-      emit('update', 'week', checkboxString.value, 'week')
-      break
+      emit('update', 'week', checkboxString.value, 'week');
+      break;
   }
 }
 </script>

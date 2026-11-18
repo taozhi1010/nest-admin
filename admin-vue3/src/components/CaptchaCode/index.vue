@@ -14,7 +14,8 @@
 </template>
 
 <script setup name="CaptchaCode">
-const props = defineProps({
+import { Loading } from '@element-plus/icons-vue';
+defineProps({
   // 验证码图片的 base64 字符串
   imgUrl: {
     type: String,
@@ -31,14 +32,14 @@ const props = defineProps({
     default: 'default',
     validator: (value) => ['large', 'default', 'small'].includes(value)
   }
-})
+});
 
-const emit = defineEmits(['refresh'])
+const emit = defineEmits(['refresh']);
 
 // 点击事件
 const handleClick = () => {
-  emit('refresh')
-}
+  emit('refresh');
+};
 </script>
 
 <style lang="scss" scoped>

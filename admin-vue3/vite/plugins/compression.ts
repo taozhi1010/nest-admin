@@ -1,16 +1,17 @@
 /**
  * 压缩插件配置
- * 
+ *
  * 功能说明：
  * 1. 支持 gzip 压缩
  * 2. 支持 brotli 压缩
  * 3. 根据环境变量配置选择压缩方式
  */
-import compression from 'vite-plugin-compression'
-import type { PluginOption } from 'vite'
+import compression from 'vite-plugin-compression';
+
+import type { PluginOption } from 'vite';
 
 interface BuildEnv {
-  VITE_BUILD_COMPRESS?: string
+  VITE_BUILD_COMPRESS?: string;
 }
 
 /**
@@ -19,34 +20,34 @@ interface BuildEnv {
  * @returns 压缩插件数组
  */
 export default function createCompression(env: BuildEnv): PluginOption[] {
-  const { VITE_BUILD_COMPRESS } = env
-  const plugin: PluginOption[] = []
-  
+  const { VITE_BUILD_COMPRESS } = env;
+  const plugin: PluginOption[] = [];
+
   if (VITE_BUILD_COMPRESS) {
-    const compressList = VITE_BUILD_COMPRESS.split(',')
-    
+    const compressList = VITE_BUILD_COMPRESS.split(',');
+
     // 如果配置了 gzip 压缩
     if (compressList.includes('gzip')) {
       // http://doc.ruoyi.vip/ruoyi-vue/other/faq.html#使用gzip解压缩静态文件
       plugin.push(
         compression({
-          ext: '.gz',           // 压缩文件扩展名
+          ext: '.gz', // 压缩文件扩展名
           deleteOriginFile: false // 不删除原始文件
         })
-      )
+      );
     }
-    
+
     // 如果配置了 brotli 压缩
     if (compressList.includes('brotli')) {
       plugin.push(
         compression({
-          ext: '.br',              // 压缩文件扩展名
+          ext: '.br', // 压缩文件扩展名
           algorithm: 'brotliCompress', // 使用 brotli 算法
-          deleteOriginFile: false  // 不删除原始文件
+          deleteOriginFile: false // 不删除原始文件
         })
-      )
+      );
     }
   }
-  
-  return plugin
+
+  return plugin;
 }

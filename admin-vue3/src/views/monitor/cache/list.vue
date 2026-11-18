@@ -6,7 +6,7 @@
           <template #header>
             <collection style="width: 1em; height: 1em; vertical-align: middle" />
             <span style="vertical-align: middle">缓存列表</span>
-            <el-button icon="Refresh" link style="float: right; padding: 3px 0" type="primary" @click="refreshCacheNames()" />
+            <el-button :icon="Refresh" link style="float: right; padding: 3px 0" type="primary" @click="refreshCacheNames()" />
           </template>
           <el-table v-loading="loading" :data="cacheNames" height="100%" highlight-current-row style="width: 100%" @row-click="getCacheKeys">
             <el-table-column label="序号" type="index" width="60" />
@@ -14,9 +14,9 @@
             <el-table-column align="center" :formatter="nameFormatter" label="缓存名称" prop="cacheName" :show-overflow-tooltip="true" />
 
             <el-table-column align="center" label="备注" prop="remark" :show-overflow-tooltip="true" />
-            <el-table-column align="center" class-name="small-padding fixed-width" label="操作" width="60">
+            <el-table-column align="center" class-name="small-padding" label="操作" width="60">
               <template #default="scope">
-                <el-button icon="Delete" link type="primary" @click="handleClearCacheName(scope.row)" />
+                <el-button :icon="Delete" link type="primary" @click="handleClearCacheName(scope.row)" />
               </template>
             </el-table-column>
           </el-table>
@@ -28,14 +28,14 @@
           <template #header>
             <key style="width: 1em; height: 1em; vertical-align: middle" />
             <span style="vertical-align: middle">键名列表</span>
-            <el-button icon="Refresh" link style="float: right; padding: 3px 0" type="primary" @click="refreshCacheKeys()" />
+            <el-button :icon="Refresh" link style="float: right; padding: 3px 0" type="primary" @click="refreshCacheKeys()" />
           </template>
           <el-table v-loading="subLoading" :data="cacheKeys" height="100%" highlight-current-row style="width: 100%" @row-click="handleCacheValue">
             <el-table-column label="序号" type="index" width="60" />
             <el-table-column align="center" :formatter="keyFormatter" label="缓存键名" :show-overflow-tooltip="true" />
-            <el-table-column align="center" class-name="small-padding fixed-width" label="操作" width="60">
+            <el-table-column align="center" class-name="small-padding" label="操作" width="60">
               <template #default="scope">
-                <el-button icon="Delete" link type="primary" @click="handleClearCacheKey(scope.row)" />
+                <el-button :icon="Delete" link type="primary" @click="handleClearCacheKey(scope.row)" />
               </template>
             </el-table-column>
           </el-table>
@@ -47,7 +47,7 @@
           <template #header>
             <document style="width: 1em; height: 1em; vertical-align: middle" />
             <span style="vertical-align: middle">缓存内容</span>
-            <el-button icon="Refresh" link style="float: right; padding: 3px 0" type="primary" @click="handleClearCacheAll()">清理全部</el-button>
+            <el-button :icon="Refresh" link style="float: right; padding: 3px 0" type="primary" @click="handleClearCacheAll()">清理全部</el-button>
           </template>
           <el-form :model="cacheForm">
             <el-row :gutter="32">
@@ -75,91 +75,93 @@
 </template>
 
 <script setup name="CacheList">
-import { listCacheName, listCacheKey, getCacheValue, clearCacheName, clearCacheKey, clearCacheAll } from '@/api/monitor/cache'
+import { Collection, Delete, Document, Key, Refresh } from '@element-plus/icons-vue';
 
-const cacheNames = ref([])
-const cacheKeys = ref([])
-const cacheForm = ref({})
-const loading = ref(true)
-const subLoading = ref(false)
-const nowCacheName = ref('')
+import { listCacheName, listCacheKey, getCacheValue, clearCacheName, clearCacheKey, clearCacheAll } from '@/api/monitor/cache';
+
+const cacheNames = ref([]);
+const cacheKeys = ref([]);
+const cacheForm = ref({});
+const loading = ref(true);
+const subLoading = ref(false);
+const nowCacheName = ref('');
 
 // 表格高度由全局 .fill-card + height="100%" 自适应，无需监听窗口尺寸
 
 /** 查询缓存名称列表 */
-function getCacheNames() {
-  loading.value = true
+const getCacheNames = () => {
+  loading.value = true;
   listCacheName().then((response) => {
-    cacheNames.value = response.data
-    loading.value = false
-  })
-}
+    cacheNames.value = response.data;
+    loading.value = false;
+  });
+};
 
 /** 刷新缓存名称列表 */
-function refreshCacheNames() {
-  getCacheNames()
-  ElMessage.success('刷新缓存列表成功')
-}
+const refreshCacheNames = () => {
+  getCacheNames();
+  ElMessage.success('刷新缓存列表成功');
+};
 
 /** 清理指定名称缓存 */
-function handleClearCacheName(row) {
+const handleClearCacheName = (row) => {
   clearCacheName(row.cacheName).then((response) => {
-    ElMessage.success(`清理缓存名称[${row.cacheName}]成功`)
-    getCacheKeys()
-  })
-}
+    ElMessage.success(`清理缓存名称[${row.cacheName}]成功`);
+    getCacheKeys();
+  });
+};
 
 /** 查询缓存键名列表 */
-function getCacheKeys(row) {
-  const cacheName = row !== undefined ? row.cacheName : nowCacheName.value
+const getCacheKeys = (row) => {
+  const cacheName = row !== undefined ? row.cacheName : nowCacheName.value;
   if (cacheName === '') {
-    return
+    return;
   }
-  subLoading.value = true
+  subLoading.value = true;
   listCacheKey(cacheName).then((response) => {
-    cacheKeys.value = response.data
-    subLoading.value = false
-    nowCacheName.value = cacheName
-  })
-}
+    cacheKeys.value = response.data;
+    subLoading.value = false;
+    nowCacheName.value = cacheName;
+  });
+};
 
 /** 刷新缓存键名列表 */
-function refreshCacheKeys() {
-  getCacheKeys()
-  ElMessage.success('刷新键名列表成功')
-}
+const refreshCacheKeys = () => {
+  getCacheKeys();
+  ElMessage.success('刷新键名列表成功');
+};
 
 /** 清理指定键名缓存 */
-function handleClearCacheKey(cacheKey) {
+const handleClearCacheKey = (cacheKey) => {
   clearCacheKey(cacheKey).then((response) => {
-    ElMessage.success(`清理缓存键名[${cacheKey}]成功`)
-    getCacheKeys()
-  })
-}
+    ElMessage.success(`清理缓存键名[${cacheKey}]成功`);
+    getCacheKeys();
+  });
+};
 
 /** 列表前缀去除 */
-function nameFormatter(row) {
-  return row.cacheName.replace(':', '')
-}
+const nameFormatter = (row) => {
+  return row.cacheName.replace(':', '');
+};
 
 /** 键名前缀去除 */
-function keyFormatter(cacheKey) {
-  return cacheKey.replace(nowCacheName.value, '')
-}
+const keyFormatter = (cacheKey) => {
+  return cacheKey.replace(nowCacheName.value, '');
+};
 
 /** 查询缓存内容详细 */
-function handleCacheValue(cacheKey) {
+const handleCacheValue = (cacheKey) => {
   getCacheValue(nowCacheName.value, cacheKey).then((response) => {
-    cacheForm.value = response.data
-  })
-}
+    cacheForm.value = response.data;
+  });
+};
 
 /** 清理全部缓存 */
-function handleClearCacheAll() {
+const handleClearCacheAll = () => {
   clearCacheAll().then((response) => {
-    ElMessage.success('清理全部缓存成功')
-  })
-}
+    ElMessage.success('清理全部缓存成功');
+  });
+};
 
-getCacheNames()
+getCacheNames();
 </script>

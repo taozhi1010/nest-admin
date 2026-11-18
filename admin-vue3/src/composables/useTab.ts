@@ -1,7 +1,8 @@
-import useTagsViewStore from '@/store/modules/tagsView'
-import router from '@/router'
-import type { RouteLocationNormalizedLoaded } from 'vue-router'
-import type { TagView } from '@/store/modules/tagsView'
+import router from '@/router';
+import useTagsViewStore from '@/store/modules/tagsView';
+
+import type { TagView } from '@/store/modules/tagsView';
+import type { RouteLocationNormalizedLoaded } from 'vue-router';
 
 /**
  * Tab 标签页操作 Composable
@@ -16,44 +17,44 @@ export function useTab() {
     return {
       ...route,
       name: typeof route.name === 'string' ? route.name : undefined
-    }
-  }
+    };
+  };
   /**
    * 刷新当前tab页签
    * @param {Object} obj - 可选，指定要刷新的页签对象
    */
   const refreshPage = (obj?: any) => {
-    const { path, query, matched } = router.currentRoute.value
+    const { path, query, matched } = router.currentRoute.value;
     if (obj === undefined) {
       matched.forEach((m) => {
         if (m.components && m.components.default && m.components.default.name) {
           if (!['Layout', 'ParentView'].includes(m.components.default.name)) {
-            obj = { name: m.components.default.name, path: path, query: query }
+            obj = { name: m.components.default.name, path: path, query: query };
           }
         }
-      })
+      });
     }
     return useTagsViewStore()
       .delCachedView(obj)
       .then(() => {
-        const { path, query } = obj
+        const { path, query } = obj;
         router.replace({
           path: `/redirect${path}`,
           query: query
-        })
-      })
-  }
+        });
+      });
+  };
 
   /**
    * 关闭当前tab页签，打开新页签
    * @param {Object} obj - 要打开的新页签对象
    */
   const closeOpenPage = (obj?: any) => {
-    useTagsViewStore().delView(convertToTagView(router.currentRoute.value))
+    useTagsViewStore().delView(convertToTagView(router.currentRoute.value));
     if (obj !== undefined) {
-      return router.push(obj)
+      return router.push(obj);
     }
-  }
+  };
 
   /**
    * 关闭指定tab页签
@@ -64,62 +65,62 @@ export function useTab() {
       return useTagsViewStore()
         .delView(convertToTagView(router.currentRoute.value))
         .then((result: any) => {
-          const latestView = result.visitedViews.slice(-1)[0]
+          const latestView = result.visitedViews.slice(-1)[0];
           if (latestView) {
-            return router.push(latestView.fullPath)
+            return router.push(latestView.fullPath);
           }
-          return router.push('/')
-        })
+          return router.push('/');
+        });
     }
-    return useTagsViewStore().delView(obj)
-  }
+    return useTagsViewStore().delView(obj);
+  };
 
   /**
    * 关闭所有tab页签
    */
   const closeAllPage = () => {
-    return useTagsViewStore().delAllViews(undefined as any)
-  }
+    return useTagsViewStore().delAllViews(undefined as any);
+  };
 
   /**
    * 关闭左侧tab页签
    * @param {Object} obj - 可选，参考页签对象
    */
   const closeLeftPage = (obj?: any) => {
-    return useTagsViewStore().delLeftTags(obj ? obj : convertToTagView(router.currentRoute.value))
-  }
+    return useTagsViewStore().delLeftTags(obj ? obj : convertToTagView(router.currentRoute.value));
+  };
 
   /**
    * 关闭右侧tab页签
    * @param {Object} obj - 可选，参考页签对象
    */
   const closeRightPage = (obj?: any) => {
-    return useTagsViewStore().delRightTags(obj ? obj : convertToTagView(router.currentRoute.value))
-  }
+    return useTagsViewStore().delRightTags(obj ? obj : convertToTagView(router.currentRoute.value));
+  };
 
   /**
    * 关闭其他tab页签
    * @param {Object} obj - 可选，保留的页签对象
    */
   const closeOtherPage = (obj?: any) => {
-    return useTagsViewStore().delOthersViews(obj ? obj : convertToTagView(router.currentRoute.value))
-  }
+    return useTagsViewStore().delOthersViews(obj ? obj : convertToTagView(router.currentRoute.value));
+  };
 
   /**
    * 打开tab页签
    * @param {String} url - 要打开的路由地址
    */
   const openPage = (url) => {
-    return router.push(url)
-  }
+    return router.push(url);
+  };
 
   /**
    * 修改tab页签
    * @param {Object} obj - 要更新的页签对象
    */
   const updatePage = (obj) => {
-    return useTagsViewStore().updateVisitedView(obj)
-  }
+    return useTagsViewStore().updateVisitedView(obj);
+  };
 
   return {
     refreshPage,
@@ -131,5 +132,5 @@ export function useTab() {
     closeOtherPage,
     openPage,
     updatePage
-  }
+  };
 }

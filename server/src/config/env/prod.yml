@@ -20,6 +20,8 @@ app:
     domain: ''                  # 文件访问域名
     serveRoot: '/profile'       # 文件虚拟路径
     maxSize: 10                 # 文件大小限制 (MB)
+    # 上传扩展名白名单（逗号分隔；未配置使用内置默认名单，.svg/.html 等可内联类型已刻意排除）
+    # allowedExts: '.jpg,.png,.pdf,.docx,.zip'
 
 # MinIO 对象存储配置（保留兼容，生产使用 rustfs）
 minio:
@@ -82,6 +84,17 @@ jwt:
   secretkey: ''                 # 由 JWT_SECRETKEY 覆盖，严禁在此填写真实密钥
   expiresin: '24h'              # Token 过期时间
   refreshExpiresIn: '7d'        # 刷新 Token 过期时间
+
+# 邮件配置（注册邮箱验证码）
+# enabled 为 true 且 host/user/pass 齐全时，注册页启用邮箱验证码；否则保持图片验证码
+mail:
+  enabled: false                # 是否开启邮箱验证码注册
+  host: ''                      # SMTP 服务器地址，如 smtp.qq.com
+  port: 465                     # SMTP 端口，SSL 一般为 465
+  secure: true                  # 465 端口用 SSL 设 true；587 端口用 STARTTLS 设 false
+  user: ''                      # 发件邮箱账号
+  pass: ''                      # SMTP 授权码（QQ/163 等是授权码而非登录密码）
+  from: ''                      # 发件人展示，如 '"nest-admin" <xxx@qq.com>'，留空则用 user
 
 # 日志配置
 log:

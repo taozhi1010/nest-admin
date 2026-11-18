@@ -192,26 +192,40 @@
 </template>
 
 <script setup lang="ts">
-import { ElLoading } from 'element-plus'
-import { getServer } from '@/api/monitor/server'
+import { Cpu, MessageBox, Monitor, Tickets } from '@element-plus/icons-vue';
 
-const server = ref<any>({})
-let loadingInstance = null
+import { getServer } from '@/api/monitor/server';
 
-function getList() {
+const server = ref<any>({});
+let loadingInstance = null;
+
+const getList = () => {
   loadingInstance = ElLoading.service({
     lock: true,
     text: '正在加载服务监控数据，请稍候！',
     background: 'rgba(0, 0, 0, 0.7)'
-  })
+  });
   getServer().then((response) => {
-    server.value = response.data
+    server.value = response.data;
     if (loadingInstance) {
-      loadingInstance.close()
-      loadingInstance = null
+      loadingInstance.close();
+      loadingInstance = null;
     }
-  })
+  });
+};
+
+getList();
+</script>
+
+<style lang="scss" scoped>
+/* 原 ruoyi.scss 全局规则，仅本页使用，收编于此 */
+.card-box {
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-bottom: 10px;
 }
 
-getList()
-</script>
+.text-danger {
+  color: #ed5565;
+}
+</style>

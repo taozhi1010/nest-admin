@@ -18,24 +18,24 @@
 
 <script setup lang="ts">
 // ==================== 导入区域 ====================
-import { updateUserPwd } from '@/api/system/user'
+import { updateUserPwd } from '@/api/system/user';
 
 // ==================== Composables ====================
-const { closePage } = useTab()
+const { closePage } = useTab();
 
 // ==================== 实例和字段 ====================
 
 // ==================== 表单引用 ====================
-const pwdRef = ref(null)
+const pwdRef = ref(null);
 
 // ==================== 自定义验证器 ====================
 const equalToPassword = (rule, value, callback) => {
   if (resetPwd.form.newPassword !== value) {
-    callback(new Error('两次输入的密码不一致'))
+    callback(new Error('两次输入的密码不一致'));
   } else {
-    callback()
+    callback();
   }
-}
+};
 
 // ==================== 重置密码管理（集中式管理） ====================
 const resetPwd = reactive({
@@ -64,20 +64,20 @@ const resetPwd = reactive({
   submit: async () => {
     try {
       if (pwdRef.value) {
-        await pwdRef.value.validate()
+        await pwdRef.value.validate();
       }
-      await updateUserPwd(resetPwd.form.oldPassword, resetPwd.form.newPassword)
-      ElMessage.success('修改成功')
+      await updateUserPwd(resetPwd.form.oldPassword, resetPwd.form.newPassword);
+      ElMessage.success('修改成功');
     } catch (e) {
       if (e !== false) {
-        console.error('修改密码失败:', e)
+        console.error('修改密码失败:', e);
       }
     }
   },
 
   // 关闭按钮
   close: () => {
-    closePage()
+    closePage();
   }
-})
+});
 </script>

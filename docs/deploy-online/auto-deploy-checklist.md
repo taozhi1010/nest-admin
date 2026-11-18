@@ -57,6 +57,26 @@ curl -I http://127.0.0.1:8888/api/captchaImage
 curl -I http://127.0.0.1:8888/profile/nest-admin/avatar/avatar_1777231586500_nest_admin.png
 ```
 
+## 查看邮件配置是否注入
+
+```bash
+sudo docker exec nest-admin-server printenv | grep -E '^MAIL_(ENABLED|HOST|PORT|SECURE|USER|FROM)='
+```
+
+这里有意不打印 `MAIL_PASS`，避免 SMTP 授权码进入终端记录。需要确认密码是否为空时可只看长度：
+
+```bash
+sudo docker exec nest-admin-server sh -c 'echo ${#MAIL_PASS}'
+```
+
+## 验证邮箱验证码注册是否开启
+
+```bash
+curl -s http://127.0.0.1:8888/api/register/config
+```
+
+返回 `"emailRegisterEnabled":true` 表示 `MAIL_ENABLED=true` 且 `MAIL_HOST`、`MAIL_USER`、`MAIL_PASS` 均已配置；返回 `false` 时注册页继续使用图片验证码。
+
 ## 常见权限问题
 
 如果 `docker` 报权限不足：

@@ -1,19 +1,14 @@
 import { Repository, In, Not, DataSource } from 'typeorm';
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { JwtService } from '@nestjs/jwt';
 import { RedisService } from 'src/module/common/redis/redis.service';
 import * as bcrypt from 'bcryptjs';
-import { Response } from 'express';
-import { GetNowDate, GenerateUUID, Uniq, createExcelTemplate } from 'src/common/utils/index';
-import { ExportTable } from 'src/common/utils/export';
-import * as ExcelJS from 'exceljs';
+import { Uniq } from 'src/common/utils/index';
 
 import { CacheEnum, DelFlagEnum, StatusEnum, DataScopeEnum } from 'src/common/enum/index';
-import { LOGIN_TOKEN_EXPIRESIN, REGISTER_IP_LIMIT, REGISTER_RATE_EXPIRESIN, SYS_USER_TYPE } from 'src/common/constant/index';
+import { SYS_USER_TYPE } from 'src/common/constant/index';
 import { ResultData } from 'src/common/utils/result';
-import { CreateUserDto, UpdateUserDto, ListUserDto, ChangeStatusDto, ResetPwdDto, AllocatedListDto, UpdateProfileDto, UpdatePwdDto, ImportUserDto } from './dto/index';
-import { RegisterDto, LoginDto } from '../../main/dto/index';
+import { CreateUserDto, UpdateUserDto, ListUserDto, ChangeStatusDto, ResetPwdDto, AllocatedListDto, UpdateProfileDto, UpdatePwdDto } from './dto/index';
 import { AuthUserCancelDto, AuthUserCancelAllDto, AuthUserSelectAllDto } from '../role/dto/index';
 
 import { UserEntity } from './entities/sys-user.entity';
@@ -24,15 +19,10 @@ import { SysDeptEntity } from '../dept/entities/dept.entity';
 import { RoleService } from '../role/role.service';
 import { DeptService } from '../dept/dept.service';
 
-import { ConfigService } from '../config/config.service';
 import { SysRoleEntity } from '../role/entities/role.entity';
 import { SysMenuEntity } from '../menu/entities/menu.entity';
 import { UserType } from './dto/user';
-import { UserDto } from './user.decorator';
-import { ClientInfoDto } from 'src/common/decorators/common.decorator';
 import { Cacheable, CacheEvict } from 'src/common/decorators/redis.decorator';
-import { Captcha } from 'src/common/decorators/captcha.decorator';
-import { recordLoginFailure, clearLoginFailure } from 'src/common/utils/login-captcha';
 
 @Injectable()
 export class UserService {
@@ -49,9 +39,7 @@ export class UserService {
     private readonly sysUserWithRoleEntityRep: Repository<SysUserWithRoleEntity>,
     private readonly roleService: RoleService,
     private readonly deptService: DeptService,
-    private readonly jwtService: JwtService,
     private readonly redisService: RedisService,
-    private readonly configService: ConfigService,
     private readonly dataSource: DataSource,
   ) {}
   /**
@@ -73,9 +61,8 @@ export class UserService {
       throw new BadRequestException(`新增用户'${createUserDto.userName}'失败，登录账号已存在`);
     }
 
-    const salt = bcrypt.genSaltSync(10);
     if (createUserDto.password) {
-      createUserDto.password = await bcrypt.hashSync(createUserDto.password, salt);
+      createUserDto.password = await bcrypt.hash(createUserDto.password, 10);
     }
 
     let res;
@@ -148,11 +135,11 @@ export class UserService {
     }
 
     if (query.userName) {
-      entity.andWhere(`user.userName LIKE "%${query.userName}%"`);
+      entity.andWhere('user.userName LIKE :userName', { userName: `%${query.userName}%` });
     }
 
     if (query.phonenumber) {
-      entity.andWhere(`user.phonenumber LIKE "%${query.phonenumber}%"`);
+      entity.andWhere('user.phonenumber LIKE :phonenumber', { phonenumber: `%${query.phonenumber}%` });
     }
 
     if (query.status) {
@@ -171,8 +158,10 @@ export class UserService {
 
     const [list, total] = await entity.getManyAndCount();
 
+    const safeList = list.map(({ password: _password, ...user }) => user);
+
     return ResultData.ok({
-      list,
+      list: safeList,
       total,
     });
   }
@@ -207,6 +196,7 @@ export class UserService {
         userId: userId,
       },
     });
+    if (!data) throw new BadRequestException('用户不存在');
 
     const dept = await this.sysDeptEntityRep.findOne({
       where: {
@@ -237,8 +227,10 @@ export class UserService {
 
     data['roles'] = allRoles.filter((item) => roleIds.includes(item.roleId));
 
+    // 剥离密码哈希，避免泄漏到响应与缓存值
+    const { password: _password, ...safeData } = data;
     return ResultData.ok({
-      data,
+      data: safeData,
       postIds,
       posts: allPosts,
       roles: allRoles,
@@ -325,122 +317,6 @@ export class UserService {
   }
 
   /**
-   * 登陆
-   */
-  @Captcha('user')
-  async login(user: LoginDto, clientInfo: ClientInfoDto) {
-    const data = await this.userRepo.findOne({
-      where: {
-        userName: user.username,
-      },
-      select: ['userId', 'password'],
-    });
-
-    if (!(data && bcrypt.compareSync(user.password, data.password))) {
-      // 累计密码错误次数，达到阈值后下次登录需要验证码
-      await recordLoginFailure(this.redisService, user.username);
-      return ResultData.fail(500, `账号或密码错误`);
-    }
-
-    await clearLoginFailure(this.redisService, user.username);
-    this.clearCacheByUserId(data.userId);
-
-    const userData = await this.getUserinfo(data.userId);
-
-    if (userData.delFlag === DelFlagEnum.DELETE) {
-      return ResultData.fail(500, `您已被禁用，如需正常使用请联系管理员`);
-    }
-    if (userData.status === StatusEnum.STOP) {
-      return ResultData.fail(500, `您已被停用，如需正常使用请联系管理员`);
-    }
-
-    /**
-     * 更新用户登录信息
-     */
-    const loginDate = new Date();
-    await this.userRepo.update(
-      {
-        userId: data.userId,
-      },
-      {
-        loginDate: loginDate,
-        loginIp: clientInfo.ipaddr,
-      },
-    );
-
-    const uuid = GenerateUUID();
-    const token = this.createToken({ uuid: uuid, userId: userData.userId });
-    const permissions = await this.getUserPermissions(userData.userId);
-    const deptData = await this.sysDeptEntityRep.findOne({
-      where: {
-        deptId: userData.deptId,
-      },
-      select: ['deptName'],
-    });
-
-    /**
-     * 设置公司名称
-     */
-    userData['deptName'] = deptData.deptName || '';
-    const roles = userData.roles.map((item) => item.roleKey);
-
-    const userInfo = {
-      browser: clientInfo.browser,
-      ipaddr: clientInfo.ipaddr,
-      loginLocation: clientInfo.loginLocation,
-      loginTime: loginDate,
-      os: clientInfo.os,
-      permissions: permissions,
-      roles: roles,
-      token: uuid,
-      user: userData,
-      userId: userData.userId,
-      username: userData.userName,
-      deptId: userData.deptId,
-    };
-
-    await this.updateRedisToken(uuid, userInfo);
-
-    return ResultData.ok(
-      {
-        token,
-      },
-      '登录成功',
-    );
-  }
-
-  /**
-   * 更新redis中用户权限和角色信息
-   */
-  async updateRedisUserRolesAndPermissions(uuid: string, userId: number) {
-    const userData = await this.getUserinfo(userId);
-
-    const permissions = await this.getUserPermissions(userId);
-    const roles = userData.roles.map((item) => item.roleKey);
-
-    await this.updateRedisToken(uuid, {
-      permissions: permissions,
-      roles: roles,
-    });
-  }
-
-  /**
-   * 更新redis中的元数据
-   * @param token
-   * @param metaData
-   */
-  async updateRedisToken(token: string, metaData: Partial<UserType>) {
-    const oldMetaData = await this.redisService.get(`${CacheEnum.LOGIN_TOKEN_KEY}${token}`);
-
-    let newMetaData = metaData;
-    if (oldMetaData) {
-      newMetaData = Object.assign(oldMetaData, metaData);
-    }
-
-    await this.redisService.set(`${CacheEnum.LOGIN_TOKEN_KEY}${token}`, newMetaData, LOGIN_TOKEN_EXPIRESIN);
-  }
-
-  /**
    * 获取角色Id列表
    * @param userId
    * @returns
@@ -511,6 +387,7 @@ export class UserService {
     });
 
     const data = await entity.getOne();
+    if (!data) throw new BadRequestException('用户不存在');
 
     const result = {
       ...data,
@@ -520,79 +397,6 @@ export class UserService {
     };
 
     return result;
-  }
-
-  /**
-   * 注册
-   */
-  @Captcha('user', 'always')
-  async register(user: RegisterDto, ipaddr: string) {
-    const loginDate = GetNowDate();
-    // IP 注册频率限制：同一 IP 每小时最多 REGISTER_IP_LIMIT 次（含验证码失败的尝试）
-    const rateCount = await this.redisService.incr(CacheEnum.REGISTER_RATE_KEY + ipaddr, REGISTER_RATE_EXPIRESIN);
-    if (rateCount > REGISTER_IP_LIMIT) {
-      return ResultData.fail(429, '注册过于频繁，请稍后再试');
-    }
-    const checkUserNameUnique = await this.userRepo.findOne({
-      where: {
-        userName: user.username,
-      },
-      select: ['userName'],
-    });
-    if (checkUserNameUnique) {
-      return ResultData.fail(500, `保存用户'${user.username}'失败，注册账号已存在`);
-    }
-    user['userName'] = user.username;
-    user['nickName'] = user.username;
-    user['password'] = bcrypt.hashSync(user.password, bcrypt.genSaltSync(10));
-    try {
-      await this.userRepo.save({ ...user, userType: SYS_USER_TYPE.CUSTOM, loginDate });
-    } catch (error) {
-      // 并发注册撞车时前置查重拦不住，靠 user_name 唯一索引兜底（ER_DUP_ENTRY）
-      if (error?.code === 'ER_DUP_ENTRY') {
-        return ResultData.fail(500, `保存用户'${user.username}'失败，注册账号已存在`);
-      }
-      throw error;
-    }
-    return ResultData.ok();
-  }
-
-  /**
-   * 检查账号是否已被注册（注册页实时校验用，注册提交时后端仍会兜底校验）
-   */
-  async checkUsername(username: string) {
-    const exist = await this.userRepo.findOne({
-      where: { userName: username },
-      select: ['userId'],
-    });
-    return ResultData.ok({ exists: !!exist });
-  }
-
-  /**
-   * 从数据声明生成令牌
-   *
-   * @param payload 数据声明
-   * @return 令牌
-   */
-  createToken(payload: { uuid: string; userId: number }): string {
-    const accessToken = this.jwtService.sign(payload);
-    return accessToken;
-  }
-
-  /**
-   * 从令牌中获取数据声明
-   *
-   * @param token 令牌
-   * @return 数据声明
-   */
-  parseToken(token: string) {
-    try {
-      if (!token) return null;
-      const payload = this.jwtService.verify(token.replace('Bearer ', ''));
-      return payload;
-    } catch (error) {
-      return null;
-    }
   }
 
   /**
@@ -622,7 +426,7 @@ export class UserService {
       return ResultData.fail(500, '系统用户不能重置密码');
     }
     if (body.password) {
-      body.password = await bcrypt.hashSync(body.password, bcrypt.genSaltSync(10));
+      body.password = await bcrypt.hash(body.password, 10);
     }
     await this.userRepo.update(
       {
@@ -749,6 +553,7 @@ export class UserService {
       },
       select: ['userType'],
     });
+    if (!userData) throw new BadRequestException('用户不存在');
     if (userData.userType === SYS_USER_TYPE.SYS) {
       return ResultData.fail(500, '系统角色不可停用');
     }
@@ -799,18 +604,19 @@ export class UserService {
     entity.andWhere('user.status = :status', { status: '0' });
     entity.andWhere('user.userId IN (:...userIds)', { userIds: userIds });
     if (query.userName) {
-      entity.andWhere(`user.userName LIKE "%${query.userName}%"`);
+      entity.andWhere('user.userName LIKE :userName', { userName: `%${query.userName}%` });
     }
 
     if (query.phonenumber) {
-      entity.andWhere(`user.phonenumber LIKE "%${query.phonenumber}%"`);
+      entity.andWhere('user.phonenumber LIKE :phonenumber', { phonenumber: `%${query.phonenumber}%` });
     }
     entity.skip(query.pageSize * (query.pageNum - 1)).take(query.pageSize);
     //联查部门详情
     entity.leftJoinAndMapOne('user.dept', SysDeptEntity, 'dept', 'dept.deptId = user.deptId');
     const [list, total] = await entity.getManyAndCount();
+    const safeList = list.map(({ password: _password, ...user }) => user);
     return ResultData.ok({
-      list,
+      list: safeList,
       total,
     });
   }
@@ -836,18 +642,19 @@ export class UserService {
       userId: Not(In(userIds)),
     });
     if (query.userName) {
-      entity.andWhere(`user.userName LIKE "%${query.userName}%"`);
+      entity.andWhere('user.userName LIKE :userName', { userName: `%${query.userName}%` });
     }
 
     if (query.phonenumber) {
-      entity.andWhere(`user.phonenumber LIKE "%${query.phonenumber}%"`);
+      entity.andWhere('user.phonenumber LIKE :phonenumber', { phonenumber: `%${query.phonenumber}%` });
     }
     entity.skip(query.pageSize * (query.pageNum - 1)).take(query.pageSize);
     //联查部门详情
     entity.leftJoinAndMapOne('user.dept', SysDeptEntity, 'dept', 'dept.deptId = user.deptId');
     const [list, total] = await entity.getManyAndCount();
+    const safeList = list.map(({ password: _password, ...user }) => user);
     return ResultData.ok({
-      list,
+      list: safeList,
       total,
     });
   }
@@ -1005,307 +812,14 @@ export class UserService {
     if (updatePwdDto.oldPassword === updatePwdDto.newPassword) {
       return ResultData.fail(500, '新密码不能与旧密码相同');
     }
-    if (bcrypt.compareSync(user.user.password, updatePwdDto.oldPassword)) {
+    // 旧密码校验：compare(明文, 哈希)——此前参数顺序颠倒导致校验形同虚设
+    if (!(await bcrypt.compare(updatePwdDto.oldPassword, user.user.password))) {
       return ResultData.fail(500, '修改密码失败，旧密码错误');
     }
 
-    const password = await bcrypt.hashSync(updatePwdDto.newPassword, bcrypt.genSaltSync(10));
+    const password = await bcrypt.hash(updatePwdDto.newPassword, 10);
     await this.userRepo.update({ userId: user.user.userId }, { password: password });
     return ResultData.ok();
   }
 
-  /**
-   * 导出用户信息数据为 xlsx
-   * @param res
-   */
-  async export(res: Response, body: ListUserDto, user: UserType['user']) {
-    delete body.pageNum;
-    delete body.pageSize;
-    const list = await this.findAll(body, user);
-    const options = {
-      sheetName: '用户数据',
-      data: list.data.list,
-      header: [
-        { title: '用户序号', dataIndex: 'userId' },
-        { title: '用户账号', dataIndex: 'userName' },
-        { title: '用户昵称', dataIndex: 'nickName' },
-        { title: '用户邮箱', dataIndex: 'email' },
-        { title: '手机号码', dataIndex: 'phonenumber' },
-        { title: '用户性别', dataIndex: 'sex' },
-        { title: '账号状态', dataIndex: 'status' },
-        { title: '最后登录 IP', dataIndex: 'loginIp' },
-        { title: '最后登录时间', dataIndex: 'loginDate', width: 20 },
-        { title: '部门', dataIndex: 'dept.deptName' },
-        { title: '部门负责人', dataIndex: 'dept.leader' },
-      ],
-    };
-    ExportTable(options, res);
-  }
-
-  /**
-   * 从 Excel 导入用户数据
-   * @param file - Excel 文件
-   * @param updateSupport - 是否更新已存在的用户数据（true:更新，false:跳过）
-   * @param user - 当前操作用户
-   * @returns 导入结果
-   */
-  async importData(file: Express.Multer.File, updateSupport: boolean, user: UserDto) {
-    try {
-      // 读取 Excel 文件
-      const workbook = new ExcelJS.Workbook();
-      // @ts-expect-error - 处理 Multer Buffer 类型兼容性问题
-      await workbook.xlsx.load(file.buffer);
-
-      const worksheet = workbook.getWorksheet(1); // 获取第一个工作表
-
-      if (!worksheet || worksheet.rowCount < 2) {
-        return ResultData.fail(500, 'Excel 文件为空或格式不正确');
-      }
-
-      // 定义表头映射（第一行为表头）
-      const headerMapping: Record<number, string> = {};
-      const expectedHeaders: Record<string, string> = {
-        用户账号: 'userName',
-        用户昵称: 'nickName',
-        '部门 ID': 'deptId',
-        部门名称: 'deptName',
-        用户邮箱: 'email',
-        手机号码: 'phonenumber',
-        性别: 'sex',
-        帐号状态: 'status',
-        备注: 'remark',
-      };
-
-      // 解析表头
-      worksheet.getRow(1).eachCell((cell, colNumber) => {
-        const header = cell.value?.toString()?.trim();
-        if (header && expectedHeaders[header]) {
-          headerMapping[colNumber] = expectedHeaders[header];
-        }
-      });
-
-      // 验证必要字段是否存在
-      if (!headerMapping || Object.keys(headerMapping).length === 0) {
-        return ResultData.fail(500, 'Excel 表头格式不正确，请检查是否包含必要的列');
-      }
-
-      const successData: any[] = [];
-      const errorData: any[] = [];
-      const salt = bcrypt.genSaltSync(10);
-      const defaultPassword = await bcrypt.hashSync('123456', salt); // 默认密码
-
-      // 从第二行开始解析数据
-      for (let rowNumber = 2; rowNumber <= worksheet.rowCount; rowNumber++) {
-        const row = worksheet.getRow(rowNumber);
-        const userData: any = {};
-        const rowErrors: string[] = []; // 收集当前行的所有错误
-
-        // 根据表头映射解析每列数据
-        row.eachCell((cell, colNumber) => {
-          const key = headerMapping[colNumber];
-          if (key) {
-            let value = cell.value?.toString()?.trim();
-
-            // 处理空值
-            if (!value || value === '') {
-              if (key === 'userName' || key === 'nickName') {
-                // 必填字段
-                value = null;
-                rowErrors.push(`${key === 'userName' ? '用户账号' : '用户昵称'}不能为空`);
-              } else {
-                value = undefined;
-              }
-            }
-
-            // 特殊字段处理
-            if (key === 'deptId' && value) {
-              const deptId = parseInt(value);
-              if (isNaN(deptId)) {
-                rowErrors.push(`部门 ID 格式不正确（应为数字）：${value}`);
-              } else {
-                userData.deptId = deptId;
-              }
-            } else if (key === 'sex' && value) {
-              // 性别转换：男->0, 女->1, 未知->2
-              if (['男', '女', '未知'].includes(value)) {
-                userData.sex = value === '男' ? '0' : value === '女' ? '1' : '2';
-              } else {
-                rowErrors.push(`性别格式不正确（应为：男/女/未知）：${value}`);
-              }
-            } else if (key === 'status' && value) {
-              // 状态转换：正常->0, 停用->1
-              if (['正常', '停用'].includes(value)) {
-                userData.status = value === '正常' ? '0' : value === '停用' ? '1' : '0';
-              } else {
-                rowErrors.push(`帐号状态格式不正确（应为：正常/停用）：${value}`);
-              }
-            } else if (key === 'email' && value) {
-              // 邮箱格式验证
-              const emailRegex = /^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/;
-              if (!emailRegex.test(value)) {
-                rowErrors.push(`邮箱格式不正确：${value}`);
-              } else {
-                userData[key] = value;
-              }
-            } else if (key === 'phonenumber' && value) {
-              // 手机号格式验证（简单验证 11 位数字）
-              const phoneRegex = /^1[3-9]\d{9}$/;
-              if (!phoneRegex.test(value)) {
-                rowErrors.push(`手机号码格式不正确（应为 11 位数字）：${value}`);
-              } else {
-                userData[key] = value;
-              }
-            } else if (key === 'userName' || key === 'nickName') {
-              userData[key] = value;
-            } else {
-              userData[key] = value;
-            }
-          }
-        });
-
-        // 跳过空行（整行都为空）
-        if (!userData.userName && !userData.nickName && rowErrors.length === 0) {
-          continue;
-        }
-
-        // 如果有字段错误，直接记录错误
-        if (rowErrors.length > 0) {
-          errorData.push({
-            row: rowNumber,
-            data: userData,
-            error: rowErrors.join('；'),
-          });
-          continue;
-        }
-
-        // 必填字段验证（再次检查）
-        if (!userData.userName || !userData.nickName) {
-          const missingFields = [];
-          if (!userData.userName) missingFields.push('用户账号');
-          if (!userData.nickName) missingFields.push('用户昵称');
-          errorData.push({
-            row: rowNumber,
-            data: userData,
-            error: `缺少必填字段：${missingFields.join('、')}`,
-          });
-          continue;
-        }
-
-        try {
-          // 检查用户账号是否已存在
-          const existUser = await this.userRepo.findOne({
-            where: { userName: userData.userName },
-          });
-
-          if (existUser) {
-            if (updateSupport) {
-              // 更新已有用户
-              await this.userRepo.update(
-                { userId: existUser.userId },
-                {
-                  ...userData,
-                  userType: SYS_USER_TYPE.CUSTOM,
-                  updateBy: user.username,
-                  updateTime: new Date(),
-                },
-              );
-              successData.push({
-                row: rowNumber,
-                data: userData,
-                message: '更新成功',
-              });
-            } else {
-              // 不更新，跳过
-              errorData.push({
-                row: rowNumber,
-                data: userData,
-                error: `用户账号 ${userData.userName} 已存在（如要更新请设置 updateSupport=1）`,
-              });
-            }
-          } else {
-            // 创建新用户
-            const newUser = await this.userRepo.save({
-              ...userData,
-              password: defaultPassword, // 使用默认密码
-              userType: SYS_USER_TYPE.CUSTOM,
-              createBy: user.username,
-              createTime: new Date(),
-              delFlag: DelFlagEnum.NORMAL,
-              status: userData.status || '0', // 默认正常
-              sex: userData.sex || '0', // 默认男
-            });
-
-            successData.push({
-              row: rowNumber,
-              data: userData,
-              message: '导入成功',
-            });
-          }
-        } catch (error) {
-          errorData.push({
-            row: rowNumber,
-            data: userData,
-            error: `数据库操作失败：${error.message}`,
-          });
-        }
-      }
-
-      // 返回导入结果
-      const result = {
-        success: successData.length,
-        error: errorData.length,
-        total: successData.length + errorData.length,
-        // 成功行号列表
-        successRowNums: successData.map((item) => item.row),
-        // 失败行号列表
-        errorRowNums: errorData.map((item) => item.row),
-        details: {
-          successData,
-          errorData,
-        },
-      };
-
-      // 无论是否有错误，都返回 200 状态码
-      if (errorData.length > 0) {
-        return ResultData.ok(result, `导入完成，成功 ${successData.length} 条，失败 ${errorData.length} 条`);
-      }
-
-      return ResultData.ok(result, `导入成功，共 ${successData.length} 条记录`);
-    } catch (error) {
-      return ResultData.fail(500, `导入失败：${error.message}`);
-    }
-  }
-
-  /**
-   * 下载用户导入模板
-   * @param res
-   */
-  async downloadTemplate(res: Response): Promise<void> {
-    const config = {
-      sheetName: '用户数据',
-      fileName: '用户导入模板.xlsx',
-      columns: [
-        { header: '用户账号', key: 'userName', width: 20, required: true },
-        { header: '用户昵称', key: 'nickName', width: 20, required: true },
-        { header: '部门 ID', key: 'deptId', width: 15 },
-        { header: '用户邮箱', key: 'email', width: 25 },
-        { header: '手机号码', key: 'phonenumber', width: 15 },
-        { header: '性别', key: 'sex', width: 10, validation: ['男', '女', '未知'] },
-        { header: '帐号状态', key: 'status', width: 15, validation: ['正常', '停用'] },
-        { header: '备注', key: 'remark', width: 30 },
-      ],
-      exampleData: {
-        userName: 'zhangsan',
-        nickName: '张三',
-        deptId: 100,
-        email: 'zhangsan@example.com',
-        phonenumber: '13800138000',
-        sex: '男',
-        status: '正常',
-        remark: '示例数据，请删除后填写实际数据',
-      },
-    };
-
-    await createExcelTemplate(res, config);
-  }
 }

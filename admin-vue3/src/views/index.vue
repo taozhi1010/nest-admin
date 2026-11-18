@@ -5,24 +5,16 @@
       <el-col :lg="12" :sm="24">
         <div class="project-info">
           <h2 class="project-title">nest-admin后台管理框架</h2>
-          <p class="project-desc">
-            nest-admin管理系统基于Ruoyi框架使用nestjs实现，她可以用于所有的Web应用程序，如网站管理后台，网站会员中心，CMS，CRM，OA等等，当然，您也可以对她进行深度定制，以做出更强系统。所有前端后台代码封装过后十分精简易上手，出错概率低。系统会陆续更新一些实用功能。
-          </p>
+          <p class="project-desc">nest-admin管理系统基于Ruoyi框架使用nestjs实现，她可以用于所有的Web应用程序，如网站管理后台，网站会员中心，CMS，CRM，OA等等，当然，您也可以对她进行深度定制，以做出更强系统。所有前端后台代码封装过后十分精简易上手，出错概率低。系统会陆续更新一些实用功能。</p>
           <div class="version-info">
             <span class="version-label">当前版本:</span>
             <span class="version-number">v{{ version }}</span>
             <el-tag type="danger" class="free-tag">免费开源</el-tag>
           </div>
           <div class="action-buttons">
-            <el-button icon="MostlyCloudy" type="primary" @click="goTarget('https://gitee.com/tao-zhi/nest-admin')">
-              访问码云
-            </el-button>
-            <el-button icon="HomeFilled" @click="goTarget('https://nest-admin.dooring.vip/prod-api/swagger-ui')">
-              访问文档
-            </el-button>
-            <el-button v-if="isDev" icon="Reading" @click="goTarget('/manual/')">
-              项目文档
-            </el-button>
+            <el-button :icon="MostlyCloudy" type="primary" @click="goTarget('https://gitee.com/tao-zhi/nest-admin')">访问码云</el-button>
+            <el-button :icon="HomeFilled" @click="goTarget('https://nest-admin.dooring.vip/prod-api/swagger-ui')">访问文档</el-button>
+            <el-button v-if="isDev" :icon="Reading" @click="goTarget('/manual/')">项目文档</el-button>
           </div>
         </div>
       </el-col>
@@ -89,7 +81,7 @@
                   <p class="doc-desc">{{ doc.description }}</p>
                 </div>
                 <div class="doc-action">
-                  <el-button :type="doc.type" size="small" icon="TopRight">查看</el-button>
+                  <el-button :type="doc.type" size="small" :icon="TopRight">查看</el-button>
                 </div>
               </div>
             </el-card>
@@ -150,10 +142,10 @@
 </template>
 
 <script setup name="Index">
-import { Monitor, ChatDotRound, Guide, Goods, Document, Promotion, Link } from '@element-plus/icons-vue'
+import { ChatDotRound, Goods, Guide, HomeFilled, Monitor, MostlyCloudy, Reading, TopRight } from '@element-plus/icons-vue';
 
-const version = ref('1.0.0')
-const isDev = import.meta.env.DEV
+const version = ref('1.0.0');
+const isDev = import.meta.env.DEV;
 
 // 后端技术栈
 const backendTechs = [
@@ -165,7 +157,7 @@ const backendTechs = [
   { name: 'JWT', type: 'success' },
   { name: 'Swagger', type: 'primary' },
   { name: 'TypeScript', type: 'warning' }
-]
+];
 
 // 前端技术栈
 const frontendTechs = [
@@ -177,7 +169,7 @@ const frontendTechs = [
   { name: 'Axios', type: 'success' },
   { name: 'Sass', type: 'primary' },
   { name: 'ECharts', type: 'warning' }
-]
+];
 
 // 接口文档列表
 const apiDocs = [
@@ -202,15 +194,15 @@ const apiDocs = [
     url: `${window.location.origin}/openapi.json`,
     type: 'warning'
   }
-]
+];
 
-function goTarget(url) {
-  window.open(url, '_blank')
-}
+const goTarget = (url) => {
+  window.open(url, '_blank');
+};
 
-function openApiDoc(url) {
-  window.open(url, '_blank')
-}
+const openApiDoc = (url) => {
+  window.open(url, '_blank');
+};
 </script>
 
 <style scoped lang="scss">

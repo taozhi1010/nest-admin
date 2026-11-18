@@ -30,17 +30,17 @@
 </template>
 
 <script setup lang="ts">
-import { WarningFilled, ArrowLeft, House } from '@element-plus/icons-vue'
+import { WarningFilled, ArrowLeft, House } from '@element-plus/icons-vue';
 
-const router = useRouter()
+const router = useRouter();
 
-function back() {
-  router.back()
-}
+const back = () => {
+  router.back();
+};
 
-function goHome() {
-  router.push('/')
-}
+const goHome = () => {
+  router.push('/');
+};
 </script>
 
 <style lang="scss" scoped>

@@ -44,6 +44,26 @@ export enum CacheEnum {
   REGISTER_RATE_KEY = 'register_rate:',
 
   /**
+   * 注册邮箱验证码 redis key
+   */
+  EMAIL_CODE_KEY = 'email_code:',
+
+  /**
+   * 邮箱验证码发送频率（按邮箱）redis key
+   */
+  EMAIL_SEND_RATE_KEY = 'email_send_rate:',
+
+  /**
+   * 邮箱验证码发送频率（按邮箱，每小时上限）redis key
+   */
+  EMAIL_SEND_HOURLY_KEY = 'email_send_hourly:',
+
+  /**
+   * 邮箱验证码发送频率（按 IP）redis key
+   */
+  EMAIL_SEND_IP_KEY = 'email_send_ip_rate:',
+
+  /**
    * 登录账户密码错误次数 redis key
    */
   GZ_TYPE = 'gz_type:',

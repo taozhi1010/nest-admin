@@ -1,10 +1,10 @@
 # 第一阶段：构建
-FROM node:20-alpine AS builder
+FROM node:22-alpine AS builder
 
 WORKDIR /app
 
-# 安装 pnpm（锁定主版本，避免 latest 升级后构建行为变化）
-RUN npm install -g pnpm@10
+# 安装 pnpm（钉确切版本，与本地开发一致，避免 minor 漂移导致构建行为变化）
+RUN npm install -g pnpm@10.33.0
 
 # 复制 package.json 和 pnpm-lock.yaml
 COPY package.json pnpm-lock.yaml ./

@@ -152,3 +152,29 @@
 
 - 前端 Nginx 直接代理 `/profile/` 到 RustFS
 
+## 10. 邮箱验证码未生效或发信失败
+
+现象：
+
+- 配置了 `MAIL_*`，但注册页仍显示图片验证码
+- 或点击发送验证码报错、对方收不到邮件
+
+根因：
+
+- 启用条件是 `MAIL_ENABLED=true` 且 `MAIL_HOST`、`MAIL_USER`、`MAIL_PASS` 全部非空，缺任意一项都会回落到图片验证码
+- `MAIL_PASS` 填成了邮箱登录密码，而 QQ / 163 等服务商要求 SMTP 授权码
+- 端口与加密方式不匹配：工作流固定写入 `MAIL_PORT=465`、`MAIL_SECURE=true`（SSL）；587 端口需要 `MAIL_SECURE=false`（STARTTLS）
+- 邮箱账号本身未开启 SMTP 服务或未生成授权码
+
+排查：
+
+1. 按命令速查确认容器内的 `MAIL_*` 变量已注入（不要直接回显 `MAIL_PASS`）
+2. `curl -s http://127.0.0.1:8888/api/register/config` 查看 `emailRegisterEnabled`
+3. `sudo docker compose logs --tail=100 server | grep -i -E 'mail|smtp|verification'` 查看发信错误
+
+修复：
+
+- 在 GitHub Secrets 补齐或修正 `MAIL_ENABLED` / `MAIL_HOST` / `MAIL_USER` / `MAIL_PASS` / `MAIL_FROM`，重新部署后工作流会重新生成 `.env`
+- 使用邮箱服务商提供的 SMTP 授权码，并确认端口 465 + SSL
+- 如需改用 587：修改 `.github/workflows/deploy.yml` 中 `MAIL_PORT` / `MAIL_SECURE` 的写入值，并同步调整 `docker-compose.yml` 的默认值，保持一致
+

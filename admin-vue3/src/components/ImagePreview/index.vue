@@ -9,7 +9,9 @@
 </template>
 
 <script setup lang="ts">
-import { getImageUrl } from '@/utils/image'
+import { PictureFilled } from '@element-plus/icons-vue';
+
+import { getImageUrl } from '@/utils/image';
 
 const props = defineProps({
   src: {
@@ -24,32 +26,32 @@ const props = defineProps({
     type: [Number, String],
     default: ''
   }
-})
+});
 
 const realSrc = computed(() => {
   if (!props.src) {
-    return
+    return;
   }
-  let real_src = props.src.split(',')[0]
-  return getImageUrl(real_src)
-})
+  const real_src = props.src.split(',')[0];
+  return getImageUrl(real_src);
+});
 
 const realSrcList = computed(() => {
   if (!props.src) {
-    return
+    return;
   }
-  let real_src_list = props.src.split(',')
-  return real_src_list.map((item) => getImageUrl(item))
-})
+  const real_src_list = props.src.split(',');
+  return real_src_list.map((item) => getImageUrl(item));
+});
 
-const realWidth = computed(() => (typeof props.width == 'string' ? props.width : `${props.width}px`))
+const realWidth = computed(() => (typeof props.width == 'string' ? props.width : `${props.width}px`));
 
-const realHeight = computed(() => (typeof props.height == 'string' ? props.height : `${props.height}px`))
+const realHeight = computed(() => (typeof props.height == 'string' ? props.height : `${props.height}px`));
 
 const imageStyle = computed(() => ({
   width: realWidth.value,
   height: realHeight.value
-}))
+}));
 </script>
 
 <style lang="scss" scoped>
