@@ -1,0 +1,22 @@
+# 依赖与构建产物（镜像内重新安装/构建）
+node_modules
+dist
+
+# 版本库与测试（e2e 脚手架不进镜像）
+.git
+.gitignore
+coverage
+test
+
+# 日志
+**/*.log
+ormlogs.log
+
+# 本地密钥与环境文件（真实凭据不进镜像；prod.yml 为脱敏占位文件，保留供运行时读取）
+.env
+.env.*
+src/config/env/dev.yml
+src/config/env/test.yml
+
+# 本地生成的其他产物
+openApi.json

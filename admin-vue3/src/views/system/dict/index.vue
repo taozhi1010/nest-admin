@@ -2,7 +2,7 @@
   <div class="app-container dict">
     <el-card v-loading="loading" class="dict-tree fill-card" shadow="never">
       <div class="dict-tree-header">
-        <el-button v-hasPermi="['system:dict:add']" class="dict-tree-header-item add-btn" icon="el-icon-plus" size="mini" type="primary" @click="dictGroup.handleAdd">添加字典分类</el-button>
+        <el-button v-hasPermi="['system:dict:add']" class="dict-tree-header-item add-btn" size="small" type="primary" @click="dictGroup.handleAdd">添加字典分类</el-button>
         <el-input v-model="dictGroup.query.dictName" class="dict-tree-header-item search-input" placeholder="请输入字典项筛选" style="width: 200px" />
       </div>
 
@@ -12,15 +12,15 @@
             <span v-if="node.label !== '全部字典项'" class="custom-tree-node" @click="dictGroup.handleNodeSelect(data)">
               <span class="custom-tree-node-text" :title="node.label">{{ node.label }}</span>
               <span class="custom-tree-node-icon">
-                <el-button v-hasPermi="['system:dict:edit']" icon="Edit" link :title="'编辑'" type="primary" @click.stop="dictGroup.handleUpdate(data)" />
-                <el-button v-hasPermi="['system:dict:remove']" icon="Delete" link :title="'删除'" type="primary" @click.stop="dictGroup.handleDelete(data)" />
+                <el-button v-hasPermi="['system:dict:edit']" :icon="Edit" link :title="'编辑'" type="primary" @click.stop="dictGroup.handleUpdate(data)" />
+                <el-button v-hasPermi="['system:dict:remove']" :icon="Delete" link :title="'删除'" type="primary" @click.stop="dictGroup.handleDelete(data)" />
               </span>
             </span>
 
             <span v-else class="custom-tree-node" @click.stop="dictGroup.handleGroupSelect(data)">
               <span class="custom-tree-node-text" :title="node.label">{{ node.label }}</span>
               <span class="custom-tree-node-icon refresh-icon">
-                <el-button icon="Refresh" link :title="'刷新'" type="primary" @click="dictGroup.handleRefresh" />
+                <el-button :icon="Refresh" link :title="'刷新'" type="primary" @click="dictGroup.handleRefresh" />
               </span>
             </span>
           </template>
@@ -43,23 +43,23 @@
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-button icon="Search" type="primary" @click="dictGroup.handleRefresh">搜索</el-button>
-            <el-button icon="Refresh" @click="dictGroup.handleReset">重置</el-button>
+            <el-button :icon="Search" type="primary" @click="dictGroup.handleRefresh">搜索</el-button>
+            <el-button :icon="Refresh" @click="dictGroup.handleReset">重置</el-button>
           </el-form-item>
         </el-form>
 
         <el-row class="mb8" :gutter="10">
           <el-col :span="1.5">
-            <el-button v-hasPermi="['system:dict:add']" icon="Plus" plain type="primary" @click="dictGroup.handleAdd">新增</el-button>
+            <el-button v-hasPermi="['system:dict:add']" :icon="Plus" plain type="primary" @click="dictGroup.handleAdd">新增</el-button>
           </el-col>
           <el-col :span="1.5">
-            <el-button v-hasPermi="['system:dict:remove']" :disabled="multiple" icon="Delete" plain type="danger" @click="dictGroup.handleDelete">删除</el-button>
+            <el-button v-hasPermi="['system:dict:remove']" :disabled="multiple" :icon="Delete" plain type="danger" @click="dictGroup.handleDelete">删除</el-button>
           </el-col>
           <el-col :span="1.5">
-            <el-button v-hasPermi="['system:dict:export']" icon="Download" plain type="warning" @click="dictGroup.handleExport">导出</el-button>
+            <el-button v-hasPermi="['system:dict:export']" :icon="Download" plain type="warning" @click="dictGroup.handleExport">导出</el-button>
           </el-col>
           <el-col :span="1.5">
-            <el-button v-hasPermi="['system:dict:remove']" icon="Refresh" plain type="warning" @click="dictGroup.handleRefreshCache">刷新缓存</el-button>
+            <el-button v-hasPermi="['system:dict:remove']" :icon="Refresh" plain type="warning" @click="dictGroup.handleRefreshCache">刷新缓存</el-button>
           </el-col>
           <right-toolbar :show-search="false" @query-table="dictGroup.handleRefresh" />
         </el-row>
@@ -71,19 +71,19 @@
           <el-table-column align="center" label="字典类型" prop="dictType" :show-overflow-tooltip="true" />
           <el-table-column align="center" label="状态" prop="status">
             <template #default="scope">
-              <span>{{ getDictLabel('sys_normal_disable', scope.row.status) }}</span>
+              <dict-tag type="sys_normal_disable" :value="scope.row.status" />
             </template>
           </el-table-column>
           <el-table-column align="center" label="备注" prop="remark" :show-overflow-tooltip="true" />
           <el-table-column align="center" label="创建时间" prop="createTime" width="180">
             <template #default="scope">
-              <span>{{ parseTime(scope.row.createTime) }}</span>
+              <span>{{ scope.row.createTime ? dayjs(scope.row.createTime).format('YYYY-MM-DD HH:mm:ss') : '' }}</span>
             </template>
           </el-table-column>
           <el-table-column align="center" fixed="right" label="操作" width="160">
             <template #default="scope">
-              <el-button v-hasPermi="['system:dict:edit']" icon="Edit" link type="primary" @click="dictGroup.handleUpdate(scope.row)">修改</el-button>
-              <el-button v-hasPermi="['system:dict:remove']" icon="Delete" link type="primary" @click="dictGroup.handleDelete(scope.row)">删除</el-button>
+              <el-button v-hasPermi="['system:dict:edit']" :icon="Edit" link type="primary" @click="dictGroup.handleUpdate(scope.row)">修改</el-button>
+              <el-button v-hasPermi="['system:dict:remove']" :icon="Delete" link type="primary" @click="dictGroup.handleDelete(scope.row)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -93,22 +93,20 @@
         <el-descriptions border :column="4">
           <el-descriptions-item label="字典项">{{ dictGroup.selectNode.dictName }}</el-descriptions-item>
           <el-descriptions-item label="字典编号">{{ dictGroup.selectNode.dictType }}</el-descriptions-item>
-          <el-descriptions-item label="状态">
-            {{ getDictLabel('sys_normal_disable', dictGroup.selectNode.status) }}
-          </el-descriptions-item>
+          <el-descriptions-item label="状态"><dict-tag type="sys_normal_disable" :value="dictGroup.selectNode.status" /></el-descriptions-item>
         </el-descriptions>
 
         <el-divider content-position="left">数据字典详情</el-divider>
 
         <el-row class="mb8" :gutter="10">
           <el-col :span="1.5">
-            <el-button v-hasPermi="['system:dict:add']" icon="Plus" plain type="primary" @click="dictData.handleAdd">新增</el-button>
+            <el-button v-hasPermi="['system:dict:add']" :icon="Plus" plain type="primary" @click="dictData.handleAdd">新增</el-button>
           </el-col>
           <el-col :span="1.5">
-            <el-button v-hasPermi="['system:dict:remove']" :disabled="multiple" icon="Delete" plain type="danger" @click="dictData.handleDelete">删除</el-button>
+            <el-button v-hasPermi="['system:dict:remove']" :disabled="multiple" :icon="Delete" plain type="danger" @click="dictData.handleDelete">删除</el-button>
           </el-col>
           <el-col :span="1.5">
-            <el-button v-hasPermi="['system:dict:export']" icon="Download" plain type="warning" @click="dictData.handleExport">导出</el-button>
+            <el-button v-hasPermi="['system:dict:export']" :icon="Download" plain type="warning" @click="dictData.handleExport">导出</el-button>
           </el-col>
           <right-toolbar :show-search="false" @query-table="dictData.handleRefresh" />
         </el-row>
@@ -126,19 +124,19 @@
           <el-table-column align="center" label="字典排序" prop="dictSort" />
           <el-table-column align="center" label="状态" prop="status">
             <template #default="scope">
-              <span>{{ getDictLabel('sys_normal_disable', scope.row.status) }}</span>
+              <dict-tag type="sys_normal_disable" :value="scope.row.status" />
             </template>
           </el-table-column>
           <el-table-column align="center" label="备注" prop="remark" :show-overflow-tooltip="true" />
           <el-table-column align="center" label="创建时间" prop="createTime" width="180">
             <template #default="scope">
-              <span>{{ parseTime(scope.row.createTime) }}</span>
+              <span>{{ scope.row.createTime ? dayjs(scope.row.createTime).format('YYYY-MM-DD HH:mm:ss') : '' }}</span>
             </template>
           </el-table-column>
           <el-table-column align="center" fixed="right" label="操作" width="160">
             <template #default="scope">
-              <el-button v-hasPermi="['system:dict:edit']" icon="Edit" link type="primary" @click="dictData.handleUpdate(scope.row)">修改</el-button>
-              <el-button v-hasPermi="['system:dict:remove']" icon="Delete" link type="primary" @click="dictData.handleDelete(scope.row)">删除</el-button>
+              <el-button v-hasPermi="['system:dict:edit']" :icon="Edit" link type="primary" @click="dictData.handleUpdate(scope.row)">修改</el-button>
+              <el-button v-hasPermi="['system:dict:remove']" :icon="Delete" link type="primary" @click="dictData.handleDelete(scope.row)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -151,30 +149,32 @@
 </template>
 
 <script setup name="Dict">
-import dictGroupEdit from './components/dictGroupEdit'
-import dictDataEdit from './components/dictDataEdit'
-import { listType, delType, refreshCache } from '@/api/system/dict/type'
-import { listData, delData } from '@/api/system/dict/data'
-import { useDict } from '@/composables/useDict'
-import useDictStore from '@/store/modules/dict'
-import { resetForm } from '@/composables/useForm'
-import { parseTime } from '@/composables/useCommon'
-import { download } from '@/composables/useRequest'
+import { Delete, Download, Edit, Plus, Refresh, Search } from '@element-plus/icons-vue';
 
-const { sys_normal_disable, getDictLabel } = useDict('sys_normal_disable')
+import { listData, delData } from '@/api/system/dict/data';
+import { listType, delType, refreshCache } from '@/api/system/dict/type';
+import { useDict } from '@/composables/useDict';
+import { resetForm } from '@/composables/useForm';
+import { download } from '@/composables/useRequest';
+import useDictStore from '@/store/modules/dict';
+
+import dictDataEdit from './components/dictDataEdit';
+import dictGroupEdit from './components/dictGroupEdit';
+
+const { sys_normal_disable } = useDict('sys_normal_disable');
 
 // 字典组树和列表的ref
-const dictGroupRef = ref()
-const dictGroupTableRef = ref()
+const dictGroupRef = ref();
+const dictGroupTableRef = ref();
 
 // 字典内容列表ref
-const dictDataRef = ref()
+const dictDataRef = ref();
 
 // 字典组和字典内容弹窗ref
-const dictGroupEditRef = ref()
-const dictDataEditRef = ref()
+const dictGroupEditRef = ref();
+const dictDataEditRef = ref();
 // 页面loading效果
-const loading = ref(false)
+const loading = ref(false);
 
 // 字典组
 const dictGroup = reactive({
@@ -199,38 +199,38 @@ const dictGroup = reactive({
   selection: [],
   props: { label: 'dictName', children: 'children' },
   request: async () => {
-    loading.value = true
+    loading.value = true;
     try {
-      const result = await listType(dictGroup.query)
-      dictGroup.data[0].children = result.data.list
+      const result = await listType(dictGroup.query);
+      dictGroup.data[0].children = result.data.list;
     } catch (e) {
-      console.error('加载字典分组失败:', e)
+      console.error('加载字典分组失败:', e);
     } finally {
-      loading.value = false
+      loading.value = false;
     }
   },
   handleAdd: () => {
-    dictGroupEditRef.value.handleDialogOpen('add')
+    dictGroupEditRef.value.handleDialogOpen('add');
   },
   handleUpdate: (row) => {
-    dictGroupEditRef.value.handleDialogOpen('edit', row)
+    dictGroupEditRef.value.handleDialogOpen('edit', row);
   },
   handleDelete: (row) => {
-    const dictIds = row.dictId || dictGroup.selection.map((item) => item.dictId).join(',')
+    const dictIds = row.dictId || dictGroup.selection.map((item) => item.dictId).join(',');
     ElMessageBox.confirm(`是否确认删除字典编号为"${dictIds}"的数据项？`, '提示', {
       confirmButtonText: '确定',
       cancelButtonText: '取消',
       type: 'warning'
     })
       .then(() => {
-        loading.value = true
-        return delType(dictIds)
+        loading.value = true;
+        return delType(dictIds);
       })
       .then(() => {
-        dictGroup.request()
-        refreshLocalDictCache()
-        ElMessage.success('删除成功')
-      })
+        dictGroup.request();
+        refreshLocalDictCache();
+        ElMessage.success('删除成功');
+      });
   },
   handleExport: () => {
     download(
@@ -239,47 +239,47 @@ const dictGroup = reactive({
         ...dictGroup.query
       },
       `dict_${new Date().getTime()}.xlsx`
-    )
+    );
   },
   handleRefresh: () => {
-    dictGroup.request()
+    dictGroup.request();
   },
   handleReset: () => {
-    resetForm(queryDictGroupRef)
-    dictGroup.request()
+    resetForm(queryDictGroupRef);
+    dictGroup.request();
   },
   handleNodeSelect: (data) => {
-    dictGroup.selectNode = data
+    dictGroup.selectNode = data;
     if (data.dictId !== 0) {
-      dictData.request()
+      dictData.request();
     }
   },
   handleGroupSelect: (data) => {
-    dictGroup.selectNode.dictId = data.dictId
-    dictGroup.request()
+    dictGroup.selectNode.dictId = data.dictId;
+    dictGroup.request();
   },
   handleSelectionChange: (val) => {
-    dictGroup.selection = val
+    dictGroup.selection = val;
   },
   filterNode: (value, data) => {
-    if (!value) return true
-    return data.dictName.includes(value)
+    if (!value) return true;
+    return data.dictName.includes(value);
   },
   handleRefreshCache: () => {
-    loading.value = true
+    loading.value = true;
     refreshCache()
       .then(() => useDictStore().initDict({ force: true }))
       .then(() => {
-        ElMessage.success('刷新成功')
+        ElMessage.success('刷新成功');
       })
       .catch((error) => {
-        console.error('刷新字典缓存失败:', error)
+        console.error('刷新字典缓存失败:', error);
       })
       .finally(() => {
-        loading.value = false
-      })
+        loading.value = false;
+      });
   }
-})
+});
 
 // 字典内容
 const dictData = reactive({
@@ -293,35 +293,35 @@ const dictData = reactive({
   data: [],
   selection: [],
   request: () => {
-    loading.value = true
-    dictData.query.dictType = dictGroup.selectNode.dictType
+    loading.value = true;
+    dictData.query.dictType = dictGroup.selectNode.dictType;
     listData(dictData.query).then((res) => {
-      dictData.data = res.data.list
-      loading.value = false
-    })
+      dictData.data = res.data.list;
+      loading.value = false;
+    });
   },
   handleAdd: () => {
-    dictDataEditRef.value.handleDialogOpen('add', dictGroup.selectNode)
+    dictDataEditRef.value.handleDialogOpen('add', dictGroup.selectNode);
   },
   handleUpdate: (row) => {
-    dictDataEditRef.value.handleDialogOpen('edit', dictGroup.selectNode, row)
+    dictDataEditRef.value.handleDialogOpen('edit', dictGroup.selectNode, row);
   },
   handleDelete: (row) => {
-    const dictCodes = row.dictCode || dictData.selection.map((item) => item.dictCode).join(',')
+    const dictCodes = row.dictCode || dictData.selection.map((item) => item.dictCode).join(',');
     ElMessageBox.confirm(`是否确认删除字典编码为"${dictCodes}"的数据项？`, '提示', {
       confirmButtonText: '确定',
       cancelButtonText: '取消',
       type: 'warning'
     })
       .then(() => {
-        return delData(dictCodes)
+        return delData(dictCodes);
       })
       .then(() => {
-        dictData.request()
-        useDictStore().removeDict(dictData.query.dictType)
-        refreshLocalDictCache()
-        ElMessage.success('删除成功')
-      })
+        dictData.request();
+        useDictStore().removeDict(dictData.query.dictType);
+        refreshLocalDictCache();
+        ElMessage.success('删除成功');
+      });
   },
   handleExport: () => {
     download(
@@ -330,33 +330,35 @@ const dictData = reactive({
         ...dictData.query
       },
       `dict_data_${new Date().getTime()}.xlsx`
-    )
+    );
   },
   handleRefresh: () => {
-    dictData.request()
+    dictData.request();
   },
   handleSelectionChange: (selection) => {
-    dictData.selection = selection
+    dictData.selection = selection;
   }
-})
+});
 
 // 字典数据变更后同步失效本地持久化缓存，并重新拉取全量字典
-function refreshLocalDictCache() {
-  useDictStore().initDict({ force: true }).catch((error) => {
-    console.error('字典缓存刷新失败:', error)
-  })
-}
+const refreshLocalDictCache = () => {
+  useDictStore()
+    .initDict({ force: true })
+    .catch((error) => {
+      console.error('字典缓存刷新失败:', error);
+    });
+};
 
-function handleDictChanged(refresh) {
-  refresh()
-  refreshLocalDictCache()
-}
+const handleDictChanged = (refresh) => {
+  refresh();
+  refreshLocalDictCache();
+};
 
 watch(dictGroup.query, (val) => {
-  dictGroupRef.value.filter(val.dictName)
-})
+  dictGroupRef.value.filter(val.dictName);
+});
 
-dictGroup.request()
+dictGroup.request();
 </script>
 
 <style lang="scss" scoped>

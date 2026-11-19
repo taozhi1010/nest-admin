@@ -1,6 +1,8 @@
 import { Controller, Get, Post, Body, Put, Param, Query, Res, Delete, Request, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBody, ApiConsumes, ApiQuery, ApiBearerAuth } from '@nestjs/swagger';
 import { UserService } from './user.service';
+import { UserExcelService } from './user-excel.service';
+import { AuthService } from '../auth/auth.service';
 import { Response } from 'express';
 import { RequirePermission } from 'src/common/decorators/require-premission.decorator';
 import { RequireRole } from 'src/common/decorators/require-role.decorator';
@@ -11,6 +13,7 @@ import { ResultData } from 'src/common/utils/result';
 import { User, UserDto, UserTool, UserToolType } from 'src/module/system/user/user.decorator';
 import { BusinessType } from 'src/common/constant/business.constant';
 import { Operlog } from 'src/common/decorators/operlog.decorator';
+import { UPLOAD_MAX_SIZE_BYTES } from 'src/common/constant/index';
 
 @ApiTags('用户管理')
 @ApiBearerAuth()
@@ -18,6 +21,8 @@ import { Operlog } from 'src/common/decorators/operlog.decorator';
 export class UserController {
   constructor(
     private readonly userService: UserService,
+    private readonly userExcelService: UserExcelService,
+    private readonly authService: AuthService,
     private readonly uploadService: UploadService,
   ) {}
 
@@ -27,7 +32,9 @@ export class UserController {
   @RequirePermission('system:user:query')
   @Get('/profile')
   profile(@User() user: UserDto) {
-    return ResultData.ok(user.user);
+    // 会话快照含密码哈希（updatePwd 比对依赖），仅在响应层剥离
+    const { password: _password, ...info } = user.user;
+    return ResultData.ok(info);
   }
 
   @ApiOperation({
@@ -45,7 +52,7 @@ export class UserController {
   })
   @RequirePermission('system:user:edit')
   @Post('/profile/avatar')
-  @UseInterceptors(FileInterceptor('avatarfile'))
+  @UseInterceptors(FileInterceptor('avatarfile', { limits: { fileSize: UPLOAD_MAX_SIZE_BYTES } }))
   async avatar(@UploadedFile() avatarfile: Express.Multer.File, @User() user: UserDto) {
     if (!avatarfile) {
       return ResultData.fail(500, '请上传头像文件');
@@ -173,7 +180,7 @@ export class UserController {
     const uuid = user.token;
 
     const result = await this.userService.update(updateUserDto, userId);
-    await this.userService.updateRedisUserRolesAndPermissions(uuid, userId);
+    await this.authService.updateRedisUserRolesAndPermissions(uuid, userId);
 
     return result;
   }
@@ -205,7 +212,7 @@ export class UserController {
   @RequirePermission('system:user:export')
   @Post('/export')
   async export(@Res() res: Response, @Body() body: ListUserDto, @User() user: UserDto): Promise<void> {
-    return this.userService.export(res, body, user.user);
+    return this.userExcelService.export(res, body, user.user);
   }
 
   @ApiOperation({ summary: '导入用户信息数据从 xlsx' })
@@ -213,13 +220,13 @@ export class UserController {
   @Post('/importData')
   @UseInterceptors(FileInterceptor('file'))
   async importData(@UploadedFile() file: Express.Multer.File, @Query('updateSupport') updateSupport: string, @User() user: UserDto) {
-    return this.userService.importData(file, updateSupport === '1', user);
+    return this.userExcelService.importData(file, updateSupport === '1', user);
   }
 
   @ApiOperation({ summary: '下载用户导入模板' })
   @RequirePermission('system:user:add')
   @Post('/downloadTemplate')
   async downloadTemplate(@Res() res: Response): Promise<void> {
-    return this.userService.downloadTemplate(res);
+    return this.userExcelService.downloadTemplate(res);
   }
 }

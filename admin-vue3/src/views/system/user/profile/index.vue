@@ -37,7 +37,7 @@
                 <svg-icon icon-class="peoples" />
                 所属角色
                 <div v-if="profile.user.roles && Array.isArray(profile.user.roles)" class="pull-right">
-                  <el-tag v-for="(role, index) in profile.user.roles" :key="index" size="small" style="margin-left: 5px;">
+                  <el-tag v-for="(role, index) in profile.user.roles" :key="index" size="small" style="margin-left: 5px">
                     {{ role.roleName }}
                   </el-tag>
                 </div>
@@ -74,14 +74,16 @@
 </template>
 
 <script setup name="Profile">
+import dayjs from 'dayjs';
+
+import { getUserProfile } from '@/api/system/user';
+import defAva from '@/assets/images/avatar.webp';
+import { getImageUrl } from '@/utils/image';
+
+import resetPwd from './resetPwd';
 // ==================== 导入区域 ====================
-import userAvatar from './userAvatar'
-import userInfo from './userInfo'
-import resetPwd from './resetPwd'
-import { getUserProfile } from '@/api/system/user'
-import dayjs from 'dayjs'
-import { getImageUrl } from '@/utils/image'
-import defAva from '@/assets/images/avatar.webp'
+import userAvatar from './userAvatar';
+import userInfo from './userInfo';
 
 // ==================== 个人信息管理（集中式管理） ====================
 const profile = reactive({
@@ -95,40 +97,68 @@ const profile = reactive({
   // 获取用户信息
   getUser: async () => {
     try {
-      const response = await getUserProfile()
-      
-      profile.user = response.data
-      profile.user.createTime = dayjs(profile.user.createTime).format('YYYY-MM-DD HH:mm:ss')
-      
+      const response = await getUserProfile();
+
+      profile.user = response.data;
+      profile.user.createTime = dayjs(profile.user.createTime).format('YYYY-MM-DD HH:mm:ss');
+
       // 处理头像路径：如果后端返回空值则使用默认头像
       if (profile.user.avatar && profile.user.avatar.trim() !== '') {
-        profile.user.avatar = getImageUrl(profile.user.avatar)
+        profile.user.avatar = getImageUrl(profile.user.avatar);
       } else {
-        profile.user.avatar = defAva
+        profile.user.avatar = defAva;
       }
-      
+
       const roles = response.data.roles
         .filter((x) => x && typeof x === 'object' && Object.prototype.hasOwnProperty.call(x, 'roleName'))
         .map((x) => x.roleName)
-        .join('、')
-      profile.user.roles = roles
-      profile.roleGroup = response.roleGroup
-      profile.postGroup = response.postGroup
+        .join('、');
+      profile.user.roles = roles;
+      profile.roleGroup = response.roleGroup;
+      profile.postGroup = response.postGroup;
     } catch (e) {
-      console.error('获取用户信息失败:', e)
+      console.error('获取用户信息失败:', e);
     }
   },
 
   // 更新头像
   updateAvatar: async (url) => {
-    const fullUrl = getImageUrl(url)
-    profile.user.avatar = fullUrl
-    
+    const fullUrl = getImageUrl(url);
+    profile.user.avatar = fullUrl;
+
     // 重新获取用户信息以确保数据完全同步
-    await profile.getUser()
+    await profile.getUser();
   }
-})
+});
 
 // ==================== 初始化加载 ====================
-profile.getUser()
+profile.getUser();
 </script>
+
+<style lang="scss" scoped>
+/* 原 ruoyi.scss 全局规则，仅本页用户信息面板使用，收编于此 */
+.pull-right {
+  float: right !important;
+}
+
+.list-group {
+  padding-left: 0px;
+  list-style: none;
+}
+
+.list-group-striped > .list-group-item {
+  border-left: 0;
+  border-right: 0;
+  border-radius: 0;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.list-group-item {
+  border-bottom: 1px solid #e7eaec;
+  border-top: 1px solid #e7eaec;
+  margin-bottom: -1px;
+  padding: 11px 0px;
+  font-size: 13px;
+}
+</style>

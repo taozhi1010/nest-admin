@@ -24,22 +24,22 @@
 
 <script setup lang="ts">
 // ==================== 导入区域 ====================
-import { updateUserProfile } from '@/api/system/user'
+import { updateUserProfile } from '@/api/system/user';
 
 // ==================== Composables ====================
-const { closePage } = useTab()
+const { closePage } = useTab();
 
 // ==================== Props ====================
 const props = defineProps({
   user: {
     type: Object
   }
-})
+});
 
 // ==================== 实例和字典 ====================
 
 // ==================== 表单引用 ====================
-const userInfoRef = ref(null)
+const userInfoRef = ref(null);
 
 // ==================== 用户信息管理（集中式管理） ====================
 const userInfo = reactive({
@@ -67,27 +67,27 @@ const userInfo = reactive({
   submit: async () => {
     try {
       if (userInfoRef.value) {
-        await userInfoRef.value.validate()
+        await userInfoRef.value.validate();
       }
       // 将表单数据与用户原始数据合并
       const updateData = {
         ...props.user,
         ...userInfo.form
-      }
-      await updateUserProfile(updateData)
-      ElMessage.success('修改成功')
+      };
+      await updateUserProfile(updateData);
+      ElMessage.success('修改成功');
     } catch (e) {
       if (e !== false) {
-        console.error('保存用户信息失败:', e)
+        console.error('保存用户信息失败:', e);
       }
     }
   },
 
   // 关闭按钮
   close: () => {
-    closePage()
+    closePage();
   }
-})
+});
 
 // ==================== 监听 Props 变化 ====================
 watch(
@@ -101,10 +101,10 @@ watch(
           phonenumber: newVal.phonenumber || '',
           email: newVal.email || '',
           sex: newVal.sex || '0'
-        }
+        };
       }
     }
   },
   { immediate: true }
-)
+);
 </script>

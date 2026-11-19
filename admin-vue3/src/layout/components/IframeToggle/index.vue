@@ -5,9 +5,10 @@
 </template>
 
 <script setup lang="ts">
-import InnerLink from '../InnerLink/index'
-import useTagsViewStore from '@/store/modules/tagsView'
+import useTagsViewStore from '@/store/modules/tagsView';
 
-const route = useRoute()
-const tagsViewStore = useTagsViewStore()
+import InnerLink from '../InnerLink/index';
+
+const route = useRoute();
+const tagsViewStore = useTagsViewStore();
 </script>

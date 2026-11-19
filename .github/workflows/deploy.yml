@@ -6,13 +6,52 @@ on:
   workflow_dispatch:  # 允许手动触发
 
 jobs:
+  # 后端质检门禁：tsc + 单测不过不放行部署
+  quality-gate:
+    name: Backend quality gate (tsc + unit tests)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: server
+    steps:
+      # 1. 检出代码
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      # 2. 安装 pnpm（钉 9.0.5，与 lockfile v9 及 Dockerfile 一致）
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.0.5
+
+      # 3. Node 20 + pnpm 缓存
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+          cache-dependency-path: server/pnpm-lock.yaml
+
+      # 4. 安装依赖（frozen-lockfile 不动 lockfile）
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # 5. 类型检查（tsconfig.build.json 仅 src，排除必挂的 e2e 脚手架）
+      - name: Type check (tsc --noEmit)
+        run: npx tsc --noEmit -p tsconfig.build.json
+
+      # 6. 单元测试（纯 mock，无需 MySQL/Redis）
+      - name: Unit tests
+        run: pnpm test
+
   build-and-deploy:
+    needs: quality-gate
     runs-on: ubuntu-latest
     
     steps:
       # 1. 检出代码
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
       
       # 2. 设置 SSH 密钥
       - name: Setup SSH
@@ -42,7 +81,7 @@ jobs:
       
       # 5. 在服务器上清理旧资源、构建和部署
       - name: Clean, Build and Deploy on Server
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@v1.2.4
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
@@ -85,6 +124,8 @@ jobs:
               echo "🔑 RUSTFS_ACCESS_KEY 使用 GitHub Secret 配置"
             fi
 
+            # 邮件（注册验证码）配置：来自 GitHub Secrets；Secret 未配置时 compose 兜底
+            # MAIL_ENABLED=false，邮件功能自动关闭，不影响其他功能
             # 创建或更新 .env 文件
             cat > .env << EOF
             MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}
@@ -102,6 +143,13 @@ jobs:
             RUSTFS_SECRET_KEY=${{ secrets.RUSTFS_SECRET_KEY }}
             RUSTFS_BUCKET=nest-admin
             JWT_SECRETKEY=${{ secrets.JWT_SECRETKEY }}
+            MAIL_ENABLED=${{ secrets.MAIL_ENABLED }}
+            MAIL_HOST=${{ secrets.MAIL_HOST }}
+            MAIL_PORT=465
+            MAIL_SECURE=true
+            MAIL_USER=${{ secrets.MAIL_USER }}
+            MAIL_PASS=${{ secrets.MAIL_PASS }}
+            MAIL_FROM=${{ secrets.MAIL_FROM }}
             SERVER_PORT=8080
             WEB_PORT=8888
             DEPLOY_PATH=/opt/deploy/nest-admin
@@ -118,10 +166,12 @@ jobs:
 
             # 前端单独构建；如果镜像源异常，保留旧前端，不阻塞后端部署
             echo "🔨 构建前端镜像..."
+            FRONTEND_BUILD_FAILED=0
             if docker compose build --no-cache admin-vue3; then
               echo "🚀 启动前端容器..."
               docker compose up -d admin-vue3
             else
+              FRONTEND_BUILD_FAILED=1
               echo "⚠️ 前端镜像构建失败，尝试保留现有前端镜像并继续部署后端"
               docker compose up -d --no-build admin-vue3 || true
             fi
@@ -159,3 +209,9 @@ jobs:
             echo "前端访问地址：http://${{ secrets.SERVER_HOST }}:8888"
             echo "后端 API 地址：http://${{ secrets.SERVER_HOST }}:8080"
             echo "=========================================="
+
+            # 后端已上线，但前端构建失败时把本次运行标红，防止"部署成功"假象掩盖前端未更新
+            if [ "$FRONTEND_BUILD_FAILED" = "1" ]; then
+              echo "❌ 前端镜像构建失败，线上前端仍为旧版本！请向上翻阅构建日志排查"
+              exit 1
+            fi

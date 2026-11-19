@@ -98,66 +98,68 @@
 </template>
 
 <script setup name="Cache">
-import { getCache } from '@/api/monitor/cache'
-import * as echarts from 'echarts'
+import { Monitor, Odometer, PieChart } from '@element-plus/icons-vue';
+import * as echarts from 'echarts';
 
-const cache = ref([])
-const commandstats = ref(null)
-const usedmemory = ref(null)
-let loadingInstance = null
-let commandstatsChart = null
-let usedmemoryChart = null
+import { getCache } from '@/api/monitor/cache';
+
+const cache = ref([]);
+const commandstats = ref(null);
+const usedmemory = ref(null);
+let loadingInstance = null;
+let commandstatsChart = null;
+let usedmemoryChart = null;
 
 // 解析内存值（如 "1.23M" -> 1.23, "456K" -> 0.456）
-function parseMemoryValue(memoryStr) {
-  if (!memoryStr) return 0
-  const match = memoryStr.match(/([\d.]+)\s*([KMGT]?B?)/i)
-  if (!match) return parseFloat(memoryStr) || 0
-  
-  const value = parseFloat(match[1])
-  const unit = match[2].toUpperCase()
-  
+const parseMemoryValue = (memoryStr) => {
+  if (!memoryStr) return 0;
+  const match = memoryStr.match(/([\d.]+)\s*([KMGT]?B?)/i);
+  if (!match) return parseFloat(memoryStr) || 0;
+
+  const value = parseFloat(match[1]);
+  const unit = match[2].toUpperCase();
+
   switch (unit) {
     case 'KB':
     case 'K':
-      return value / 1024
+      return value / 1024;
     case 'MB':
     case 'M':
-      return value
+      return value;
     case 'GB':
     case 'G':
-      return value * 1024
+      return value * 1024;
     case 'TB':
     case 'T':
-      return value * 1024 * 1024
+      return value * 1024 * 1024;
     default:
-      return value
+      return value;
   }
-}
+};
 
-function getList() {
+const getList = () => {
   loadingInstance = ElLoading.service({
     lock: true,
     text: '正在加载缓存监控数据，请稍候！',
     background: 'rgba(0, 0, 0, 0.7)'
-  })
+  });
   getCache().then((response) => {
     if (loadingInstance) {
-      loadingInstance.close()
-      loadingInstance = null
+      loadingInstance.close();
+      loadingInstance = null;
     }
-    cache.value = response.data
+    cache.value = response.data;
 
     // 销毁旧图表实例
     if (commandstatsChart) {
-      commandstatsChart.dispose()
+      commandstatsChart.dispose();
     }
     if (usedmemoryChart) {
-      usedmemoryChart.dispose()
+      usedmemoryChart.dispose();
     }
 
-    const commandstatsIntance = echarts.init(commandstats.value, 'macarons')
-    commandstatsChart = commandstatsIntance
+    const commandstatsIntance = echarts.init(commandstats.value, 'macarons');
+    commandstatsChart = commandstatsIntance;
     commandstatsIntance.setOption({
       tooltip: {
         trigger: 'item',
@@ -175,17 +177,17 @@ function getList() {
           animationDuration: 1000
         }
       ]
-    })
+    });
 
-    const maxMemoryValue = parseMemoryValue(cache.value.info.maxmemory_human)
-    const usedMemoryValue = parseMemoryValue(cache.value.info.used_memory_human)
-    
+    const maxMemoryValue = parseMemoryValue(cache.value.info.maxmemory_human);
+    const usedMemoryValue = parseMemoryValue(cache.value.info.used_memory_human);
+
     // TODO: 当前使用已用内存的2倍作为临时方案，后续需后端返回真实的机器内存上限（如 server.mem.total）
     // 如果内存上限为0（未限制），则根据已用内存动态设置上限
-    const gaugeMax = maxMemoryValue > 0 ? maxMemoryValue : Math.max(usedMemoryValue * 2, 100)
-    
-    const usedmemoryInstance = echarts.init(usedmemory.value, 'macarons')
-    usedmemoryChart = usedmemoryInstance
+    const gaugeMax = maxMemoryValue > 0 ? maxMemoryValue : Math.max(usedMemoryValue * 2, 100);
+
+    const usedmemoryInstance = echarts.init(usedmemory.value, 'macarons');
+    usedmemoryChart = usedmemoryInstance;
     usedmemoryInstance.setOption({
       tooltip: {
         formatter: `{b} <br/>{a} : ${cache.value.info.used_memory_human}`
@@ -207,21 +209,30 @@ function getList() {
           ]
         }
       ]
-    })
-  })
-}
+    });
+  });
+};
 
-getList()
+getList();
 
 // 组件卸载时清理图表实例
 onUnmounted(() => {
   if (commandstatsChart) {
-    commandstatsChart.dispose()
-    commandstatsChart = null
+    commandstatsChart.dispose();
+    commandstatsChart = null;
   }
   if (usedmemoryChart) {
-    usedmemoryChart.dispose()
-    usedmemoryChart = null
+    usedmemoryChart.dispose();
+    usedmemoryChart = null;
   }
-})
+});
 </script>
+
+<style lang="scss" scoped>
+/* 原 ruoyi.scss 全局规则，仅本页使用，收编于此 */
+.card-box {
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-bottom: 10px;
+}
+</style>

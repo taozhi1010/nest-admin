@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-const props = defineProps({
+defineProps({
   src: {
     type: String,
     default: '/'
@@ -13,7 +13,7 @@ const props = defineProps({
   iframeId: {
     type: String
   }
-})
+});
 
-const height = ref(`${document.documentElement.clientHeight - 94.5}px`)
+const height = ref(`${document.documentElement.clientHeight - 94.5}px`);
 </script>

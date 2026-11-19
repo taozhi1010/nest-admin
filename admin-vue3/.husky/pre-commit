@@ -1,0 +1,2 @@
+cd "$(git rev-parse --show-toplevel)/admin-vue3"
+npx lint-staged

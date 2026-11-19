@@ -20,9 +20,9 @@
 </template>
 
 <script setup lang="ts">
-let message = computed(() => {
-  return '找不到网页！'
-})
+const message = computed(() => {
+  return '找不到网页！';
+});
 </script>
 
 <style lang="scss" scoped>

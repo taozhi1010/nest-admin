@@ -1,18 +1,5 @@
 <template>
-  <MdEditor
-    v-model="editorValue"
-    :theme="theme"
-    :preview="preview"
-    :previewTheme="previewTheme"
-    :codeTheme="codeTheme"
-    :showCodeRowNumber="true"
-    :toolbars="toolbars"
-    :placeholder="placeholder"
-    :height="height"
-    :style="{ minHeight }"
-    @onChange="handleChange"
-    @onUploadImg="handleUploadImg"
-  />
+  <MdEditor v-model="editorValue" :theme="theme" :preview="preview" :previewTheme="previewTheme" :codeTheme="codeTheme" :showCodeRowNumber="true" :toolbars="toolbars" :placeholder="placeholder" :height="height" :style="{ minHeight }" @onChange="handleChange" @onUploadImg="handleUploadImg" />
 </template>
 
 <script setup lang="ts">
@@ -21,8 +8,8 @@
  * 基于 md-editor-v3 封装
  * 官方文档: https://imzbf.github.io/md-editor-v3/
  */
-import { MdEditor } from 'md-editor-v3'
-import 'md-editor-v3/lib/style.css'
+import { MdEditor } from 'md-editor-v3';
+import 'md-editor-v3/lib/style.css';
 
 const props = defineProps({
   modelValue: {
@@ -49,14 +36,14 @@ const props = defineProps({
     type: String,
     default: '请输入内容（支持 Markdown 语法）'
   }
-})
+});
 
-const emit = defineEmits(['update:modelValue', 'change', 'upload-image'])
+const emit = defineEmits(['update:modelValue', 'change', 'upload-image']);
 
-const editorValue = ref(props.modelValue)
+const editorValue = ref(props.modelValue);
 
-const previewTheme = 'vuepress'
-const codeTheme = 'atom'
+const previewTheme = 'vuepress';
+const codeTheme = 'atom';
 
 const toolbars = [
   'bold',
@@ -89,37 +76,37 @@ const toolbars = [
   'preview',
   'htmlPreview',
   'catalog'
-]
+];
 
 // 监听 props.modelValue 变化，同步到本地变量
 watch(
   () => props.modelValue,
   (newVal) => {
-    editorValue.value = newVal
+    editorValue.value = newVal;
   }
-)
+);
 
 // 内容变化事件
 const handleChange = (text, html) => {
-  emit('update:modelValue', text)
-  emit('change', { text, html })
-}
+  emit('update:modelValue', text);
+  emit('change', { text, html });
+};
 
 // 图片上传事件
 const handleUploadImg = async (files, callback) => {
   // 默认处理：将图片转为 Base64
   try {
-    const file = files[0]
-    if (!file) return
+    const file = files[0];
+    if (!file) return;
 
-    const reader = new FileReader()
+    const reader = new FileReader();
     reader.onload = (e) => {
-      const base64 = e.target.result
-      callback([base64])
-    }
-    reader.readAsDataURL(file)
+      const base64 = e.target.result;
+      callback([base64]);
+    };
+    reader.readAsDataURL(file);
   } catch (error) {
-    console.error('图片上传失败:', error)
+    console.error('图片上传失败:', error);
   }
-}
+};
 </script>

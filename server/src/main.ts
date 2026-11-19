@@ -11,6 +11,7 @@ import { join } from 'path';
 import { setupApiDocs } from 'src/common/utils/api-docs';
 import { setupProcessGuards } from 'src/common/utils/process-guard';
 import { createProxyMiddleware } from 'http-proxy-middleware';
+import { INLINE_IMAGE_EXT_PATTERN } from 'src/common/constant/index';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
@@ -43,6 +44,10 @@ async function bootstrap() {
   // 判断存储类型，根据类型配置不同的文件访问方式
   const storageType = config.get<string>('app.file.storageType');
 
+  // 非位图类文件强制浏览器下载（Content-Disposition: attachment），
+  // 阻断 .html/.svg 等经静态服务内联渲染造成的存储型 XSS
+  const isInlineImage = (urlPath: string) => INLINE_IMAGE_EXT_PATTERN.test((urlPath || '').split('?')[0]);
+
   if (storageType === 'minio') {
     // MinIO 代理配置
     const minioDomain = config.get<string>('minio.domain');
@@ -54,6 +59,13 @@ async function bootstrap() {
         pathRewrite: (path, req) => {
           // 将 /profile/avatars/xxx.png 转换为 /avatars/xxx.png
           return path.replace(/^\/profile\//, '/');
+        },
+        on: {
+          proxyRes: (proxyRes) => {
+            if (!isInlineImage(proxyRes.url)) {
+              proxyRes.headers['content-disposition'] = 'attachment';
+            }
+          },
         },
       }),
     );
@@ -70,6 +82,13 @@ async function bootstrap() {
           // 将 /profile/nest-admin/xxx.png 转换为 /nest-admin/xxx.png
           return path.replace(/^\/profile\//, '/');
         },
+        on: {
+          proxyRes: (proxyRes) => {
+            if (!isInlineImage(proxyRes.url)) {
+              proxyRes.headers['content-disposition'] = 'attachment';
+            }
+          },
+        },
       }),
     );
   } else {
@@ -77,6 +96,11 @@ async function bootstrap() {
     app.useStaticAssets(baseDirPath, {
       prefix: '/profile/',
       maxAge: 0, // 头像等动态资源不缓存，确保实时更新
+      setHeaders: (res, filePath) => {
+        if (!isInlineImage(filePath)) {
+          res.setHeader('Content-Disposition', 'attachment');
+        }
+      },
     });
   }
 

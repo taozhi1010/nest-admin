@@ -5,50 +5,50 @@ export interface AppSettings {
   /**
    * 网页标题
    */
-  title: string
-  
+  title: string;
+
   /**
    * 侧边栏主题 深色主题theme-dark，浅色主题theme-light
    */
-  sideTheme: 'theme-dark' | 'theme-light'
-  
+  sideTheme: 'theme-dark' | 'theme-light';
+
   /**
    * 是否系统布局配置
    */
-  showSettings: boolean
-  
+  showSettings: boolean;
+
   /**
    * 是否显示顶部导航
    */
-  topNav: boolean
-  
+  topNav: boolean;
+
   /**
    * 是否显示 tagsView
    */
-  tagsView: boolean
-  
+  tagsView: boolean;
+
   /**
    * 是否固定头部
    */
-  fixedHeader: boolean
-  
+  fixedHeader: boolean;
+
   /**
    * 是否显示logo
    */
-  sidebarLogo: boolean
-  
+  sidebarLogo: boolean;
+
   /**
    * 是否显示动态标题
    */
-  dynamicTitle: boolean
-  
+  dynamicTitle: boolean;
+
   /**
    * @type {string | array} 'production' | ['production', 'development']
    * @description Need show err logs component.
    * The default is only used in the production env
    * If you want to also use it in dev, you can pass ['production', 'development']
    */
-  errorLog: string | string[]
+  errorLog: string | string[];
 }
 
 /**
@@ -59,12 +59,12 @@ const settings: AppSettings = {
    * 网页标题
    */
   title: import.meta.env.VITE_APP_TITLE || 'nest-admin 后台管理系统',
-  
+
   /**
    * 侧边栏主题 深色主题theme-dark，浅色主题theme-light
    */
   sideTheme: 'theme-dark',
-  
+
   /**
    * 是否系统布局配置
    */
@@ -102,6 +102,6 @@ const settings: AppSettings = {
    * If you want to also use it in dev, you can pass ['production', 'development']
    */
   errorLog: 'production'
-}
+};
 
-export default settings
+export default settings;

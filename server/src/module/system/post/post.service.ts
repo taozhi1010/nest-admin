@@ -23,11 +23,11 @@ export class PostService {
     entity.where('entity.delFlag = :delFlag', { delFlag: '0' });
 
     if (query.postName) {
-      entity.andWhere(`entity.postName LIKE "%${query.postName}%"`);
+      entity.andWhere('entity.postName LIKE :postName', { postName: `%${query.postName}%` });
     }
 
     if (query.postCode) {
-      entity.andWhere(`entity.postCode LIKE "%${query.postCode}%"`);
+      entity.andWhere('entity.postCode LIKE :postCode', { postCode: `%${query.postCode}%` });
     }
 
     if (query.status) {

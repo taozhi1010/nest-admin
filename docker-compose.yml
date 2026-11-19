@@ -22,6 +22,13 @@ services:
       RUSTFS_SECRET_KEY: ${RUSTFS_SECRET_KEY}
       RUSTFS_BUCKET: ${RUSTFS_BUCKET:-nest-admin}
       JWT_SECRETKEY: ${JWT_SECRETKEY}
+      MAIL_ENABLED: ${MAIL_ENABLED:-false}
+      MAIL_HOST: ${MAIL_HOST:-}
+      MAIL_PORT: ${MAIL_PORT:-465}
+      MAIL_SECURE: ${MAIL_SECURE:-true}
+      MAIL_USER: ${MAIL_USER:-}
+      MAIL_PASS: ${MAIL_PASS:-}
+      MAIL_FROM: ${MAIL_FROM:-}
     ports:
       - "${SERVER_PORT}:8080"
     networks:

@@ -1,6 +1,7 @@
-import { createWebHistory, createRouter, RouteRecordRaw } from 'vue-router'
+import { createWebHistory, createRouter, RouteRecordRaw } from 'vue-router';
+
 /* Layout */
-import Layout from '@/layout/index.vue'
+import Layout from '@/layout/index.vue';
 
 /**
  * Note: 路由配置项
@@ -26,21 +27,21 @@ import Layout from '@/layout/index.vue'
 
 // 扩展路由元信息类型
 interface AppRouteMeta {
-  title?: string
-  icon?: string
-  noCache?: boolean
-  breadcrumb?: boolean
-  activeMenu?: string
-  affix?: boolean
+  title?: string;
+  icon?: string;
+  noCache?: boolean;
+  breadcrumb?: boolean;
+  activeMenu?: string;
+  affix?: boolean;
 }
 
 // 扩展路由记录类型，添加自定义属性
 interface AppRouteRecordRaw extends Omit<RouteRecordRaw, 'meta' | 'children'> {
-  hidden?: boolean
-  permissions?: string[]
-  alwaysShow?: boolean
-  meta?: AppRouteMeta
-  children?: AppRouteRecordRaw[]
+  hidden?: boolean;
+  permissions?: string[];
+  alwaysShow?: boolean;
+  meta?: AppRouteMeta;
+  children?: AppRouteRecordRaw[];
 }
 
 // 公共路由
@@ -110,7 +111,7 @@ export const constantRoutes: AppRouteRecordRaw[] = [
       }
     ]
   }
-]
+];
 
 // 动态路由，基于用户权限动态去加载
 export const dynamicRoutes: AppRouteRecordRaw[] = [
@@ -178,34 +179,32 @@ export const dynamicRoutes: AppRouteRecordRaw[] = [
       }
     ]
   }
-]
+];
 
 const router = createRouter({
   history: createWebHistory(),
   routes: constantRoutes as RouteRecordRaw[],
   scrollBehavior(to, from, savedPosition) {
     if (savedPosition) {
-      return savedPosition
+      return savedPosition;
     } else {
-      return { top: 0 }
+      return { top: 0 };
     }
   }
-})
+});
 
 // 全局路由错误处理
 router.onError((error) => {
-  console.error('路由错误:', error)
-  
+  console.error('路由错误:', error);
+
   // 检查是否是组件加载失败
-  const isChunkLoadError = error.message?.includes('Failed to fetch') || 
-                          error.message?.includes('loading chunk') ||
-                          error.message?.includes('Importing a module script failed')
-  
+  const isChunkLoadError = error.message?.includes('Failed to fetch') || error.message?.includes('loading chunk') || error.message?.includes('Importing a module script failed');
+
   if (isChunkLoadError) {
     // 组件加载失败，可能是网络问题或资源不存在
-    console.warn('页面组件加载失败，可能是网络问题或文件不存在')
+    console.warn('页面组件加载失败，可能是网络问题或文件不存在');
     // 这里可以添加重试逻辑或跳转到错误页面
   }
-})
+});
 
-export default router
+export default router;

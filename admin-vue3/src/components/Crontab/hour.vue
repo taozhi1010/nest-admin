@@ -36,7 +36,7 @@
 </template>
 
 <script setup lang="ts">
-const emit = defineEmits(['update'])
+const emit = defineEmits(['update']);
 const props = defineProps({
   cron: {
     type: Object,
@@ -54,80 +54,80 @@ const props = defineProps({
     type: Function,
     default: () => {}
   }
-})
-const radioValue = ref(1)
-const cycle01 = ref(0)
-const cycle02 = ref(1)
-const average01 = ref(0)
-const average02 = ref(1)
-const checkboxList = ref<number[]>([])
-const checkCopy = ref([0])
+});
+const radioValue = ref(1);
+const cycle01 = ref(0);
+const cycle02 = ref(1);
+const average01 = ref(0);
+const average02 = ref(1);
+const checkboxList = ref<number[]>([]);
+const checkCopy = ref([0]);
 const cycleTotal = computed(() => {
-  const checked01 = props.check(cycle01.value, 0, 22)
-  const checked02 = props.check(cycle02.value, cycle01.value + 1, 23)
-  return `${checked01}-${checked02}`
-})
+  const checked01 = props.check(cycle01.value, 0, 22);
+  const checked02 = props.check(cycle02.value, cycle01.value + 1, 23);
+  return `${checked01}-${checked02}`;
+});
 const averageTotal = computed(() => {
-  const checked01 = props.check(average01.value, 0, 22)
-  const checked02 = props.check(average02.value, 1, 23 - average01.value)
-  return `${checked01}/${checked02}`
-})
+  const checked01 = props.check(average01.value, 0, 22);
+  const checked02 = props.check(average02.value, 1, 23 - average01.value);
+  return `${checked01}/${checked02}`;
+});
 const checkboxString = computed(() => {
-  return checkboxList.value.join(',')
-})
+  return checkboxList.value.join(',');
+});
 watch(
   () => props.cron.hour,
   (value) => changeRadioValue(value)
-)
+);
 // 监听 computed 值变化并同步到 ref
 watch(cycleTotal, (value) => {
-  const [v1, v2] = value.split('-')
-  cycle01.value = Number(v1)
-  cycle02.value = Number(v2)
-})
+  const [v1, v2] = value.split('-');
+  cycle01.value = Number(v1);
+  cycle02.value = Number(v2);
+});
 watch(averageTotal, (value) => {
-  const [v1, v2] = value.split('/')
-  average01.value = Number(v1)
-  average02.value = Number(v2)
-})
-watch([radioValue, cycleTotal, averageTotal, checkboxString], () => onRadioChange())
+  const [v1, v2] = value.split('/');
+  average01.value = Number(v1);
+  average02.value = Number(v2);
+});
+watch([radioValue, cycleTotal, averageTotal, checkboxString], () => onRadioChange());
 function changeRadioValue(value: string) {
   if (value === '*') {
-    radioValue.value = 1
+    radioValue.value = 1;
   } else if (value.indexOf('-') > -1) {
-    const indexArr = value.split('-')
-    cycle01.value = Number(indexArr[0])
-    cycle02.value = Number(indexArr[1])
-    radioValue.value = 2
+    const indexArr = value.split('-');
+    cycle01.value = Number(indexArr[0]);
+    cycle02.value = Number(indexArr[1]);
+    radioValue.value = 2;
   } else if (value.indexOf('/') > -1) {
-    const indexArr = value.split('/')
-    average01.value = Number(indexArr[0])
-    average02.value = Number(indexArr[1])
-    radioValue.value = 3
+    const indexArr = value.split('/');
+    average01.value = Number(indexArr[0]);
+    average02.value = Number(indexArr[1]);
+    radioValue.value = 3;
   } else {
-    checkboxList.value = [...new Set(value.split(',').map((item) => Number(item)))]
-    radioValue.value = 4
+    checkboxList.value = [...new Set(value.split(',').map((item) => Number(item)))];
+    radioValue.value = 4;
   }
 }
 function onRadioChange() {
   switch (radioValue.value) {
     case 1:
-      emit('update', 'hour', '*', 'hour')
-      break
+      emit('update', 'hour', '*', 'hour');
+      break;
     case 2:
-      emit('update', 'hour', cycleTotal.value, 'hour')
-      break
+      emit('update', 'hour', cycleTotal.value, 'hour');
+      break;
     case 3:
-      emit('update', 'hour', averageTotal.value, 'hour')
-      break
+      emit('update', 'hour', averageTotal.value, 'hour');
+      break;
     case 4:
       if (checkboxList.value.length === 0) {
-        checkboxList.value.push(checkCopy.value[0])
+        checkboxList.value.push(checkCopy.value[0]);
       } else {
-        checkCopy.value = checkboxList.value
+        checkCopy.value = checkboxList.value;
       }
-      emit('update', 'hour', checkboxString.value, 'hour')
-      break
+      emit('update', 'hour', checkboxString.value, 'hour');
+      break;
   }
 }
 </script>

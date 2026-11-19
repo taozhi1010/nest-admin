@@ -2,13 +2,13 @@
   <div class="top-right-btn" :style="style">
     <el-row>
       <el-tooltip v-if="showSearch" class="item" :content="showSearch ? '隐藏搜索' : '显示搜索'" effect="dark" placement="top">
-        <el-button circle icon="Search" @click="toggleSearch()" />
+        <el-button circle :icon="Search" @click="toggleSearch()" />
       </el-tooltip>
       <el-tooltip class="item" content="刷新" effect="dark" placement="top">
-        <el-button circle icon="Refresh" @click="refresh()" />
+        <el-button circle :icon="Refresh" @click="refresh()" />
       </el-tooltip>
       <el-tooltip v-if="columns" class="item" content="显隐列" effect="dark" placement="top">
-        <el-button circle icon="Menu" @click="showColumn()" />
+        <el-button circle :icon="Menu" @click="showColumn()" />
       </el-tooltip>
     </el-row>
     <el-dialog v-model="open" append-to-body :title="title">
@@ -18,6 +18,7 @@
 </template>
 
 <script setup lang="ts">
+import { Menu, Refresh, Search } from '@element-plus/icons-vue';
 const props = defineProps({
   showSearch: {
     type: Boolean,
@@ -34,52 +35,54 @@ const props = defineProps({
     type: Number,
     default: 10
   }
-})
+});
 
-const emits = defineEmits(['update:showSearch', 'queryTable'])
+const emits = defineEmits(['update:showSearch', 'queryTable']);
 
 // 显隐数据
-const value = ref([])
+const value = ref([]);
 // 弹出层标题
-const title = ref('显示/隐藏')
+const title = ref('显示/隐藏');
 // 是否显示弹出层
-const open = ref(false)
+const open = ref(false);
 
 const style = computed(() => {
-  const ret = {}
+  const ret = {};
   if (props.gutter) {
-    ret.marginRight = `${props.gutter / 2}px`
+    ret.marginRight = `${props.gutter / 2}px`;
   }
-  return ret
-})
+  return ret;
+});
 
 // 搜索
 function toggleSearch() {
-  emits('update:showSearch', !props.showSearch)
+  emits('update:showSearch', !props.showSearch);
 }
 
 // 刷新
 function refresh() {
-  emits('queryTable')
+  emits('queryTable');
 }
 
 // 右侧列表元素变化
 function dataChange(data) {
-  for (let item in props.columns) {
-    const key = props.columns[item].key
-    props.columns[item].visible = !data.includes(key)
+  // 既有设计：父组件传入 reactive 数组引用，此处直接改 visible 以联动列显隐
+  for (const item in props.columns) {
+    const key = props.columns[item].key;
+    // eslint-disable-next-line vue/no-mutating-props -- 同上，见函数头注释
+    props.columns[item].visible = !data.includes(key);
   }
 }
 
 // 打开显隐列dialog
 function showColumn() {
-  open.value = true
+  open.value = true;
 }
 
 // 显隐列初始默认隐藏列
-for (let item in props.columns) {
+for (const item in props.columns) {
   if (props.columns[item].visible === false) {
-    value.value.push(parseInt(item))
+    value.value.push(parseInt(item));
   }
 }
 </script>
@@ -96,5 +99,10 @@ for (let item in props.columns) {
 
 .my-el-transfer {
   text-align: center;
+}
+
+/* 原 ruoyi.scss 全局规则，仅本组件使用，收编于此 */
+.top-right-btn {
+  margin-left: auto;
 }
 </style>
